@@ -1,0 +1,57 @@
+[build-system]
+requires = ["setuptools>=61.2"]
+build-backend = "setuptools.build_meta"
+
+# https://packaging.python.org/en/latest/specifications/declaring-project-metadata/
+[project]
+name = "palmsens-python"
+version = "0.0.1"
+description = "Python SDK for Palmsens"
+readme = "README.md"
+requires-python = ">=3.8"
+authors = [
+	{name = "Palmsens", email = "info@palmsens.com"},
+]
+keywords = [
+]
+license = {text = "???"}
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Science/Research",
+    "Natural Language :: English",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Scientific/Engineering",
+]
+dependencies = [
+    'numpy',
+    'pandas',
+    'pycparser',
+    'python-dateutil',
+    'pythonnet',
+    'pytz',
+    'six',
+]
+
+[project.urls]
+homepage = "https://github.com/palmsens/palmsens_sdk"
+issues = "https://github.com/palmsens/palmsens_sdk/issues"
+documentation = "https://github.com/palmsens/palmsens_sdk"
+changelog = "https://github.com/palmsens/palmsens_sdk/releases"
+
+[project.optional-dependencies]
+develop = [
+    "pytest",
+]
+
+publishing = [
+    "twine",
+    "wheel",
+    "build",
+]

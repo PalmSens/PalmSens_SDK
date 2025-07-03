@@ -1,0 +1,2 @@
+include pspython/*.dll
+include pspython/*.xml
