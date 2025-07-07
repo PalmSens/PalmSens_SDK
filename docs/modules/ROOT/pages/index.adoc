@@ -1,3 +1,5 @@
-= Welcome!
+= PalmSens SDK
 
-You are home.
+image:banner.png[PalmSens banner]
+
+Hello world!
