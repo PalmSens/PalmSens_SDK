@@ -5,7 +5,7 @@
 
 * https://python.org[Python version 3.8 or newer]
 * Python dependencies listed `requirements.txt`
-** Either run the following command: `pip install -r requirements.txt` or refer to the steps in #TODO
+** Either run the following command: `pip install -r requirements.txt` or refer to the steps in xref:installation.adoc[].
 * .NET Framework 4.7.2
 * Drivers included with _PSTrace5.x_, _MultiTrace4.x_, _PSTrace Xpress_ or the included driver installer
 

@@ -1,8 +1,7 @@
 = API reference
 
 All applicable parameters for each technique can be found here. 
-For the inheritance hierarchy of the the techniques, see (TODO)section 3 in this
-document.
+For the inheritance hierarchy of the the techniques, see xref:core_dll.adoc[].
 See section ‘Available techniques’ in the PSTrace manual for more information about the techniques.
 
 Each technique is identified by a specific integer value.

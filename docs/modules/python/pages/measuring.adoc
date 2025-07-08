@@ -34,7 +34,8 @@ manager.set_potential(1)
 == Measuring
 
 Starting a measurement is done by sending method parameters to a PalmSens/Nexus/EmStat/Sensit device. 
-The `InstrumentManager` measure function returns a `Measurement` and also supports keeping a reference to the underlying .NET object for more information please refer to (TODO)Chapter 3.4.
+The `InstrumentManager` measure function returns a `Measurement` and also supports keeping a reference to the underlying .NET object.
+For more information please refer to xref:core_dll.adoc[].
 
 The following example runs a chronoamperometry measurement on an instrument.
 
