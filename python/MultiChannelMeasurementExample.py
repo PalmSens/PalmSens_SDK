@@ -45,7 +45,7 @@ async def main():
 
         # start measurements asynchronously
         tasks = [measure(manager, channel) for (channel, manager) in managers.items()]
-        measurements = await asyncio.gather(*tasks)  # use gather to await results
+        _ = await asyncio.gather(*tasks)  # use gather to await results
         print('measurement(s) finished')
 
         async def disconnect(instrument_manager, channel):

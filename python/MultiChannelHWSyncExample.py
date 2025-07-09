@@ -57,9 +57,9 @@ async def main():
 
         # start the measurement on primary channel
         follower_channels_measurement_results.append(managers[1].measure(method))
-        measurements = await asyncio.gather(
-            *follower_channels_measurement_results
-        )  # use gather to await results
+        # use gather to await results
+        measurements = await asyncio.gather(*follower_channels_measurement_results)
+        print(f'Collected {len(measurements)} measurements')
 
         for channel, manager in managers.items():
             success = await manager.disconnect()

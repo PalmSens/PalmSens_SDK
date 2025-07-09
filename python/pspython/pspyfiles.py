@@ -1,3 +1,4 @@
+import os
 import traceback
 
 from PalmSens.Data import SessionManager
@@ -58,7 +59,7 @@ def save_session_file(path, measurements):
 
 
 def read_notes(path, n_chars=3000):
-    with open(path, 'r', encoding='utf16') as myfile:
+    with open(path, encoding='utf16') as myfile:
         contents = myfile.read()
     raw_txt = contents[1:n_chars].split('\\r\\n')
     notes_txt = [x for x in raw_txt if 'NOTES=' in x]

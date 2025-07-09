@@ -21,7 +21,6 @@ classifiers = [
     "Natural Language :: English",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
@@ -61,7 +60,7 @@ testpaths = ["tests"]
 
 [tool.ruff]
 line-length = 96
-target-version = "py310"
+target-version = "py39"
 
 [tool.ruff.lint]
 # Enable Pyflakes `E` and `F` codes by default.

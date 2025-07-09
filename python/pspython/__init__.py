@@ -1,4 +1,5 @@
 import os
+import importlib.util
 
 import clr
 
@@ -10,11 +11,10 @@ clr.AddReference(scriptDir + '/PalmSens.Core.dll')
 clr.AddReference(scriptDir + '/PalmSens.Core.Windows.BLE.dll')
 clr.AddReference('System')
 
-from PalmSens.Windows import CoreDependencies
+from PalmSens.Windows import CoreDependencies  # noqa
 
 CoreDependencies.Init()
 
-import importlib.util
 
 spec_files = importlib.util.find_spec('pspython.pspyfiles')
 files = importlib.util.module_from_spec(spec_files)

@@ -138,14 +138,14 @@ def convert_to_measurement(m, **kwargs) -> Measurement:
             # # Get the status of the meausured data point
             # potentialStatus = __getstatusfromcurrentorpotentialarray(array)
         elif array_type == ArrayType.Frequency:
-            freq_arrays.append((_get_values_from_NETArray(array)))
+            freq_arrays.append(_get_values_from_NETArray(array))
         elif array_type == ArrayType.ZRe:
-            zre_arrays.append((_get_values_from_NETArray(array)))
+            zre_arrays.append(_get_values_from_NETArray(array))
         elif array_type == ArrayType.ZIm:
-            zim_arrays.append((_get_values_from_NETArray(array)))
+            zim_arrays.append(_get_values_from_NETArray(array))
 
         elif array_type == ArrayType.AuxInput:
-            aux_input_arrays.append((_get_values_from_NETArray(array)))
+            aux_input_arrays.append(_get_values_from_NETArray(array))
 
     if load_peak_data:
         for curve in curves:

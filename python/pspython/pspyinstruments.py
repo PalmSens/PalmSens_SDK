@@ -390,7 +390,7 @@ class InstrumentManager:
                 await create_future(self.__comm.ClientConnection.Semaphore.WaitAsync())
 
                 # send and execute the method on the instrument
-                error = self.__comm.Measure(method)
+                _ = self.__comm.Measure(method)
                 self.__measuring = True
 
                 # release lock on library (required when communicating with instrument)
@@ -901,7 +901,7 @@ class InstrumentManagerAsync:
             await create_future(self.__comm.ClientConnection.Semaphore.WaitAsync())
 
             # send and execute the method on the instrument
-            error = await create_future(self.__comm.MeasureAsync(method))
+            _ = await create_future(self.__comm.MeasureAsync(method))
             self.__measuring = True
 
             # release lock on library (required when communicating with instrument)

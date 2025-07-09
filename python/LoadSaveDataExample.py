@@ -47,27 +47,27 @@ for m in measurements:
     columns = []
 
     for i, a in enumerate(m.time_arrays):
-        columns.append('time' + str(i + 1))
+        columns.append(f'time {i + 1}')
         data.append(a)
 
     for i, a in enumerate(m.freq_arrays):
-        columns.append('frequency' + str(i + 1))
+        columns.append(f'frequency {i + 1}')
         data.append(a)
 
     for i, a in enumerate(m.potential_arrays):
-        columns.append('potential' + str(i + 1))
+        columns.append(f'potential {i + 1}')
         data.append(a)
 
     for i, a in enumerate(m.current_arrays):
-        columns.append('current' + str(i + 1))
+        columns.append(f'current {i + 1}')
         data.append(a)
 
     for i, a in enumerate(m.zre_arrays):
-        columns.append('zre' + str(i + 1))
+        columns.append(f'zre {i + 1}')
         data.append(a)
 
     for i, a in enumerate(m.zim_arrays):
-        columns.append('zim' + str(i + 1))
+        columns.append(f'zim {i + 1}')
         data.append(a)
 
     length = max(map(len, data))
