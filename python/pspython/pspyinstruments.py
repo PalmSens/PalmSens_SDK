@@ -130,7 +130,7 @@ class InstrumentManager:
             traceback.print_exc()
             try:
                 __instrument.Close()
-            except:
+            except Exception:
                 pass
             return 0
 
@@ -481,10 +481,11 @@ class InstrumentManager:
                 self.__comm.ClientConnection.Semaphore.Release()
 
     def initialize_multiplexer(self, mux_model):
-        """
-        Initialize the multiplexer. Returns the number of available multiplexer channels.
+        """Initialize the multiplexer. Returns the number of available multiplexer
+        channels.
 
-        :param mux_model: The model of the multiplexer. 0 = 8 channel, 1 = 16 channel, 2 = 32 channel.
+        :param mux_model: The model of the multiplexer. 0 = 8 channel, 1 = 16 channel, 2
+            = 32 channel.
         """
         if self.__comm is None:
             print('Not connected to an instrument')
@@ -529,8 +530,7 @@ class InstrumentManager:
             )
 
     def set_mux8r2_settings(self, **kwargs):
-        """
-        Set the settings for the Mux8R2 multiplexer.
+        """Set the settings for the Mux8R2 multiplexer.
 
         :Keyword Arguments:
         * connect_sense_to_working_electrode
@@ -631,7 +631,7 @@ class InstrumentManagerAsync:
             traceback.print_exc()
             try:
                 __instrument.Close()
-            except:
+            except Exception:
                 pass
             return 0
 
@@ -1020,10 +1020,11 @@ class InstrumentManagerAsync:
                 self.__comm.ClientConnection.Semaphore.Release()
 
     async def initialize_multiplexer(self, mux_model):
-        """
-        Initialize the multiplexer. Returns the number of available multiplexer channels.
+        """Initialize the multiplexer. Returns the number of available multiplexer
+        channels.
 
-        :param mux_model: The model of the multiplexer. 0 = 8 channel, 1 = 16 channel, 2 = 32 channel.
+        :param mux_model: The model of the multiplexer. 0 = 8 channel, 1 = 16 channel, 2
+            = 32 channel.
         """
         if self.__comm is None:
             print('Not connected to an instrument')
@@ -1068,8 +1069,7 @@ class InstrumentManagerAsync:
             )
 
     async def set_mux8r2_settings(self, **kwargs):
-        """
-        Set the settings for the Mux8R2 multiplexer.
+        """Set the settings for the Mux8R2 multiplexer.
 
         :Keyword Arguments:
         * connect_sense_to_working_electrode

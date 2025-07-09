@@ -26,8 +26,7 @@ from PalmSens.Techniques.Impedance import enumFrequencyType, enumScanType
 
 
 def linear_sweep_voltammetry(**kwargs):
-    r"""
-    Create a linear sweep voltammetry method object.
+    """Create a linear sweep voltammetry method object.
 
     :Keyword Arguments:
     * current_range_max : PalmSens.CurrentRange --
@@ -276,8 +275,7 @@ def linear_sweep_voltammetry(**kwargs):
 
 
 def cyclic_voltammetry(**kwargs):
-    r"""
-    Create a cyclic voltammetry method object.
+    """Create a cyclic voltammetry method object.
 
     :Keyword Arguments:
     * current_range_max : PalmSens.CurrentRange --
@@ -532,8 +530,7 @@ def cyclic_voltammetry(**kwargs):
 
 
 def square_wave_voltammetry(**kwargs):
-    r"""
-    Create a square wave voltammetry method object.
+    """Create a square wave voltammetry method object.
 
     :Keyword Arguments:
     * current_range_max : PalmSens.CurrentRange --
@@ -777,8 +774,7 @@ def square_wave_voltammetry(**kwargs):
 
 
 def differential_pulse_voltammetry(**kwargs):
-    r"""
-    Create a differential pulse voltammetry method object.
+    """Create a differential pulse voltammetry method object.
 
     :Keyword Arguments:
     * current_range_max : PalmSens.CurrentRange --
@@ -1029,8 +1025,7 @@ def differential_pulse_voltammetry(**kwargs):
 
 
 def chronoamperometry(**kwargs):
-    r"""
-    Create a chronoamperometry method object.
+    """Create a chronoamperometry method object.
 
     :Keyword Arguments:
     * current_range_max : PalmSens.CurrentRange --
@@ -1297,8 +1292,7 @@ def chronoamperometry(**kwargs):
 
 
 def multi_step_amperometry(**kwargs):
-    r"""
-    Create a multi-step amperometry method object.
+    """Create a multi-step amperometry method object.
 
     :Keyword Arguments:
     * current_range_max : PalmSens.CurrentRange --
@@ -1520,8 +1514,7 @@ def multi_step_amperometry(**kwargs):
 
 
 def multi_step_amperometry_level(**kwargs):
-    r"""
-    Create a multi-step amperometry level method object.
+    """Create a multi-step amperometry level method object.
 
     :Keyword Arguments:
     * level : float --
@@ -1575,8 +1568,7 @@ def multi_step_amperometry_level(**kwargs):
 
 
 def open_circuit_potentiometry(**kwargs):
-    r"""
-    Create an open circuit potentiometry method object.
+    """Create an open circuit potentiometry method object.
 
     :Keyword Arguments:
     * current_range_max : PalmSens.CurrentRange --
@@ -1763,8 +1755,7 @@ def open_circuit_potentiometry(**kwargs):
 
 
 def chronopotentiometry(**kwargs):
-    r"""
-    Create a chronopotentiometry method object.
+    """Create a chronopotentiometry method object.
 
     :Keyword Arguments:
     * current_range_max : PalmSens.CurrentRange --
@@ -1957,8 +1948,7 @@ def chronopotentiometry(**kwargs):
 
 
 def electrochemical_impedance_spectroscopy(**kwargs):
-    r"""
-    Create an electrochemical impedance spectroscopy method object.
+    """Create an electrochemical impedance spectroscopy method object.
 
     :Keyword Arguments:
     * current_range_max : PalmSens.CurrentRange --
@@ -2135,8 +2125,7 @@ def electrochemical_impedance_spectroscopy(**kwargs):
 
 
 def galvanostatic_impedance_spectroscopy(**kwargs):
-    r"""
-    Create a galvanostatic impedance spectroscopy method object.
+    """Create a galvanostatic impedance spectroscopy method object.
 
     :Keyword Arguments:
     * current_range_max : PalmSens.CurrentRange --
@@ -2298,8 +2287,7 @@ def galvanostatic_impedance_spectroscopy(**kwargs):
 
 
 def method_script_sandbox(method_script):
-    r"""
-    Create a method script sandbox object.
+    """Create a method script sandbox object.
 
     :Keyword Arguments:
     * method_script : str --
@@ -2310,8 +2298,8 @@ def method_script_sandbox(method_script):
 
 
 def get_current_range(id):
-    r"""
-    Get the current range for a given id.
+    """Get the current range for a given id.
+
     The id corresponds to the following ranges:
     * 100 pA = 0,
     * 1 nA = 1,
@@ -2344,8 +2332,8 @@ def get_current_range(id):
 
 
 def get_potential_range(id):
-    r"""
-    Get the potential range for a given id.
+    """Get the potential range for a given id.
+
     The id corresponds to the following ranges:
     * 1 mV = 0,
     * 10 mV = 1,
@@ -2379,9 +2367,7 @@ def get_potential_range(id):
 
 
 def set_autoranging_current(method, i_range_max, i_range_min, i_range_start):
-    r"""
-    Set the autoranging current for a given method.
-    """
+    """Set the autoranging current for a given method."""
     method.Ranging.MaximumCurrentRange = i_range_max
     method.Ranging.MinimumCurrentRange = i_range_min
     method.Ranging.StartCurrentRange = i_range_start
@@ -2390,9 +2376,7 @@ def set_autoranging_current(method, i_range_max, i_range_min, i_range_start):
 def set_autoranging_bipot_current(
     method, bipot_current_range_max, bipot_current_range_min, bipot_current_range_start
 ):
-    r"""
-    Set the autoranging bipot current for a given method.
-    """
+    """Set the autoranging bipot current for a given method."""
     method.BipotRanging.MaximumCurrentRange = bipot_current_range_max
     method.BipotRanging.MinimumCurrentRange = bipot_current_range_min
     method.BipotRanging.StartCurrentRange = bipot_current_range_start
@@ -2401,9 +2385,7 @@ def set_autoranging_bipot_current(
 def set_autoranging_potential(
     method, potential_range_max, potential_range_min, potential_range_start
 ):
-    r"""
-    Set the autoranging potential for a given method.
-    """
+    """Set the autoranging potential for a given method."""
     method.RangingPotential.MaximumPotentialRange = potential_range_max
     method.RangingPotential.MinimumPotentialRange = potential_range_min
     method.RangingPotential.StartPotentialRange = potential_range_start
@@ -2412,9 +2394,7 @@ def set_autoranging_potential(
 def set_pretreatment(
     method, deposition_potential, deposition_time, conditioning_potential, conditioning_time
 ):
-    r"""
-    Set the pretreatment settings for a given method.
-    """
+    """Set the pretreatment settings for a given method."""
     method.DepositionPotential = deposition_potential
     method.DepositionTime = deposition_time
     method.ConditioningPotential = conditioning_potential
@@ -2424,9 +2404,7 @@ def set_pretreatment(
 def set_versus_ocp(
     method, versus_ocp_mode, versus_ocp_max_ocp_time, versus_ocp_stability_criterion
 ):
-    r"""
-    Set the versus OCP settings for a given method.
-    """
+    """Set the versus OCP settings for a given method."""
     method.OCPmode = versus_ocp_mode
     method.OCPMaxOCPTime = versus_ocp_max_ocp_time
     method.OCPStabilityCriterion = versus_ocp_stability_criterion
@@ -2440,9 +2418,7 @@ def set_bipot_settings(
     bipot_current_range_min,
     bipot_current_range_start,
 ):
-    r"""
-    Set the bipot settings for a given method.
-    """
+    """Set the bipot settings for a given method."""
     method.BiPotModePS = Method.EnumPalmSensBipotMode(bipot_mode)
     method.BiPotPotential = bipot_potential
     set_autoranging_bipot_current(
@@ -2451,9 +2427,7 @@ def set_bipot_settings(
 
 
 def set_extra_value_mask(method, **kwargs):
-    r"""
-    Set the extra value mask for a given method.
-    """
+    """Set the extra value mask for a given method."""
     enable_bipot_current = kwargs.get('enable_bipot_current', False)
     record_auxiliary_input = kwargs.get('record_auxiliary_input', False)
     record_cell_potential = kwargs.get('record_cell_potential', False)
@@ -2486,17 +2460,13 @@ def set_extra_value_mask(method, **kwargs):
 def set_post_measurement_settings(
     method, cell_on_after_measurement, cell_on_after_measurement_potential
 ):
-    r"""
-    Set the post measurement settings for a given method.
-    """
+    """Set the post measurement settings for a given method."""
     method.CellOnAfterMeasurement = cell_on_after_measurement
     method.StandbyPotential = cell_on_after_measurement_potential
 
 
 def set_limit_settings(method, use_limit_max, limit_max, use_limit_min, limit_min):
-    r"""
-    Set the limit settings for a given method.
-    """
+    """Set the limit settings for a given method."""
     method.UseLimitMaxValue = use_limit_max
     method.LimitMaxValue = limit_max
     method.UseLimitMinValue = use_limit_min
@@ -2506,9 +2476,7 @@ def set_limit_settings(method, use_limit_max, limit_max, use_limit_min, limit_mi
 def set_charge_limit_settings(
     method, use_limit_charge_max, limit_charge_max, use_limit_charge_min, limit_charge_min
 ):
-    r"""
-    Set the charge limit settings for a given method.
-    """
+    """Set the charge limit settings for a given method."""
     method.UseChargeLimitMax = use_limit_charge_max
     method.ChargeLimitMax = limit_charge_max
     method.UseChargeLimitMin = use_limit_charge_min
@@ -2516,9 +2484,7 @@ def set_charge_limit_settings(
 
 
 def set_ir_drop_compensation(method, use__ir_compensation, ir_compensation):
-    r"""
-    Set the iR drop compensation settings for a given method.
-    """
+    """Set the iR drop compensation settings for a given method."""
     method.UseIRDropComp = use__ir_compensation
     method.IRDropCompRes = ir_compensation
 
@@ -2526,9 +2492,7 @@ def set_ir_drop_compensation(method, use__ir_compensation, ir_compensation):
 def set_trigger_at_equilibration_settings(
     method, trigger_at_equilibration, trigger_at_equilibration_lines
 ):
-    r"""
-    Set the trigger at equilibration settings for a given method.
-    """
+    """Set the trigger at equilibration settings for a given method."""
     method.UseTriggerOnEquil = trigger_at_equilibration
     lines = 0
     for i, set_high in enumerate(trigger_at_equilibration_lines):
@@ -2540,9 +2504,7 @@ def set_trigger_at_equilibration_settings(
 def set_trigger_at_measurement_settings(
     method, trigger_at_measurement, trigger_at_measurement_lines
 ):
-    r"""
-    Set the trigger at measurement settings for a given method.
-    """
+    """Set the trigger at measurement settings for a given method."""
     method.UseTriggerOnStart = trigger_at_measurement
     lines = 0
     for i, set_high in enumerate(trigger_at_measurement_lines):
@@ -2552,9 +2514,7 @@ def set_trigger_at_measurement_settings(
 
 
 def set_multiplexer_settings(method, set_mux_mode, set_mux_channels, set_mux8r2_settings):
-    r"""
-    Set the multiplexer settings for a given method.
-    """
+    """Set the multiplexer settings for a given method."""
     method.MuxMethod = MuxMethod(set_mux_mode)
     # disable all mux channels
     for i in range(0, len(method.UseMuxChannel)):
@@ -2571,8 +2531,7 @@ def set_multiplexer_settings(method, set_mux_mode, set_mux_channels, set_mux8r2_
 
 
 def get_mux8r2_settings(**kwargs):
-    r"""
-    Create a mux8r2 multiplexer settings settings object.
+    """Create a mux8r2 multiplexer settings settings object.
 
     :Keyword Arguments:
         * connect_sense_to_working_electrode
@@ -2607,19 +2566,15 @@ def get_mux8r2_settings(**kwargs):
 
 
 def set_filter_settings(method, dc_mains_filter, default_curve_post_processing_filter):
-    r"""
-    Set the filter settings for a given method.
-    """
+    """Set the filter settings for a given method."""
     method.DCMainsFilter = dc_mains_filter
     method.DefaultCurvePostProcessingFilter = default_curve_post_processing_filter
 
 
 def get_method_estimated_duration(method, **kwargs):
-    r"""
-    Get the estimated duration of a given method.
+    """Get the estimated duration of a given method.
 
     :Keyword Arguments:
-
     """
     instrument_manager = kwargs.get(
         'instrument_manager', None

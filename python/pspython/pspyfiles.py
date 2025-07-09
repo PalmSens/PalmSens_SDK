@@ -30,7 +30,7 @@ def load_session_file(path, **kwargs):
             )
 
         return measurements
-    except:
+    except Exception:
         traceback.print_exc()
         raise Exception('failed to load session file')
 
@@ -53,7 +53,7 @@ def save_session_file(path, measurements):
 
         LoadSaveHelperFunctions.SaveSessionFile(path, session)
         return
-    except:
+    except Exception:
         traceback.print_exc()
         return 0
 
@@ -73,7 +73,7 @@ def load_method_file(path):
     try:
         method = LoadSaveHelperFunctions.LoadMethod(path)
         return method
-    except:
+    except Exception:
         return 0
 
 
@@ -81,7 +81,7 @@ def save_method_file(path, method):
     try:
         LoadSaveHelperFunctions.SaveMethod(method, path)
         return 1
-    except:
+    except Exception:
         return 0
 
 
