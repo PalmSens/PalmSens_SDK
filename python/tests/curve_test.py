@@ -40,13 +40,3 @@ def test_savitsky_golay(curve):
 
     assert x == curve.x_array
     assert y != curve.y_array
-
-
-def test_savitsky_golay(curve):
-    x = curve.x_array
-    y = curve.y_array
-
-    curve.smooth(smooth_level=1)
-
-    assert x == curve.x_array
-    assert y != curve.y_array
