@@ -1,7 +1,9 @@
 import os
-from pspython import pspyfiles, pspymethods
+
 import numpy as np
 import pandas
+
+from pspython import pspyfiles, pspymethods
 
 scriptDir = os.path.dirname(os.path.realpath(__file__))
 

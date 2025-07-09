@@ -1,6 +1,7 @@
-from pspython import pspyinstruments, pspymethods
 import asyncio
 import csv
+
+from pspython import pspyinstruments, pspymethods
 
 
 def stream_to_csv_callback(csv_writer):
@@ -45,7 +46,7 @@ async def main():
         # start measurements asynchronously
         tasks = [measure(manager, channel) for (channel, manager) in managers.items()]
         measurements = await asyncio.gather(*tasks)  # use gather to await results
-        print(f'measurement(s) finished')
+        print('measurement(s) finished')
 
         async def disconnect(instrument_manager, channel):
             success = await instrument_manager.disconnect()

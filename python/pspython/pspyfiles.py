@@ -1,10 +1,12 @@
 import traceback
-import pspython.pspydata as pspydata
-import pspython.pspymethods as pspymethods
+
+from PalmSens.Data import SessionManager
 
 # Import the static LoadSaveHelperFunctions
 from PalmSens.Windows import LoadSaveHelperFunctions
-from PalmSens.Data import SessionManager
+
+import pspython.pspydata as pspydata
+import pspython.pspymethods as pspymethods
 
 
 def load_session_file(path, **kwargs):

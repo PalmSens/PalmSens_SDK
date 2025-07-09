@@ -1,18 +1,18 @@
-import clr
+import asyncio
 import traceback
 from time import sleep
-import pspython.pspydata as pspydata
-import pspython.pspymethods as pspymethods
-import asyncio
 
-import System
+import clr
+import PalmSens
+from PalmSens import AsyncEventHandler, MuxModel
+from PalmSens.Comm import CommManager, MuxType
+from PalmSens.Plottables import Curve, CurveEventHandler, EISData, EISDataEventHandler
+from PalmSens.Windows.Devices import BLEDevice, BluetoothDevice, FTDIDevice, USBCDCDevice
 from System import Action, EventHandler
 from System.Threading.Tasks import Task
-import PalmSens
-from PalmSens import AsyncEventHandler, MuxModel, Method
-from PalmSens.Windows.Devices import FTDIDevice, USBCDCDevice, BluetoothDevice, BLEDevice
-from PalmSens.Comm import CommManager, ClientConnection, MuxType
-from PalmSens.Plottables import CurveEventHandler, EISDataEventHandler, Curve, EISData
+
+import pspython.pspydata as pspydata
+import pspython.pspymethods as pspymethods
 
 
 def create_future(clr_task):
@@ -126,7 +126,7 @@ class InstrumentManager:
             __instrument.Open()
             self.__comm = CommManager(__instrument)
             return 1
-        except Exception as e:
+        except Exception:
             traceback.print_exc()
             try:
                 __instrument.Close()
@@ -144,7 +144,7 @@ class InstrumentManager:
         try:
             self.__comm.CellOn = cell_on
             self.__comm.ClientConnection.Semaphore.Release()
-        except Exception as e:
+        except Exception:
             traceback.print_exc()
 
             if self.__comm.ClientConnection.Semaphore.CurrentCount == 0:
@@ -161,7 +161,7 @@ class InstrumentManager:
         try:
             self.__comm.Potential = potential
             self.__comm.ClientConnection.Semaphore.Release()
-        except Exception as e:
+        except Exception:
             traceback.print_exc()
 
             if self.__comm.ClientConnection.Semaphore.CurrentCount == 0:
@@ -178,7 +178,7 @@ class InstrumentManager:
         try:
             self.__comm.CurrentRange = current_range
             self.__comm.ClientConnection.Semaphore.Release()
-        except Exception as e:
+        except Exception:
             traceback.print_exc()
 
             if self.__comm.ClientConnection.Semaphore.CurrentCount == 0:
@@ -196,7 +196,7 @@ class InstrumentManager:
             current = self.__comm.Current  # in µA
             self.__comm.ClientConnection.Semaphore.Release()
             return current
-        except Exception as e:
+        except Exception:
             traceback.print_exc()
 
             if self.__comm.ClientConnection.Semaphore.CurrentCount == 0:
@@ -214,7 +214,7 @@ class InstrumentManager:
             potential = self.__comm.Potential  # in V
             self.__comm.ClientConnection.Semaphore.Release()
             return potential
-        except Exception as e:
+        except Exception:
             traceback.print_exc()
 
             if self.__comm.ClientConnection.Semaphore.CurrentCount == 0:
@@ -231,7 +231,7 @@ class InstrumentManager:
             serial = self.__comm.DeviceSerial.ToString()
             self.__comm.ClientConnection.Semaphore.Release()
             return serial
-        except Exception as e:
+        except Exception:
             traceback.print_exc()
 
             if self.__comm.ClientConnection.Semaphore.CurrentCount == 0:
@@ -420,7 +420,7 @@ class InstrumentManager:
                 measurement, return_dotnet_object=return_dotnet_object
             )
 
-        except Exception as e:
+        except Exception:
             traceback.print_exc()
 
             if self.__comm.ClientConnection.Semaphore.CurrentCount == 0:
@@ -455,7 +455,7 @@ class InstrumentManager:
 
             self.__comm.ClientConnection.Semaphore.Release()
 
-        except Exception as e:
+        except Exception:
             traceback.print_exc()
 
             if self.__comm.ClientConnection.Semaphore.CurrentCount == 0:
@@ -473,7 +473,7 @@ class InstrumentManager:
         self.__comm.ClientConnection.Semaphore.Wait()
         try:
             self.__comm.Abort()
-        except Exception as e:
+        except Exception:
             traceback.print_exc()
 
             if self.__comm.ClientConnection.Semaphore.CurrentCount == 0:
@@ -517,7 +517,7 @@ class InstrumentManager:
             self.__comm.ClientConnection.Semaphore.Release()
 
             return self.__comm.Capabilities.NumMuxChannels
-        except Exception as e:
+        except Exception:
             traceback.print_exc()
 
             if self.__comm.ClientConnection.Semaphore.CurrentCount == 0:
@@ -571,7 +571,7 @@ class InstrumentManager:
                 MuxType(1), mux_settings
             )
             self.__comm.ClientConnection.Semaphore.Release()
-        except Exception as e:
+        except Exception:
             traceback.print_exc()
 
             if self.__comm.ClientConnection.Semaphore.CurrentCount == 0:
@@ -588,7 +588,7 @@ class InstrumentManager:
         try:
             self.__comm.ClientConnection.SetMuxChannel(channel)
             self.__comm.ClientConnection.Semaphore.Release()
-        except Exception as e:
+        except Exception:
             traceback.print_exc()
 
             if self.__comm.ClientConnection.Semaphore.CurrentCount == 0:
@@ -603,7 +603,7 @@ class InstrumentManager:
             self.__comm = None
             self.__measuring = False
             return 1
-        except Exception as e:
+        except Exception:
             traceback.print_exc()
             return 0
 
@@ -627,7 +627,7 @@ class InstrumentManagerAsync:
             await create_future(__instrument.OpenAsync())
             self.__comm = await create_future(CommManager.CommManagerAsync(__instrument))
             return 1
-        except Exception as e:
+        except Exception:
             traceback.print_exc()
             try:
                 __instrument.Close()
@@ -645,7 +645,7 @@ class InstrumentManagerAsync:
         try:
             await create_future(self.__comm.SetCellOnAsync(cell_on))
             self.__comm.ClientConnection.Semaphore.Release()
-        except Exception as e:
+        except Exception:
             traceback.print_exc()
 
             if self.__comm.ClientConnection.Semaphore.CurrentCount == 0:
@@ -662,7 +662,7 @@ class InstrumentManagerAsync:
         try:
             await create_future(self.__comm.SetPotentialAsync(potential))
             self.__comm.ClientConnection.Semaphore.Release()
-        except Exception as e:
+        except Exception:
             traceback.print_exc()
 
             if self.__comm.ClientConnection.Semaphore.CurrentCount == 0:
@@ -679,7 +679,7 @@ class InstrumentManagerAsync:
         try:
             await create_future(self.__comm.SetCurrentRangeAsync(current_range))
             self.__comm.ClientConnection.Semaphore.Release()
-        except Exception as e:
+        except Exception:
             traceback.print_exc()
 
             if self.__comm.ClientConnection.Semaphore.CurrentCount == 0:
@@ -697,7 +697,7 @@ class InstrumentManagerAsync:
             current = await create_future(self.__comm.GetCurrentAsync())  # in µA
             self.__comm.ClientConnection.Semaphore.Release()
             return current
-        except Exception as e:
+        except Exception:
             traceback.print_exc()
 
             if self.__comm.ClientConnection.Semaphore.CurrentCount == 0:
@@ -715,7 +715,7 @@ class InstrumentManagerAsync:
             potential = await create_future(self.__comm.GetPotentialAsync())  # in V
             self.__comm.ClientConnection.Semaphore.Release()
             return potential
-        except Exception as e:
+        except Exception:
             traceback.print_exc()
 
             if self.__comm.ClientConnection.Semaphore.CurrentCount == 0:
@@ -732,7 +732,7 @@ class InstrumentManagerAsync:
             serial = await create_future(self.__comm.GetDeviceSerialAsync())
             self.__comm.ClientConnection.Semaphore.Release()
             return serial.ToString()
-        except Exception as e:
+        except Exception:
             traceback.print_exc()
 
             if self.__comm.ClientConnection.Semaphore.CurrentCount == 0:
@@ -933,7 +933,7 @@ class InstrumentManagerAsync:
                 measurement, return_dotnet_object=return_dotnet_object
             )
 
-        except Exception as e:
+        except Exception:
             traceback.print_exc()
 
             if self.__comm.ClientConnection.Semaphore.CurrentCount == 0:
@@ -993,7 +993,7 @@ class InstrumentManagerAsync:
 
             self.__comm.ClientConnection.Semaphore.Release()
 
-        except Exception as e:
+        except Exception:
             traceback.print_exc()
 
             if self.__comm.ClientConnection.Semaphore.CurrentCount == 0:
@@ -1012,7 +1012,7 @@ class InstrumentManagerAsync:
 
         try:
             await create_future(self.__comm.AbortAsync())
-        except Exception as e:
+        except Exception:
             traceback.print_exc()
 
             if self.__comm.ClientConnection.Semaphore.CurrentCount == 0:
@@ -1056,7 +1056,7 @@ class InstrumentManagerAsync:
             self.__comm.ClientConnection.Semaphore.Release()
 
             return self.__comm.Capabilities.NumMuxChannels
-        except Exception as e:
+        except Exception:
             traceback.print_exc()
 
             if self.__comm.ClientConnection.Semaphore.CurrentCount == 0:
@@ -1112,7 +1112,7 @@ class InstrumentManagerAsync:
                 )
             )
             self.__comm.ClientConnection.Semaphore.Release()
-        except Exception as e:
+        except Exception:
             traceback.print_exc()
 
             if self.__comm.ClientConnection.Semaphore.CurrentCount == 0:
@@ -1129,7 +1129,7 @@ class InstrumentManagerAsync:
         try:
             await create_future(self.__comm.ClientConnection.SetMuxChannelAsync(channel))
             self.__comm.ClientConnection.Semaphore.Release()
-        except Exception as e:
+        except Exception:
             traceback.print_exc()
 
             if self.__comm.ClientConnection.Semaphore.CurrentCount == 0:
@@ -1144,7 +1144,7 @@ class InstrumentManagerAsync:
             self.__comm = None
             self.__measuring = False
             return 1
-        except Exception as e:
+        except Exception:
             traceback.print_exc()
             return 0
 

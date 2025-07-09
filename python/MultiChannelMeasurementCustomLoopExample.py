@@ -1,6 +1,7 @@
-import os
-from pspython import pspyinstruments, pspymethods, pspyfiles
 import asyncio
+import os
+
+from pspython import pspyfiles, pspyinstruments, pspymethods
 
 
 def new_data_callback(channel):

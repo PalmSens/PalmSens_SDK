@@ -1,4 +1,4 @@
-from pspython import pspymethods, pspyinstruments
+from pspython import pspyinstruments, pspymethods
 
 
 def new_data_callback(new_data):

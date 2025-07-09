@@ -1,5 +1,6 @@
-from pspython import pspyinstruments, pspymethods
 import asyncio
+
+from pspython import pspyinstruments, pspymethods
 
 
 async def main():

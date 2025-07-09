@@ -1,7 +1,8 @@
-from pspython import pspyfiles
 from pathlib import Path
+
 import pytest
 
+from pspython import pspyfiles
 
 DATA_FILE = Path(__file__).parents[1] / 'Demo CV DPV EIS IS-C electrode.pssession'
 

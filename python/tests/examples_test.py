@@ -1,8 +1,8 @@
-from pathlib import Path
-import pytest
 import subprocess as sp
 import sys
+from pathlib import Path
 
+import pytest
 
 ROOT_DIR = Path(__file__).parents[1]
 EXAMPLES = list(ROOT_DIR.glob('*Example*.py'))

@@ -1,5 +1,6 @@
-from pspython import pspyinstruments, pspymethods
 import csv
+
+from pspython import pspyinstruments, pspymethods
 
 
 def stream_to_csv_callback(new_data):

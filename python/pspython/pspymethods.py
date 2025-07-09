@@ -1,21 +1,28 @@
-from PalmSens import CurrentRange, CurrentRanges, PotentialRange, PotentialRanges
-from PalmSens import Method, ExtraValueMask, MuxMethod
+from PalmSens import (
+    CurrentRange,
+    CurrentRanges,
+    ExtraValueMask,
+    Method,
+    MuxMethod,
+    PotentialRange,
+    PotentialRanges,
+)
 from PalmSens.Devices import PalmSens4Capabilities
 from PalmSens.Techniques import (
-    LinearSweep,
-    CyclicVoltammetry,
-    SquareWave,
-    DifferentialPulse,
     AmperometricDetection,
-    MultistepAmperometry,
+    CyclicVoltammetry,
+    DifferentialPulse,
     ELevel,
+    ImpedimetricGstatMethod,
+    ImpedimetricMethod,
+    LinearSweep,
+    MethodScriptSandbox,
+    MultistepAmperometry,
     OpenCircuitPotentiometry,
     Potentiometry,
-    ImpedimetricMethod,
-    ImpedimetricGstatMethod,
-    MethodScriptSandbox,
+    SquareWave,
 )
-from PalmSens.Techniques.Impedance import enumScanType, enumFrequencyType
+from PalmSens.Techniques.Impedance import enumFrequencyType, enumScanType
 
 
 def linear_sweep_voltammetry(**kwargs):
