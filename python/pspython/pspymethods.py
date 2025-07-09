@@ -1,4 +1,4 @@
-from PalmSens import (
+from PalmSens import (  # type: ignore
     CurrentRange,
     CurrentRanges,
     ExtraValueMask,
@@ -7,8 +7,8 @@ from PalmSens import (
     PotentialRange,
     PotentialRanges,
 )
-from PalmSens.Devices import PalmSens4Capabilities
-from PalmSens.Techniques import (
+from PalmSens.Devices import PalmSens4Capabilities  # type: ignore
+from PalmSens.Techniques import (  # type: ignore
     AmperometricDetection,
     CyclicVoltammetry,
     DifferentialPulse,
@@ -22,7 +22,7 @@ from PalmSens.Techniques import (
     Potentiometry,
     SquareWave,
 )
-from PalmSens.Techniques.Impedance import enumFrequencyType, enumScanType
+from PalmSens.Techniques.Impedance import enumFrequencyType, enumScanType  # type: ignore
 
 
 def linear_sweep_voltammetry(**kwargs):

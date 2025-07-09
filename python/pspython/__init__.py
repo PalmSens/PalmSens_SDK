@@ -10,6 +10,6 @@ clr.AddReference(scriptDir + '/PalmSens.Core.dll')
 clr.AddReference(scriptDir + '/PalmSens.Core.Windows.BLE.dll')
 clr.AddReference('System')
 
-from PalmSens.Windows import CoreDependencies  # noqa
+from PalmSens.Windows import CoreDependencies  # type: ignore  # noqa: E402
 
 CoreDependencies.Init()

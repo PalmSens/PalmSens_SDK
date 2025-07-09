@@ -3,13 +3,23 @@ import traceback
 from time import sleep
 
 import clr
-import PalmSens
-from PalmSens import AsyncEventHandler, MuxModel
-from PalmSens.Comm import CommManager, MuxType
-from PalmSens.Plottables import Curve, CurveEventHandler, EISData, EISDataEventHandler
-from PalmSens.Windows.Devices import BLEDevice, BluetoothDevice, FTDIDevice, USBCDCDevice
-from System import Action, EventHandler
-from System.Threading.Tasks import Task
+import PalmSens  # type: ignore
+from PalmSens import AsyncEventHandler, MuxModel  # type: ignore
+from PalmSens.Comm import CommManager, MuxType  # type: ignore
+from PalmSens.Plottables import (  # type: ignore
+    Curve,
+    CurveEventHandler,
+    EISData,
+    EISDataEventHandler,
+)
+from PalmSens.Windows.Devices import (  # type: ignore
+    BLEDevice,
+    BluetoothDevice,
+    FTDIDevice,
+    USBCDCDevice,
+)
+from System import Action, EventHandler  # type: ignore
+from System.Threading.Tasks import Task  # type: ignore
 
 import pspython.pspydata as pspydata
 import pspython.pspymethods as pspymethods

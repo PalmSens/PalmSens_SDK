@@ -1,10 +1,10 @@
 import os
 import traceback
 
-from PalmSens.Data import SessionManager
+from PalmSens.Data import SessionManager  # type: ignore
 
 # Import the static LoadSaveHelperFunctions
-from PalmSens.Windows import LoadSaveHelperFunctions
+from PalmSens.Windows import LoadSaveHelperFunctions  # type: ignore
 
 import pspython.pspydata as pspydata
 import pspython.pspymethods as pspymethods
