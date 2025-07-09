@@ -1,8 +1,6 @@
 import os
-import sys
 
 import clr
-import pythonnet
 
 # Load DLLs
 scriptDir = os.path.dirname(os.path.realpath(__file__))
