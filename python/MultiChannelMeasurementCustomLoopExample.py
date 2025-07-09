@@ -8,7 +8,7 @@ def new_data_callback(channel):
     def print_results(new_data):
         for point in new_data:
             for type, value in point.items():
-                print('channel ' + str(channel + 1) + ': ' + type + ' = ' + str(value))
+                print(f'channel {channel + 1}: {type} = {value}')
 
     return lambda x: print_results(x)
 
@@ -93,9 +93,9 @@ async def main():
         for channel, manager in managers.items():
             success = manager.disconnect()
             if success:
-                print('channel ' + str(channel + 1) + ': disconnected')
+                print(f'channel {channel + 1}: disconnected')
             else:
-                print('channel ' + str(channel + 1) + ': error while disconnecting')
+                print(f'channel {channel + 1}: error while disconnecting')
 
 
 asyncio.run(main())

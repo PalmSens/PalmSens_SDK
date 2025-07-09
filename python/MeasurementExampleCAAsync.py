@@ -6,7 +6,7 @@ from pspython import pspyinstruments, pspymethods
 def new_data_callback(new_data):
     for point in new_data:
         for type, value in point.items():
-            print(type + ' = ' + str(value))
+            print(f'{type} = {value}')
 
 
 async def main():
