@@ -291,7 +291,3 @@ def __get_status_from_current_or_potentialarray(array, **kwargs):
         value = array.get_Item(i)
         values.append(str(Status(value.ReadingStatus)))
     return values
-
-
-if __name__ == '__main__':
-    pass

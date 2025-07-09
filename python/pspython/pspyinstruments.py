@@ -1147,12 +1147,3 @@ class InstrumentManagerAsync:
         except Exception:
             traceback.print_exc()
             return 0
-
-
-# just a test
-if __name__ == '__main__':
-    manager = InstrumentManager()
-    instruments = manager.discover_instruments()
-    success = manager.connect(instrument=instruments[0])
-    success = manager.disconnect()
-    test = 'test'

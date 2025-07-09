@@ -2585,9 +2585,3 @@ def get_method_estimated_duration(method, **kwargs):
     else:
         instrument_capabilities = instrument_manager.__comm.Capabilities
     return method.GetMinimumEstimatedMeasurementDuration(instrument_capabilities)
-
-
-# just a test
-if __name__ == '__main__':
-    method = chronoamperometry(interval_time=0.01, e=0.2, run_time=5.0)
-    test = 'test'
