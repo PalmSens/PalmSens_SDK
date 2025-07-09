@@ -58,6 +58,6 @@ jobs:
           Add-Content -Path $env:GITHUB_ENV -Value "total=$TOTAL"
           $REPORT = coverage report
           Add-Content -Path $env:GITHUB_STEP_SUMMARY -Value "### Total coverage: $TOTAL%"
-          Add-Content -Path $env:GITHUB_STEP_SUMMARY -Value "`n```"
+          Add-Content -Path $env:GITHUB_STEP_SUMMARY -Value "`n``````"
           Add-Content -Path $env:GITHUB_STEP_SUMMARY -Value $REPORT
-          Add-Content -Path $env:GITHUB_STEP_SUMMARY -Value "`n```"
+          Add-Content -Path $env:GITHUB_STEP_SUMMARY -Value "`n``````"
