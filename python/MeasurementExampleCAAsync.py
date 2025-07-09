@@ -1,10 +1,12 @@
 from pspython import pspyinstruments, pspymethods
 import asyncio
 
+
 def new_data_callback(new_data):
     for point in new_data:
         for type, value in point.items():
             print(type + ' = ' + str(value))
+
 
 async def main():
     manager = pspyinstruments.InstrumentManagerAsync(new_data_callback=new_data_callback)
@@ -37,5 +39,6 @@ async def main():
         print('disconnected')
     else:
         print('error while disconnecting')
+
 
 asyncio.run(main())

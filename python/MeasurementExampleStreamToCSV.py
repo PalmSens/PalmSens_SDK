@@ -1,10 +1,12 @@
 from pspython import pspyinstruments, pspymethods
 import csv
 
+
 def stream_to_csv_callback(new_data):
     for point in new_data:
         csv_writer.writerow([point['index'], point['x'], point['y']])
         # csv_writer.writerow([point['frequency'], point['zre'], point['zim']]) #for EIS
+
 
 csv_file = open('test.csv', 'w', newline='')
 csv_writer = csv.writer(csv_file, delimiter=' ')

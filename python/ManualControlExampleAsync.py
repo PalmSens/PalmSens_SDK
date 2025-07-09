@@ -1,6 +1,7 @@
 from pspython import pspyinstruments, pspymethods
 import asyncio
 
+
 async def main():
     manager = pspyinstruments.InstrumentManagerAsync()
 
@@ -35,5 +36,6 @@ async def main():
         print('disconnected')
     else:
         print('error while disconnecting')
+
 
 asyncio.run(main())

@@ -3,7 +3,7 @@ from pathlib import Path
 import pytest
 
 
-DATA_FILE = Path(__file__).parents[1] / "Demo CV DPV EIS IS-C electrode.pssession"
+DATA_FILE = Path(__file__).parents[1] / 'Demo CV DPV EIS IS-C electrode.pssession'
 
 
 @pytest.fixture
