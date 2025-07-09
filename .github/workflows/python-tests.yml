@@ -55,8 +55,9 @@ jobs:
         run: |
           coverage json
           $TOTAL = python -c "import json;print(json.load(open('coverage.json'))['totals']['percent_covered_display'])"
-          echo "total=$TOTAL" | Out-File -FilePath $env:GITHUB_ENV -Append
-          echo "### Total coverage: $TOTAL%" | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append
-          echo "`n```" | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append
-          coverage report | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append
-          echo "`n```" | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append
+          Add-Content -Path $env:GITHUB_ENV -Value "total=$TOTAL"
+          $REPORT = coverage report
+          Add-Content -Path $env:GITHUB_STEP_SUMMARY -Value "### Total coverage: $TOTAL%"
+          Add-Content -Path $env:GITHUB_STEP_SUMMARY -Value "`n```"
+          Add-Content -Path $env:GITHUB_STEP_SUMMARY -Value $REPORT
+          Add-Content -Path $env:GITHUB_STEP_SUMMARY -Value "`n```"
