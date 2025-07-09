@@ -40,3 +40,12 @@ def test_savitsky_golay(curve):
 
     assert x == curve.x_array
     assert y != curve.y_array
+
+
+def test_find_peaks(curve):
+    peak_list = curve.find_peaks(
+        min_peak_width=1,
+        min_peak_height=1,
+    )
+
+    assert peak_list

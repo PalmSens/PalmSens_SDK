@@ -74,6 +74,42 @@ class Curve:
         self.x_array = _get_values_from_NETArray(self.dotnet_curve.XAxisDataArray)
         self.y_array = _get_values_from_NETArray(self.dotnet_curve.YAxisDataArray)
 
+    def find_peaks(
+        self,
+        min_peak_width: float,
+        min_peak_height: float,
+        peak_shoulders: bool = False,
+        merge_overlapping_peaks: bool = True,
+    ):
+        """
+        Find peaks in a curve in all directions; CV can have 1 or 2 direction changes
+
+        Parameters
+        ----------
+        min_peak_width : float
+            Minimum width of the peak in V
+        min_peak_height : float
+            Minimum height of the peak in uA
+        peak_shoulders : bool, optional
+            ...
+        merge_overlapping_peaks : bool, optional
+            ...
+
+        Returns
+        -------
+        peak_list : ...
+        """
+        peak_list = self.dotnet_curve.FindPeaks(
+            minPeakWidth=min_peak_width,
+            minPeakHeight=min_peak_height,
+            peakShoulders=peak_shoulders,
+            mergeOverlappingPeaks=merge_overlapping_peaks,
+        )
+
+        # TODO: Convert to python object
+
+        return peak_list
+
 
 class Peak:
     def __init__(self, curve_title, peak_height, peak_x):
