@@ -15,8 +15,6 @@ DATA_NOISE_TEST = DATA_DIR / 'PSNoiseTest.pssession'
 def data_dpv():
     return load_session_file(
         str(DATA_DPV),
-        load_peak_data=True,
-        load_eis_fits=True,
     )
 
 
@@ -24,8 +22,6 @@ def data_dpv():
 def data_diff_pulse():
     return load_session_file(
         str(DATA_DIFF_PULSE),
-        load_peak_data=True,
-        load_eis_fits=True,
     )
 
 
@@ -33,6 +29,4 @@ def data_diff_pulse():
 def data_noise_test():
     return load_session_file(
         str(DATA_NOISE_TEST),
-        load_peak_data=True,
-        load_eis_fits=True,
     )

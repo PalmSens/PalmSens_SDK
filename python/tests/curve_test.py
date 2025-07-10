@@ -1,19 +1,4 @@
-from pathlib import Path
-
 import pytest
-
-from pspython import pspyfiles
-
-DATA_FILE = Path(__file__).parents[1] / 'Demo CV DPV EIS IS-C electrode.pssession'
-
-
-@pytest.fixture
-def measurements():
-    return pspyfiles.load_session_file(
-        str(DATA_FILE),
-        load_peak_data=True,
-        load_eis_fits=True,
-    )
 
 
 @pytest.fixture

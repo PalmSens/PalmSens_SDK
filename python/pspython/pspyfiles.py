@@ -12,8 +12,6 @@ from .data.convert import convert_to_measurement
 
 def load_session_file(
     path,
-    load_peak_data=False,
-    load_eis_fits=False,
 ):
     session = LoadSaveHelperFunctions.LoadSessionFile(path)
     measurements = []
@@ -22,8 +20,6 @@ def load_session_file(
         measurements.append(
             convert_to_measurement(
                 m,
-                load_peak_data=load_peak_data,
-                load_eis_fits=load_eis_fits,
             )
         )
 

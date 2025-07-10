@@ -1,14 +1,9 @@
-from ._shared import ArrayType, _get_values_from_NETArray
 from .curve import Curve
-from .fit_result import EISFitResult
 from .measurement import Measurement
-from .peak import Peak
 
 
 def convert_to_measurement(
     m,
-    load_peak_data=False,
-    load_eis_fits=False,
 ) -> Measurement:
     """
     Get collection of arrays in the dataset with the exception of the potential and current arrays.
@@ -18,79 +13,7 @@ def convert_to_measurement(
     Please note that measurements can contain multiple arrays of the same type,
     i.e. for CVs or Mux measurements
     """
-    arrays = m.DataSet.GetDataArrays()
-    curves = m.GetCurveArray()
-    eisdatas = m.EISdata
-    current_arrays = []
-    potential_arrays = []
-    time_arrays = []
-    freq_arrays = []
-    zre_arrays = []
-    zim_arrays = []
-    aux_input_arrays = []
-    peaks = []
-    eis_fits = []
-
-    for n, array in enumerate(arrays):
-        try:
-            array_type = ArrayType(array.ArrayType)
-        except Exception:
-            array_type = ArrayType.Unspecified  # arraytype not implemented in ArrayType enum
-
-        if array_type == ArrayType.Current:
-            current_arrays.append(_get_values_from_NETArray(array))
-
-            # # get the current range the current was measured in
-            # currentranges = __getcurrentrangesfromcurrentarray(array)
-            # # get the status of the meausured data point
-            # currentstatus = __getstatusfromcurrentorpotentialarray(array)
-
-        elif array_type == ArrayType.Potential:
-            potential_arrays.append(_get_values_from_NETArray(array))
-            # # Get the status of the meausured data point
-            # potentialStatus = __getstatusfromcurrentorpotentialarray(array)
-        elif array_type == ArrayType.Time:
-            time_arrays.append(_get_values_from_NETArray(array))
-            # # Get the status of the meausured data point
-            # potentialStatus = __getstatusfromcurrentorpotentialarray(array)
-        elif array_type == ArrayType.Frequency:
-            freq_arrays.append(_get_values_from_NETArray(array))
-        elif array_type == ArrayType.ZRe:
-            zre_arrays.append(_get_values_from_NETArray(array))
-        elif array_type == ArrayType.ZIm:
-            zim_arrays.append(_get_values_from_NETArray(array))
-
-        elif array_type == ArrayType.AuxInput:
-            aux_input_arrays.append(_get_values_from_NETArray(array))
-
-    if load_peak_data:
-        for curve in curves:
-            if curve.Peaks is not None:
-                peaks.extend([Peak(dotnet_peak=peak) for peak in curve.Peaks])
-
-    if load_eis_fits:
-        if eisdatas is not None:
-            for eisdata in eisdatas:
-                if eisdata is not None:
-                    eis_fits.append(EISFitResult(eisdata.CDC, eisdata.CDCValues))
-
-    measurement = Measurement(
-        m.Title,
-        m.TimeStamp.ToString(),
-        current_arrays,
-        potential_arrays,
-        time_arrays,
-        freq_arrays,
-        zre_arrays,
-        zim_arrays,
-        aux_input_arrays,
-        peaks,
-        eis_fits,
-        convert_to_curves(m),
-    )
-
-    measurement.dotnet_measurement = m
-
+    measurement = Measurement(dotnet_measurement=m)
     return measurement
 
 

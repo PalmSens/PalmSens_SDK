@@ -42,6 +42,10 @@ class ArrayType(Enum):
     MeasuredStepStartIndex = 35
     miDC = 36
 
+    @classmethod
+    def _missing_(cls, _):
+        return cls.Unspecified
+
 
 class Status(Enum):
     Unknown = -1
