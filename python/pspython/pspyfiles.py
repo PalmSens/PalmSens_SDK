@@ -1,12 +1,12 @@
 import os
 import traceback
 
-import pspymethods
 from PalmSens.Data import SessionManager  # type: ignore
 
 # Import the static LoadSaveHelperFunctions
 from PalmSens.Windows import LoadSaveHelperFunctions  # type: ignore
 
+from . import pspymethods
 from .data.convert import convert_to_measurement
 
 
