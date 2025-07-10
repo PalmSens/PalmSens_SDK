@@ -5,16 +5,19 @@ from .measurement import Measurement
 from .peak import Peak
 
 
-def convert_to_measurement(m, **kwargs) -> Measurement:
-    # Get collection of arrays in the dataset (with the exception of the potential and current arrays
-    # arrays contain a single value stored in the Value field.
-    # Please note that measurements can contain multiple arrays of the same type,
-    # i.e. for CVs or Mux measurements)
+def convert_to_measurement(
+    m,
+    load_peak_data=False,
+    load_eis_fits=False,
+) -> Measurement:
+    """
+    Get collection of arrays in the dataset with the exception of the potential and current arrays.
 
-    load_peak_data = kwargs.get('load_peak_data', False)
-    load_eis_fits = kwargs.get('load_eis_fits', False)
-    return_dotnet_object = kwargs.get('return_dotnet_object', False)
+    Arrays contain a single value stored in the Value field.
 
+    Please note that measurements can contain multiple arrays of the same type,
+    i.e. for CVs or Mux measurements
+    """
     arrays = m.DataSet.GetDataArrays()
     curves = m.GetCurveArray()
     eisdatas = m.EISdata
@@ -83,39 +86,19 @@ def convert_to_measurement(m, **kwargs) -> Measurement:
         aux_input_arrays,
         peaks,
         eis_fits,
-        convert_to_curves(m, return_dotnet_object=return_dotnet_object),
+        convert_to_curves(m),
     )
 
-    if return_dotnet_object:
-        measurement.dotnet_measurement = m
+    measurement.dotnet_measurement = m
 
     return measurement
 
 
-def convert_to_curves(m, return_dotnet_object: bool = False):
+def convert_to_curves(m):
     curves = []
-    peaks = []
 
     curves_net = m.GetCurveArray()
-    for curve in curves_net:
-        if curve.Peaks is not None:
-            peaks.extend([Peak(dotnet_peak=peak) for peak in curve.Peaks])
-
-        if return_dotnet_object:
-            curve = Curve(
-                curve.Title,
-                _get_values_from_NETArray(curve.XAxisDataArray),
-                _get_values_from_NETArray(curve.YAxisDataArray),
-                peaks=peaks,
-                dotnet_curve=curve,
-            )
-        else:
-            curve = Curve(
-                curve.Title,
-                _get_values_from_NETArray(curve.XAxisDataArray),
-                _get_values_from_NETArray(curve.YAxisDataArray),
-                peaks=peaks,
-            )
-        curves.append(curve)
+    for dotnet_curve in curves_net:
+        curves.append(Curve(dotnet_curve=dotnet_curve))
 
     return curves

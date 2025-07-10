@@ -17,7 +17,6 @@ def data_dpv():
         str(DATA_DPV),
         load_peak_data=True,
         load_eis_fits=True,
-        return_dotnet_object=True,
     )
 
 
@@ -27,7 +26,6 @@ def data_diff_pulse():
         str(DATA_DIFF_PULSE),
         load_peak_data=True,
         load_eis_fits=True,
-        return_dotnet_object=True,
     )
 
 
@@ -37,5 +35,4 @@ def data_noise_test():
         str(DATA_NOISE_TEST),
         load_peak_data=True,
         load_eis_fits=True,
-        return_dotnet_object=True,
     )

@@ -13,7 +13,6 @@ def measurements():
         str(DATA_FILE),
         load_peak_data=True,
         load_eis_fits=True,
-        return_dotnet_object=True,
     )
 
 
