@@ -1,6 +1,3 @@
-from typing import Self
-
-
 class Peak:
     def __init__(
         self,
@@ -14,6 +11,6 @@ class Peak:
         self.peak_x = peak_x
 
     @classmethod
-    def from_dotnet(cls, peak) -> Self:
+    def from_dotnet(cls, peak) -> 'Peak':
         """Generate Peaks instance from dotnet Curve."""
         return cls(peak_height=peak.PeakValue, peak_x=peak.PeakX, curve_title=peak.Curve.Title)
