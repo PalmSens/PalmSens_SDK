@@ -4,9 +4,32 @@ class Peak:
     def __init__(self, *, dotnet_peak):
         self.dotnet_peak = dotnet_peak
 
+    def __str__(self):
+        x_unit = self.x_unit
+        y_unit = self.y_unit
+
+        return (
+            f'{self.__class__.__name__}('
+            f'Potential={self.x:g} {x_unit}, '
+            f'Height={self.y:g} {y_unit}, '
+            f'Y_Offset={self.offset_y:g} {y_unit}, '
+            f'Area={self.area:g} {x_unit}{y_unit}, '
+            f'Width={self.width:g} {x_unit})'
+        )
+
     @property
     def curve_title(self) -> str:
         return self.dotnet_peak.Curve.Title
+
+    @property
+    def x_unit(self) -> str:
+        """Get units of X axis"""
+        return self.dotnet_peak.Curve.get_XUnit()
+
+    @property
+    def y_unit(self) -> str:
+        """Get units for Y axis"""
+        return self.dotnet_peak.Curve.get_YUnit()
 
     @property
     def analyte_name(self) -> str:
@@ -57,25 +80,25 @@ class Peak:
         return self.dotnet_peak.OffsetY
 
     @property
-    def peak_index(self) -> int:
+    def index(self) -> int:
         return self.dotnet_peak.PeakIndex
 
     @property
-    def peak_type(self) -> float:
-        return self.dotnet_peak.PeakType
+    def type(self) -> str:
+        return str(self.dotnet_peak.PeakType)
 
     @property
-    def peak_value(self) -> float:
+    def value(self) -> float:
         return self.dotnet_peak.PeakValue
 
-    peak_height = peak_value  # alias for compatibility
+    peak_height = value  # alias for compatibility
 
     @property
-    def peak_x(self) -> float:
+    def x(self) -> float:
         return self.dotnet_peak.PeakX
 
     @property
-    def peak_y(self) -> float:
+    def y(self) -> float:
         return self.dotnet_peak.PeakY
 
     @property

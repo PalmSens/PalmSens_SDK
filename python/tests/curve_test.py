@@ -55,8 +55,8 @@ def test_find_peaks(curve_dpv):
 
     assert len(peaks) == 3
 
-    assert [peak.peak_x for peak in peaks] == [-0.815, -0.47, -0.28]
-    assert [peak.peak_height for peak in peaks] == [
+    assert [peak.x for peak in peaks] == [-0.815, -0.47, -0.28]
+    assert [peak.value for peak in peaks] == [
         1.4645238461538463,
         12.20311125,
         33.24060953488372,
