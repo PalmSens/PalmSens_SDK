@@ -91,7 +91,7 @@ class Peak:
     def value(self) -> float:
         return self.dotnet_peak.PeakValue
 
-    peak_height = value  # alias for compatibility
+    peak_height = value  # alias for backward compatibility
 
     @property
     def x(self) -> float:
