@@ -56,8 +56,15 @@ publishing = [
     "build",
 ]
 
+[tool.coverage.run]
+branch = true
+source = ["pspython"]
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+markers = [
+    "requires_instrument: Mark tests that require a connected instrument."
+]
 
 [tool.ruff]
 line-length = 96
