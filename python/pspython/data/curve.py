@@ -68,13 +68,13 @@ class Curve:
         -------
         peak_list : list[Peak]
         """
-        peaks_net = self.dotnet_curve.FindPeaks(
+        dotnet_peaks = self.dotnet_curve.FindPeaks(
             minPeakWidth=min_peak_width,
             minPeakHeight=min_peak_height,
             peakShoulders=peak_shoulders,
             mergeOverlappingPeaks=merge_overlapping_peaks,
         )
 
-        peaks_list = [Peak.from_dotnet(peak=peak) for peak in peaks_net]
+        peaks_list = [Peak(dotnet_peak=peak) for peak in dotnet_peaks]
 
         return peaks_list

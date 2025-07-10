@@ -63,7 +63,7 @@ def convert_to_measurement(m, **kwargs) -> Measurement:
     if load_peak_data:
         for curve in curves:
             if curve.Peaks is not None:
-                peaks.extend([Peak.from_dotnet(peak=peak) for peak in curve.Peaks])
+                peaks.extend([Peak(dotnet_peak=peak) for peak in curve.Peaks])
 
     if load_eis_fits:
         if eisdatas is not None:
@@ -99,7 +99,7 @@ def convert_to_curves(m, return_dotnet_object: bool = False):
     curves_net = m.GetCurveArray()
     for curve in curves_net:
         if curve.Peaks is not None:
-            peaks.extend([Peak.from_dotnet(peak=peak) for peak in curve.Peaks])
+            peaks.extend([Peak(dotnet_peak=peak) for peak in curve.Peaks])
 
         if return_dotnet_object:
             curve = Curve(
