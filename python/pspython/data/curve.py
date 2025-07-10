@@ -1,4 +1,5 @@
 from ._shared import _get_values_from_NETArray
+from .peak import Peak
 
 
 class Curve:
@@ -48,7 +49,7 @@ class Curve:
         min_peak_height: float,
         peak_shoulders: bool = False,
         merge_overlapping_peaks: bool = True,
-    ):
+    ) -> list[Peak]:
         """
         Find peaks in a curve in all directions; CV can have 1 or 2 direction changes
 
@@ -65,15 +66,15 @@ class Curve:
 
         Returns
         -------
-        peak_list : ...
+        peak_list : list[Peak]
         """
-        peak_list = self.dotnet_curve.FindPeaks(
+        peaks_net = self.dotnet_curve.FindPeaks(
             minPeakWidth=min_peak_width,
             minPeakHeight=min_peak_height,
             peakShoulders=peak_shoulders,
             mergeOverlappingPeaks=merge_overlapping_peaks,
         )
 
-        # TODO: Convert to python object
+        peaks_list = [Peak.from_dotnet(peak=peak) for peak in peaks_net]
 
-        return peak_list
+        return peaks_list
