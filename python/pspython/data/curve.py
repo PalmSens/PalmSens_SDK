@@ -10,7 +10,7 @@ class Curve:
         self.dotnet_curve = dotnet_curve
 
     def __str__(self):
-        return f'{self.__class__.__name__}(n_points={self.n_points})'
+        return f'{self.__class__.__name__}(title={self.title}, n_points={self.n_points})'
 
     def smooth(self, smooth_level: int):
         """Smooth the .y_array using a Savitsky-Golay filter with the specified smooth
@@ -107,6 +107,11 @@ class Curve:
 
     def __len__(self):
         return self.dotnet_curve.NPoints
+
+    @property
+    def ocp_value(self) -> float:
+        """OCP value for curve."""
+        return self.dotnet_curve.OCPValue
 
     @property
     def reference_electrode_name(self) -> Union[None, str]:
