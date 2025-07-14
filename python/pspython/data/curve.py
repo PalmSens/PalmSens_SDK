@@ -4,6 +4,8 @@ from .peak import Peak
 
 
 class Curve:
+    """Python wrapper for dotnet Curve class."""
+
     def __init__(self, *, dotnet_curve):
         self.dotnet_curve = dotnet_curve
 

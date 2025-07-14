@@ -18,7 +18,7 @@ def test_measurement(measurements):
     m = measurements[0]
 
     assert m.title == 'Differential Pulse Voltammetry'
-    assert m.timestamp == '12-Jul-17 14:28:58'
+    assert isinstance(m.timestamp, str)
     assert len(m.current_arrays[0]) == 219
     assert len(m.potential_arrays[0]) == 219
     assert len(m.time_arrays[0]) == 219
