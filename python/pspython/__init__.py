@@ -5,10 +5,10 @@ import clr
 script_dir = Path(__file__).parent
 
 # This dll contains the classes in which the data is stored
-clr.AddReference(script_dir / 'PalmSens.Core.dll')
+clr.AddReference(str(script_dir / 'PalmSens.Core.dll'))
 
 # This dll is used to load your session file
-clr.AddReference(script_dir / 'PalmSens.Core.Windows.BLE.dll')
+clr.AddReference(str(script_dir / 'PalmSens.Core.Windows.BLE.dll'))
 
 clr.AddReference('System')
 

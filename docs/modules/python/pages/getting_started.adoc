@@ -1,7 +1,7 @@
 = Working with files
 
-As of version 5 of the PalmSens SDK and PSTrace measurements and their corresponding methods are stored in `*.pssession` files.
-Methods can be stored separately in `*.psmethod` files.
+As of version 5 of the PalmSens SDK and PSTrace measurements and their corresponding methods are stored in `.pssession` files.
+Methods can be stored separately in `.psmethod` files.
 
 The PalmSens SDK is backward compatible with following filetypes:
 
