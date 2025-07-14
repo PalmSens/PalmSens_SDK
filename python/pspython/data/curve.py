@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Union
 
 from .peak import Peak
 
@@ -109,14 +109,14 @@ class Curve:
         return self.dotnet_curve.NPoints
 
     @property
-    def reference_electrode_name(self) -> None | str:
+    def reference_electrode_name(self) -> Union[None, str]:
         """The name of the reference electrode. Return None if not set."""
         if ret := self.dotnet_curve.ReferenceElectrodeName:
             return str(ret)
         return None
 
     @property
-    def reference_electrode_potential(self) -> None | str:
+    def reference_electrode_potential(self) -> Union[None, str]:
         """The reference electrode potential offset. Return None if not set."""
         if ret := self.dotnet_curve.ReferenceElectrodePotential:
             return str(ret)
@@ -143,14 +143,14 @@ class Curve:
         return self.dotnet_curve.YUnit.Quantity
 
     @property
-    def z_unit(self) -> None | str:
+    def z_unit(self) -> Union[None, str]:
         """Units for Z dimension. Returns None if not set."""
         if ret := self.dotnet_curve.ZUnit:
             return ret.ToString()
         return None
 
     @property
-    def z_label(self) -> None | str:
+    def z_label(self) -> Union[None, str]:
         """Units for Z dimension. Returns None if not set."""
         if ret := self.dotnet_curve.ZUnit:
             return ret.Quantity
