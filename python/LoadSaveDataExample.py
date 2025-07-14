@@ -1,24 +1,24 @@
-import os
+from pathlib import Path
 
 import numpy as np
 import pandas
 
 from pspython import pspyfiles, pspymethods
 
-scriptDir = os.path.dirname(os.path.realpath(__file__))
+script_dir = Path(__file__).parent
 
 # load a method file
-method = pspyfiles.load_method_file(os.path.join(scriptDir, 'PSDummyCell_LSV.psmethod'))
+method = pspyfiles.load_method_file(script_dir / 'PSDummyCell_LSV.psmethod')
 print(
     f'loaded method, estimated duration: {pspymethods.get_method_estimated_duration(method)} seconds'
 )
 
 # save the method file
-pspyfiles.save_method_file(os.path.join(scriptDir, 'PSDummyCell_LSV_copy.psmethod'), method)
+pspyfiles.save_method_file(script_dir / 'PSDummyCell_LSV_copy.psmethod', method)
 
 # load a session file
 measurements = pspyfiles.load_session_file(
-    os.path.join(scriptDir, 'Demo CV DPV EIS IS-C electrode.pssession'),
+    script_dir / 'Demo CV DPV EIS IS-C electrode.pssession'
 )
 
 for measurement in measurements:
@@ -32,7 +32,7 @@ for measurement in measurements:
 
 # save the session file
 pspyfiles.save_session_file(
-    os.path.join(scriptDir, 'Demo CV DPV EIS IS-C electrode_copy.pssession'), [measurements[0]]
+    script_dir / 'Demo CV DPV EIS IS-C electrode_copy.pssession', [measurements[0]]
 )
 
 # convert measurments to pandas dataframes

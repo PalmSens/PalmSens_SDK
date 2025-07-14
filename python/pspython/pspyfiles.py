@@ -1,5 +1,7 @@
 import os
 import traceback
+from pathlib import Path
+from typing import Union
 
 from PalmSens.Data import SessionManager  # type: ignore
 
@@ -11,7 +13,7 @@ from .data.measurement import Measurement
 
 
 def load_session_file(
-    path: str,
+    path: Union[str, Path],
 ) -> list[Measurement]:
     """Load a session file (.pssession).
 
@@ -25,11 +27,11 @@ def load_session_file(
     measurements : list[Measurement]
         Return list of measurement
     """
-    session = LoadSaveHelperFunctions.LoadSessionFile(path)
+    session = LoadSaveHelperFunctions.LoadSessionFile(str(path))
     return [Measurement(dotnet_measurement=m) for m in session]
 
 
-def save_session_file(path: str, measurements: list[Measurement]):
+def save_session_file(path: Union[str, Path], measurements: list[Measurement]):
     for measurement in measurements:
         if measurement is None:
             raise ValueError('cannot save null measurement')
@@ -45,14 +47,13 @@ def save_session_file(path: str, measurements: list[Measurement]):
         for measurement in measurements:
             session.AddMeasurement(measurement.dotnet_measurement)
 
-        LoadSaveHelperFunctions.SaveSessionFile(path, session)
-        return
+        LoadSaveHelperFunctions.SaveSessionFile(str(path), session)
     except Exception:
         traceback.print_exc()
         return 0
 
 
-def read_notes(path: str, n_chars: int = 3000):
+def read_notes(path: Union[str, Path], n_chars: int = 3000):
     with open(path, encoding='utf16') as myfile:
         contents = myfile.read()
     raw_txt = contents[1:n_chars].split('\\r\\n')
@@ -63,23 +64,23 @@ def read_notes(path: str, n_chars: int = 3000):
     return notes_txt
 
 
-def load_method_file(path: str):
+def load_method_file(path: Union[str, Path]):
     try:
-        method = LoadSaveHelperFunctions.LoadMethod(path)
+        method = LoadSaveHelperFunctions.LoadMethod(str(path))
         return method
     except Exception:
         return 0
 
 
-def save_method_file(path: str, method):
+def save_method_file(path: Union[str, Path], method):
     try:
-        LoadSaveHelperFunctions.SaveMethod(method, path)
+        LoadSaveHelperFunctions.SaveMethod(method, str(path))
         return 1
     except Exception:
         return 0
 
 
-def get_method_estimated_duration(path: str):
+def get_method_estimated_duration(path: Union[str, Path]):
     method = load_method_file(path)
     if method == 0:
         return 0
