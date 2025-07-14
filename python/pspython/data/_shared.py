@@ -43,7 +43,7 @@ class ArrayType(Enum):
     miDC = 36
 
     @classmethod
-    def _missing_(cls, _):
+    def _missing_(cls, value):
         return cls.Unspecified
 
 
