@@ -1,14 +1,22 @@
+from collections.abc import Sequence
+
 import numpy as np
 
 from ._shared import ArrayType
 
 
-class DataArray:
+class DataArray(Sequence):
     def __init__(self, *, dotnet_data_array):
         self.dotnet_data_array = dotnet_data_array
 
-    def __str__(self):
-        return f'{self.__class__.__name__}(name={self.name}, n_points={len(self)})'
+    def __repr__(self):
+        return f'{self.__class__.__name__}(name={self.name!r}, quantity={self.quantity}, units={self.unit})'
+
+    def __getitem__(self, index):
+        if isinstance(index, int):
+            return self.dotnet_data_array[index].Value
+
+        return self.to_list()[index]
 
     def __len__(self):
         return len(self.dotnet_data_array)
@@ -35,8 +43,8 @@ class DataArray:
         return self.dotnet_data_array.Unit.ToString()
 
     @property
-    def label(self) -> str:
-        """Label for array."""
+    def quantity(self) -> str:
+        """Quantity for array."""
         return self.dotnet_data_array.Unit.Quantity
 
     @property
