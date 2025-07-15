@@ -1,8 +1,10 @@
-import PalmSens
+from typing import Any
 
-from ._shared import ArrayType
 from .curve import Curve
+from .dataset import DataSet
+from .eisdata import EISData
 from .fit_result import EISFitResult
+from .method import Method
 from .peak import Peak
 
 # print(f'ocp: {measurement.curves[0].dotnet_curve.OCPValue}')
@@ -42,53 +44,37 @@ class Measurement:
         """Return True if the curve collection contains a blank subtracted curve."""
         return self.dotnet_measurement.ContainsBlankSubtractedCurves
 
+    @property
     def contains_eis_data(self) -> bool:
         """Return True if EIS data are is available."""
         return self.dotnet_measurement.ContainsEISData
 
-    def dataset(self) -> ...:
+    @property
+    def dataset(self) -> Any:
         """Dataset containing multiple arrays of values.
 
         All values are related by means of their indices.
         Data arrays in a dataset should always have an equal amount of entries.
         """
-        _ = self.dotnet_measurement.Dataset
-        raise NotImplementedError('Data sets are not implemented')
+        return DataSet(dotnet_dataset=self.dotnet_measurement.DataSet)
 
-    def eis_data(self) -> list:
+    @property
+    def eis_data(self) -> Any:
         """EIS data in measurement."""
-        _ = self.dotnet_measurement.EISdata
-        raise NotImplementedError('Working with EIS data sets is not implemented')
+        return EISData(dotnet_eisdata=self.dotnet_measurement.EISdata)
 
     def get_curve_by_index(self, index: int) -> Curve:
         """Retrieve curve with given index."""
-        dotnet_curve = self.dotnet_measurement.Item(index)
+        dotnet_curve = self.dotnet_measurement.get_Item(index)
         return Curve(dotnet_curve=dotnet_curve)
 
-    def get_curve_by_type(self, meas_type: str) -> Curve:
-        """Retrieve curve with given measuremnt type.
-
-        Parameters
-        ----------
-        meas_type : str
-            Possible values: `New`, `Overlay`, `Blank`, `Sample`, `Standard_1`,
-            `Standard_2`, `Standard_3`, `Standard_4`
-
-        Returns
-        -------
-        curve : Curve
-        """
-        meas_type_dotnet = getattr(PalmSens.MeasType, meas_type)
-        dotnet_curve = self.dotnet_measurement.Item(meas_type_dotnet)
-        return Curve(dotnet_curve=dotnet_curve)
-
-    def method(self) -> ...:
+    def method(self) -> Any:
         """Method related with this Measurement.
 
         The information from the Method is used when saving Curves."""
-        return self.dotnet_measurement.Method
+        return Method(dotnet_method=self.dotnet_measurement.Method)
 
-    def ocpvalue(self) -> float:
+    def ocp_value(self) -> float:
         """First OCP Value from either curves or EISData."""
         return self.dotnet_measurement.OcpValue
 
@@ -100,51 +86,9 @@ class Measurement:
         """Number of EISdata curves that are part of the Measurement class."""
         return self.dotnet_measurement.nEISData
 
-    def get_array_by_type(self, array_type: str) -> list:
-        enum = ArrayType[array_type]
-        return [
-            list(array.GetValues())
-            for array in self.dotnet_measurement.DataSet.GetDataArrays()
-            if ArrayType(array.ArrayType) == enum
-        ]
-
-    @property
-    def current_arrays(self) -> list:
-        # # get the current range the current was measured in
-        # currentranges = __getcurrentrangesfromcurrentarray(array)
-        # # get the status of the meausured data point
-        # currentstatus = __getstatusfromcurrentorpotentialarray(array)
-        return self.get_array_by_type('Current')
-
-    @property
-    def potential_arrays(self) -> list:
-        # # Get the status of the meausured data point
-        # potentialStatus = __getstatusfromcurrentorpotentialarray(array)
-        return self.get_array_by_type('Potential')
-
-    @property
-    def time_arrays(self) -> list:
-        return self.get_array_by_type('Time')
-
-    @property
-    def freq_arrays(self) -> list:
-        return self.get_array_by_type('Frequency')
-
-    @property
-    def zre_arrays(self) -> list:
-        return self.get_array_by_type('ZRe')
-
-    @property
-    def zim_arrays(self) -> list:
-        return self.get_array_by_type('ZIm')
-
-    @property
-    def aux_input_arrays(self) -> list:
-        return self.get_array_by_type('AuxInput')
-
     @property
     def peaks(self) -> list[Peak]:
-        """Get peaks from aal curves.
+        """Get peaks from all curves.
 
         Returns
         -------
