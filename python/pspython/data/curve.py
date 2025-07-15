@@ -174,7 +174,11 @@ class Curve:
     @property
     def peaks(self) -> list[Peak]:
         """Return peaks stored on object."""
-        return [Peak(dotnet_peak=peak) for peak in self.dotnet_curve.Peaks]
+        try:
+            peaks = [Peak(dotnet_peak=peak) for peak in self.dotnet_curve.Peaks]
+        except TypeError:
+            peaks = []
+        return peaks
 
     def clear_peaks(self):
         """Clear peaks stored on object."""
