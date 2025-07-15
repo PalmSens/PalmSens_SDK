@@ -13,6 +13,8 @@ class DataSet(Mapping):
         return f'{self.__class__.__name__}({list(self.keys())})'
 
     def __getitem__(self, key: tuple[str, str]):
+        if not isinstance(key, tuple) and len(key) == 2:
+            raise KeyError(f'Key must be a tuple with 2 values, got: {key}')
         name, quantity = key
 
         ret = self._filter(
@@ -138,6 +140,6 @@ class DataSet(Mapping):
         """Return all AuxInput arrays."""
         return self.get_array_by_type(ArrayType.AuxInput)
 
-    def as_dict(self) -> dict[tuple[str, str], DataArray]:
+    def to_dict(self) -> dict[tuple[str, str], DataArray]:
         """Return DataSet as dictionary."""
         return dict(self)

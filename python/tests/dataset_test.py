@@ -1,0 +1,90 @@
+import pytest
+
+from pspython.data._shared import ArrayType
+from pspython.data.data_array import DataArray
+
+
+@pytest.fixture
+def dataset(data_cv_1scan):
+    return data_cv_1scan[0].dataset
+
+
+def test_mapping(dataset):
+    assert len(dataset) == 4
+    assert len(dataset.keys()) == 4
+    assert len(dataset.items()) == 4
+    assert len(dataset.values()) == 4
+    assert len([_ for _ in dataset]) == 4
+
+    assert list(dataset) == [
+        ('time', 'Time'),
+        ('scan1channel1', 'Potential'),
+        ('scan1channel1', 'Current'),
+        ('scan1channel1', 'Charge'),
+    ]
+
+    assert isinstance(repr(dataset), str)
+    assert isinstance(dataset[('time', 'Time')], DataArray)
+
+    assert ('time', 'Time') in dataset
+    assert ('foo', 'bar') not in dataset
+    with pytest.raises(KeyError):
+        dataset['FAIL']
+    with pytest.raises(KeyError):
+        dataset[('ALSO', 'FAIL')]
+
+
+def test_to_list(dataset):
+    lst = dataset.to_list()
+    assert isinstance(lst, list)
+    assert len(lst) == 4
+    assert all(isinstance(item, DataArray) for item in lst)
+    assert isinstance(dataset.arrays(), list)
+
+
+def test_to_dict(dataset):
+    dct = dataset.to_dict()
+    assert isinstance(dct, dict)
+    assert len(dct) == 4
+    assert all(isinstance(item, DataArray) for item in dct.values())
+    assert list(dct.keys()) == [
+        ('time', 'Time'),
+        ('scan1channel1', 'Potential'),
+        ('scan1channel1', 'Current'),
+        ('scan1channel1', 'Charge'),
+    ]
+
+
+def test_list_arrays(dataset):
+    assert len(dataset.current_arrays[0]) == 219
+    assert len(dataset.potential_arrays[0]) == 219
+    assert len(dataset.time_arrays[0]) == 219
+
+    assert len(dataset.freq_arrays) == 0
+    assert len(dataset.zre_arrays) == 0
+    assert len(dataset.zim_arrays) == 0
+    assert len(dataset.aux_input_arrays) == 0
+
+
+def test_get_array_by_name(dataset):
+    lst = dataset.get_array_by_name('scan1channel1')
+    assert len(lst) == 3
+    assert [item.quantity for item in lst] == ['Potential', 'Current', '...']
+
+    assert not dataset.get_array_by_name('FAIL')
+
+
+def test_get_array_by_type(dataset):
+    lst = dataset.get_array_by_type(ArrayType.Potential)
+    assert len(lst) == 1
+    assert lst[0].type.value == 'Potential'
+
+    assert not dataset.get_array_by_type(ArrayType.Undefined)
+
+
+def test_get_array_by_quantity(dataset):
+    lst = dataset.get_array_by_quantity('Potential')
+    assert len(lst) == 1
+    assert lst[0].quantity == 'Potential'
+
+    assert not dataset.get_array_by_quantity('laitnetoP')
