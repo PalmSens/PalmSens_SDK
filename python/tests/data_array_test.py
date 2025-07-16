@@ -8,7 +8,7 @@ from pspython.data._shared import ArrayType
 
 @pytest.fixture
 def array(data_cv_1scan):
-    return data_cv_1scan[0].dataset.arrays()[-1]
+    return data_cv_1scan[0].dataset.arrays[-1]
 
 
 def test_sequence(array):

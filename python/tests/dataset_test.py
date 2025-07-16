@@ -39,7 +39,7 @@ def test_to_list(dataset):
     assert isinstance(lst, list)
     assert len(lst) == 4
     assert all(isinstance(item, DataArray) for item in lst)
-    assert isinstance(dataset.arrays(), list)
+    assert isinstance(dataset.arrays, list)
 
 
 def test_to_dict(dataset):
@@ -66,25 +66,48 @@ def test_list_arrays(dataset):
     assert len(dataset.aux_input_arrays) == 0
 
 
-def test_get_array_by_name(dataset):
-    lst = dataset.get_array_by_name('scan1channel1')
+def test_array_types(dataset):
+    types = dataset.array_types
+    assert len(types) == 4
+    assert types == {
+        ArrayType.Time,
+        ArrayType.Potential,
+        ArrayType.Current,
+        ArrayType.Charge,
+    }
+
+
+def test_array_names(dataset):
+    names = dataset.array_names
+    assert len(names) == 2
+    assert names == {'time', 'scan1channel1'}
+
+
+def test_array_quantities(dataset):
+    quantities = dataset.array_quantities
+    assert len(quantities) == 4
+    assert quantities == {'Time', 'Potential', 'Current', 'Charge'}
+
+
+def test_arrays_by_name(dataset):
+    lst = dataset.arrays_by_name('scan1channel1')
     assert len(lst) == 3
     assert [item.quantity for item in lst] == ['Potential', 'Current', 'Charge']
 
-    assert not dataset.get_array_by_name('FAIL')
+    assert not dataset.arrays_by_name('FAIL')
 
 
-def test_get_array_by_type(dataset):
-    lst = dataset.get_array_by_type(ArrayType.Potential)
+def test_arrays_by_type(dataset):
+    lst = dataset.arrays_by_type(ArrayType.Potential)
     assert len(lst) == 1
     assert lst[0].type.name == 'Potential'
 
-    assert not dataset.get_array_by_type(ArrayType.Unspecified)
+    assert not dataset.arrays_by_type(ArrayType.Unspecified)
 
 
-def test_get_array_by_quantity(dataset):
-    lst = dataset.get_array_by_quantity('Potential')
+def test_arrays_by_quantity(dataset):
+    lst = dataset.arrays_by_quantity('Potential')
     assert len(lst) == 1
     assert lst[0].quantity == 'Potential'
 
-    assert not dataset.get_array_by_quantity('laitnetoP')
+    assert not dataset.arrays_by_quantity('laitnetoP')

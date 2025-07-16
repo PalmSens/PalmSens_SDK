@@ -41,8 +41,8 @@ class DataArray(Sequence):
         """Export data array to numpy."""
         return np.array(self.dotnet_data_array.GetValues())
 
-    def to_list(self):
-        """Export data array to numpy."""
+    def to_list(self) -> list[float]:
+        """Export data array to list."""
         return list(self.dotnet_data_array.GetValues())
 
     @property

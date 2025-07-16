@@ -39,39 +39,43 @@ pspyfiles.save_session_file(
 frames = []
 frame_names = []
 
-for m in measurements:
+for measurement in measurements:
+    dataset = measurement.dataset
+
     data = []
     columns = []
 
-    for i, a in enumerate(m.time_arrays):
+    for i, a in enumerate(dataset.time_arrays):
         columns.append(f'time {i + 1}')
         data.append(a)
 
-    for i, a in enumerate(m.freq_arrays):
+    for i, a in enumerate(dataset.freq_arrays):
         columns.append(f'frequency {i + 1}')
         data.append(a)
 
-    for i, a in enumerate(m.potential_arrays):
+    for i, a in enumerate(dataset.potential_arrays):
         columns.append(f'potential {i + 1}')
         data.append(a)
 
-    for i, a in enumerate(m.current_arrays):
+    for i, a in enumerate(dataset.current_arrays):
         columns.append(f'current {i + 1}')
         data.append(a)
 
-    for i, a in enumerate(m.zre_arrays):
+    for i, a in enumerate(dataset.zre_arrays):
         columns.append(f'zre {i + 1}')
         data.append(a)
 
-    for i, a in enumerate(m.zim_arrays):
+    for i, a in enumerate(dataset.zim_arrays):
         columns.append(f'zim {i + 1}')
         data.append(a)
 
     length = max(map(len, data))
-    arrays = np.array([xi + [None] * (length - len(xi)) for xi in data], dtype=float)
+    arrays = np.array(
+        [np.pad(xi, (0, length - len(xi)), constant_values=np.nan) for xi in data]
+    )
     df_m = pandas.DataFrame(arrays.transpose(), index=range(length), columns=columns)
     frames.append(df_m)
-    frame_names.append(m.title)
+    frame_names.append(measurement.title)
 
 df = pandas.concat(frames, keys=frame_names)
 print(df.head(10))

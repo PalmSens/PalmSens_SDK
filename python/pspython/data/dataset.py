@@ -34,12 +34,6 @@ class DataSet(Mapping):
     def __len__(self):
         return self.dotnet_dataset.Count
 
-    def to_list(self) -> list[DataArray]:
-        """Return list of arrays."""
-        return list(self.values())
-
-    arrays = to_list  # alias
-
     def _filter(self, key: Callable) -> list[DataArray]:
         """Filter array list based on callable.
 
@@ -51,7 +45,15 @@ class DataSet(Mapping):
             if key(dotnet_data_array)
         ]
 
-    def get_array_by_name(self, description: str) -> list[DataArray]:
+    def to_dict(self) -> dict[tuple[str, str], DataArray]:
+        """Return DataSet as dictionary."""
+        return dict(self)
+
+    def to_list(self) -> list[DataArray]:
+        """Return list of arrays."""
+        return list(self.values())
+
+    def arrays_by_name(self, description: str) -> list[DataArray]:
         """Get arrays by description.
 
         Parameters
@@ -65,8 +67,8 @@ class DataSet(Mapping):
         """
         return self._filter(key=lambda array: array.Description == description)
 
-    def get_array_by_quantity(self, quantity: str) -> list[DataArray]:
-        """Get array by its quantity.
+    def arrays_by_quantity(self, quantity: str) -> list[DataArray]:
+        """Get arrays by quantity.
 
         Parameters
         ----------
@@ -79,8 +81,8 @@ class DataSet(Mapping):
         """
         return self._filter(key=lambda array: array.Unit.Quantity == quantity)
 
-    def get_array_by_type(self, array_type: ArrayType) -> list[DataArray]:
-        """Get array by its data type.
+    def arrays_by_type(self, array_type: ArrayType) -> list[DataArray]:
+        """Get arrays by data type.
 
         Parameters
         ----------
@@ -93,53 +95,57 @@ class DataSet(Mapping):
         """
         return self._filter(key=lambda array: array.ArrayType == array_type.value)
 
-    def list_array_types(self) -> list[ArrayType]:
-        """Return array type (enum) for arrays in dataset."""
-        return [ArrayType(arr.ArrayType) for arr in self.dotnet_dataset]
+    @property
+    def array_types(self) -> set[ArrayType]:
+        """Return unique set of array type (enum) for arrays in dataset."""
+        return set(ArrayType(arr.ArrayType) for arr in self.dotnet_dataset)
 
-    def list_array_names(self) -> list[str]:
-        """Return names for arrays in dataset."""
-        return [arr.Description for arr in self.dotnet_dataset]
+    @property
+    def array_names(self) -> set[str]:
+        """Return unique set of names for arrays in dataset."""
+        return set(arr.Description for arr in self.dotnet_dataset)
 
-    def list_array_quantities(self) -> list[str]:
-        """Return quantities for arrays in dataset."""
-        return [arr.Unit.Quantity for arr in self.dotnet_dataset]
+    @property
+    def array_quantities(self) -> set[str]:
+        """Return unique set of quantities for arrays in dataset."""
+        return set(arr.Unit.Quantity for arr in self.dotnet_dataset)
+
+    @property
+    def arrays(self) -> list[DataArray]:
+        """Return list of all arrays. Alias for `.to_list()`"""
+        return self.to_list()
 
     @property
     def current_arrays(self) -> list[DataArray]:
         """Return all Current arrays."""
-        return self.get_array_by_type(ArrayType.Current)
+        return self.arrays_by_type(ArrayType.Current)
 
     @property
     def potential_arrays(self) -> list[DataArray]:
         """Return all Potential arrays."""
-        return self.get_array_by_type(ArrayType.Potential)
+        return self.arrays_by_type(ArrayType.Potential)
 
     @property
     def time_arrays(self) -> list[DataArray]:
         """Return all Time arrays."""
-        return self.get_array_by_type(ArrayType.Time)
+        return self.arrays_by_type(ArrayType.Time)
 
     @property
     def freq_arrays(self) -> list[DataArray]:
         """Return all Frequency arrays."""
-        return self.get_array_by_type(ArrayType.Frequency)
+        return self.arrays_by_type(ArrayType.Frequency)
 
     @property
     def zre_arrays(self) -> list[DataArray]:
         """Return all ZRe arrays."""
-        return self.get_array_by_type(ArrayType.ZRe)
+        return self.arrays_by_type(ArrayType.ZRe)
 
     @property
     def zim_arrays(self) -> list[DataArray]:
         """Return all ZIm arrays."""
-        return self.get_array_by_type(ArrayType.ZIm)
+        return self.arrays_by_type(ArrayType.ZIm)
 
     @property
     def aux_input_arrays(self) -> list[DataArray]:
         """Return all AuxInput arrays."""
-        return self.get_array_by_type(ArrayType.AuxInput)
-
-    def to_dict(self) -> dict[tuple[str, str], DataArray]:
-        """Return DataSet as dictionary."""
-        return dict(self)
+        return self.arrays_by_type(ArrayType.AuxInput)
