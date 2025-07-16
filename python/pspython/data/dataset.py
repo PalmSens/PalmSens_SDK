@@ -13,7 +13,7 @@ class DataSet(Mapping):
         return f'{self.__class__.__name__}({list(self.keys())})'
 
     def __getitem__(self, key: tuple[str, str]):
-        if not isinstance(key, tuple) and len(key) == 2:
+        if not (isinstance(key, tuple) and len(key) == 2):
             raise KeyError(f'Key must be a tuple with 2 values, got: {key}')
         name, quantity = key
 
@@ -77,7 +77,7 @@ class DataSet(Mapping):
         -------
         arrays : list[DataArray]
         """
-        return self._filter(key=lambda array: array.Quantity == quantity)
+        return self._filter(key=lambda array: array.Unit.Quantity == quantity)
 
     def get_array_by_type(self, array_type: ArrayType) -> list[DataArray]:
         """Get array by its data type.

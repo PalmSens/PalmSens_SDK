@@ -56,9 +56,9 @@ def test_to_dict(dataset):
 
 
 def test_list_arrays(dataset):
-    assert len(dataset.current_arrays[0]) == 219
-    assert len(dataset.potential_arrays[0]) == 219
-    assert len(dataset.time_arrays[0]) == 219
+    assert len(dataset.current_arrays[0]) == 41
+    assert len(dataset.potential_arrays[0]) == 41
+    assert len(dataset.time_arrays[0]) == 41
 
     assert len(dataset.freq_arrays) == 0
     assert len(dataset.zre_arrays) == 0
@@ -69,7 +69,7 @@ def test_list_arrays(dataset):
 def test_get_array_by_name(dataset):
     lst = dataset.get_array_by_name('scan1channel1')
     assert len(lst) == 3
-    assert [item.quantity for item in lst] == ['Potential', 'Current', '...']
+    assert [item.quantity for item in lst] == ['Potential', 'Current', 'Charge']
 
     assert not dataset.get_array_by_name('FAIL')
 
@@ -77,9 +77,9 @@ def test_get_array_by_name(dataset):
 def test_get_array_by_type(dataset):
     lst = dataset.get_array_by_type(ArrayType.Potential)
     assert len(lst) == 1
-    assert lst[0].type.value == 'Potential'
+    assert lst[0].type.name == 'Potential'
 
-    assert not dataset.get_array_by_type(ArrayType.Undefined)
+    assert not dataset.get_array_by_type(ArrayType.Unspecified)
 
 
 def test_get_array_by_quantity(dataset):
