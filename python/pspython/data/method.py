@@ -19,21 +19,24 @@ class Method:
         self.dotnet_method = dotnet_method
 
     def __repr__(self) -> str:
-        return f'{self.__class__.__name__}(name={self.name}, id={self.id!r})'
+        return f'{self.__class__.__name__}(name={self.name!r}, id={self.id!r})'
 
+    @property
     def id(self) -> str:
         """Unique id for method."""
         return self.dotnet_method.MethodID
 
+    @property
     def name(self) -> str:
         """Name for the technique."""
         return self.dotnet_method.Name
 
+    @property
     def short_name(self) -> str:
         """Short name for the technique."""
-        return self.dotnet_method.Name
+        return self.dotnet_method.ShortName
 
-    def properties(self) -> dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Return dictionary with method properties."""
         obj = self.dotnet_method
         return {
@@ -44,34 +47,33 @@ class Method:
             'bandwidth': obj.Bandwidth,
             'bc': obj.Bc,
             'begin_potential': obj.BeginPotential,
-            'bipot_cr': obj.BiPotCR,
+            'bipot_cr': str(obj.BiPotCR),
             'bipot_potential': obj.BiPotPotential,
-            'bipot_mode_ps': obj.BipotModePS,
+            'bipot_mode_ps': str(obj.BipotModePS),
             'bipot_ranging': obj.BipotRanging,  # object
-            'blank_type': obj.BlankType,
+            'blank_type': str(obj.BlankType),
             'cell_on_after_measurement': obj.CellOnAfterMeasurement,
             'cell_volume': obj.CellVolume,
             'concentration_unit': obj.ConcentrationUnit,
             'conditioning_potential': obj.ConditioningPotential,
             'conditioning_time': obj.ConditioningTime,
             'default_bandwidth': obj.DefaultBandwidth,
-            'default_x_array_type_bipot_potential': obj.DefaultXArrayTypeBipotPotential,
-            'default_x_axis': obj.DefaultXAxis,
-            'default_x_unit': obj.DefaultXUnit,
-            'default_y_axis': obj.DefaultYAxis,
-            'default_y_unit': obj.DefaultYUnit,
+            'default_x_array_type_bipot_potential': str(obj.DefaultXArrayTypeBipotPotential),
+            'default_x_axis': str(obj.DefaultXAxis),
+            'default_x_unit': str(obj.DefaultXUnit),
+            'default_y_axis': str(obj.DefaultYAxis),
+            'default_y_unit': str(obj.DefaultYUnit),
             'density': obj.Density,
             'deposition_potential': obj.DepositionPotential,
             'deposition_time': obj.DepositionTime,
-            'determination': obj.Determination,
+            'determination': str(obj.Determination),
             'e_peak_left': list(obj.EPeakLeft),
             'e_peak_right': list(obj.EPeakRight),
             'e_peaks': list(obj.EPeaks),
             'e_pretreat': list(obj.EPretreat),
             'end_potential': obj.EndPotential,
-            'enum_palm_sens_bipot_mode': obj.EnumPalmSensBipotMode,
             'equilibration_time': obj.EquilibrationTime,
-            'extra_value_msk': obj.ExtraValueMsk,
+            'extra_value_msk': str(obj.ExtraValueMsk),
             'ir_drop_comp_res': obj.IRDropCompRes,
             'is_main_we': obj.IsMainWE,
             'is_versus_ocp': obj.IsVersusOCP,
@@ -84,11 +86,11 @@ class Method:
             'min_peak_height': obj.MinPeakHeight,
             'min_peak_width': obj.MinPeakWidth,
             'multiplex_cycles': obj.MultiplexCycles,
-            'mux_method': obj.MuxMethod,
+            'mux_method': str(obj.MuxMethod),
             'mux_no_time_reset_for_next_channel': obj.MuxNoTimeResetForNextChannel,
             'mux_settings': str(obj.MuxSett),  # object
             'name': obj.Name,
-            'note': obj.Note,
+            'note': obj.Notes,
             'ocp_max_ocp_time': obj.OCPMaxOCPTime,
             'ocp_stability_criterion': obj.OCPStabilityCriterion,
             'ocp_mode': obj.OCPmode,
@@ -97,13 +99,13 @@ class Method:
             'override_potential_range': obj.OverridePotentialRange,
             'override_potential_range_max': obj.OverridePotentialRangeMax,
             'override_potential_range_min': obj.OverridePotentialRangeMin,
-            'override': obj.Override,
-            'pg_stat_mode': obj.PGStatMode,
+            'override': obj.Overrides,
+            'pg_stat_mode': str(obj.PGStatMode),
             'peak_overlap': obj.PeakOverlap,
-            'peak_value': obj.PeakValue,
+            'peak_value': str(obj.PeakValue),
             'peak_window': obj.PeakWindow,
             'poly_em_stat': obj.PolyEmStat,  # object
-            'poly_stat_mode': obj.PolyStatMode,
+            'poly_stat_mode': str(obj.PolyStatMode),
             'power_freq': obj.PowerFreq,
             'power_line_period': obj.PowerLinePeriod,
             'pret_limit_max_value': obj.PretLimitMaxValue,
@@ -121,7 +123,7 @@ class Method:
             'se_2_versus_x_channel_names': {
                 row.Key: row.Value for row in obj.SE2VersusXChannelNames
             },
-            'se_2_vs_x_channel': obj.SE2vsXChannel,
+            'se_2_vs_x_channel': str(obj.SE2vsXChannel),
             'sample_volume': obj.SampleVolume,
             'scanrate': obj.Scanrate,
             'selected_potentiostat_channel': str(obj.SelectedPotentiostatChannel),
