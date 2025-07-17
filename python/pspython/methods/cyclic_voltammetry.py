@@ -51,8 +51,8 @@ def cyclic_voltammetry(**kwargs):
         Step potential in V (default: 0.1)
     * scanrate : float --
         Scan rate in V/s (default: 1.0)
-    * n_cycles : int --
-        Number of cycles (default: 1)
+    * n_scans : int --
+        Number of scans (default: 1)
     * versus_ocp_mode : int --
         0 = disable versus OCP, 1 = vertex 1 potential, 2 = vertex 2 potential, 3 = vertex 1 & 2 potential, 4 = begin potential, 5 = begin & vertex 1 potential, 6 = begin & vertex 2 potential, 7 = begin & vertex 1 & 2 potential (default: 0)
     * versus_ocp_max_ocp_time : float --
@@ -144,14 +144,14 @@ def cyclic_voltammetry(**kwargs):
     vertex2_potential = kwargs.get('vertex2_potential', -0.5)  # potential (V)
     step_potential = kwargs.get('step_potential', 0.1)  # potential (V)
     scanrate = kwargs.get('scanrate', 1.0)  # potential/time (V/s)
-    n_cycles = kwargs.get('n_cycles', 1)  # number of cycles (default: 1)
+    n_scans = kwargs.get('n_scans', 1)  # number of cycles (default: 1)
     cyclic_voltammetry.EquilibrationTime = equilibration_time
     cyclic_voltammetry.BeginPotential = begin_potential
     cyclic_voltammetry.Vtx1Potential = vertex1_potential
     cyclic_voltammetry.Vtx2Potential = vertex2_potential
     cyclic_voltammetry.StepPotential = step_potential
     cyclic_voltammetry.Scanrate = scanrate
-    cyclic_voltammetry.nScans = n_cycles
+    cyclic_voltammetry.nScans = n_scans
 
     # advanced settings
     # versus OCP settings
