@@ -1,10 +1,10 @@
 from typing import Any
 
+from ..methods.method import Method
 from .curve import Curve
 from .dataset import DataSet
 from .eisdata import EISData
 from .fit_result import EISFitResult
-from .method import Method
 from .peak import Peak
 
 # print(f'ocp: {measurement.curves[0].dotnet_curve.OCPValue}')

@@ -1,3 +1,5 @@
+from PalmSens.Techniques import CyclicVoltammetry as PSCyclicVoltammetry
+
 from ._shared import (
     get_current_range,
     set_autoranging_current,
@@ -112,7 +114,7 @@ def cyclic_voltammetry(**kwargs):
     * use_hardware_sync : bool --
         Use hardware synchronization with other channels/instruments (default: False)
     """
-    cyclic_voltammetry = CyclicVoltammetry()
+    cyclic_voltammetry = PSCyclicVoltammetry()
 
     # (auto)ranging
     current_range_max = kwargs.get('current_range_max', get_current_range(8))

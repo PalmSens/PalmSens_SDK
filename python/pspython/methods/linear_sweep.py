@@ -1,3 +1,5 @@
+from PalmSens.Techniques import PSLinearSweep
+
 from ._shared import (
     get_current_range,
     set_autoranging_current,
@@ -110,7 +112,7 @@ def linear_sweep_voltammetry(**kwargs):
     * use_hardware_sync : bool --
         Use hardware synchronization with other channels/instruments (default: False)
     """
-    linear_sweep_voltammetry = LinearSweep()
+    linear_sweep_voltammetry = PSLinearSweep()
 
     # (auto)ranging
     current_range_max = kwargs.get('current_range_max', get_current_range(8))
