@@ -1,4 +1,4 @@
-from .scan_metod import ScanMethod
+from .scan_method import ScanMethod
 
 
 class PotentialMethod(ScanMethod): ...

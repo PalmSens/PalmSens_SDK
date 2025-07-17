@@ -1,5 +1,6 @@
 from typing import Any
 
+import PalmSens
 from PalmSens import Method as PSMethod
 
 
@@ -35,6 +36,77 @@ class Method:
     def short_name(self) -> str:
         """Short name for the technique."""
         return self.dotnet_method.ShortName
+
+    @property
+    def technique(self) -> int:
+        """
+        The technique number used in the firmware
+        """
+        return self.dotnet_method.Technique
+
+    @property
+    def notes(self) -> str:
+        """
+        Some user notes for use with this method
+        """
+        return self.dotnet_method.Notes
+
+    @property
+    def standby_potential(self) -> float:
+        """
+        Standby Potential (for use with cell on after
+        measurement)
+        """
+        return self.dotnet_method.StandbyPotential
+
+    @property
+    def standby_time(self) -> float:
+        """
+        Standby time (for use with cell on after measurement)
+        """
+        return self.dotnet_method.StandbyTime
+
+    @property
+    def cell_on_after_measurement(self) -> bool:
+        """
+        Enable/disable cell after measurement
+        """
+        return self.dotnet_method.CellOnAfterMeasurement
+
+    @property
+    def min_peak_height(self) -> float:
+        """
+        Determines the minimum peak height in ┬ÁA. Peaks lower than this value are neglected.
+        """
+        return self.dotnet_method.MinPeakHeight
+
+    @property
+    def min_peak_width(self) -> float:
+        """
+        The minimum peak width, in the unit of the curves X axis. Peaks narrower than this value are neglected.
+        """
+        return self.dotnet_method.MinPeakWidth
+
+    @property
+    def smooth_level(self) -> int:
+        """
+        The smoothlevel to be used. `-1` = none, 0 = no smooth (spike rejection only), `1` = 5 points, `2` = 9 points, `3` = 15 points, `4` = 25 points
+        """
+        return self.dotnet_method.SmoothLevel
+
+    @property
+    def ranging(self) -> PalmSens.Method.Ranging:
+        """
+        Ranging information, settings defining the minimum/maximum/starting current range
+        """
+        return self.dotnet_method.Ranging
+
+    @property
+    def power_freq(self) -> int:
+        """
+        Adjusts sampling on instrument to account for mains frequency. It accepts two values: 50 for 50Hz 60 for 60Hz
+        """
+        return self.dotnet_method.PowerFreq
 
     def to_dict(self) -> dict[str, Any]:
         """Return dictionary with method properties."""

@@ -1,4 +1,4 @@
-from .time_method import TimeMethod
+from .fast_amperometry import FastAmperometry
 
 
-class FastPotentiometry(TimeMethod): ...
+class FastPotentiometry(FastAmperometry): ...

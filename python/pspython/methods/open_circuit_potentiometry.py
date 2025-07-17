@@ -1,4 +1,4 @@
-from PalmSens.Techniques import Potentiometry as PSPotentiometry
+from PalmSens.Techniques import OpenCircuitPotentiometry as PSOpenCircuitPotentiometry
 
 from ._shared import (
     get_current_range,
@@ -13,14 +13,14 @@ from ._shared import (
     set_pretreatment,
     set_trigger_at_measurement_settings,
 )
-from .time_method import TimeMethod
+from .potentiometry import Potentiometry
 
 
-class Potentiometry(TimeMethod): ...
+class OpenCircuitPotentiometry(Potentiometry): ...
 
 
-def chronopotentiometry(**kwargs):
-    """Create a chronopotentiometry method object.
+def open_circuit_potentiometry(**kwargs):
+    """Create an open circuit potentiometry method object.
 
     :Keyword Arguments:
     * current_range_max : PalmSens.CurrentRange --
@@ -43,20 +43,16 @@ def chronopotentiometry(**kwargs):
         Conditioning potential in V (default: 0.0)
     * conditioning_time : float --
         Conditioning time in s (default: 0.0)
-    * current : float --
-        Current in applied current range (default: 0.0)
-    * applied_current_range : PalmSens.CurrentRange --
-        Applied current range (default: 100 µA) [use get_current_range() to get the range]
     * interval_time : float --
         Interval time in s (default: 0.1)
     * run_time : float --
         Run time in s (default: 1.0)
     * record_auxiliary_input : bool --
         Record auxiliary input (default: False)
-    * record_cell_potential : bool --
-        Record cell potential (default: False) [counter electrode vs ground]
     * record_we_current : bool --
         Record working electrode current (default: False)
+    * record_we_current_range : PalmSens.CurrentRange --
+        Record working electrode current range (default: 1 µA) [use get_current_range() to get the range]
     * cell_on_after_measurement : bool --
         Cell on after measurement (default: False)
     * cell_on_after_measurement_potential : float --
@@ -88,7 +84,7 @@ def chronopotentiometry(**kwargs):
     * use_hardware_sync : bool --
         Use hardware synchronization with other channels/instruments (default: False)
     """
-    chronopotentiometry = PSPotentiometry()
+    open_circuit_potentiometry = PSOpenCircuitPotentiometry()
 
     # (auto)ranging
     # current in pretreatment
@@ -96,7 +92,7 @@ def chronopotentiometry(**kwargs):
     current_range_min = kwargs.get('current_range_min', get_current_range(4))
     current_range_start = kwargs.get('current_range_start', get_current_range(6))
     set_autoranging_current(
-        chronopotentiometry, current_range_max, current_range_min, current_range_start
+        open_circuit_potentiometry, current_range_max, current_range_min, current_range_start
     )
 
     # potential
@@ -104,7 +100,10 @@ def chronopotentiometry(**kwargs):
     potential_range_min = kwargs.get('potential_range_min', get_potential_range(1))
     potential_range_start = kwargs.get('potential_range_start', get_potential_range(7))
     set_autoranging_potential(
-        chronopotentiometry, potential_range_max, potential_range_min, potential_range_start
+        open_circuit_potentiometry,
+        potential_range_max,
+        potential_range_min,
+        potential_range_start,
     )
 
     # pretreatment
@@ -113,36 +112,29 @@ def chronopotentiometry(**kwargs):
     conditioning_potential = kwargs.get('conditioning_potential', 0.0)
     conditioning_time = kwargs.get('conditioning_time', 0.0)
     set_pretreatment(
-        chronopotentiometry,
+        open_circuit_potentiometry,
         deposition_potential,
         deposition_time,
         conditioning_potential,
         conditioning_time,
     )
 
-    # chronopotentiometry settings
-    current = kwargs.get('current', 0.0)  # in applied current range
-    applied_current_range = kwargs.get(
-        'applied_current_range', get_current_range(6)
-    )  # in applied current range
+    # open circuit potentiometry settings
     interval_time = kwargs.get('interval_time', 0.1)  # Time (s)
     run_time = kwargs.get('run_time', 1.0)  # Time (s)
-    chronopotentiometry.Current = current
-    chronopotentiometry.AppliedCurrentRange = applied_current_range
-    chronopotentiometry.IntervalTime = interval_time
-    chronopotentiometry.RunTime = run_time
+    open_circuit_potentiometry.IntervalTime = interval_time
+    open_circuit_potentiometry.RunTime = run_time
 
     # advanced settings
     # record extra value settings
     record_auxiliary_input = kwargs.get('record_auxiliary_input', False)
-    record_cell_potential = kwargs.get('record_cell_potential', False)
     record_we_current = kwargs.get('record_we_current', False)
+    record_we_current_range = kwargs.get('record_we_current_range', get_current_range(4))
     set_extra_value_mask(
-        chronopotentiometry,
+        open_circuit_potentiometry,
         record_auxiliary_input=record_auxiliary_input,
-        record_cell_potential=record_cell_potential,
         record_we_current=record_we_current,
-        record_we_current_range=applied_current_range,
+        record_we_current_range=record_we_current_range,
     )
 
     # post measurement settings
@@ -151,7 +143,9 @@ def chronopotentiometry(**kwargs):
         'cell_on_after_measurement_potential', 0.0
     )  # in V
     set_post_measurement_settings(
-        chronopotentiometry, cell_on_after_measurement, cell_on_after_measurement_potential
+        open_circuit_potentiometry,
+        cell_on_after_measurement,
+        cell_on_after_measurement_potential,
     )
 
     # limit settings
@@ -160,7 +154,7 @@ def chronopotentiometry(**kwargs):
     use_limit_potential_min = kwargs.get('use_limit_potential_min', False)
     limit_potential_min = kwargs.get('limit_potential_min', 0.0)  # in V
     set_limit_settings(
-        chronopotentiometry,
+        open_circuit_potentiometry,
         use_limit_potential_max,
         limit_potential_max,
         use_limit_potential_min,
@@ -173,7 +167,7 @@ def chronopotentiometry(**kwargs):
         'trigger_at_measurement_lines', [False, False, False, False]
     )  # d0 high, d1 high, d2 high, d3 high
     set_trigger_at_measurement_settings(
-        chronopotentiometry, trigger_at_measurement, trigger_at_measurement_lines
+        open_circuit_potentiometry, trigger_at_measurement, trigger_at_measurement_lines
     )
 
     # set filter settings
@@ -184,7 +178,7 @@ def chronopotentiometry(**kwargs):
         'default_curve_post_processing_filter', 0
     )  # -1 = no filter, 0 = spike rejection, 1 = spike rejection + Savitsky-golay window 5, 2 = spike rejection + Savitsky-golay window 9, 3 = spike rejection + Savitsky-golay window 15, 4 = spike rejection + Savitsky-golay window 25
     set_filter_settings(
-        chronopotentiometry, dc_mains_filter, default_curve_post_processing_filter
+        open_circuit_potentiometry, dc_mains_filter, default_curve_post_processing_filter
     )
 
     # multiplexer settings
@@ -198,15 +192,15 @@ def chronopotentiometry(**kwargs):
         'set_mux8r2_settings', None
     )  # Initialize the settings for the MUX8R2 multiplexer, PalmSens.Method.MuxSettings, use get_mux8r2_settings() to create the settings
     set_multiplexer_settings(
-        chronopotentiometry, set_mux_mode, set_mux_channels, set_mux8r2_settings
+        open_circuit_potentiometry, set_mux_mode, set_mux_channels, set_mux8r2_settings
     )
 
     # internal storage
     save_on_internal_storage = kwargs.get('save_on_internal_storage', False)
-    chronopotentiometry.SaveOnDevice = save_on_internal_storage
+    open_circuit_potentiometry.SaveOnDevice = save_on_internal_storage
 
     # use hardware synchronization with other channels/instruments
     use_hardware_sync = kwargs.get('use_hardware_sync', False)
-    chronopotentiometry.UseHWSync = use_hardware_sync
+    open_circuit_potentiometry.UseHWSync = use_hardware_sync
 
-    return chronopotentiometry
+    return open_circuit_potentiometry
