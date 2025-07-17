@@ -1,5 +1,3 @@
-from types import NoneType
-
 import pytest
 
 
@@ -32,4 +30,4 @@ def test_to_dict(method):
     for k, v in dct.items():
         if k in SKIP:
             continue
-        assert isinstance(v, (int, float, list, dict, str, NoneType)), f'{k=}:{v=}'
+        assert isinstance(v, (int, float, list, dict, str, type(None))), f'{k=}:{v=}'
