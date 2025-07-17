@@ -1,4 +1,4 @@
-from PalmSens.Techniques import PSLinearSweep
+from PalmSens.Techniques import LinearSweep as PSLinearSweep
 
 from ._shared import (
     get_current_range,
