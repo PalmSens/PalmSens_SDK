@@ -62,7 +62,7 @@ markers = [
     "examples: Mark tests that run the examples.",
     "instrument: Mark tests that need an instrument connection."
 ]
-log_cli = true
+log_cli = false
 log_cli_level = "INFO"
 
 [tool.ruff]
