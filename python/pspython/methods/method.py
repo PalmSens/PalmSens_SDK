@@ -15,12 +15,26 @@ def method_ids_by_technique_id() -> dict[int, list[str]]:
     return {k: list(v) for k, v in dict(PSMethod.MethodIdsByTechniqueId).items()}
 
 
+class MethodParameters: ...
+
+
 class Method:
     def __init__(self, *, dotnet_method):
         self.dotnet_method = dotnet_method
 
     def __repr__(self) -> str:
         return f'{self.__class__.__name__}(name={self.name!r}, id={self.id!r})'
+
+    def to_parameters(self) -> MethodParameters:
+        """Return method parameters."""
+        raise NotImplementedError
+
+    @classmethod
+    def from_parameters(cls, *, parameters: MethodParameters) -> 'Method':
+        """Create instance of Method from parameters"""
+        raise NotImplementedError
+        obj = ...
+        return cls(obj)
 
     @property
     def id(self) -> str:

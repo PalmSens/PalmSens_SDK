@@ -19,100 +19,142 @@ from ._shared import (
     set_trigger_at_measurement_settings,
     set_versus_ocp,
 )
+from .method import MethodParameters
 
 
 @dataclass
-class CyclicVoltammetry:
-    """Create a cyclic voltammetry method object.
+class CyclicVoltammetry(MethodParameters):
+    """Create a cyclic voltammetry method parameters.
 
-    :Keyword Arguments:
-    * current_range_max : PalmSens.CurrentRange --
+    Attributes
+    ----------
+    current_range_max: int
         Maximum current range (default: 10 mA) [use get_current_range() to get the range]
-    * current_range_min : PalmSens.CurrentRange --
+    current_range_min: int
         Minimum current range (default: 1 µA) [use get_current_range() to get the range]
-    * current_range_start : PalmSens.CurrentRange --
-        Start current range (default: 100 µA) [use get_current_range() to get the range]
-    * deposition_potential : float --
+    current_range_start: int
+         Start current range (default: 100 µA) [use get_current_range() to get the range]
+    deposition_potential: float
         Deposition potential in V (default: 0.0)
-    * deposition_time : float --
+    deposition_time: float
         Deposition time in s (default: 0.0)
-    * conditioning_potential : float --
+    conditioning_potential: float
         Conditioning potential in V (default: 0.0)
-    * conditioning_time : float --
+    conditioning_time: float
         Conditioning time in s (default: 0.0)
-    * equilibration_time : float --
+    equilibration_time: float
         Equilibration time in s (default: 0.0)
-    * begin_potential : float --
+
+    begin_potential: float
         Begin potential in V (default: -0.5)
-    * vertex1_potential : float --
+    vertex1_potential: float
         Vertex 1 potential in V (default: 0.5)
-    * vertex2_potential : float --
+    vertex2_potential: float
         Vertex 2 potential in V (default: -0.5)
-    * step_potential : float --
+    step_potential: float
         Step potential in V (default: 0.1)
-    * scanrate : float --
+    scanrate: float
         Scan rate in V/s (default: 1.0)
-    * n_scans : int --
+    n_scans: float
         Number of scans (default: 1)
-    * versus_ocp_mode : int --
-        0 = disable versus OCP, 1 = vertex 1 potential, 2 = vertex 2 potential, 3 = vertex 1 & 2 potential, 4 = begin potential, 5 = begin & vertex 1 potential, 6 = begin & vertex 2 potential, 7 = begin & vertex 1 & 2 potential (default: 0)
-    * versus_ocp_max_ocp_time : float --
+
+    versus_ocp_mode: int
+        Set versus OCP mode.
+            0 = disable versus OCP
+            1 = vertex 1 potential
+            2 = vertex 2 potential
+            3 = vertex 1 & 2 potential
+            4 = begin potential
+            5 = begin & vertex 1 potential
+            6 = begin & vertex 2 potential
+            7 = begin & vertex 1 & 2 potential
+    versus_ocp_max_ocp_time: int
         Maximum OCP time in s (default: 20.0)
-    * versus_ocp_stability_criterion : float --
-        Stability criterion in mV/s (default: 0.0) [0 = no stability criterion, > 0 is stability threshold potential/time (mV/s)]
-    * enable_bipot_current : bool --
-        Enable bipot current (default: False)
-    * bipot_mode : int --
-        0 = constant, 1 = offset (default: 0)
-    * bipot_potential : float --
-        Bipotential in V (default: 0.0)
-    * bipot_current_range_max : PalmSens.CurrentRange --
-        Maximum bipot current range (default: 10 mA) [use get_current_range() to get the range]
-    * bipot_current_range_min : PalmSens.CurrentRange --
-        Minimum bipot current range (default: 1 µA) [use get_current_range() to get the range]
-    * bipot_current_range_start : PalmSens.CurrentRange --
-        Start bipot current range (default: 100 µA) [use get_current_range() to get the range]
-    * record_auxiliary_input : bool --
+    versus_ocp_stability_criterion: int = 0
+        Stability criterion in mV/s (default: 0.0)
+            0 = no stability criterion
+            > 0 is stability threshold potential/time (mV/s)
+    enable_bipot_current: bool
+        Enable bipotential current (default: False)
+    bipot_mode: int
+        Set the bipotential mode, 0 = constant, 1 = offset (default: 0)
+    bipot_potential: float
+        Set the bipotential in V (default: 0.0)
+    bipot_current_range_max: int
+        Maximum bipotential current range (default: 10 mA) [use get_current_range() to get the range]
+    bipot_current_range_min: int
+        Minimum bipotential current range (default: 1 µA) [use get_current_range() to get the range]
+    bipot_current_range_start: int
+        Start bipotential current range (default: 100 µA) [use get_current_range() to get the range]
+
+    record_auxiliary_input: bool
         Record auxiliary input (default: False)
-    * record_cell_potential : bool --
+    record_cell_potential: bool
         Record cell potential (default: False) [counter electrode vs ground]
-    * record_we_potential : bool --
+    record_we_potential: bool
         Record applied working electrode potential (default: False) [reference electrode vs ground]
-    * cell_on_after_measurement : bool --
+
+    cell_on_after_measurement: bool
         Cell on after measurement (default: False)
-    * cell_on_after_measurement_potential : float --
+    cell_on_after_measurement_potential: float
         Cell on after measurement potential in V (default: 0.0)
-    * use_limit_current_max : bool --
-        Use limit current max (default: False) [will reverse scan instead of aborting measurement]
-    * limit_current_max : float --
+
+    use_limit_current_max: bool
+        Use limit current max (default: False).
+        This will reverse the scan instead of aborting measurement
+    limit_current_max: float
         Limit current max in µA (default: 0.0)
-    * use_limit_current_min : bool --
-        Use limit current min (default: False) [will reverse scan instead of aborting measurement]
-    * limit_current_min : float --
+    use_limit_current_min: bool
+        Use limit current min (default: False)
+        This will reverse the scan instead of aborting measurement
+    limit_current_min: float
         Limit current min in µA (default: 0.0)
-    * ir_compensation : float --
-        iR compensation in Ω (default: 0.0)
-    * trigger_at_equilibration : bool --
-        Trigger at equilibration (default: False)
-    * trigger_at_equilibration_lines : list --
-        Trigger at equilibration lines (default: [False, False, False, False]) [d0 high, d1 high, d2 high, d3 high]
-    * trigger_at_measurement : bool --
-        Trigger at measurement (default: False)
-    * trigger_at_measurement_lines : list --
-        Trigger at measurement lines (default: [False, False, False, False]) [d0 high, d1 high, d2 high, d3 high]
-    * dc_mains_filter : int --
-        DC mains filter (default: 50) [set to 50 Hz or 60 Hz (50 Hz is default)]
-    * default_curve_post_processing_filter : int --
-        Default curve post processing filter (default: 0) [-1 = no filter, 0 = spike rejection, 1 = spike rejection + Savitsky-golay window 5, 2 = spike rejection + Savitsky-golay window 9, 3 = spike rejection + Savitsky-golay window 15, 4 = spike rejection + Savitsky-golay window 25]
-    * set_mux_mode : int --
-        Set multiplexer mode (default: -1) [-1 = disable, 0 = sequentially, 1 = alternatingly]
-    * set_mux_channels : list --
-        Set multiplexer channels (default: [False, False, False, False, False, False, False, False]) [a list of bools for each channel (channel 1, channel 2, ..., channel 128). In consequtive mode all selections are valid, in alternating mode the first channel must be selected and all other channels should be consequtive i.e. (channel 1, channel 2, channel 3 and so on)]
-    * set_mux8r2_settings : PalmSens.Method.MuxSettings --
-        Initialize the settings for the MUX8R2 multiplexer (default: None) [use get_mux8r2_settings() to create the settings]
-    * save_on_internal_storage : bool --
+
+    use_ir_compensation: bool
+        Enable iR compensation
+    ir_compensation: float
+        Set the iR compensation in Ω (default: 0.0)
+
+    trigger_at_equilibration: bool
+        Enable trigger at equilibration (default: False)
+    trigger_at_equilibration_lines: tuple[bool, bool, bool, bool]
+        Enable trigger at equilibration lines (default: [False, False, False, False])
+        Line order: d0 high, d1 high, d2 high, d3 high
+    trigger_at_measurement: bool
+        Enable trigger at measurement (default: False)
+    trigger_at_measurement_lines: tuple[bool, bool, bool, bool]
+        Enable trigger at measurement lines (default: [False, False, False, False])
+        Line order: d0 high, d1 high, d2 high, d3 high
+
+    dc_mains_filter: int
+        Set the DC mains filter in Hz. Set to 50 Hz or 60 Hz depending on your region (default: 50).
+    default_curve_post_processing_filter: int = 0
+        Set the default curve post processing filter (default: 0)
+           -1 = no filter
+            0 = spike rejection
+            1 = spike rejection + Savitsky-golay window 5
+            2 = spike rejection + Savitsky-golay window 9
+            3 = spike rejection + Savitsky-golay window 15
+            4 = spike rejection + Savitsky-golay window 25
+
+    set_mux_mode: int = -1
+        Set multiplexer mode
+           -1 = No multiplexer (disable)
+            0 = Consecutive
+            1 = Alternate
+    set_mux_channels: list[bool]
+        Set multiplexer channels as a list of bools for each channel (channel 1, channel 2, ..., channel 128).
+        In consecutive mode all selections are valid.
+        In alternating mode the first channel must be selected and all other
+        channels should be consequtive i.e. (channel 1, channel 2, channel 3 and so on).
+    set_mux8r2_settings: Optional[PalmSens.Method.MuxSettings]
+        Initialize the settings for the MUX8R2 multiplexer (default: None).
+        use get_mux8r2_settings() to create the settings.
+
+    save_on_internal_storage: bool
         Save on internal storage (default: False)
-    * use_hardware_sync : bool --
+
+    use_hardware_sync: bool
         Use hardware synchronization with other channels/instruments (default: False)
     """
 
@@ -134,20 +176,17 @@ class CyclicVoltammetry:
     vertex2_potential: float = -0.5  # potential (V)
     step_potential: float = 0.1  # potential (V)
     scanrate: float = 1.0  # potential/time (V/s)
-    n_scans: float = 1  # number of cycles (default: 1)
+    n_scans: float = 1  # number of cycles
 
     # advanced settings
-    # versus OCP settings
-    # 0 = disable versus OCP, 1 = vertex 1 potential, 2 = vertex 2 potential, 3 = vertex 1 & 2 potential, 4 = begin potential, 5 = begin & vertex 1 potential, 6 = begin & vertex 2 potential, 7 = begin & vertex 1 & 2 potential
     versus_ocp_mode: int = 0
-    versus_ocp_max_ocp_time: int = 20  # Time (s)
-    # 0 = no stability criterion, > 0 is stability threshold potential/time (mV/s)
+    versus_ocp_max_ocp_time: float = 20.0  # Time (s)
     versus_ocp_stability_criterion: int = 0
 
     # bipot settings
     enable_bipot_current: bool = False
-    bipot_mode: int = 0  # 0 = constant, 1 = offset
-    bipot_potential: float = 0.0  # in V
+    bipot_mode: int = 0
+    bipot_potential: float = 0.0  # V
     bipot_current_range_max: int = get_current_range(8)
     bipot_current_range_min: int = get_current_range(4)
     bipot_current_range_start: int = get_current_range(6)
@@ -159,17 +198,17 @@ class CyclicVoltammetry:
 
     # post measurement settings
     cell_on_after_measurement: bool = False
-    cell_on_after_measurement_potential: float = 0.0  # in V
+    cell_on_after_measurement_potential: float = 0.0  # V
 
     # limit settings
     use_limit_current_max: bool = False
-    limit_current_max: float = 0.0  # in µA
+    limit_current_max: float = 0.0  # µA
     use_limit_current_min: bool = False
-    limit_current_min: float = 0.0  # in µA
+    limit_current_min: float = 0.0  # µA
 
     # iR compensation settings
     use_ir_compensation: bool = False
-    ir_compensation: float = 0.0  # IR compensation in Ω
+    ir_compensation: float = 0.0  # Ω
 
     # set trigger settings
     trigger_at_equilibration: bool = False
@@ -180,19 +219,14 @@ class CyclicVoltammetry:
     trigger_at_measurement_lines: tuple[bool, bool, bool, bool] = (False, False, False, False)
 
     # set filter settings
-    # set to 50 Hz or 60 Hz (50 Hz is default)
-    dc_mains_filter: int = 50
-    # -1 = no filter, 0 = spike rejection, 1 = spike rejection + Savitsky-golay window 5, 2 = spike rejection + Savitsky-golay window 9, 3 = spike rejection + Savitsky-golay window 15, 4 = spike rejection + Savitsky-golay window 25
+    dc_mains_filter: int = 50  # Hz
     default_curve_post_processing_filter: int = 0
 
     # multiplexer settings
-    # -1 = disable, 0 = sequentially, 1 = alternatingly
     set_mux_mode: int = -1
-    # a list of bools for each channel (channel 1, channel 2, ..., channel 128). In consequtive mode all selections are valid, in alternating mode the first channel must be selected and all other channels should be consequtive i.e. (channel 1, channel 2, channel 3 and so on).
     set_mux_channels: list[bool] = field(
         default_factory=lambda: [False, False, False, False, False, False, False, False]
     )
-    # Initialize the settings for the MUX8R2 multiplexer, PalmSens.Method.MuxSettings, use get_mux8r2_settings() to create the settings
     set_mux8r2_settings: Optional[PalmSens.Method.MuxSettings] = None
 
     # internal storage
