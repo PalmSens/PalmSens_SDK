@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 
+from PalmSens import ExtraValueMask
 from PalmSens.Techniques import SquareWave as PSSquareWave
 
 from .potential_method import PotentialMethodParameters
@@ -45,11 +46,11 @@ class SquareWaveParameters(PotentialMethodParameters):
         dotnet_method.Frequency = self.frequency
         dotnet_method.PulseAmplitude = self.amplitude
 
-        # breakpoint()
-
-        # set_extra_value_mask(
-        #     record_forward_and_reverse_currents=record_forward_and_reverse_currents,
-        # )
+        if self.record_forward_and_reverse_currents:
+            extra_values = int(dotnet_method.ExtraValueMsk) | int(
+                ExtraValueMask.IForwardReverse
+            )
+            dotnet_method.ExtraValueMsk = ExtraValueMask(extra_values)
 
     def to_dotnet_method(self):
         """Convert parameters to dotnet method."""
