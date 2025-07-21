@@ -15,10 +15,10 @@ from ._shared import (
     set_trigger_at_measurement_settings,
     set_versus_ocp,
 )
-from .potential_method import PotentialMethod
+from .potential_method import PotentialMethodParameters
 
 
-class LinearSweep(PotentialMethod): ...
+class LinearSweepParameters(PotentialMethodParameters): ...
 
 
 def linear_sweep_voltammetry(**kwargs):

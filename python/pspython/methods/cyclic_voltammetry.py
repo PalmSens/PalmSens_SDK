@@ -11,11 +11,11 @@ from ._shared import (
     get_current_range,
     set_extra_value_mask,
 )
-from .method import BaseParameters
+from .potential_method import PotentialMethodParameters
 
 
 @dataclass
-class CyclicVoltammetryParameters(BaseParameters):
+class CyclicVoltammetryParameters(PotentialMethodParameters):
     """Create a cyclic voltammetry method parameters.
 
     Attributes
