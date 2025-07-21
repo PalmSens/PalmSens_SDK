@@ -53,6 +53,53 @@ def test_read_potential(manager):
     assert isinstance(val, float)
 
 
+def test_method_limits():
+    kwargs = {
+        'use_limit_current_max': True,
+        'limit_current_max': 2.0,
+        'use_limit_current_min': True,
+        'limit_current_min': 1.0,
+    }
+
+    method = CyclicVoltammetryParameters(**kwargs)
+    obj = method.to_dotnet_method()
+
+    assert obj.LimitMinValue == 1.0
+    assert obj.LimitMaxValue == 2.0
+    assert obj.UseLimitMinValue is True
+    assert obj.UseLimitMaxValue is True
+
+
+def test_method_current_range():
+    kwargs = {
+        'current_range_min': get_current_range(3),
+        'current_range_max': get_current_range(20),
+        'current_range_start': get_current_range(14),
+    }
+
+    method = CyclicVoltammetryParameters(**kwargs)
+    obj = method.to_dotnet_method()
+
+    assert obj.Ranging.MinimumCurrentRange.Description == '100 nA'
+    assert obj.Ranging.MaximumCurrentRange.Description == '5 mA'
+    assert obj.Ranging.StartCurrentRange.Description == '32 uA'
+
+
+def test_method_potential_range():
+    kwargs = {
+        'potential_range_min': get_potential_range(0),
+        'potential_range_max': get_potential_range(5),
+        'potential_range_start': get_potential_range(3),
+    }
+
+    method = PotentiometryParameters(**kwargs)
+    obj = method.to_dotnet_method()
+
+    assert obj.RangingPotential.MinimumPotentialRange.Description == '1 mV'
+    assert obj.RangingPotential.MaximumPotentialRange.Description == '200 mV'
+    assert obj.RangingPotential.StartPotentialRange.Description == '50 mV'
+
+
 def test_cv(manager):
     kwargs = {
         'current_range_max': get_current_range(30),
@@ -136,7 +183,7 @@ def test_swv(manager):
     dataset = measurement.dataset
     assert len(dataset) == 5
 
-    assert dataset.array_names == {'potential', 'current', 'time', 'Reverse', 'Forward'}
+    assert dataset.array_names == {'potential', 'current', 'time', 'reverse', 'forward'}
     assert dataset.array_quantities == {'Current', 'Potential', 'Time'}
 
 
@@ -162,7 +209,7 @@ def test_cp(manager):
     assert measurement.method.dotnet_method.nScans == 1
 
     dataset = measurement.dataset
-    assert len(dataset) == 5
+    assert len(dataset) == 4
 
-    assert dataset.array_names == {'potential', 'current', 'time', 'Reverse', 'Forward'}
-    assert dataset.array_quantities == {'Current', 'Potential', 'Time'}
+    assert dataset.array_names == {'potential', 'current', 'time', 'charge'}
+    assert dataset.array_quantities == {'Current', 'Potential', 'Time', 'Charge'}
