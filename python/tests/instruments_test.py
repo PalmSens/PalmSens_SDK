@@ -6,6 +6,7 @@ from pspython import pspyinstruments
 from pspython.data.measurement import Measurement
 from pspython.methods._shared import get_current_range
 from pspython.methods.cyclic_voltammetry import CyclicVoltammetryParameters, cyclic_voltammetry
+from pspython.methods.linear_sweep import LinearSweepParameters, linear_sweep_voltammetry
 
 logger = logging.getLogger(__name__)
 
@@ -77,7 +78,6 @@ def test_cv_new(manager):
         current_range_max=get_current_range(30),  # 1A range
         current_range_min=get_current_range(4),  # 1µA range
         current_range_start=get_current_range(8),  # 1mA range
-        equilibration_time=0,  # seconds
         begin_potential=-1,  # V
         vertex1_potential=-1,  # V
         vertex2_potential=1,  # V
@@ -95,4 +95,51 @@ def test_cv_new(manager):
     dataset = measurement.dataset
     assert len(dataset) == 7
     assert dataset.array_names == {'scan1', 'scan2', 'time'}
+    assert dataset.array_quantities == {'Charge', 'Current', 'Potential', 'Time'}
+
+
+def test_lsv_old(manager):
+    method = linear_sweep_voltammetry(
+        current_range_max=get_current_range(30),  # 1A range
+        current_range_min=get_current_range(4),  # 1µA range
+        current_range_start=get_current_range(8),  # 1mA range
+        begin_potential=-1.0,
+        end_potential=1.0,
+        step_potential=0.1,
+        scanrate=2.0,
+    )
+
+    measurement = manager.measure(method)
+
+    assert measurement
+    assert isinstance(measurement, Measurement)
+    assert measurement.method.dotnet_method.nScans == 1
+
+    dataset = measurement.dataset
+    assert len(dataset) == 4
+    assert dataset.array_names == {'charge', 'potential', 'current', 'time'}
+    assert dataset.array_quantities == {'Charge', 'Current', 'Potential', 'Time'}
+
+
+def test_lsv_new(manager):
+    method = LinearSweepParameters(
+        current_range_max=get_current_range(30),  # 1A range
+        current_range_min=get_current_range(4),  # 1µA range
+        current_range_start=get_current_range(8),  # 1mA range
+        begin_potential=-1.0,
+        end_potential=1.0,
+        step_potential=0.1,
+        scanrate=2.0,
+    )
+
+    measurement = manager.measure(method.to_dotnet_method())
+
+    assert measurement
+    assert isinstance(measurement, Measurement)
+    assert measurement.method.dotnet_method.nScans == 1
+
+    dataset = measurement.dataset
+    assert len(dataset) == 4
+
+    assert dataset.array_names == {'charge', 'potential', 'current', 'time'}
     assert dataset.array_quantities == {'Charge', 'Current', 'Potential', 'Time'}

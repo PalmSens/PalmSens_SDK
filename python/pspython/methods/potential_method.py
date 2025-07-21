@@ -34,8 +34,6 @@ class PotentialMethodParameters(ScanMethodParameters):
         Conditioning potential in V (default: 0.0)
     conditioning_time: float
         Conditioning time in s (default: 0.0)
-    equilibration_time: float
-        Equilibration time in s (default: 0.0)
 
     versus_ocp_mode: int
         Set versus OCP mode.
@@ -147,7 +145,6 @@ class PotentialMethodParameters(ScanMethodParameters):
     deposition_time: float = 0.0
     conditioning_potential: float = 0.0
     conditioning_time: float = 0.0
-    equilibration_time: float = 0.0  # Time (s)
 
     # advanced settings
     versus_ocp_mode: int = 0
@@ -219,8 +216,6 @@ class PotentialMethodParameters(ScanMethodParameters):
         obj.DepositionTime = self.deposition_time
         obj.ConditioningPotential = self.conditioning_potential
         obj.ConditioningTime = self.conditioning_time
-
-        obj.EquilibrationTime = self.equilibration_time
 
         # Set the versus OCP settings for a given method
         obj.OCPmode = self.versus_ocp_mode
