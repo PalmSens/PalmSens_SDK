@@ -2,28 +2,20 @@ from dataclasses import dataclass, field
 from typing import Optional
 
 import PalmSens
+from PalmSens import Method as PSMethod
+from PalmSens import MuxMethod as PSMuxMethod
 from PalmSens.Techniques import CyclicVoltammetry as PSCyclicVoltammetry
 
 from ._shared import (
+    convert_bool_list_to_base2,
     get_current_range,
-    set_autoranging_current,
-    set_bipot_settings,
     set_extra_value_mask,
-    set_filter_settings,
-    set_ir_drop_compensation,
-    set_limit_settings,
-    set_multiplexer_settings,
-    set_post_measurement_settings,
-    set_pretreatment,
-    set_trigger_at_equilibration_settings,
-    set_trigger_at_measurement_settings,
-    set_versus_ocp,
 )
-from .method import MethodParameters
+from .method import BaseParameters
 
 
 @dataclass
-class CyclicVoltammetry(MethodParameters):
+class CyclicVoltammetryParameters(BaseParameters):
     """Create a cyclic voltammetry method parameters.
 
     Attributes
@@ -236,22 +228,20 @@ class CyclicVoltammetry(MethodParameters):
     use_hardware_sync: bool = False
 
     def to_dotnet_method(self):
+        """Convert parameters to dotnet method."""
         obj = PSCyclicVoltammetry()
 
-        set_autoranging_current(
-            obj,
-            current_range_max=self.current_range_max,
-            current_range_min=self.current_range_min,
-            current_range_start=self.current_range_start,
-        )
+        # Set the autoranging current for a given method
+        obj.Ranging.MaximumCurrentRange = self.current_range_max
+        obj.Ranging.MinimumCurrentRange = self.current_range_min
+        obj.Ranging.StartCurrentRange = self.current_range_start
 
-        set_pretreatment(
-            obj,
-            deposition_potential=self.deposition_potential,
-            deposition_time=self.deposition_time,
-            conditioning_potential=self.conditioning_potential,
-            conditioning_time=self.conditioning_time,
-        )
+        # Set the pretreatment settings for a given method
+        obj.DepositionPotential = self.deposition_potential
+        obj.DepositionTime = self.deposition_time
+        obj.ConditioningPotential = self.conditioning_potential
+        obj.ConditioningTime = self.conditioning_time
+
         obj.EquilibrationTime = self.equilibration_time
 
         # cyclic voltammetry settings
@@ -262,21 +252,19 @@ class CyclicVoltammetry(MethodParameters):
         obj.Scanrate = self.scanrate
         obj.nScans = self.n_scans
 
-        set_versus_ocp(
-            obj,
-            versus_ocp_mode=self.versus_ocp_mode,
-            versus_ocp_max_ocp_time=self.versus_ocp_max_ocp_time,
-            versus_ocp_stability_criterion=self.versus_ocp_stability_criterion,
-        )
+        # Set the versus OCP settings for a given method
+        obj.OCPmode = self.versus_ocp_mode
+        obj.OCPMaxOCPTime = self.versus_ocp_max_ocp_time
+        obj.OCPStabilityCriterion = self.versus_ocp_stability_criterion
 
-        set_bipot_settings(
-            obj,
-            bipot_mode=self.bipot_mode,
-            bipot_potential=self.bipot_potential,
-            bipot_current_range_max=self.bipot_current_range_max,
-            bipot_current_range_min=self.bipot_current_range_min,
-            bipot_current_range_start=self.bipot_current_range_start,
-        )
+        # Set the bipot settings for a given method
+        obj.BiPotModePS = PSMethod.EnumPalmSensBipotMode(self.bipot_mode)
+        obj.BiPotPotential = self.bipot_potential
+
+        # Set the autoranging bipot current for a given method
+        obj.BipotRanging.MaximumCurrentRange = self.bipot_current_range_max
+        obj.BipotRanging.MinimumCurrentRange = self.bipot_current_range_min
+        obj.BipotRanging.StartCurrentRange = self.bipot_current_range_start
 
         set_extra_value_mask(
             obj,
@@ -286,57 +274,64 @@ class CyclicVoltammetry(MethodParameters):
             record_we_potential=self.record_we_potential,
         )
 
-        set_post_measurement_settings(
-            obj,
-            cell_on_after_measurement=self.cell_on_after_measurement,
-            cell_on_after_measurement_potential=self.cell_on_after_measurement_potential,
+        # Set the post measurement settings for a given method
+        obj.CellOnAfterMeasurement = obj.cell_on_after_measurement
+        obj.StandbyPotential = obj.cell_on_after_measurement_potential
+
+        # Set the limit settings for a given method
+        obj.UseLimitMaxValue = self.use_limit_current_max
+        obj.LimitMaxValue = self.limit_current_max
+        obj.UseLimitMinValue = self.use_limit_current_min
+        obj.LimitMinValue = self.limit_current_min
+
+        # Set the iR drop compensation settings for a given method
+        obj.UseIRDropComp = self.use_ir_compensation
+        obj.IRDropCompRes = self.ir_compensation
+
+        # Set the trigger at equilibration settings for a given method
+        obj.UseTriggerOnEquil = self.trigger_at_equilibration
+        obj.TriggerValueOnEquil = convert_bool_list_to_base2(
+            self.trigger_at_equilibration_lines
         )
 
-        set_limit_settings(
-            obj,
-            use_limit_max=self.use_limit_current_max,
-            limit_max=self.limit_current_max,
-            use_limit_min=self.use_limit_current_min,
-            limit_min=self.limit_current_min,
-        )
+        # Set the trigger at measurement settings for a given method
+        obj.UseTriggerOnStart = self.trigger_at_measurement
+        obj.TriggerValueOnStart = convert_bool_list_to_base2(self.trigger_at_measurement_lines)
 
-        set_ir_drop_compensation(
-            obj,
-            use_ir_compensation=self.use_ir_compensation,
-            ir_compensation=self.ir_compensation,
-        )
+        # Set the filter settings for a given method
+        obj.DCMainsFilter = self.dc_mains_filter
+        obj.DefaultCurvePostProcessingFilter = self.default_curve_post_processing_filter
 
-        set_trigger_at_equilibration_settings(
-            obj,
-            trigger_at_equilibration=self.trigger_at_equilibration,
-            trigger_at_equilibration_lines=self.trigger_at_equilibration_lines,
-        )
-        set_trigger_at_measurement_settings(
-            obj,
-            trigger_at_measurement=self.trigger_at_measurement,
-            trigger_at_measurement_lines=self.trigger_at_measurement_lines,
-        )
+        # Create a mux8r2 multiplexer settings settings object
+        obj.MuxMethod = PSMuxMethod(self.set_mux_mode)
 
-        set_filter_settings(
-            obj,
-            dc_mains_filter=self.dc_mains_filter,
-            default_curve_post_processing_filter=self.default_curve_post_processing_filter,
-        )
+        # disable all mux channels
+        for i in range(len(obj.UseMuxChannel)):
+            obj.UseMuxChannel[i] = False
 
-        set_multiplexer_settings(
-            obj,
-            set_mux_mode=self.set_mux_mode,
-            set_mux_channels=self.set_mux_channels,
-            set_mux8r2_settings=self.set_mux8r2_settings,
-        )
+        # set the selected mux channels
+        for i, use_channel in enumerate(self.set_mux_channels):
+            obj.UseMuxChannel[i] = use_channel
 
+        if self.set_mux8r2_settings:
+            obj.MuxSett.ConnSEWE = self.set_mux8r2_settings.ConnSEWE
+            obj.MuxSett.ConnectCERE = self.set_mux8r2_settings.ConnectCERE
+            obj.MuxSett.CommonCERE = self.set_mux8r2_settings.CommonCERE
+            obj.MuxSett.UnselWE = self.set_mux8r2_settings.UnselWE
+
+        # Other settings
         obj.SaveOnDevice = self.save_on_internal_storage
         obj.UseHWSync = self.use_hardware_sync
 
         return obj
 
+    @classmethod
+    def from_dotnet_method(cls, dotnet_method: PSMethod) -> 'CyclicVoltammetryParameters':
+        """Generate parameters from dotnet method."""
+        raise NotImplementedError
+
 
 def cyclic_voltammetry(**kwargs):
     """Alias for CyclicVoltammetry for backwards compatibility"""
-    cyclic_voltammetry = CyclicVoltammetry(**kwargs)
+    cyclic_voltammetry = CyclicVoltammetryParameters(**kwargs)
     return cyclic_voltammetry.to_dotnet_method()

@@ -1,4 +1,4 @@
-from typing import Any, Optional
+from typing import Any, Optional, Sequence
 
 from PalmSens import (
     CurrentRange,
@@ -10,6 +10,17 @@ from PalmSens import (
     PotentialRanges,
 )
 from PalmSens.Devices import PalmSens4Capabilities
+
+
+def convert_bool_list_to_base2(lst: Sequence[bool]) -> int:
+    """Convert e.g. [True, False, True, False] to 5."""
+
+    lines = 0
+    for i, set_high in enumerate(lst):
+        if set_high:
+            lines = lines | (1 << i)
+    assert lines == int(''.join('01'[set_high] for set_high in reversed(lst)), base=2)
+    return lines
 
 
 def get_current_range(id: int) -> CurrentRange:
@@ -131,7 +142,10 @@ def set_bipot_settings(
     method.BiPotModePS = Method.EnumPalmSensBipotMode(bipot_mode)
     method.BiPotPotential = bipot_potential
     set_autoranging_bipot_current(
-        method, bipot_current_range_max, bipot_current_range_min, bipot_current_range_start
+        method,
+        bipot_current_range_max,
+        bipot_current_range_min,
+        bipot_current_range_start,
     )
 
 
@@ -225,7 +239,12 @@ def set_trigger_at_measurement_settings(
     method.TriggerValueOnStart = lines
 
 
-def set_multiplexer_settings(method, set_mux_mode, set_mux_channels, set_mux8r2_settings):
+def set_multiplexer_settings(
+    method,
+    set_mux_mode,
+    set_mux_channels,
+    set_mux8r2_settings,
+):
     """Set the multiplexer settings for a given method."""
     method.MuxMethod = MuxMethod(set_mux_mode)
     # disable all mux channels
