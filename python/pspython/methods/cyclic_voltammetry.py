@@ -8,7 +8,7 @@ from .potential_method import PotentialMethodParameters
 
 @dataclass
 class CyclicVoltammetryParameters(PotentialMethodParameters):
-    """Create a cyclic voltammetry method parameters.
+    """Create cyclic voltammetry method parameters.
 
     Attributes
     ----------
