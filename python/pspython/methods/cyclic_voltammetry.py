@@ -12,7 +12,7 @@ class CyclicVoltammetryParameters(PotentialMethodParameters):
 
     Attributes
     ----------
-    equilibration_time : float (default: 0.0)
+    equilibration_time : float
         Equilibration time in s (default: 0.0)
     begin_potential: float
         Begin potential in V (default: -0.5)
