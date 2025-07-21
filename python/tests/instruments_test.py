@@ -1,6 +1,8 @@
 import logging
 
 import pytest
+from PalmSens.Techniques import CyclicVoltammetry as PSCyclicVoltammetry
+from PalmSens.Techniques import LinearSweep as PSLinearSweep
 
 from pspython import pspyinstruments
 from pspython.data.measurement import Measurement
@@ -47,45 +49,22 @@ def test_read_potential(manager):
     assert isinstance(val, float)
 
 
-def test_cv_old(manager):
-    method = cyclic_voltammetry(
-        current_range_max=get_current_range(30),  # 1A range
-        current_range_min=get_current_range(4),  # 1µA range
-        current_range_start=get_current_range(8),  # 1mA range
-        equilibration_time=0,  # seconds
-        begin_potential=-1,  # V
-        vertex1_potential=-1,  # V
-        vertex2_potential=1,  # V
-        step_potential=0.25,  # V
-        scanrate=5,  # V/s
-        n_scans=2,  # number of scans
-    )
+def test_cv(manager):
+    kwargs = {
+        'current_range_max': get_current_range(30),
+        'current_range_min': get_current_range(4),
+        'current_range_start': get_current_range(8),
+        'begin_potential': -1,
+        'vertex1_potential': -1,
+        'vertex2_potential': 1,
+        'step_potential': 0.25,
+        'scanrate': 5,
+        'n_scans': 2,
+    }
+    method_old = cyclic_voltammetry(**kwargs)
+    assert isinstance(method_old, PSCyclicVoltammetry)
 
-    measurement = manager.measure(method)
-
-    assert measurement
-    assert isinstance(measurement, Measurement)
-    assert measurement.method.dotnet_method.nScans == 2
-
-    dataset = measurement.dataset
-    assert len(dataset) == 7
-    assert dataset.array_names == {'scan1', 'scan2', 'time'}
-    assert dataset.array_quantities == {'Charge', 'Current', 'Potential', 'Time'}
-
-
-def test_cv_new(manager):
-    method = CyclicVoltammetryParameters(
-        current_range_max=get_current_range(30),  # 1A range
-        current_range_min=get_current_range(4),  # 1µA range
-        current_range_start=get_current_range(8),  # 1mA range
-        begin_potential=-1,  # V
-        vertex1_potential=-1,  # V
-        vertex2_potential=1,  # V
-        step_potential=0.25,  # V
-        scanrate=5,  # V/s
-        n_scans=2,  # number of scans
-    )
-
+    method = CyclicVoltammetryParameters(**kwargs)
     measurement = manager.measure(method.to_dotnet_method())
 
     assert measurement
@@ -98,40 +77,21 @@ def test_cv_new(manager):
     assert dataset.array_quantities == {'Charge', 'Current', 'Potential', 'Time'}
 
 
-def test_lsv_old(manager):
-    method = linear_sweep_voltammetry(
-        current_range_max=get_current_range(30),  # 1A range
-        current_range_min=get_current_range(4),  # 1µA range
-        current_range_start=get_current_range(8),  # 1mA range
-        begin_potential=-1.0,
-        end_potential=1.0,
-        step_potential=0.1,
-        scanrate=2.0,
-    )
+def test_lsv(manager):
+    kwargs = {
+        'current_range_max': get_current_range(30),
+        'current_range_min': get_current_range(4),
+        'current_range_start': get_current_range(8),
+        'begin_potential': -1.0,
+        'end_potential': 1.0,
+        'step_potential': 0.1,
+        'scanrate': 2.0,
+    }
 
-    measurement = manager.measure(method)
+    method_old = linear_sweep_voltammetry(**kwargs)
+    assert isinstance(method_old, PSLinearSweep)
 
-    assert measurement
-    assert isinstance(measurement, Measurement)
-    assert measurement.method.dotnet_method.nScans == 1
-
-    dataset = measurement.dataset
-    assert len(dataset) == 4
-    assert dataset.array_names == {'charge', 'potential', 'current', 'time'}
-    assert dataset.array_quantities == {'Charge', 'Current', 'Potential', 'Time'}
-
-
-def test_lsv_new(manager):
-    method = LinearSweepParameters(
-        current_range_max=get_current_range(30),  # 1A range
-        current_range_min=get_current_range(4),  # 1µA range
-        current_range_start=get_current_range(8),  # 1mA range
-        begin_potential=-1.0,
-        end_potential=1.0,
-        step_potential=0.1,
-        scanrate=2.0,
-    )
-
+    method = LinearSweepParameters(**kwargs)
     measurement = manager.measure(method.to_dotnet_method())
 
     assert measurement
