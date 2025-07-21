@@ -10,6 +10,9 @@ from pspython.methods.cyclic_voltammetry import CyclicVoltammetryParameters, cyc
 logger = logging.getLogger(__name__)
 
 
+pytestmark = pytest.mark.instrument
+
+
 @pytest.fixture(scope='module')
 def manager():
     mgr = pspyinstruments.InstrumentManager()
