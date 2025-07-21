@@ -275,8 +275,8 @@ class CyclicVoltammetryParameters(BaseParameters):
         )
 
         # Set the post measurement settings for a given method
-        obj.CellOnAfterMeasurement = obj.cell_on_after_measurement
-        obj.StandbyPotential = obj.cell_on_after_measurement_potential
+        obj.CellOnAfterMeasurement = self.cell_on_after_measurement
+        obj.StandbyPotential = self.cell_on_after_measurement_potential
 
         # Set the limit settings for a given method
         obj.UseLimitMaxValue = self.use_limit_current_max

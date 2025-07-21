@@ -5,7 +5,7 @@ import pytest
 from pspython import pspyinstruments
 from pspython.data.measurement import Measurement
 from pspython.methods._shared import get_current_range
-from pspython.methods.cyclic_voltammetry import CyclicVoltammetry, cyclic_voltammetry
+from pspython.methods.cyclic_voltammetry import CyclicVoltammetryParameters, cyclic_voltammetry
 
 logger = logging.getLogger(__name__)
 
@@ -53,7 +53,7 @@ def test_cv_old(manager):
         vertex1_potential=-1,  # V
         vertex2_potential=1,  # V
         step_potential=0.25,  # V
-        scanrate=20,  # V/s
+        scanrate=5,  # V/s
         n_scans=2,  # number of scans
     )
 
@@ -70,7 +70,7 @@ def test_cv_old(manager):
 
 
 def test_cv_new(manager):
-    method = CyclicVoltammetry(
+    method = CyclicVoltammetryParameters(
         current_range_max=get_current_range(30),  # 1A range
         current_range_min=get_current_range(4),  # 1µA range
         current_range_start=get_current_range(8),  # 1mA range
@@ -79,7 +79,7 @@ def test_cv_new(manager):
         vertex1_potential=-1,  # V
         vertex2_potential=1,  # V
         step_potential=0.25,  # V
-        scanrate=20,  # V/s
+        scanrate=5,  # V/s
         n_scans=2,  # number of scans
     )
 
