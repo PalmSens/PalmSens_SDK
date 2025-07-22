@@ -4,7 +4,6 @@ from PalmSens import Method as PSMethod
 
 from ._shared import (
     convert_bool_list_to_base2,
-    get_current_range,
     set_extra_value_mask,
 )
 from .scan_method import ScanMethodParameters
@@ -16,49 +15,12 @@ class PotentialMethodParameters(ScanMethodParameters):
 
     Attributes
     ----------
-    versus_ocp_mode: int
-        Set versus OCP mode.
-            0 = disable versus OCP
-            1 = vertex 1 potential
-            2 = vertex 2 potential
-            3 = vertex 1 & 2 potential
-            4 = begin potential
-            5 = begin & vertex 1 potential
-            6 = begin & vertex 2 potential
-            7 = begin & vertex 1 & 2 potential
-    versus_ocp_max_ocp_time: int
-        Maximum OCP time in s (default: 20.0)
-    versus_ocp_stability_criterion: int = 0
-        Stability criterion in mV/s (default: 0.0)
-            0 = no stability criterion
-            > 0 is stability threshold potential/time (mV/s)
-    enable_bipot_current: bool
-        Enable bipotential current (default: False)
-    bipot_mode: int
-        Set the bipotential mode, 0 = constant, 1 = offset (default: 0)
-    bipot_potential: float
-        Set the bipotential in V (default: 0.0)
-    bipot_current_range_max: int
-        Maximum bipotential current range (default: 10 mA).
-        Use `get_current_range()` to get the range.
-    bipot_current_range_min: int
-        Minimum bipotential current range (default: 1 µA).
-        Use `get_current_range()` to get the range.
-    bipot_current_range_start: int
-        Start bipotential current range (default: 100 µA).
-        Use `get_current_range()` to get the range.
-
     record_auxiliary_input: bool
         Record auxiliary input (default: False)
     record_cell_potential: bool
         Record cell potential (default: False) [counter electrode vs ground]
     record_we_potential: bool
         Record applied working electrode potential (default: False) [reference electrode vs ground]
-
-    cell_on_after_measurement: bool
-        Cell on after measurement (default: False)
-    cell_on_after_measurement_potential: float
-        Cell on after measurement potential in V (default: 0.0)
 
     use_limit_current_max: bool
         Use limit current max (default: False).
@@ -88,19 +50,6 @@ class PotentialMethodParameters(ScanMethodParameters):
         Line order: d0 high, d1 high, d2 high, d3 high
 
     """
-
-    # advanced settings
-    versus_ocp_mode: int = 0
-    versus_ocp_max_ocp_time: float = 20.0  # Time (s)
-    versus_ocp_stability_criterion: int = 0
-
-    # bipot settings
-    enable_bipot_current: bool = False
-    bipot_mode: int = 0
-    bipot_potential: float = 0.0  # V
-    bipot_current_range_max: int = get_current_range(8)
-    bipot_current_range_min: int = get_current_range(4)
-    bipot_current_range_start: int = get_current_range(6)
 
     # record extra value settings
     record_auxiliary_input: bool = False
