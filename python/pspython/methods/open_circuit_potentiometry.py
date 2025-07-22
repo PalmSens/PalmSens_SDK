@@ -28,7 +28,7 @@ class OpenCircuitPotentiometryParameters(PotentiometryParameters):
 
     # open circuit potentiometry settings
     current: float = 0.0  # not used
-    applied_current_range: int = get_current_range(6)  # not used
+    applied_current_range: int = 0  # not used
     interval_time: float = 0.1  # Time (s)
     run_time: float = 1.0  # Time (s)
 

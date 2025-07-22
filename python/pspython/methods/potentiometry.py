@@ -72,7 +72,7 @@ class PotentiometryParameters(TimeMethodParameters):
     record_auxiliary_input: bool = False
     record_cell_potential: bool = False
     record_we_current: bool = False
-    record_we_current_range: int = get_potential_range(4)
+    record_we_current_range: int = get_current_range(4)
 
     # limit settings
     use_limit_potential_max: bool = False
