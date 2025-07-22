@@ -7,11 +7,11 @@ from ._shared import (
     get_potential_range,
     set_extra_value_mask,
 )
-from .time_method import TimeMethodParameters
+from .method import MethodParameters
 
 
 @dataclass
-class PotentiometryParameters(TimeMethodParameters):
+class PotentiometryParameters(MethodParameters):
     """Create potentiometry method parameters.
 
     Attributes

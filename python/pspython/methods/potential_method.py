@@ -6,11 +6,11 @@ from ._shared import (
     convert_bool_list_to_base2,
     set_extra_value_mask,
 )
-from .scan_method import ScanMethodParameters
+from .method import MethodParameters
 
 
 @dataclass
-class PotentialMethodParameters(ScanMethodParameters):
+class PotentialMethodParameters(MethodParameters):
     """Create a Potential method parameters.
 
     Attributes

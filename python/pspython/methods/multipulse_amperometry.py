@@ -1,4 +1,4 @@
-from .time_method import TimeMethodParameters
+from .method import MethodParameters
 
 
-class MultiplePulseAmperometryParameters(TimeMethodParameters): ...
+class MultiplePulseAmperometryParameters(MethodParameters): ...

@@ -15,10 +15,10 @@ from ._shared import (
     set_post_measurement_settings,
     set_pretreatment,
 )
-from .time_method import TimeMethodParameters
+from .method import MethodParameters
 
 
-class MultistepAmperometryParameters(TimeMethodParameters): ...
+class MultistepAmperometryParameters(MethodParameters): ...
 
 
 def multi_step_amperometry_level(**kwargs):

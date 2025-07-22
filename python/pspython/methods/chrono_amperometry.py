@@ -5,11 +5,11 @@ from PalmSens.Techniques import AmperometricDetection as PSAmperometricDetection
 from ._shared import (
     set_extra_value_mask,
 )
-from .time_method import TimeMethodParameters
+from .method import MethodParameters
 
 
 @dataclass
-class ChronoAmperometryParameters(TimeMethodParameters):
+class ChronoAmperometryParameters(MethodParameters):
     """Create chrono amperometry method parameters.
 
     Attributes
