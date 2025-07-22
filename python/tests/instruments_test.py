@@ -71,33 +71,48 @@ def test_method_limits():
 
 
 def test_method_current_range():
-    kwargs = {
-        'current_range_min': get_current_range(3),
-        'current_range_max': get_current_range(20),
-        'current_range_start': get_current_range(14),
-    }
+    crmin = get_current_range(3)
+    crmax = get_current_range(7)
+    crstart = get_current_range(6)
 
-    method = CyclicVoltammetryParameters(**kwargs)
+    method = CyclicVoltammetryParameters(
+        current_range_min=crmin,
+        current_range_max=crmax,
+        current_range_start=crstart,
+    )
     obj = method.to_dotnet_method()
 
+    supported_ranges = obj.Ranging.SupportedCurrentRanges
+
+    assert crmin in supported_ranges
+    assert crmax in supported_ranges
+    assert crstart in supported_ranges
+
     assert obj.Ranging.MinimumCurrentRange.Description == '100 nA'
-    assert obj.Ranging.MaximumCurrentRange.Description == '5 mA'
-    assert obj.Ranging.StartCurrentRange.Description == '32 uA'
+    assert obj.Ranging.MaximumCurrentRange.Description == '1 mA'
+    assert obj.Ranging.StartCurrentRange.Description == '100 uA'
 
 
 def test_method_potential_range():
-    kwargs = {
-        'potential_range_min': get_potential_range(0),
-        'potential_range_max': get_potential_range(5),
-        'potential_range_start': get_potential_range(3),
-    }
+    potmin = get_potential_range(0)
+    potmax = get_potential_range(4)
+    potstart = get_potential_range(1)
 
-    method = PotentiometryParameters(**kwargs)
+    method = PotentiometryParameters(
+        potential_range_min=potmin,
+        potential_range_max=potmax,
+        potential_range_start=potstart,
+    )
     obj = method.to_dotnet_method()
+    supported_ranges = obj.RangingPotential.SupportedPotentialRanges
+
+    assert potmin in supported_ranges
+    assert potmax in supported_ranges
+    assert potstart in supported_ranges
 
     assert obj.RangingPotential.MinimumPotentialRange.Description == '1 mV'
-    assert obj.RangingPotential.MaximumPotentialRange.Description == '200 mV'
-    assert obj.RangingPotential.StartPotentialRange.Description == '50 mV'
+    assert obj.RangingPotential.MaximumPotentialRange.Description == '100 mV'
+    assert obj.RangingPotential.StartPotentialRange.Description == '10 mV'
 
 
 def test_cv(manager):
