@@ -245,7 +245,6 @@ def test_ocp(manager):
         'potential_range_start': get_potential_range(7),
         'interval_time': 0.1,
         'run_time': 1.0,
-        'record_we_current': True,
     }
 
     method_old = open_circuit_potentiometry(**kwargs)
@@ -261,5 +260,5 @@ def test_ocp(manager):
     dataset = measurement.dataset
     assert len(dataset) == 2
 
-    assert dataset.array_names == {'potential', 'current', 'time', 'charge'}
-    assert dataset.array_quantities == {'Current', 'Potential', 'Time', 'Charge'}
+    assert dataset.array_names == {'potential', 'time'}
+    assert dataset.array_quantities == {'Potential', 'Time'}
