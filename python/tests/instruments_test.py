@@ -5,12 +5,18 @@ from PalmSens import Techniques
 
 from pspython import pspyinstruments
 from pspython.data.measurement import Measurement
-from pspython.methods._shared import get_current_range, get_potential_range
+from pspython.methods._shared import (
+    get_current_range,
+    get_potential_range,
+    multi_step_amperometry_level,
+)
 from pspython.methods.techniques import (
     ChronoAmperometryParameters,
     ChronopotentiometryParameters,
     CyclicVoltammetryParameters,
+    DifferentialPulseParameters,
     LinearSweepParameters,
+    MultiStepAmperometryParameters,
     OpenCircuitPotentiometryParameters,
     SquareWaveParameters,
 )
@@ -18,7 +24,9 @@ from pspython.methods.techniques_old import (
     chronoamperometry,
     chronopotentiometry,
     cyclic_voltammetry,
+    differential_pulse_voltammetry,
     linear_sweep_voltammetry,
+    multi_step_amperometry,
     open_circuit_potentiometry,
     square_wave_voltammetry,
 )
@@ -286,3 +294,62 @@ def test_ca(manager):
 
     assert dataset.array_names == {'potential', 'time', 'charge', 'current'}
     assert dataset.array_quantities == {'Potential', 'Time', 'Charge', 'Current'}
+
+
+def test_dp(manager):
+    kwargs = {
+        'begin_potential': -0.4,
+        'end_potential': 0.4,
+        'step_potential': 0.15,
+        'pulse_potential': 0.10,
+        'pulse_time': 0.1,
+        'scan_rate': 0.5,
+    }
+
+    method_old = differential_pulse_voltammetry(**kwargs)
+    assert isinstance(method_old, Techniques.DifferentialPulse)
+
+    method = DifferentialPulseParameters(**kwargs)
+    measurement = manager.measure(method.to_dotnet_method())
+
+    assert measurement
+    assert isinstance(measurement, Measurement)
+
+    dataset = measurement.dataset
+    assert len(dataset) == 3
+
+    assert dataset.array_names == {'potential', 'time', 'current'}
+    assert dataset.array_quantities == {'Potential', 'Time', 'Current'}
+
+
+def test_msa(manager):
+    kwargs = {
+        'equilibration_time': 0.0,
+        'interval_time': 0.01,
+        'n_cycles': 2,
+        'levels': [
+            multi_step_amperometry_level(level=0.5, duration=0.1),
+            multi_step_amperometry_level(level=0.3, duration=0.2),
+        ],
+    }
+
+    method_old = multi_step_amperometry(**kwargs)
+    assert isinstance(method_old, Techniques.MultistepAmperometry)
+
+    method = MultiStepAmperometryParameters(**kwargs)
+    measurement = manager.measure(method.to_dotnet_method())
+
+    assert measurement
+    assert isinstance(measurement, Measurement)
+
+    dataset = measurement.dataset
+    assert len(dataset) == 5
+
+    assert dataset.array_names == {
+        'potential',
+        'time',
+        'current',
+        'charge',
+        'MeasuredStepStartIndex',
+    }
+    assert dataset.array_quantities == {'', 'Charge', 'Potential', 'Time', 'Current'}
