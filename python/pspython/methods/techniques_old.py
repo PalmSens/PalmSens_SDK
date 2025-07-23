@@ -11,3 +11,15 @@ def linear_sweep_voltammetry(**kwargs):
     """Alias for LinearSweep for backwards compatibility"""
     lsv = techniques.LinearSweepParameters(**kwargs)
     return lsv.to_dotnet_method()
+
+
+def square_wave_voltammetry(**kwargs):
+    """Alias for SquareWave for backwards compatibility"""
+    swv = techniques.SquareWaveParameters(**kwargs)
+    return swv.to_dotnet_method()
+
+
+def differential_pulse_voltammetry(**kwargs):
+    """Alias for DifferentialPulse for backwards compatibility"""
+    dpv = techniques.DifferentialPulseParameters(**kwargs)
+    return dpv.to_dotnet_method()

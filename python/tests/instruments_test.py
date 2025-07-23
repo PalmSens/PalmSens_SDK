@@ -12,9 +12,16 @@ from pspython.methods.open_circuit_potentiometry import (
     open_circuit_potentiometry,
 )
 from pspython.methods.potentiometry import PotentiometryParameters, chronopotentiometry
-from pspython.methods.squarewave import SquareWaveParameters, square_wave_voltammetry
-from pspython.methods.techniques import CyclicVoltammetryParameters, LinearSweepParameters
-from pspython.methods.techniques_old import cyclic_voltammetry, linear_sweep_voltammetry
+from pspython.methods.techniques import (
+    CyclicVoltammetryParameters,
+    LinearSweepParameters,
+    SquareWaveParameters,
+)
+from pspython.methods.techniques_old import (
+    cyclic_voltammetry,
+    linear_sweep_voltammetry,
+    square_wave_voltammetry,
+)
 
 logger = logging.getLogger(__name__)
 
