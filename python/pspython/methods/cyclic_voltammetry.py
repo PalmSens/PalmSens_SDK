@@ -1,10 +1,12 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
+from typing import Optional
 
 import PalmSens
 from PalmSens import Method as PSMethod
+from PalmSens import MuxMethod as PSMuxMethod
 from PalmSens.Techniques import CyclicVoltammetry as PSCyclicVoltammetry
 
-from ._shared import get_current_range
+from ._shared import get_current_range, get_potential_range
 from .potential_method import PotentialMethodParameters
 
 
@@ -36,17 +38,30 @@ class AutorangingCurrentSettings:
 
 
 @dataclass
-class AutorangingBipotCurrentSettings:
-    """Set the autoranging bipot current for a given method.
+class AutorangingPotentialSettings:
+    """Set the autoranging potential for a given method.
 
     Attributes
     ----------
-
+    current_range_max: int
+        Maximum potential range (default: 1V).
+        Use `get_potential_range()` to get the range.
+    potential_range_min: int
+        Minimum potential range (default: 10mV).
+        Use `get_potential_range()` to get the range.
+    potential_range_start: int
+        Start potential range (default: 1V).
+        Use `get_potential_range()` to get the range.
     """
 
+    potential_range_max = get_potential_range(7)
+    potential_range_min = get_potential_range(1)
+    potential_range_start = get_potential_range(7)
 
-@dataclass
-class AutorangingPotentialSettings: ...
+    def add_to_object(self, obj):
+        obj.RangingPotential.MaximumPotentialRange = self.potential_range_max
+        obj.RangingPotential.MinimumPotentialRange = self.potential_range_min
+        obj.RangingPotential.StartPotentialRange = self.potential_range_start
 
 
 @dataclass
@@ -218,7 +233,6 @@ class PotentialLimitSettings:
         Use limit potential min (default: False)
     limit_potential_min: float
         Limit potential min in V (default: 0.0)
-
     """
 
     use_limit_potential_max: bool = False
@@ -247,7 +261,6 @@ class ChargeLimitSettings:
         Use limit charge min (default: False)
     limit_charge_min: float
         Limit charge min in µC (default: 0.0)
-
     """
 
     use_limit_charge_max: bool = False
@@ -336,11 +349,99 @@ class TriggerAtMeasurementSettings:
 
 
 @dataclass
-class MultiplexerSettings: ...
+class MultiplexerSettings:
+    """Set the multiplexer settings for a given method.
+
+    Attributes
+    ----------
+    set_mux_mode: int = -1
+        Set multiplexer mode
+           -1 = No multiplexer (disable)
+            0 = Consecutive
+            1 = Alternate
+    set_mux_channels: list[bool]
+        Set multiplexer channels as a list of bools for each channel (channel 1, channel 2, ..., channel 128).
+        In consecutive mode all selections are valid.
+        In alternating mode the first channel must be selected and all other
+        channels should be consequtive i.e. (channel 1, channel 2, channel 3 and so on).
+    set_mux8r2_settings: Optional[PalmSens.Method.MuxSettings]
+        Initialize the settings for the MUX8R2 multiplexer (default: None).
+        use `get_mux8r2_settings()` to create the settings.
+    """
+
+    set_mux_mode: int = -1
+    set_mux_channels: list[bool] = field(
+        default_factory=lambda: [False, False, False, False, False, False, False, False]
+    )
+    set_mux8r2_settings: Optional[PalmSens.Method.MuxSettings] = None
+
+    def add_to_object(self, obj):
+        # Create a mux8r2 multiplexer settings settings object
+        obj.MuxMethod = PSMuxMethod(self.set_mux_mode)
+
+        # disable all mux channels
+        for i in range(len(obj.UseMuxChannel)):
+            obj.UseMuxChannel[i] = False
+
+        # set the selected mux channels
+        for i, use_channel in enumerate(self.set_mux_channels):
+            obj.UseMuxChannel[i] = use_channel
+
+        if self.set_mux8r2_settings:
+            obj.MuxSett.ConnSEWE = self.set_mux8r2_settings.ConnSEWE
+            obj.MuxSett.ConnectCERE = self.set_mux8r2_settings.ConnectCERE
+            obj.MuxSett.CommonCERE = self.set_mux8r2_settings.CommonCERE
+            obj.MuxSett.UnselWE = self.set_mux8r2_settings.UnselWE
 
 
 @dataclass
-class FilterSettings: ...
+class FilterSettings:
+    """Set the filter settings for a given method.
+
+    Attributes
+    ----------
+    dc_mains_filter: int
+        Set the DC mains filter in Hz. Set to 50 Hz or 60 Hz depending on your region (default: 50).
+    default_curve_post_processing_filter: int = 0
+        Set the default curve post processing filter (default: 0)
+           -1 = no filter
+            0 = spike rejection
+            1 = spike rejection + Savitsky-golay window 5
+            2 = spike rejection + Savitsky-golay window 9
+            3 = spike rejection + Savitsky-golay window 15
+            4 = spike rejection + Savitsky-golay window 25
+    """
+
+    dc_mains_filter: int = 50  # Hz
+    default_curve_post_processing_filter: int = 0
+
+    def add_to_object(self, obj):
+        obj.DCMainsFilter = self.dc_mains_filter
+        obj.DefaultCurvePostProcessingFilter = self.default_curve_post_processing_filter
+
+
+@dataclass
+class OtherSettings:
+    """Sets general/other settings for a given method.
+
+    Attributes
+    ----------
+    save_on_internal_storage: bool
+        Save on internal storage (default: False)
+
+    use_hardware_sync: bool
+        Use hardware synchronization with other channels/instruments (default: False)
+    """
+
+    # internal storage
+    save_on_internal_storage: bool = False
+
+    # use hardware synchronization with other channels/instruments
+    use_hardware_sync: bool = False
+
+    def add_to_object(self, obj):
+        obj.SaveOnDevice = self.save_on_internal_storage
+        obj.UseHWSync = self.use_hardware_sync
 
 
 @dataclass
