@@ -29,7 +29,7 @@ class AutorangingCurrentSettings:
     current_range_min: int = get_current_range(4)
     current_range_start: int = get_current_range(6)
 
-    def add_to_object(self, obj):
+    def add_to_object(self, *, obj):
         obj.Ranging.MaximumCurrentRange = self.current_range_max
         obj.Ranging.MinimumCurrentRange = self.current_range_min
         obj.Ranging.StartCurrentRange = self.current_range_start
@@ -56,7 +56,7 @@ class AutorangingPotentialSettings:
     potential_range_min = get_potential_range(1)
     potential_range_start = get_potential_range(7)
 
-    def add_to_object(self, obj):
+    def add_to_object(self, *, obj):
         obj.RangingPotential.MaximumPotentialRange = self.potential_range_max
         obj.RangingPotential.MinimumPotentialRange = self.potential_range_min
         obj.RangingPotential.StartPotentialRange = self.potential_range_start
@@ -83,7 +83,7 @@ class PretreatmentSettings:
     conditioning_potential: float = 0.0
     conditioning_time: float = 0.0
 
-    def add_to_object(self, obj):
+    def add_to_object(self, *, obj):
         obj.DepositionPotential = self.deposition_potential
         obj.DepositionTime = self.deposition_time
         obj.ConditioningPotential = self.conditioning_potential
@@ -154,7 +154,7 @@ class BipotSettings:
     bipot_current_range_min: int = get_current_range(4)
     bipot_current_range_start: int = get_current_range(6)
 
-    def add_to_object(self, obj):
+    def add_to_object(self, *, obj):
         obj.BiPotModePS = PalmSens.Method.EnumPalmSensBipotMode(self.bipot_mode)
         obj.BiPotPotential = self.bipot_potential
         obj.BipotRanging.MaximumCurrentRange = self.bipot_current_range_max
@@ -181,7 +181,7 @@ class PostMeasurementSettings:
     cell_on_after_measurement: bool = False
     cell_on_after_measurement_potential: float = 0.0  # V
 
-    def add_to_object(self, obj):
+    def add_to_object(self, *, obj):
         obj.CellOnAfterMeasurement = self.cell_on_after_measurement
         obj.StandbyPotential = self.cell_on_after_measurement_potential
 
@@ -210,7 +210,7 @@ class CurrentLimitSettings:
     use_limit_current_min: bool = False
     limit_current_min: float = 0.0  # µA
 
-    def add_to_object(self, obj):
+    def add_to_object(self, *, obj):
         obj.UseLimitMaxValue = self.use_limit_current_max
         obj.LimitMaxValue = self.limit_current_max
         obj.UseLimitMinValue = self.use_limit_current_min
@@ -238,7 +238,7 @@ class PotentialLimitSettings:
     use_limit_potential_min: bool = False
     limit_potential_min: float = 0.0  # V
 
-    def add_to_object(self, obj):
+    def add_to_object(self, *, obj):
         obj.UseLimitMaxValue = self.use_limit_potential_max
         obj.LimitMaxValue = self.limit_potential_max
         obj.UseLimitMinValue = self.use_limit_potential_min
@@ -266,7 +266,7 @@ class ChargeLimitSettings:
     use_limit_charge_min: bool = False
     limit_charge_min: float = 0.0  # in µC
 
-    def add_to_object(self, obj):
+    def add_to_object(self, *, obj):
         obj.UseChargeLimitMax = self.use_limit_charge_max
         obj.ChargeLimitMax = self.limit_charge_max
         obj.UseChargeLimitMin = self.use_limit_charge_min
@@ -289,7 +289,7 @@ class IrDropCompensationSettings:
     use_ir_compensation: bool = False
     ir_compensation: float = 0.0  # Ω
 
-    def add_to_object(self, obj):
+    def add_to_object(self, *, obj):
         obj.UseIRDropComp = self.use_ir_compensation
         obj.IRDropCompRes = self.ir_compensation
 
@@ -311,7 +311,7 @@ class TriggerAtEquilibrationSettings:
     trigger_at_equilibration: bool = False
     trigger_at_equilibration_lines: tuple[bool, bool, bool, bool] = (False, False, False, False)
 
-    def add_to_object(self, obj):
+    def add_to_object(self, *, obj):
         obj.UseTriggerOnEquil = self.trigger_at_equilibration
         lines = 0
         for i, set_high in enumerate(self.trigger_at_equilibration_lines):
@@ -337,7 +337,7 @@ class TriggerAtMeasurementSettings:
     trigger_at_measurement: bool = False
     trigger_at_measurement_lines: tuple[bool, bool, bool, bool] = (False, False, False, False)
 
-    def add_to_object(self, obj):
+    def add_to_object(self, *, obj):
         obj.UseTriggerOnStart = self.trigger_at_measurement
         lines = 0
         for i, set_high in enumerate(self.trigger_at_measurement_lines):
@@ -373,7 +373,7 @@ class MultiplexerSettings:
     )
     set_mux8r2_settings: Optional[PalmSens.Method.MuxSettings] = None
 
-    def add_to_object(self, obj):
+    def add_to_object(self, *, obj):
         # Create a mux8r2 multiplexer settings settings object
         obj.MuxMethod = PSMuxMethod(self.set_mux_mode)
 
@@ -413,7 +413,7 @@ class FilterSettings:
     dc_mains_filter: int = 50  # Hz
     default_curve_post_processing_filter: int = 0
 
-    def add_to_object(self, obj):
+    def add_to_object(self, *, obj):
         obj.DCMainsFilter = self.dc_mains_filter
         obj.DefaultCurvePostProcessingFilter = self.default_curve_post_processing_filter
 
@@ -437,7 +437,7 @@ class OtherSettings:
     # use hardware synchronization with other channels/instruments
     use_hardware_sync: bool = False
 
-    def add_to_object(self, obj):
+    def add_to_object(self, *, obj):
         obj.SaveOnDevice = self.save_on_internal_storage
         obj.UseHWSync = self.use_hardware_sync
 

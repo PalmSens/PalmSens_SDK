@@ -7,15 +7,14 @@ from pspython import pspyinstruments
 from pspython.data.measurement import Measurement
 from pspython.methods._shared import get_current_range, get_potential_range
 from pspython.methods.chrono_amperometry import ChronoAmperometryParameters, chronoamperometry
-from pspython.methods.linear_sweep import LinearSweepParameters, linear_sweep_voltammetry
 from pspython.methods.open_circuit_potentiometry import (
     OpenCircuitPotentiometryParameters,
     open_circuit_potentiometry,
 )
 from pspython.methods.potentiometry import PotentiometryParameters, chronopotentiometry
 from pspython.methods.squarewave import SquareWaveParameters, square_wave_voltammetry
-from pspython.methods.techniques import CyclicVoltammetryParameters
-from pspython.methods.techniques_old import cyclic_voltammetry
+from pspython.methods.techniques import CyclicVoltammetryParameters, LinearSweepParameters
+from pspython.methods.techniques_old import cyclic_voltammetry, linear_sweep_voltammetry
 
 logger = logging.getLogger(__name__)
 
