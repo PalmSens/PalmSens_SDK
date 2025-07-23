@@ -15,6 +15,8 @@ from pspython.methods.techniques import (
     ChronopotentiometryParameters,
     CyclicVoltammetryParameters,
     DifferentialPulseParameters,
+    ElectrochemicalImpedanceSpectroscopyParameters,
+    GalvanostaticImpedanceSpectroscopyParameters,
     LinearSweepParameters,
     MultiStepAmperometryParameters,
     OpenCircuitPotentiometryParameters,
@@ -25,6 +27,8 @@ from pspython.methods.techniques_old import (
     chronopotentiometry,
     cyclic_voltammetry,
     differential_pulse_voltammetry,
+    electrochemical_impedance_spectroscopy,
+    galvanostatic_impedance_spectroscopy,
     linear_sweep_voltammetry,
     multi_step_amperometry,
     open_circuit_potentiometry,
@@ -353,3 +357,129 @@ def test_msa(manager):
         'MeasuredStepStartIndex',
     }
     assert dataset.array_quantities == {'', 'Charge', 'Potential', 'Time', 'Current'}
+
+
+def test_eis(manager):
+    kwargs = {
+        'n_frequencies': 7,
+        'max_frequency': 1e5,
+        'min_frequency': 1e3,
+    }
+
+    method_old = electrochemical_impedance_spectroscopy(**kwargs)
+    assert isinstance(method_old, Techniques.ImpedimetricMethod)
+
+    method = ElectrochemicalImpedanceSpectroscopyParameters(**kwargs)
+    measurement = manager.measure(method.to_dotnet_method())
+
+    assert measurement
+    assert isinstance(measurement, Measurement)
+
+    dataset = measurement.dataset
+    assert len(dataset) == 22
+
+    assert dataset.array_names == {
+        'Capacitance',
+        "Capacitance'",
+        "Capacitance''",
+        'Eac',
+        'Frequency',
+        'Iac',
+        'Idc',
+        'miDC',
+        'nPointsAC',
+        'potential',
+        'realtintac',
+        'time',
+        'ymean',
+        'Phase',
+        'Y',
+        'YIm',
+        'YRe',
+        'Z',
+        'ZIm',
+        'ZRe',
+        'debugtext',
+        'mEdc',
+    }
+    assert dataset.array_quantities == {
+        "-C''",
+        '-Phase',
+        "-Z''",
+        'C',
+        "C'",
+        'Current',
+        'Frequency',
+        None,
+        'Potential',
+        'Time',
+        'Y',
+        "Y'",
+        "Y''",
+        'Z',
+        "Z'",
+    }
+
+
+def test_gis(manager):
+    kwargs = {
+        'applied_current_range': get_current_range(5),
+        'equilibration_time': 0.0,
+        'n_frequencies': 7,
+        'max_frequency': 1e5,
+        'min_frequency': 1e3,
+    }
+
+    method_old = galvanostatic_impedance_spectroscopy(**kwargs)
+    assert isinstance(method_old, Techniques.ImpedimetricGstatMethod)
+
+    method = GalvanostaticImpedanceSpectroscopyParameters(**kwargs)
+    measurement = manager.measure(method.to_dotnet_method())
+
+    assert measurement
+    assert isinstance(measurement, Measurement)
+
+    dataset = measurement.dataset
+    assert len(dataset) == 22
+
+    assert dataset.array_names == {
+        'Capacitance',
+        "Capacitance'",
+        "Capacitance''",
+        'Eac',
+        'Frequency',
+        'Iac',
+        'Idc',
+        'miDC',
+        'nPointsAC',
+        'potential',
+        'realtintac',
+        'time',
+        'ymean',
+        'Phase',
+        'Y',
+        'YIm',
+        'YRe',
+        'Z',
+        'ZIm',
+        'ZRe',
+        'debugtext',
+        'mEdc',
+    }
+    assert dataset.array_quantities == {
+        "-C''",
+        '-Phase',
+        "-Z''",
+        'C',
+        "C'",
+        'Current',
+        'Frequency',
+        None,
+        'Potential',
+        'Time',
+        'Y',
+        "Y'",
+        "Y''",
+        'Z',
+        "Z'",
+    }
