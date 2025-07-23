@@ -1,18 +1,12 @@
 import logging
 
 import pytest
-from PalmSens.Techniques import AmperometricDetection as PSAmperometricDetection
-from PalmSens.Techniques import CyclicVoltammetry as PSCyclicVoltammetry
-from PalmSens.Techniques import LinearSweep as PSLinearSweep
-from PalmSens.Techniques import OpenCircuitPotentiometry as PSOpenCircuitPotentiometry
-from PalmSens.Techniques import Potentiometry as PSPotentiometry
-from PalmSens.Techniques import SquareWave as PSSquareWave
+from PalmSens import Techniques
 
 from pspython import pspyinstruments
 from pspython.data.measurement import Measurement
 from pspython.methods._shared import get_current_range, get_potential_range
 from pspython.methods.chrono_amperometry import ChronoAmperometryParameters, chronoamperometry
-from pspython.methods.cyclic_voltammetry import CyclicVoltammetryParameters, cyclic_voltammetry
 from pspython.methods.linear_sweep import LinearSweepParameters, linear_sweep_voltammetry
 from pspython.methods.open_circuit_potentiometry import (
     OpenCircuitPotentiometryParameters,
@@ -20,6 +14,8 @@ from pspython.methods.open_circuit_potentiometry import (
 )
 from pspython.methods.potentiometry import PotentiometryParameters, chronopotentiometry
 from pspython.methods.squarewave import SquareWaveParameters, square_wave_voltammetry
+from pspython.methods.techniques import CyclicVoltammetryParameters
+from pspython.methods.techniques_old import cyclic_voltammetry
 
 logger = logging.getLogger(__name__)
 
@@ -135,7 +131,7 @@ def test_cv(manager):
         'n_scans': 2,
     }
     method_old = cyclic_voltammetry(**kwargs)
-    assert isinstance(method_old, PSCyclicVoltammetry)
+    assert isinstance(method_old, Techniques.CyclicVoltammetry)
 
     method = CyclicVoltammetryParameters(**kwargs)
     measurement = manager.measure(method.to_dotnet_method())
@@ -162,7 +158,7 @@ def test_lsv(manager):
     }
 
     method_old = linear_sweep_voltammetry(**kwargs)
-    assert isinstance(method_old, PSLinearSweep)
+    assert isinstance(method_old, Techniques.LinearSweep)
 
     method = LinearSweepParameters(**kwargs)
     measurement = manager.measure(method.to_dotnet_method())
@@ -193,7 +189,7 @@ def test_swv(manager):
     }
 
     method_old = square_wave_voltammetry(**kwargs)
-    assert isinstance(method_old, PSSquareWave)
+    assert isinstance(method_old, Techniques.SquareWave)
 
     method = SquareWaveParameters(**kwargs)
     measurement = manager.measure(method.to_dotnet_method())
@@ -221,7 +217,7 @@ def test_cp(manager):
     }
 
     method_old = chronopotentiometry(**kwargs)
-    assert isinstance(method_old, PSPotentiometry)
+    assert isinstance(method_old, Techniques.Potentiometry)
 
     method = PotentiometryParameters(**kwargs)
     measurement = manager.measure(method.to_dotnet_method())
@@ -247,7 +243,7 @@ def test_ocp(manager):
     }
 
     method_old = open_circuit_potentiometry(**kwargs)
-    assert isinstance(method_old, PSOpenCircuitPotentiometry)
+    assert isinstance(method_old, Techniques.OpenCircuitPotentiometry)
 
     method = OpenCircuitPotentiometryParameters(**kwargs)
     measurement = manager.measure(method.to_dotnet_method())
@@ -270,7 +266,7 @@ def test_ca(manager):
     }
 
     method_old = chronoamperometry(**kwargs)
-    assert isinstance(method_old, PSAmperometricDetection)
+    assert isinstance(method_old, Techniques.AmperometricDetection)
 
     method = ChronoAmperometryParameters(**kwargs)
     measurement = manager.measure(method.to_dotnet_method())

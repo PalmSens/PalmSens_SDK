@@ -1,18 +1,5 @@
 from PalmSens.Techniques import MethodScriptSandbox
 
-from .methods import (
-    chronoamperometry,
-    chronopotentiometry,
-    cyclic_voltammetry,
-    differential_pulse_voltammetry,
-    electrochemical_impedance_spectroscopy,
-    galvanostatic_impedance_spectroscopy,
-    linear_sweep_voltammetry,
-    multi_step_amperometry,
-    multi_step_amperometry_level,
-    open_circuit_potentiometry,
-    square_wave_voltammetry,
-)
 from .methods._shared import (
     get_current_range,
     get_method_estimated_duration,
@@ -34,6 +21,19 @@ from .methods._shared import (
     set_trigger_at_measurement_settings,
     set_versus_ocp,
 )
+from .methods.techniques_old import (
+    # chronoamperometry,
+    # chronopotentiometry,
+    cyclic_voltammetry,
+    # differential_pulse_voltammetry,
+    # electrochemical_impedance_spectroscopy,
+    # galvanostatic_impedance_spectroscopy,
+    # linear_sweep_voltammetry,
+    # multi_step_amperometry,
+    # multi_step_amperometry_level,
+    # open_circuit_potentiometry,
+    # square_wave_voltammetry,
+)
 
 
 def method_script_sandbox(method_script: str) -> MethodScriptSandbox:
@@ -54,17 +54,17 @@ def method_script_sandbox(method_script: str) -> MethodScriptSandbox:
 
 
 __all__ = [
-    'chronoamperometry',
-    'chronopotentiometry',
+    # 'chronoamperometry',
+    # 'chronopotentiometry',
     'cyclic_voltammetry',
-    'differential_pulse_voltammetry',
-    'electrochemical_impedance_spectroscopy',
-    'galvanostatic_impedance_spectroscopy',
-    'linear_sweep_voltammetry',
-    'multi_step_amperometry',
-    'multi_step_amperometry_level',
-    'open_circuit_potentiometry',
-    'square_wave_voltammetry',
+    # 'differential_pulse_voltammetry',
+    # 'electrochemical_impedance_spectroscopy',
+    # 'galvanostatic_impedance_spectroscopy',
+    # 'linear_sweep_voltammetry',
+    # 'multi_step_amperometry',
+    # 'multi_step_amperometry_level',
+    # 'open_circuit_potentiometry',
+    # 'square_wave_voltammetry',
     'method_script_sandbox',
     'get_current_range',
     'get_potential_range',
