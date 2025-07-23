@@ -6,9 +6,9 @@ from PalmSens import Techniques
 from pspython import pspyinstruments
 from pspython.data.measurement import Measurement
 from pspython.methods._shared import get_current_range, get_potential_range
-from pspython.methods.potentiometry import PotentiometryParameters, chronopotentiometry
 from pspython.methods.techniques import (
     ChronoAmperometryParameters,
+    ChronopotentiometryParameters,
     CyclicVoltammetryParameters,
     LinearSweepParameters,
     OpenCircuitPotentiometryParameters,
@@ -16,6 +16,7 @@ from pspython.methods.techniques import (
 )
 from pspython.methods.techniques_old import (
     chronoamperometry,
+    chronopotentiometry,
     cyclic_voltammetry,
     linear_sweep_voltammetry,
     open_circuit_potentiometry,
@@ -106,7 +107,7 @@ def test_method_potential_range():
     potmax = get_potential_range(4)
     potstart = get_potential_range(1)
 
-    method = PotentiometryParameters(
+    method = ChronopotentiometryParameters(
         potential_range_min=potmin,
         potential_range_max=potmax,
         potential_range_start=potstart,
@@ -224,7 +225,7 @@ def test_cp(manager):
     method_old = chronopotentiometry(**kwargs)
     assert isinstance(method_old, Techniques.Potentiometry)
 
-    method = PotentiometryParameters(**kwargs)
+    method = ChronopotentiometryParameters(**kwargs)
     measurement = manager.measure(method.to_dotnet_method())
 
     assert measurement

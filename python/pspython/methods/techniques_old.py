@@ -41,3 +41,21 @@ def open_circuit_potentiometry(**kwargs):
     """Alias for backwards compatibility."""
     method = techniques.OpenCircuitPotentiometryParameters(**kwargs)
     return method.to_dotnet_method()
+
+
+def chronopotentiometry(**kwargs):
+    """Alias for backwards compatibility."""
+    method = techniques.ChronopotentiometryParameters(**kwargs)
+    return method.to_dotnet_method()
+
+
+def electrochemical_impedance_spectroscopy(**kwargs):
+    """Alias for backwards compatibility."""
+    method = techniques.ElectrochemicalImpedanceSpectroscopyParameters(**kwargs)
+    return method.to_dotnet_method()
+
+
+def galvanostatic_impedance_spectroscopy(**kwargs):
+    """Alias for backwards compatibility."""
+    method = techniques.GalvanostaticImpedanceSpectroscopyParameters(**kwargs)
+    return method.to_dotnet_method()

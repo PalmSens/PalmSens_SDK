@@ -1,6 +1,7 @@
 from dataclasses import dataclass, field
 
 from PalmSens import Techniques
+from PalmSens.Techniques.Impedance import enumFrequencyType, enumScanType
 
 from ._shared import get_current_range, multi_step_amperometry_level
 from .settings import (
@@ -397,3 +398,177 @@ class OpenCircuitPotentiometryParameters(
         #     record_we_current=self.record_we_current,
         #     record_we_current_range=self.record_we_current_range,
         # )
+
+
+@dataclass
+class ChronopotentiometryParameters(
+    BaseParameters,
+    AutorangingCurrentSettings,
+    AutorangingPotentialSettings,
+    PretreatmentSettings,
+    PostMeasurementSettings,
+    PotentialLimitSettings,
+    TriggerAtMeasurementSettings,
+    FilterSettings,
+    MultiplexerSettings,
+    OtherSettings,
+):
+    """Create potentiometry method parameters.
+
+    Attributes
+    ----------
+    current : float
+        Current in applied current range (default: 0.0)
+    applied_current_range : PalmSens.CurrentRange
+        Applied current range (default: 100 µA).
+        Use `get_current_range()` to get the range.
+    interval_time : float
+        Interval time in s (default: 0.1)
+    run_time : float
+        Run time in s (default: 1.0)
+
+    record_auxiliary_input : bool
+        Record auxiliary input (default: False)
+    record_cell_potential : bool
+        Record cell potential (default: False) [counter electrode vs ground]
+    record_we_current : bool
+        Record working electrode current (default: False)
+    record_we_current_range: int=get_potential_range(4)
+        Record working electrode current range (default: 1 µA)
+        Use `get_current_range()` to get the range.
+    """
+
+    current: float = 0.0  # in applied current range
+    applied_current_range: int = get_current_range(6)  # in applied current range
+    interval_time: float = 0.1  # Time (s)
+    run_time: float = 1.0  # Time (s)
+
+    _PSMethod = Techniques.Potentiometry
+
+    record_auxiliary_input: bool = False
+    record_cell_potential: bool = False
+    record_we_current: bool = False
+    record_we_current_range: int = get_current_range(4)
+
+    def add_to_object(self, *, obj):
+        """Update method with potentiometry settings."""
+        obj.Current = self.current
+        obj.AppliedCurrentRange = self.applied_current_range
+        obj.IntervalTime = self.interval_time
+        obj.RunTime = self.run_time
+
+        # set_extra_value_mask(
+        #     obj,
+        #     record_auxiliary_input=self.record_auxiliary_input,
+        #     record_cell_potential=self.record_cell_potential,
+        #     record_we_current=self.record_we_current,
+        #     record_we_current_range=self.applied_current_range,
+        # )
+
+
+@dataclass
+class ElectrochemicalImpedanceSpectroscopyParameters(
+    BaseParameters,
+    AutorangingCurrentSettings,
+    AutorangingPotentialSettings,
+    PretreatmentSettings,
+    VersusOcpSettings,
+    PostMeasurementSettings,
+    TriggerAtMeasurementSettings,
+    TriggerAtEquilibrationSettings,
+    MultiplexerSettings,
+    OtherSettings,
+):
+    """Create potentiometry method parameters.
+
+    Attributes
+    ----------
+    equilibration_time : float
+        Equilibration time in s (default: 0.0)
+    dc_potential : float
+        DC potential in V (default: 0.0)
+    ac_potential : float
+        AC potential in V RMS (default: 0.01)
+    n_frequencies : int
+        Number of frequencies (default: 11)
+    max_frequency : float
+        Maximum frequency in Hz (default: 1e5)
+    min_frequency : float
+        Minimum frequency in Hz (default: 1e3)
+    """
+
+    equilibration_time: float = 0.0  # Time (s)
+    dc_potential: float = 0.0  # in V
+    ac_potential: float = 0.01  # in V RMS
+    n_frequencies: float = 11  # Number of frequencies
+    max_frequency: float = 1e5  # in Hz
+    min_frequency: float = 1e3  # in Hz
+
+    _PSMethod = Techniques.ImpedimetricMethod
+
+    def add_to_object(self, *, obj):
+        """Update method with potentiometry settings."""
+
+        obj.ScanType = enumScanType.Fixed
+        obj.FreqType = enumFrequencyType.Scan
+        obj.EquilibrationTime = self.equilibration_time
+        obj.Potential = self.dc_potential
+        obj.Eac = self.ac_potential
+        obj.nFrequencies = self.n_frequencies
+        obj.MaxFrequency = self.max_frequency
+        obj.MinFrequency = self.min_frequency
+
+
+@dataclass
+class GalvanostaticImpedanceSpectroscopyParameters(
+    BaseParameters,
+    AutorangingCurrentSettings,
+    AutorangingPotentialSettings,
+    PretreatmentSettings,
+    PostMeasurementSettings,
+    TriggerAtEquilibrationSettings,
+    TriggerAtMeasurementSettings,
+    MultiplexerSettings,
+    OtherSettings,
+):
+    """Create potentiometry method parameters.
+
+    Attributes
+    ----------
+    applied_current_range : PalmSens.CurrentRange
+        Applied current range (default: 100 µA)
+        Use `get_current_range()` to get the range.
+    ac_current : float
+        AC current in applied current range RMS (default: 0.01)
+    dc_current : float
+        DC current in applied current range (default: 0.0)
+    n_frequencies : int
+        Number of frequencies (default: 11)
+    max_frequency : float
+        Maximum frequency in Hz (default: 1e5)
+    min_frequency : float
+        Minimum frequency in Hz (default: 1e3)
+    """
+
+    applied_current_range: float = get_current_range(6)  # in applied current range
+    equilibration_time: float = 0.0  # Time (s
+    ac_current: float = 0.01  # in applied current range RMS
+    dc_current: float = 0.0  # in applied current range
+    n_frequencies: int = 11  # Number of frequencies
+    max_frequency: float = 1e5  # in Hz
+    min_frequency: float = 1e3  # in Hz
+
+    _PSMethod = Techniques.ImpedimetricGstatMethod
+
+    def add_to_object(self, *, obj):
+        """Update method with potentiometry settings."""
+
+        obj.ScanType = enumScanType.Fixed
+        obj.FreqType = enumFrequencyType.Scan
+        obj.AppliedCurrentRange = self.applied_current_range
+        obj.EquilibrationTime = self.equilibration_time
+        obj.Iac = self.ac_current
+        obj.Idc = self.dc_current
+        obj.nFrequencies = self.n_frequencies
+        obj.MaxFrequency = self.max_frequency
+        obj.MinFrequency = self.min_frequency
