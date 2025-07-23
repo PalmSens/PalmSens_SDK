@@ -2,6 +2,7 @@ from dataclasses import dataclass
 
 from PalmSens import Techniques
 
+from ._shared import multi_step_amperometry_level
 from .settings import (
     AutorangingCurrentSettings,
     BaseParameters,
@@ -232,3 +233,114 @@ class DifferentialPulseParameters(
         obj.PulsePotential = self.pulse_potential
         obj.PulseTime = self.pulse_time
         obj.Scanrate = self.scan_rate
+
+
+@dataclass
+class ChronoAmperometryParameters(
+    BaseParameters,
+    AutorangingCurrentSettings,
+    PretreatmentSettings,
+    VersusOcpSettings,
+    BipotSettings,
+    PostMeasurementSettings,
+    CurrentLimitSettings,
+    IrDropCompensationSettings,
+    TriggerAtEquilibrationSettings,
+    TriggerAtMeasurementSettings,
+    FilterSettings,
+    MultiplexerSettings,
+    OtherSettings,
+):
+    """Create chrono amperometry method parameters.
+
+    Attributes
+    ----------
+    equilibration_time : float
+        Equilibration time in s (default: 0.0)
+    interval_time : float
+        Interval time in s (default: 0.1)
+    potential : float
+        Potential in V (default: 0.0)
+    run_time : float
+        Run time in s (default: 1.0)
+    """
+
+    equilibration_time: float = 0.0
+    interval_time: float = 0.1
+    potential: float = 0.0
+    run_time: float = 1.0
+    _PSMethod = Techniques.AmperometricDetection
+
+    def add_to_object(self, *, obj):
+        """Update method with chrono amperometry settings."""
+        obj.EquilibrationTime = self.equilibration_time
+        obj.IntervalTime = self.interval_time
+        obj.Potential = self.potential
+        obj.RunTime = self.run_time
+
+        # set_extra_value_mask(
+        #     dotnet_method,
+        #     enable_bipot_current=self.enable_bipot_current,
+        #     record_auxiliary_input=self.record_auxiliary_input,
+        #     record_cell_potential=self.record_cell_potential,
+        #     record_we_potential=self.record_we_potential,
+        # )
+
+
+@dataclass
+class MultiStepAmperometryParameters(
+    BaseParameters,
+    AutorangingCurrentSettings,
+    PretreatmentSettings,
+    BipotSettings,
+    PostMeasurementSettings,
+    CurrentLimitSettings,
+    IrDropCompensationSettings,
+    FilterSettings,
+    MultiplexerSettings,
+    OtherSettings,
+):
+    """Create multi-step amperometry method parameters.
+
+    Attributes
+    ----------
+    equilibration_time : float
+        Equilibration time in s (default: 0.0)
+    interval_time : float
+        Interval time in s (default: 0.1)
+    n_cycles : int
+        Number of cycles (default: 1)
+    levels : list
+        List of levels (default: [multi_step_amperometry_level()].
+        Use multi_step_amperometry_level() to create levels.
+    """
+
+    equilibration_time: float = 0.0  # Time (s)
+    interval_time: float = 0.1  # Time (s)
+    n_cycles: float = 1  # Number of cycles
+    levels: list[Techniques.ELevel] = [multi_step_amperometry_level()]
+    _PSMethod = Techniques.MultistepAmperometry
+
+    def add_to_object(self, *, obj):
+        """Update method with chrono amperometry settings."""
+        obj.EquilibrationTime = self.equilibration_time
+        obj.IntervalTime = self.interval_time
+        obj.nCycles = self.n_cycles
+        obj.Levels.Clear()
+
+        if len(self.levels) == 0:
+            raise ValueError('At least one level must be specified.')
+
+        use_partial_record = False
+        use_level_limits = False
+
+        for level in self.levels:
+            if level.Record:
+                use_partial_record = True
+            if level.UseMaxLimit or level.UseMinLimit:
+                use_level_limits = True
+
+            obj.Levels.Add(level)
+
+        obj.UseSelectiveRecord = use_partial_record
+        obj.UseLimits = use_level_limits

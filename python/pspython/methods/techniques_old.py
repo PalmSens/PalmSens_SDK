@@ -2,24 +2,36 @@ from . import techniques
 
 
 def cyclic_voltammetry(**kwargs):
-    """Alias for CyclicVoltammetry for backwards compatibility"""
+    """Alias for backwards compatibility."""
     cv = techniques.CyclicVoltammetryParameters(**kwargs)
     return cv.to_dotnet_method()
 
 
 def linear_sweep_voltammetry(**kwargs):
-    """Alias for LinearSweep for backwards compatibility"""
-    lsv = techniques.LinearSweepParameters(**kwargs)
-    return lsv.to_dotnet_method()
+    """Alias for backwards compatibility."""
+    method = techniques.LinearSweepParameters(**kwargs)
+    return method.to_dotnet_method()
 
 
 def square_wave_voltammetry(**kwargs):
-    """Alias for SquareWave for backwards compatibility"""
-    swv = techniques.SquareWaveParameters(**kwargs)
-    return swv.to_dotnet_method()
+    """Alias for backwards compatibility."""
+    method = techniques.SquareWaveParameters(**kwargs)
+    return method.to_dotnet_method()
 
 
 def differential_pulse_voltammetry(**kwargs):
-    """Alias for DifferentialPulse for backwards compatibility"""
-    dpv = techniques.DifferentialPulseParameters(**kwargs)
-    return dpv.to_dotnet_method()
+    """Alias for backwards compatibility."""
+    method = techniques.DifferentialPulseParameters(**kwargs)
+    return method.to_dotnet_method()
+
+
+def chronoamperometry(**kwargs):
+    """Alias for backwards compatibility."""
+    method = techniques.ChronoAmperometryParameters(**kwargs)
+    return method.to_dotnet_method()
+
+
+def multi_step_amperometry(**kwargs):
+    """Alias for backwards compatibility."""
+    method = techniques.MultiStepAmperometryParameters(**kwargs)
+    return method.to_dotnet_method()
