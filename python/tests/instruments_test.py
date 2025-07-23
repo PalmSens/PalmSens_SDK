@@ -6,21 +6,19 @@ from PalmSens import Techniques
 from pspython import pspyinstruments
 from pspython.data.measurement import Measurement
 from pspython.methods._shared import get_current_range, get_potential_range
-from pspython.methods.open_circuit_potentiometry import (
-    OpenCircuitPotentiometryParameters,
-    open_circuit_potentiometry,
-)
 from pspython.methods.potentiometry import PotentiometryParameters, chronopotentiometry
 from pspython.methods.techniques import (
     ChronoAmperometryParameters,
     CyclicVoltammetryParameters,
     LinearSweepParameters,
+    OpenCircuitPotentiometryParameters,
     SquareWaveParameters,
 )
 from pspython.methods.techniques_old import (
     chronoamperometry,
     cyclic_voltammetry,
     linear_sweep_voltammetry,
+    open_circuit_potentiometry,
     square_wave_voltammetry,
 )
 

@@ -1,10 +1,11 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 from PalmSens import Techniques
 
-from ._shared import multi_step_amperometry_level
+from ._shared import get_current_range, multi_step_amperometry_level
 from .settings import (
     AutorangingCurrentSettings,
+    AutorangingPotentialSettings,
     BaseParameters,
     BipotSettings,
     CurrentLimitSettings,
@@ -13,6 +14,7 @@ from .settings import (
     MultiplexerSettings,
     OtherSettings,
     PostMeasurementSettings,
+    PotentialLimitSettings,
     PretreatmentSettings,
     TriggerAtEquilibrationSettings,
     TriggerAtMeasurementSettings,
@@ -318,7 +320,9 @@ class MultiStepAmperometryParameters(
     equilibration_time: float = 0.0  # Time (s)
     interval_time: float = 0.1  # Time (s)
     n_cycles: float = 1  # Number of cycles
-    levels: list[Techniques.ELevel] = [multi_step_amperometry_level()]
+    levels: list[Techniques.ELevel] = field(
+        default_factory=lambda: [multi_step_amperometry_level()]
+    )
     _PSMethod = Techniques.MultistepAmperometry
 
     def add_to_object(self, *, obj):
@@ -344,3 +348,52 @@ class MultiStepAmperometryParameters(
 
         obj.UseSelectiveRecord = use_partial_record
         obj.UseLimits = use_level_limits
+
+
+@dataclass
+class OpenCircuitPotentiometryParameters(
+    BaseParameters,
+    AutorangingCurrentSettings,
+    AutorangingPotentialSettings,
+    PretreatmentSettings,
+    PostMeasurementSettings,
+    PotentialLimitSettings,
+    TriggerAtMeasurementSettings,
+    FilterSettings,
+    MultiplexerSettings,
+    OtherSettings,
+):
+    """Create open circuit potentiometry method parameters.
+
+    Attributes
+    ----------
+    interval_time : float
+        Interval time in s (default: 0.1)
+    run_time : float
+        Run time in s (default: 1.0)
+    record_we_current_range: int
+        Record working electrode current range (default: 1 µA)
+        Use `get_current_range()` to get the range.
+    """
+
+    interval_time: float = 0.1  # Time (s)
+    run_time: float = 1.0  # Time (s)
+
+    # record extra value settings
+    record_we_current_range: int = get_current_range(4)
+
+    _PSMethod = Techniques.OpenCircuitPotentiometry
+
+    def add_to_object(self, *, obj):
+        """Update method with open circuit potentiometry settings."""
+
+        obj.IntervalTime = self.interval_time
+        obj.RunTime = self.run_time
+
+        # set_extra_value_mask(
+        #     dotnet_method,
+        #     record_auxiliary_input=self.record_auxiliary_input,
+        #     record_cell_potential=self.record_cell_potential,
+        #     record_we_current=self.record_we_current,
+        #     record_we_current_range=self.record_we_current_range,
+        # )

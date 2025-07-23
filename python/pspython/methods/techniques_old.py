@@ -35,3 +35,9 @@ def multi_step_amperometry(**kwargs):
     """Alias for backwards compatibility."""
     method = techniques.MultiStepAmperometryParameters(**kwargs)
     return method.to_dotnet_method()
+
+
+def open_circuit_potentiometry(**kwargs):
+    """Alias for backwards compatibility."""
+    method = techniques.OpenCircuitPotentiometryParameters(**kwargs)
+    return method.to_dotnet_method()

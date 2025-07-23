@@ -5,7 +5,7 @@ import PalmSens
 from PalmSens import Method as PSMethod
 from PalmSens import MuxMethod as PSMuxMethod
 
-from ._shared import get_current_range, get_potential_range
+from ._shared import convert_bool_list_to_base2, get_current_range, get_potential_range
 
 
 @dataclass
@@ -41,7 +41,7 @@ class AutorangingPotentialSettings:
 
     Attributes
     ----------
-    current_range_max: int
+    potential_range_max: int
         Maximum potential range (default: 1V).
         Use `get_potential_range()` to get the range.
     potential_range_min: int
@@ -52,9 +52,9 @@ class AutorangingPotentialSettings:
         Use `get_potential_range()` to get the range.
     """
 
-    potential_range_max = get_potential_range(7)
-    potential_range_min = get_potential_range(1)
-    potential_range_start = get_potential_range(7)
+    potential_range_max: int = get_potential_range(7)
+    potential_range_min: int = get_potential_range(1)
+    potential_range_start: int = get_potential_range(7)
 
     def add_to_object(self, *, obj):
         obj.RangingPotential.MaximumPotentialRange = self.potential_range_max
@@ -313,11 +313,9 @@ class TriggerAtEquilibrationSettings:
 
     def add_to_object(self, *, obj):
         obj.UseTriggerOnEquil = self.trigger_at_equilibration
-        lines = 0
-        for i, set_high in enumerate(self.trigger_at_equilibration_lines):
-            if set_high:
-                lines = lines | (1 << i)
-        obj.TriggerValueOnEquil = lines
+        obj.TriggerValueOnEquil = convert_bool_list_to_base2(
+            self.trigger_at_equilibration_lines
+        )
 
 
 @dataclass
@@ -339,11 +337,7 @@ class TriggerAtMeasurementSettings:
 
     def add_to_object(self, *, obj):
         obj.UseTriggerOnStart = self.trigger_at_measurement
-        lines = 0
-        for i, set_high in enumerate(self.trigger_at_measurement_lines):
-            if set_high:
-                lines = lines | (1 << i)
-        obj.TriggerValueOnStart = lines
+        obj.TriggerValueOnStart = convert_bool_list_to_base2(self.trigger_at_measurement_lines)
 
 
 @dataclass
