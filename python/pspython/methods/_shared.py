@@ -154,7 +154,7 @@ def set_bipot_settings(
 
 
 def set_extra_value_mask(
-    method,
+    obj,
     *,
     enable_bipot_current: bool = False,
     record_auxiliary_input: bool = False,
@@ -182,9 +182,9 @@ def set_extra_value_mask(
         extra_values = extra_values | int(ExtraValueMask.IForwardReverse)
     if record_we_current:
         extra_values = extra_values | int(ExtraValueMask.CurrentExtraWE)
-        method.AppliedCurrentRange = record_we_current_range
+        obj.AppliedCurrentRange = record_we_current_range
 
-    method.ExtraValueMsk = ExtraValueMask(extra_values)
+    obj.ExtraValueMsk = ExtraValueMask(extra_values)
 
 
 def set_post_measurement_settings(
