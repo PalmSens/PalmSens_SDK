@@ -444,12 +444,12 @@ class MultiplexerSettings:
             obj.MuxSett.UnselWE = self.set_mux8r2_settings.UnselWE
 
     def update_params(self, *, obj):
-        self.set_mux_mude = int(obj.MuxMethod)
+        self.set_mux_mode = int(obj.MuxMethod)
 
         channels = [i for i in range(len(obj.UseMuxChannel)) if obj.UseMuxChannel[i]]
         self.set_mux_channels = [i in channels for i in range(max(channels) + 1)]
 
-        self.set_mux_8r2_settings = {
+        self.set_mux8r2_settings = {
             'connect_sense_to_working_electrode': obj.MuxSett.ConnSEWE,
             'combine_reference_and_counter_electrodes': obj.MuxSett.ConnectCERE,
             'use_channel_1_reference_and_counter_electrodes': obj.MuxSett.CommonCERE,
