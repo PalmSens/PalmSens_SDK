@@ -79,6 +79,16 @@ class CyclicVoltammetryParameters(
         Scan rate in V/s (default: 1.0)
     n_scans: float
         Number of scans (default: 1)
+    enable_bipot_current: bool
+        Enable bipot current (default: False)
+    record_auxiliary_input : bool
+        Record auxiliary input (default: False)
+    record_cell_potential : bool
+        Record cell potential (default: False)
+        Counter electrode vs ground.
+    record_we_potential : bool
+        Record applied working electrode potential (default: False)
+        Reference electrode vs ground.
     """
 
     _PSMethod = Techniques.CyclicVoltammetry
@@ -143,6 +153,16 @@ class LinearSweepParameters(
         Step potential in V (default: 0.1)
     scanrate : float
         Scan rate in V/s (default: 1.0)
+    enable_bipot_current: bool
+        Enable bipot current (default: False)
+    record_auxiliary_input : bool
+        Record auxiliary input (default: False)
+    record_cell_potential : bool
+        Record cell potential (default: False)
+        Counter electrode vs ground.
+    record_we_potential : bool
+        Record applied working electrode potential (default: False)
+        Reference electrode vs ground.
     """
 
     _PSMethod = Techniques.LinearSweep
@@ -204,6 +224,16 @@ class SquareWaveParameters(
         Frequency in Hz (default: 10.0)
     amplitude : float
         Amplitude in V as half peak-to-peak value (default: 0.05).
+    enable_bipot_current: bool
+        Enable bipot current (default: False)
+    record_auxiliary_input : bool
+        Record auxiliary input (default: False)
+    record_cell_potential : bool
+        Record cell potential (default: False)
+        Counter electrode vs ground.
+    record_we_potential : bool
+        Record applied working electrode potential (default: False)
+        Reference electrode vs ground.
     record_forward_and_reverse_currents : bool
         Record forward and reverse currents (default: False)
     """
@@ -275,6 +305,16 @@ class DifferentialPulseParameters(
         Pulse time in s (default: 0.01)
     scanrate : float
         Scan rate in V/s (default: 1.0)
+    enable_bipot_current: bool
+        Enable bipot current (default: False)
+    record_auxiliary_input : bool
+        Record auxiliary input (default: False)
+    record_cell_potential : bool
+        Record cell potential (default: False)
+        Counter electrode vs ground.
+    record_we_potential : bool
+        Record applied working electrode potential (default: False)
+        Reference electrode vs ground.
     """
 
     _PSMethod = Techniques.DifferentialPulse
@@ -340,6 +380,16 @@ class ChronoAmperometryParameters(
         Potential in V (default: 0.0)
     run_time : float
         Run time in s (default: 1.0)
+    enable_bipot_current: bool
+        Enable bipot current (default: False)
+    record_auxiliary_input : bool
+        Record auxiliary input (default: False)
+    record_cell_potential : bool
+        Record cell potential (default: False)
+        Counter electrode vs ground.
+    record_we_potential : bool
+        Record applied working electrode potential (default: False)
+        Reference electrode vs ground.
     """
 
     _PSMethod = Techniques.AmperometricDetection
@@ -396,6 +446,16 @@ class MultiStepAmperometryParameters(
     levels : list
         List of levels (default: [multi_step_amperometry_level()].
         Use multi_step_amperometry_level() to create levels.
+    enable_bipot_current: bool
+        Enable bipot current (default: False)
+    record_auxiliary_input : bool
+        Record auxiliary input (default: False)
+    record_cell_potential : bool
+        Record cell potential (default: False)
+        Counter electrode vs ground.
+    record_we_potential : bool
+        Record applied working electrode potential (default: False)
+        Reference electrode vs ground.
     """
 
     _PSMethod = Techniques.MultistepAmperometry
@@ -466,6 +526,12 @@ class OpenCircuitPotentiometryParameters(
         Interval time in s (default: 0.1)
     run_time : float
         Run time in s (default: 1.0)
+    enable_bipot_current: bool
+        Enable bipot current (default: False)
+    record_auxiliary_input : bool
+        Record auxiliary input (default: False)
+    record_we_current: bool
+        Record working electrode current (default: False)
     record_we_current_range: int
         Record working electrode current range (default: 1 µA)
         Use `get_current_range()` to get the range.
