@@ -83,7 +83,7 @@ def test_method_limits():
     }
 
     method = CyclicVoltammetryParameters(**kwargs)
-    obj = method.to_dotnet_method()
+    obj = method.to_psobj()
 
     assert obj.LimitMinValue == 1.0
     assert obj.LimitMaxValue == 2.0
@@ -101,7 +101,7 @@ def test_method_current_range():
         current_range_max=crmax,
         current_range_start=crstart,
     )
-    obj = method.to_dotnet_method()
+    obj = method.to_psobj()
 
     supported_ranges = obj.Ranging.SupportedCurrentRanges
 
@@ -124,7 +124,7 @@ def test_method_potential_range():
         potential_range_max=potmax,
         potential_range_start=potstart,
     )
-    obj = method.to_dotnet_method()
+    obj = method.to_psobj()
     supported_ranges = obj.RangingPotential.SupportedPotentialRanges
 
     assert potmin in supported_ranges
@@ -152,7 +152,7 @@ def test_cv(manager):
     assert isinstance(method_old, Techniques.CyclicVoltammetry)
 
     method = CyclicVoltammetryParameters(**kwargs)
-    measurement = manager.measure(method.to_dotnet_method())
+    measurement = manager.measure(method.to_psobj())
 
     assert measurement
     assert isinstance(measurement, Measurement)
@@ -179,7 +179,7 @@ def test_lsv(manager):
     assert isinstance(method_old, Techniques.LinearSweep)
 
     method = LinearSweepParameters(**kwargs)
-    measurement = manager.measure(method.to_dotnet_method())
+    measurement = manager.measure(method.to_psobj())
 
     assert measurement
     assert isinstance(measurement, Measurement)
@@ -210,7 +210,7 @@ def test_swv(manager):
     assert isinstance(method_old, Techniques.SquareWave)
 
     method = SquareWaveParameters(**kwargs)
-    measurement = manager.measure(method.to_dotnet_method())
+    measurement = manager.measure(method.to_psobj())
 
     assert measurement
     assert isinstance(measurement, Measurement)
@@ -238,7 +238,7 @@ def test_cp(manager):
     assert isinstance(method_old, Techniques.Potentiometry)
 
     method = ChronopotentiometryParameters(**kwargs)
-    measurement = manager.measure(method.to_dotnet_method())
+    measurement = manager.measure(method.to_psobj())
 
     assert measurement
     assert isinstance(measurement, Measurement)
@@ -264,7 +264,7 @@ def test_ocp(manager):
     assert isinstance(method_old, Techniques.OpenCircuitPotentiometry)
 
     method = OpenCircuitPotentiometryParameters(**kwargs)
-    measurement = manager.measure(method.to_dotnet_method())
+    measurement = manager.measure(method.to_psobj())
 
     assert measurement
     assert isinstance(measurement, Measurement)
@@ -287,7 +287,7 @@ def test_ca(manager):
     assert isinstance(method_old, Techniques.AmperometricDetection)
 
     method = ChronoAmperometryParameters(**kwargs)
-    measurement = manager.measure(method.to_dotnet_method())
+    measurement = manager.measure(method.to_psobj())
 
     assert measurement
     assert isinstance(measurement, Measurement)
@@ -314,7 +314,7 @@ def test_dp(manager):
     assert isinstance(method_old, Techniques.DifferentialPulse)
 
     method = DifferentialPulseParameters(**kwargs)
-    measurement = manager.measure(method.to_dotnet_method())
+    measurement = manager.measure(method.to_psobj())
 
     assert measurement
     assert isinstance(measurement, Measurement)
@@ -341,7 +341,7 @@ def test_msa(manager):
     assert isinstance(method_old, Techniques.MultistepAmperometry)
 
     method = MultiStepAmperometryParameters(**kwargs)
-    measurement = manager.measure(method.to_dotnet_method())
+    measurement = manager.measure(method.to_psobj())
 
     assert measurement
     assert isinstance(measurement, Measurement)
@@ -370,7 +370,7 @@ def test_eis(manager):
     assert isinstance(method_old, Techniques.ImpedimetricMethod)
 
     method = ElectrochemicalImpedanceSpectroscopyParameters(**kwargs)
-    measurement = manager.measure(method.to_dotnet_method())
+    measurement = manager.measure(method.to_psobj())
 
     assert measurement
     assert isinstance(measurement, Measurement)
@@ -434,7 +434,7 @@ def test_gis(manager):
     assert isinstance(method_old, Techniques.ImpedimetricGstatMethod)
 
     method = GalvanostaticImpedanceSpectroscopyParameters(**kwargs)
-    measurement = manager.measure(method.to_dotnet_method())
+    measurement = manager.measure(method.to_psobj())
 
     assert measurement
     assert isinstance(measurement, Measurement)

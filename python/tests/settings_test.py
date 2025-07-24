@@ -38,7 +38,7 @@ def test_AutorangingCurrentSettings():
         current_range_min=get_current_range(3),
         current_range_start=get_current_range(5),
     )
-    params.add_to_object(obj=obj)
+    params.update_psobj(obj=obj)
 
     assert obj.Ranging.MaximumCurrentRange.Description == '100 uA'
     assert obj.Ranging.MinimumCurrentRange.Description == '100 nA'
@@ -52,7 +52,7 @@ def test_AutorangingPotentialSettings():
         potential_range_min=get_potential_range(0),
         potential_range_start=get_potential_range(1),
     )
-    params.add_to_object(obj=obj)
+    params.update_psobj(obj=obj)
     assert obj.RangingPotential.MaximumPotentialRange.Description == '100 mV'
     assert obj.RangingPotential.MinimumPotentialRange.Description == '1 mV'
     assert obj.RangingPotential.StartPotentialRange.Description == '10 mV'
@@ -67,7 +67,7 @@ def test_PretreatmentSettings():
         conditioning_potential=56,
         conditioning_time=78,
     )
-    params.add_to_object(obj=obj)
+    params.update_psobj(obj=obj)
 
     assert obj.DepositionPotential == 12
     assert obj.DepositionTime == 34
@@ -83,7 +83,7 @@ def test_VersusOcpSettings():
         versus_ocp_max_ocp_time=200.0,
         versus_ocp_stability_criterion=123,
     )
-    params.add_to_object(obj=obj)
+    params.update_psobj(obj=obj)
 
     assert obj.OCPmode == 7
     assert obj.OCPMaxOCPTime == 200
@@ -101,7 +101,7 @@ def test_BipotSettings():
         bipot_current_range_min=get_current_range(2),
         bipot_current_range_start=get_current_range(5),
     )
-    params.add_to_object(obj=obj)
+    params.update_psobj(obj=obj)
 
     assert obj.BiPotModePS == CyclicVoltammetry.EnumPalmSensBipotMode(1)
     assert obj.BiPotPotential == 10.0
@@ -118,7 +118,7 @@ def test_PostMeasurementSettings():
         cell_on_after_measurement_potential=123,
     )
 
-    params.add_to_object(obj=obj)
+    params.update_psobj(obj=obj)
 
     assert obj.CellOnAfterMeasurement is True
     assert obj.StandbyPotential == 123
@@ -134,7 +134,7 @@ def test_CurrentLimitSettings():
         limit_current_min=678.0,
     )
 
-    params.add_to_object(obj=obj)
+    params.update_psobj(obj=obj)
 
     assert obj.UseLimitMaxValue is True
     assert obj.LimitMaxValue == 123.0
@@ -151,7 +151,7 @@ def test_PotentialLimitSettings():
         use_limit_potential_min=True,
         limit_potential_min=678.0,
     )
-    params.add_to_object(obj=obj)
+    params.update_psobj(obj=obj)
     assert obj.UseLimitMaxValue is True
     assert obj.LimitMaxValue == 123.0
     assert obj.UseLimitMinValue is True
@@ -167,7 +167,7 @@ def test_ChargeLimitSettings():
         use_limit_charge_min=True,
         limit_charge_min=678.0,
     )
-    params.add_to_object(obj=obj)
+    params.update_psobj(obj=obj)
 
     assert obj.UseChargeLimitMax is True
     assert obj.ChargeLimitMax == 123.0
@@ -182,7 +182,7 @@ def test_IrDropCompensationSettings():
         use_ir_compensation=True,
         ir_compensation=123.0,
     )
-    params.add_to_object(obj=obj)
+    params.update_psobj(obj=obj)
 
     assert obj.UseIRDropComp is True
     assert obj.IRDropCompRes == 123
@@ -195,7 +195,7 @@ def test_TriggerAtEquilibrationSettings():
         trigger_at_equilibration=True,
         trigger_at_equilibration_lines=(True, False, True, True),
     )
-    params.add_to_object(obj=obj)
+    params.update_psobj(obj=obj)
 
     assert obj.UseTriggerOnEquil is True
     assert obj.TriggerValueOnEquil == 13
@@ -208,7 +208,7 @@ def test_TriggerAtMeasurementSettings():
         trigger_at_measurement=True,
         trigger_at_measurement_lines=(True, True, False, True),
     )
-    params.add_to_object(obj=obj)
+    params.update_psobj(obj=obj)
 
     assert obj.UseTriggerOnStart is True
     assert obj.TriggerValueOnStart == 11
@@ -227,7 +227,7 @@ def test_MultiplexerSettings():
             set_unselected_channel_working_electrode=1,
         ),
     )
-    params.add_to_object(obj=obj)
+    params.update_psobj(obj=obj)
     assert int(obj.MuxMethod) == 0
     for i, v in enumerate([True, False, True, False, True]):
         assert obj.UseMuxChannel[i] is v
@@ -245,7 +245,7 @@ def test_FilterSettings():
         dc_mains_filter=60,
         default_curve_post_processing_filter=1,
     )
-    params.add_to_object(obj=obj)
+    params.update_psobj(obj=obj)
 
     assert obj.DCMainsFilter == 60
     assert obj.DefaultCurvePostProcessingFilter == 1
@@ -258,7 +258,7 @@ def test_OtherSettings():
         save_on_internal_storage=True,
         use_hardware_sync=True,
     )
-    params.add_to_object(obj=obj)
+    params.update_psobj(obj=obj)
 
     obj.SaveOnDevice = True
     obj.UseHWSync = True
