@@ -1,6 +1,6 @@
 from dataclasses import asdict
 
-from PalmSens.Techniques import CyclicVoltammetry, Potentiometry
+from PalmSens import Techniques
 
 from pspython.methods import settings
 from pspython.methods._shared import (
@@ -11,8 +11,8 @@ from pspython.methods._shared import (
 )
 
 
-def test_ExtraValueMask():
-    obj = CyclicVoltammetry()
+def test_set_extra_value_mask():
+    obj = Techniques.CyclicVoltammetry()
     assert obj.ExtraValueMsk.value__ == 0
 
     set_extra_value_mask(
@@ -33,8 +33,11 @@ def test_ExtraValueMask():
     assert obj.ExtraValueMsk.value__ == 101
 
 
+def test_get_extra_value_mask(): ...
+
+
 def test_AutorangingCurrentSettings():
-    obj = CyclicVoltammetry()
+    obj = Techniques.CyclicVoltammetry()
     params = settings.AutorangingCurrentSettings(
         current_range_max=get_current_range(6),
         current_range_min=get_current_range(3),
@@ -55,7 +58,7 @@ def test_AutorangingCurrentSettings():
 
 
 def test_AutorangingPotentialSettings():
-    obj = Potentiometry()
+    obj = Techniques.Potentiometry()
     params = settings.AutorangingPotentialSettings(
         potential_range_max=get_potential_range(4),
         potential_range_min=get_potential_range(0),
@@ -75,7 +78,7 @@ def test_AutorangingPotentialSettings():
 
 
 def test_PretreatmentSettings():
-    obj = CyclicVoltammetry()
+    obj = Techniques.CyclicVoltammetry()
 
     kwargs = {
         'deposition_potential': 12,
@@ -99,7 +102,7 @@ def test_PretreatmentSettings():
 
 
 def test_VersusOcpSettings():
-    obj = CyclicVoltammetry()
+    obj = Techniques.CyclicVoltammetry()
 
     kwargs = {
         'versus_ocp_mode': 7,
@@ -121,27 +124,37 @@ def test_VersusOcpSettings():
 
 
 def test_BipotSettings():
-    obj = CyclicVoltammetry()
+    obj = Techniques.CyclicVoltammetry()
 
-    params = settings.BipotSettings(
-        enable_bipot_current=True,
-        bipot_mode=1,
-        bipot_potential=10.0,
-        bipot_current_range_max=get_current_range(6),
-        bipot_current_range_min=get_current_range(2),
-        bipot_current_range_start=get_current_range(5),
-    )
+    kwargs = {
+        'bipot_mode': 1,
+        'bipot_potential': 10.0,
+        'bipot_current_range_max': get_current_range(6),
+        'bipot_current_range_min': get_current_range(2),
+        'bipot_current_range_start': get_current_range(5),
+    }
+
+    params = settings.BipotSettings(**kwargs)
     params.update_psobj(obj=obj)
 
-    assert obj.BiPotModePS == CyclicVoltammetry.EnumPalmSensBipotMode(1)
+    assert obj.BiPotModePS == Techniques.CyclicVoltammetry.EnumPalmSensBipotMode(1)
     assert obj.BiPotPotential == 10.0
     assert obj.BipotRanging.MaximumCurrentRange.Description == '100 uA'
     assert obj.BipotRanging.MinimumCurrentRange.Description == '10 nA'
     assert obj.BipotRanging.StartCurrentRange.Description == '10 uA'
 
+    new_params = settings.BipotSettings()
+    new_params.update_params(obj=obj)
+
+    assert new_params.bipot_mode == 1
+    assert new_params.bipot_potential == 10.0
+    assert new_params.bipot_current_range_max == get_current_range(6)
+    assert new_params.bipot_current_range_min == get_current_range(2)
+    assert new_params.bipot_current_range_start == get_current_range(5)
+
 
 def test_PostMeasurementSettings():
-    obj = CyclicVoltammetry()
+    obj = Techniques.CyclicVoltammetry()
 
     kwargs = {
         'cell_on_after_measurement': True,
@@ -161,7 +174,7 @@ def test_PostMeasurementSettings():
 
 
 def test_CurrentLimitSettings():
-    obj = CyclicVoltammetry()
+    obj = Techniques.CyclicVoltammetry()
 
     kwargs = {
         'use_limit_current_max': True,
@@ -185,7 +198,7 @@ def test_CurrentLimitSettings():
 
 
 def test_PotentialLimitSettings():
-    obj = CyclicVoltammetry()
+    obj = Techniques.CyclicVoltammetry()
 
     kwargs = {
         'use_limit_potential_max': True,
@@ -209,7 +222,7 @@ def test_PotentialLimitSettings():
 
 
 def test_ChargeLimitSettings():
-    obj = CyclicVoltammetry()
+    obj = Techniques.CyclicVoltammetry()
 
     kwargs = {
         'use_limit_charge_max': True,
@@ -233,7 +246,7 @@ def test_ChargeLimitSettings():
 
 
 def test_IrDropCompensationSettings():
-    obj = CyclicVoltammetry()
+    obj = Techniques.CyclicVoltammetry()
 
     kwargs = {
         'use_ir_compensation': True,
@@ -253,7 +266,7 @@ def test_IrDropCompensationSettings():
 
 
 def test_TriggerAtEquilibrationSettings():
-    obj = CyclicVoltammetry()
+    obj = Techniques.CyclicVoltammetry()
 
     kwargs = {
         'trigger_at_equilibration': True,
@@ -273,7 +286,7 @@ def test_TriggerAtEquilibrationSettings():
 
 
 def test_TriggerAtMeasurementSettings():
-    obj = CyclicVoltammetry()
+    obj = Techniques.CyclicVoltammetry()
 
     kwargs = {
         'trigger_at_measurement': True,
@@ -293,19 +306,24 @@ def test_TriggerAtMeasurementSettings():
 
 
 def test_MultiplexerSettings():
-    obj = CyclicVoltammetry()
+    obj = Techniques.CyclicVoltammetry()
 
-    params = settings.MultiplexerSettings(
-        set_mux_mode=0,
-        set_mux_channels=[True, False, True, False, True],
-        set_mux8r2_settings=get_mux8r2_settings(
-            connect_sense_to_working_electrode=True,
-            combine_reference_and_counter_electrodes=True,
-            use_channel_1_reference_and_counter_electrodes=True,
-            set_unselected_channel_working_electrode=1,
-        ),
-    )
+    mux_kwargs = {
+        'connect_sense_to_working_electrode': True,
+        'combine_reference_and_counter_electrodes': True,
+        'use_channel_1_reference_and_counter_electrodes': True,
+        'set_unselected_channel_working_electrode': 1,
+    }
+
+    kwargs = {
+        'set_mux_mode': 0,
+        'set_mux_channels': [True, False, True, False, True],
+        'set_mux8r2_settings': get_mux8r2_settings(**mux_kwargs),
+    }
+
+    params = settings.MultiplexerSettings(**kwargs)
     params.update_psobj(obj=obj)
+
     assert int(obj.MuxMethod) == 0
     for i, v in enumerate([True, False, True, False, True]):
         assert obj.UseMuxChannel[i] is v
@@ -315,9 +333,16 @@ def test_MultiplexerSettings():
     assert obj.MuxSett.CommonCERE is True
     assert int(obj.MuxSett.UnselWE) == 1
 
+    new_params = settings.MultiplexerSettings()
+    new_params.update_params(obj=obj)
+
+    assert new_params.set_mux_mode == 0
+    assert new_params.set_mux_channels == [True, False, True, False, True]
+    assert new_params.set_mux8r2_settings == mux_kwargs
+
 
 def test_FilterSettings():
-    obj = CyclicVoltammetry()
+    obj = Techniques.CyclicVoltammetry()
 
     kwargs = {
         'dc_mains_filter': 60,
@@ -337,7 +362,7 @@ def test_FilterSettings():
 
 
 def test_OtherSettings():
-    obj = CyclicVoltammetry()
+    obj = Techniques.CyclicVoltammetry()
 
     kwargs = {
         'save_on_internal_storage': True,

@@ -172,7 +172,6 @@ class BipotSettings:
         Use `get_current_range()` to get the range.
     """
 
-    enable_bipot_current: bool = False
     bipot_mode: int = 0
     bipot_potential: float = 0.0  # V
     bipot_current_range_max: int = get_current_range(8)
@@ -187,7 +186,7 @@ class BipotSettings:
         obj.BipotRanging.StartCurrentRange = self.bipot_current_range_start
 
     def update_params(self, *, obj):
-        self.bipot_mode = obj.BiPotModePS  # PalmSens.Method.EnumPalmSensBipotMode
+        self.bipot_mode = int(obj.BiPotModePS)
         self.bipot_potential = obj.BiPotPotential
         self.bipot_current_range_max = obj.BipotRanging.MaximumCurrentRange
         self.bipot_current_range_min = obj.BipotRanging.MinimumCurrentRange
@@ -234,7 +233,6 @@ class CurrentLimitSettings:
         This will reverse the scan instead of aborting measurement
     limit_current_min: float
         Limit current min in µA (default: 0.0)
-
     """
 
     use_limit_current_max: bool = False
@@ -446,7 +444,17 @@ class MultiplexerSettings:
             obj.MuxSett.UnselWE = self.set_mux8r2_settings.UnselWE
 
     def update_params(self, *, obj):
-        raise NotImplementedError
+        self.set_mux_mude = int(obj.MuxMethod)
+
+        channels = [i for i in range(len(obj.UseMuxChannel)) if obj.UseMuxChannel[i]]
+        self.set_mux_channels = [i in channels for i in range(max(channels) + 1)]
+
+        self.set_mux_8r2_settings = {
+            'connect_sense_to_working_electrode': obj.MuxSett.ConnSEWE,
+            'combine_reference_and_counter_electrodes': obj.MuxSett.ConnectCERE,
+            'use_channel_1_reference_and_counter_electrodes': obj.MuxSett.CommonCERE,
+            'set_unselected_channel_working_electrode': int(obj.MuxSett.UnselWE),
+        }
 
 
 @dataclass
