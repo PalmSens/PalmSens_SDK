@@ -4,7 +4,12 @@ from typing import Optional
 import PalmSens
 from PalmSens import MuxMethod as PSMuxMethod
 
-from ._shared import convert_bool_list_to_base2, get_current_range, get_potential_range
+from ._shared import (
+    convert_bools_to_int,
+    convert_int_to_bools,
+    get_current_range,
+    get_potential_range,
+)
 
 
 @dataclass
@@ -33,7 +38,10 @@ class AutorangingCurrentSettings:
         obj.Ranging.MinimumCurrentRange = self.current_range_min
         obj.Ranging.StartCurrentRange = self.current_range_start
 
-    def update_params(self, *, obj): ...
+    def update_params(self, *, obj):
+        self.current_range_max = obj.Ranging.MaximumCurrentRange
+        self.current_range_min = obj.Ranging.MinimumCurrentRange
+        self.current_range_start = obj.Ranging.StartCurrentRange
 
 
 @dataclass
@@ -62,7 +70,10 @@ class AutorangingPotentialSettings:
         obj.RangingPotential.MinimumPotentialRange = self.potential_range_min
         obj.RangingPotential.StartPotentialRange = self.potential_range_start
 
-    def update_params(self, *, obj): ...
+    def update_params(self, *, obj):
+        self.potential_range_max = obj.RangingPotential.MaximumPotentialRange
+        self.potential_range_min = obj.RangingPotential.MinimumPotentialRange
+        self.potential_range_start = obj.RangingPotential.StartPotentialRange
 
 
 @dataclass
@@ -92,7 +103,11 @@ class PretreatmentSettings:
         obj.ConditioningPotential = self.conditioning_potential
         obj.ConditioningTime = self.conditioning_time
 
-    def update_params(self, *, obj): ...
+    def update_params(self, *, obj):
+        self.deposition_potential = obj.DepositionPotential
+        self.deposition_time = obj.DepositionTime
+        self.conditioning_potential = obj.ConditioningPotential
+        self.conditioning_time = obj.ConditioningTime
 
 
 @dataclass
@@ -128,7 +143,10 @@ class VersusOcpSettings:
         obj.OCPMaxOCPTime = self.versus_ocp_max_ocp_time
         obj.OCPStabilityCriterion = self.versus_ocp_stability_criterion
 
-    def update_params(self, *, obj): ...
+    def update_params(self, *, obj):
+        self.versus_ocp_mode = obj.OCPmode
+        self.versus_ocp_max_ocp_time = obj.OCPMaxOCPTime
+        self.versus_ocp_stability_criterion = obj.OCPStabilityCriterion
 
 
 @dataclass
@@ -168,11 +186,12 @@ class BipotSettings:
         obj.BipotRanging.MinimumCurrentRange = self.bipot_current_range_min
         obj.BipotRanging.StartCurrentRange = self.bipot_current_range_start
 
-    def update_params(self, *, obj): ...
-
-
-@dataclass
-class ExtraValueMask: ...
+    def update_params(self, *, obj):
+        self.bipot_mode = obj.BiPotModePS  # PalmSens.Method.EnumPalmSensBipotMode
+        self.bipot_potential = obj.BiPotPotential
+        self.bipot_current_range_max = obj.BipotRanging.MaximumCurrentRange
+        self.bipot_current_range_min = obj.BipotRanging.MinimumCurrentRange
+        self.bipot_current_range_start = obj.BipotRanging.StartCurrentRange
 
 
 @dataclass
@@ -194,7 +213,9 @@ class PostMeasurementSettings:
         obj.CellOnAfterMeasurement = self.cell_on_after_measurement
         obj.StandbyPotential = self.cell_on_after_measurement_potential
 
-    def update_params(self, *, obj): ...
+    def update_params(self, *, obj):
+        self.cell_on_after_measurement = obj.CellOnAfterMeasurement
+        self.cell_on_after_measurement_potential = obj.StandbyPotential
 
 
 @dataclass
@@ -227,7 +248,11 @@ class CurrentLimitSettings:
         obj.UseLimitMinValue = self.use_limit_current_min
         obj.LimitMinValue = self.limit_current_min
 
-    def update_params(self, *, obj): ...
+    def update_params(self, *, obj):
+        self.use_limit_current_max = obj.UseLimitMaxValue
+        self.limit_current_max = obj.LimitMaxValue
+        self.use_limit_current_min = obj.UseLimitMinValue
+        self.limit_current_min = obj.LimitMinValue
 
 
 @dataclass
@@ -257,7 +282,11 @@ class PotentialLimitSettings:
         obj.UseLimitMinValue = self.use_limit_potential_min
         obj.LimitMinValue = self.limit_potential_min
 
-    def update_params(self, *, obj): ...
+    def update_params(self, *, obj):
+        self.use_limit_potential_max = obj.UseLimitMaxValue
+        self.limit_potential_max = obj.LimitMaxValue
+        self.use_limit_potential_min = obj.UseLimitMinValue
+        self.limit_potential_min = obj.LimitMinValue
 
 
 @dataclass
@@ -287,7 +316,11 @@ class ChargeLimitSettings:
         obj.UseChargeLimitMin = self.use_limit_charge_min
         obj.ChargeLimitMin = self.limit_charge_min
 
-    def update_params(self, *, obj): ...
+    def update_params(self, *, obj):
+        self.use_limit_charge_max = obj.UseChargeLimitMax
+        self.limit_charge_max = obj.ChargeLimitMax
+        self.use_limit_charge_min = obj.UseChargeLimitMin
+        self.limit_charge_min = obj.ChargeLimitMin
 
 
 @dataclass
@@ -310,7 +343,9 @@ class IrDropCompensationSettings:
         obj.UseIRDropComp = self.use_ir_compensation
         obj.IRDropCompRes = self.ir_compensation
 
-    def update_params(self, *, obj): ...
+    def update_params(self, *, obj):
+        self.use_ir_compensation = obj.UseIRDropComp
+        self.ir_compensation = obj.IRDropCompRes
 
 
 @dataclass
@@ -332,11 +367,11 @@ class TriggerAtEquilibrationSettings:
 
     def update_psobj(self, *, obj):
         obj.UseTriggerOnEquil = self.trigger_at_equilibration
-        obj.TriggerValueOnEquil = convert_bool_list_to_base2(
-            self.trigger_at_equilibration_lines
-        )
+        obj.TriggerValueOnEquil = convert_bools_to_int(self.trigger_at_equilibration_lines)
 
-    def update_params(self, *, obj): ...
+    def update_params(self, *, obj):
+        self.trigger_at_equilibration = obj.UseTriggerOnEquil
+        self.trigger_at_equilibration_lines = convert_int_to_bools(obj.TriggerValueOnEquil)
 
 
 @dataclass
@@ -358,9 +393,11 @@ class TriggerAtMeasurementSettings:
 
     def update_psobj(self, *, obj):
         obj.UseTriggerOnStart = self.trigger_at_measurement
-        obj.TriggerValueOnStart = convert_bool_list_to_base2(self.trigger_at_measurement_lines)
+        obj.TriggerValueOnStart = convert_bools_to_int(self.trigger_at_measurement_lines)
 
-    def update_params(self, *, obj): ...
+    def update_params(self, *, obj):
+        self.trigger_at_measurement = obj.UseTriggerOnStart
+        self.trigger_at_measurement_lines = convert_int_to_bools(obj.TriggerValueOnStart)
 
 
 @dataclass
@@ -408,7 +445,8 @@ class MultiplexerSettings:
             obj.MuxSett.CommonCERE = self.set_mux8r2_settings.CommonCERE
             obj.MuxSett.UnselWE = self.set_mux8r2_settings.UnselWE
 
-    def update_params(self, *, obj): ...
+    def update_params(self, *, obj):
+        raise NotImplementedError
 
 
 @dataclass
@@ -436,7 +474,9 @@ class FilterSettings:
         obj.DCMainsFilter = self.dc_mains_filter
         obj.DefaultCurvePostProcessingFilter = self.default_curve_post_processing_filter
 
-    def update_params(self, *, obj): ...
+    def update_params(self, *, obj):
+        self.dc_mains_filter = obj.DCMainsFilter
+        self.default_curve_post_processing_filter = obj.DefaultCurvePostProcessingFilter
 
 
 @dataclass
@@ -462,4 +502,6 @@ class OtherSettings:
         obj.SaveOnDevice = self.save_on_internal_storage
         obj.UseHWSync = self.use_hardware_sync
 
-    def update_params(self, *, obj): ...
+    def update_params(self, *, obj):
+        self.save_on_internal_storage = obj.SaveOnDevice
+        self.use_hardware_sync = obj.UseHWSync

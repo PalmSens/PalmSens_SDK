@@ -1,3 +1,5 @@
+from dataclasses import asdict
+
 from PalmSens.Techniques import CyclicVoltammetry, Potentiometry
 
 from pspython.methods import settings
@@ -44,6 +46,13 @@ def test_AutorangingCurrentSettings():
     assert obj.Ranging.MinimumCurrentRange.Description == '100 nA'
     assert obj.Ranging.StartCurrentRange.Description == '10 uA'
 
+    new_params = settings.AutorangingCurrentSettings()
+    new_params.update_params(obj=obj)
+
+    assert new_params.current_range_max == get_current_range(6)
+    assert new_params.current_range_min == get_current_range(3)
+    assert new_params.current_range_start == get_current_range(5)
+
 
 def test_AutorangingPotentialSettings():
     obj = Potentiometry()
@@ -57,16 +66,25 @@ def test_AutorangingPotentialSettings():
     assert obj.RangingPotential.MinimumPotentialRange.Description == '1 mV'
     assert obj.RangingPotential.StartPotentialRange.Description == '10 mV'
 
+    new_params = settings.AutorangingPotentialSettings()
+    new_params.update_params(obj=obj)
+
+    assert new_params.potential_range_max == get_potential_range(4)
+    assert new_params.potential_range_min == get_potential_range(0)
+    assert new_params.potential_range_start == get_potential_range(1)
+
 
 def test_PretreatmentSettings():
     obj = CyclicVoltammetry()
 
-    params = settings.PretreatmentSettings(
-        deposition_potential=12,
-        deposition_time=34,
-        conditioning_potential=56,
-        conditioning_time=78,
-    )
+    kwargs = {
+        'deposition_potential': 12,
+        'deposition_time': 34,
+        'conditioning_potential': 56,
+        'conditioning_time': 78,
+    }
+
+    params = settings.PretreatmentSettings(**kwargs)
     params.update_psobj(obj=obj)
 
     assert obj.DepositionPotential == 12
@@ -74,20 +92,32 @@ def test_PretreatmentSettings():
     assert obj.ConditioningPotential == 56
     assert obj.ConditioningTime == 78
 
+    new_params = settings.PretreatmentSettings()
+    new_params.update_params(obj=obj)
+
+    assert asdict(new_params) == kwargs
+
 
 def test_VersusOcpSettings():
     obj = CyclicVoltammetry()
 
-    params = settings.VersusOcpSettings(
-        versus_ocp_mode=7,
-        versus_ocp_max_ocp_time=200.0,
-        versus_ocp_stability_criterion=123,
-    )
+    kwargs = {
+        'versus_ocp_mode': 7,
+        'versus_ocp_max_ocp_time': 200.0,
+        'versus_ocp_stability_criterion': 123,
+    }
+
+    params = settings.VersusOcpSettings(**kwargs)
     params.update_psobj(obj=obj)
 
     assert obj.OCPmode == 7
     assert obj.OCPMaxOCPTime == 200
     assert obj.OCPStabilityCriterion == 123
+
+    new_params = settings.VersusOcpSettings()
+    new_params.update_params(obj=obj)
+
+    assert asdict(new_params) == kwargs
 
 
 def test_BipotSettings():
@@ -113,60 +143,82 @@ def test_BipotSettings():
 def test_PostMeasurementSettings():
     obj = CyclicVoltammetry()
 
-    params = settings.PostMeasurementSettings(
-        cell_on_after_measurement=True,
-        cell_on_after_measurement_potential=123,
-    )
+    kwargs = {
+        'cell_on_after_measurement': True,
+        'cell_on_after_measurement_potential': 123,
+    }
 
+    params = settings.PostMeasurementSettings(**kwargs)
     params.update_psobj(obj=obj)
 
     assert obj.CellOnAfterMeasurement is True
     assert obj.StandbyPotential == 123
 
+    new_params = settings.PostMeasurementSettings()
+    new_params.update_params(obj=obj)
+
+    assert asdict(new_params) == kwargs
+
 
 def test_CurrentLimitSettings():
     obj = CyclicVoltammetry()
 
-    params = settings.CurrentLimitSettings(
-        use_limit_current_max=True,
-        limit_current_max=123.0,
-        use_limit_current_min=True,
-        limit_current_min=678.0,
-    )
+    kwargs = {
+        'use_limit_current_max': True,
+        'limit_current_max': 123.0,
+        'use_limit_current_min': True,
+        'limit_current_min': 678.0,
+    }
 
+    params = settings.CurrentLimitSettings(**kwargs)
     params.update_psobj(obj=obj)
 
     assert obj.UseLimitMaxValue is True
     assert obj.LimitMaxValue == 123.0
     assert obj.UseLimitMinValue is True
     assert obj.LimitMinValue == 678.0
+
+    new_params = settings.CurrentLimitSettings()
+    new_params.update_params(obj=obj)
+
+    assert asdict(new_params) == kwargs
 
 
 def test_PotentialLimitSettings():
     obj = CyclicVoltammetry()
 
-    params = settings.PotentialLimitSettings(
-        use_limit_potential_max=True,
-        limit_potential_max=123.0,
-        use_limit_potential_min=True,
-        limit_potential_min=678.0,
-    )
+    kwargs = {
+        'use_limit_potential_max': True,
+        'limit_potential_max': 123.0,
+        'use_limit_potential_min': True,
+        'limit_potential_min': 678.0,
+    }
+
+    params = settings.PotentialLimitSettings(**kwargs)
     params.update_psobj(obj=obj)
+
     assert obj.UseLimitMaxValue is True
     assert obj.LimitMaxValue == 123.0
     assert obj.UseLimitMinValue is True
     assert obj.LimitMinValue == 678.0
 
+    new_params = settings.PotentialLimitSettings()
+    new_params.update_params(obj=obj)
+
+    assert asdict(new_params) == kwargs
+
 
 def test_ChargeLimitSettings():
     obj = CyclicVoltammetry()
 
-    params = settings.ChargeLimitSettings(
-        use_limit_charge_max=True,
-        limit_charge_max=123.0,
-        use_limit_charge_min=True,
-        limit_charge_min=678.0,
-    )
+    kwargs = {
+        'use_limit_charge_max': True,
+        'limit_charge_max': 123.0,
+        'use_limit_charge_min': True,
+        'limit_charge_min': 678.0,
+    }
+
+    params = settings.ChargeLimitSettings(**kwargs)
     params.update_psobj(obj=obj)
 
     assert obj.UseChargeLimitMax is True
@@ -174,44 +226,70 @@ def test_ChargeLimitSettings():
     assert obj.UseChargeLimitMin is True
     assert obj.ChargeLimitMin == 678.0
 
+    new_params = settings.ChargeLimitSettings()
+    new_params.update_params(obj=obj)
+
+    assert asdict(new_params) == kwargs
+
 
 def test_IrDropCompensationSettings():
     obj = CyclicVoltammetry()
 
-    params = settings.IrDropCompensationSettings(
-        use_ir_compensation=True,
-        ir_compensation=123.0,
-    )
+    kwargs = {
+        'use_ir_compensation': True,
+        'ir_compensation': 123.0,
+    }
+
+    params = settings.IrDropCompensationSettings(**kwargs)
     params.update_psobj(obj=obj)
 
     assert obj.UseIRDropComp is True
     assert obj.IRDropCompRes == 123
 
+    new_params = settings.IrDropCompensationSettings()
+    new_params.update_params(obj=obj)
+
+    assert asdict(new_params) == kwargs
+
 
 def test_TriggerAtEquilibrationSettings():
     obj = CyclicVoltammetry()
 
-    params = settings.TriggerAtEquilibrationSettings(
-        trigger_at_equilibration=True,
-        trigger_at_equilibration_lines=(True, False, True, True),
-    )
+    kwargs = {
+        'trigger_at_equilibration': True,
+        'trigger_at_equilibration_lines': (True, False, True, True),
+    }
+
+    params = settings.TriggerAtEquilibrationSettings(**kwargs)
     params.update_psobj(obj=obj)
 
     assert obj.UseTriggerOnEquil is True
     assert obj.TriggerValueOnEquil == 13
 
+    new_params = settings.TriggerAtEquilibrationSettings()
+    new_params.update_params(obj=obj)
+
+    assert asdict(new_params) == kwargs
+
 
 def test_TriggerAtMeasurementSettings():
     obj = CyclicVoltammetry()
 
-    params = settings.TriggerAtMeasurementSettings(
-        trigger_at_measurement=True,
-        trigger_at_measurement_lines=(True, True, False, True),
-    )
+    kwargs = {
+        'trigger_at_measurement': True,
+        'trigger_at_measurement_lines': (True, True, False, True),
+    }
+
+    params = settings.TriggerAtMeasurementSettings(**kwargs)
     params.update_psobj(obj=obj)
 
     assert obj.UseTriggerOnStart is True
     assert obj.TriggerValueOnStart == 11
+
+    new_params = settings.TriggerAtMeasurementSettings()
+    new_params.update_params(obj=obj)
+
+    assert asdict(new_params) == kwargs
 
 
 def test_MultiplexerSettings():
@@ -241,24 +319,38 @@ def test_MultiplexerSettings():
 def test_FilterSettings():
     obj = CyclicVoltammetry()
 
-    params = settings.FilterSettings(
-        dc_mains_filter=60,
-        default_curve_post_processing_filter=1,
-    )
+    kwargs = {
+        'dc_mains_filter': 60,
+        'default_curve_post_processing_filter': 1,
+    }
+
+    params = settings.FilterSettings(**kwargs)
     params.update_psobj(obj=obj)
 
     assert obj.DCMainsFilter == 60
     assert obj.DefaultCurvePostProcessingFilter == 1
 
+    new_params = settings.FilterSettings()
+    new_params.update_params(obj=obj)
+
+    assert asdict(new_params) == kwargs
+
 
 def test_OtherSettings():
     obj = CyclicVoltammetry()
 
-    params = settings.OtherSettings(
-        save_on_internal_storage=True,
-        use_hardware_sync=True,
-    )
+    kwargs = {
+        'save_on_internal_storage': True,
+        'use_hardware_sync': True,
+    }
+
+    params = settings.OtherSettings(**kwargs)
     params.update_psobj(obj=obj)
 
     obj.SaveOnDevice = True
     obj.UseHWSync = True
+
+    new_params = settings.OtherSettings()
+    new_params.update_params(obj=obj)
+
+    assert asdict(new_params) == kwargs

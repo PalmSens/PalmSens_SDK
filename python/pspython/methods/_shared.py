@@ -12,15 +12,16 @@ from PalmSens.Devices import PalmSens4Capabilities
 from PalmSens.Techniques import ELevel
 
 
-def convert_bool_list_to_base2(lst: Sequence[bool]) -> int:
+def convert_bools_to_int(lst: Sequence[bool]) -> int:
     """Convert e.g. [True, False, True, False] to 5."""
+    return int(''.join('01'[set_high] for set_high in reversed(lst)), base=2)
 
-    lines = 0
-    for i, set_high in enumerate(lst):
-        if set_high:
-            lines = lines | (1 << i)
-    assert lines == int(''.join('01'[set_high] for set_high in reversed(lst)), base=2)
-    return lines
+
+def convert_int_to_bools(val) -> tuple[bool, bool, bool, bool]:
+    """Convert e.g. 5 to [True, False, True, False]."""
+    lst = tuple([bool(int(_)) for _ in reversed(f'{val:04b}')])
+    assert len(lst) == 4  # specify length to make mypy happy
+    return lst
 
 
 def get_current_range(id: int) -> CurrentRange:
@@ -219,7 +220,7 @@ def multi_step_amperometry_level(
     multi_step_amperometry_level.MinLimit = limit_current_min
 
     multi_step_amperometry_level.UseTriggerOnStart = trigger_at_level
-    multi_step_amperometry_level.TriggerValueOnStart = convert_bool_list_to_base2(
+    multi_step_amperometry_level.TriggerValueOnStart = convert_bools_to_int(
         trigger_at_level_lines
     )
 
