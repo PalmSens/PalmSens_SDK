@@ -47,7 +47,7 @@ class BaseParameters:
         return obj
 
     @classmethod
-    def from_psopj(cls, obj: PSMethod):
+    def from_psobj(cls, obj: PSMethod):
         """Generate parameters from dotnet method."""
         new = cls()
 
