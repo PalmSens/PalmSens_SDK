@@ -38,7 +38,6 @@ def test_set_extra_value_mask():
         enable_bipot_current=True,
         record_forward_and_reverse_currents=True,
         record_we_current=True,
-        record_we_current_range=get_current_range(1),
     )
     assert obj.ExtraValueMsk.value__ == 101
 
@@ -50,9 +49,6 @@ def test_set_extra_value_mask():
     assert not dct['record_auxiliary_input']
     assert not dct['record_cell_potential']
     assert not dct['record_we_potential']
-
-    # this is not an extra value mask property
-    assert 'record_we_current_range' not in dct
 
 
 def test_AutorangingCurrentSettings():

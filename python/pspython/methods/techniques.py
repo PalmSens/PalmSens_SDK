@@ -670,24 +670,24 @@ class OpenCircuitPotentiometryParameters(
         """Update method with open circuit potentiometry settings."""
         obj.IntervalTime = self.interval_time
         obj.RunTime = self.run_time
+        obj.AppliedCurrentRange = self.record_we_current_range
 
         set_extra_value_mask(
             obj=obj,
             record_auxiliary_input=self.record_auxiliary_input,
             record_we_current=self.record_we_current,
-            record_we_current_range=self.record_we_current_range,
         )
 
     def update_params(self, *, obj):
         self.interval_time = obj.IntervalTime
         self.run_time = obj.RunTime
+        self.record_we_current_range = obj.AppliedCurrentRange
 
         msk = get_extra_value_mask(obj)
 
         for key in (
             'record_auxiliary_input',
             'record_we_current',
-            'record_we_current_range',
         ):
             setattr(self, key, msk[key])
 
@@ -744,12 +744,13 @@ class ChronopotentiometryParameters(
         obj.IntervalTime = self.interval_time
         obj.RunTime = self.run_time
 
+        obj.AppliedCurrentRange = self.applied_current_range
+
         set_extra_value_mask(
             obj=obj,
             record_auxiliary_input=self.record_auxiliary_input,
             record_cell_potential=self.record_cell_potential,
             record_we_current=self.record_we_current,
-            record_we_current_range=self.applied_current_range,
         )
 
     def update_params(self, *, obj):
@@ -764,7 +765,6 @@ class ChronopotentiometryParameters(
             'record_auxiliary_input',
             'record_cell_potential',
             'record_we_current',
-            'record_we_current_range',
         ):
             setattr(self, key, msk[key])
 

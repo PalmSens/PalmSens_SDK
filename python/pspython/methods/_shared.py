@@ -1,4 +1,4 @@
-from typing import Any, Optional, Sequence
+from typing import Any, Sequence
 
 from PalmSens import (
     CurrentRange,
@@ -99,12 +99,8 @@ def set_extra_value_mask(
     record_we_potential: bool = False,
     record_forward_and_reverse_currents: bool = False,
     record_we_current: bool = False,
-    record_we_current_range: Optional[Any] = None,
 ):
     """Set the extra value mask for a given method."""
-    if record_we_current_range is None:
-        record_we_current_range = get_current_range(4)
-
     extra_values = 0
 
     if enable_bipot_current:
@@ -119,7 +115,6 @@ def set_extra_value_mask(
         extra_values = extra_values | int(ExtraValueMask.IForwardReverse)
     if record_we_current:
         extra_values = extra_values | int(ExtraValueMask.CurrentExtraWE)
-        obj.AppliedCurrentRange = record_we_current_range
 
     obj.ExtraValueMsk = ExtraValueMask(extra_values)
 

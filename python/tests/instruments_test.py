@@ -2,6 +2,7 @@ import logging
 
 import pytest
 from PalmSens import Techniques
+from pytest import approx
 
 from pspython import pspyinstruments
 from pspython.data.measurement import Measurement
@@ -33,7 +34,10 @@ pytestmark = pytest.mark.instrument
 def assert_params_match_kwargs(params, *, kwargs):
     for key, exp in kwargs.items():
         ret = getattr(params, key)
-        assert ret == exp, f'{key}: expected {exp}, got {ret}'
+        if isinstance(exp, float):
+            assert ret == approx(exp), f'{key}: expected {exp}, got {ret}'
+        else:
+            assert ret == exp, f'{key}: expected {exp}, got {ret}'
 
 
 def assert_params_are_reproducible(*, pscls, pycls, kwargs):
