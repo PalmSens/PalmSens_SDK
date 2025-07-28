@@ -28,9 +28,6 @@ from pspython.methods.techniques_old import (
 logger = logging.getLogger(__name__)
 
 
-pytestmark = pytest.mark.instrument
-
-
 def assert_params_match_kwargs(params, *, kwargs):
     for key, exp in kwargs.items():
         ret = getattr(params, key)
@@ -67,18 +64,21 @@ def manager():
     assert success
 
 
+@pytest.mark.instrument
 def test_get_instrument_serial(manager):
     val = manager.get_instrument_serial()
     assert val
     assert isinstance(val, str)
 
 
+@pytest.mark.instrument
 def test_read_current(manager):
     val = manager.read_current()
     assert val
     assert isinstance(val, float)
 
 
+@pytest.mark.instrument
 def test_read_potential(manager):
     val = manager.read_current()
     assert val
@@ -108,6 +108,7 @@ class TestCV:
         method_old = cyclic_voltammetry(**self.kwargs)
         assert isinstance(method_old, self.pscls)
 
+    @pytest.mark.instrument
     def test_measurement(self, manager):
         method = self.pycls(
             current_range_max=get_current_range(7),
@@ -148,6 +149,7 @@ class TestLSV:
         method_old = linear_sweep_voltammetry(**self.kwargs)
         assert isinstance(method_old, self.pscls)
 
+    @pytest.mark.instrument
     def test_measurement(self, manager):
         method = self.pycls(
             current_range_max=get_current_range(7),
@@ -192,6 +194,7 @@ class TestSWV:
         method_old = square_wave_voltammetry(**self.kwargs)
         assert isinstance(method_old, self.pscls)
 
+    @pytest.mark.instrument
     def test_measurement(self, manager):
         method = self.pycls(
             current_range_max=get_current_range(7),
@@ -233,6 +236,7 @@ class TestCP:
         method_old = chronopotentiometry(**self.kwargs)
         assert isinstance(method_old, self.pscls)
 
+    @pytest.mark.instrument
     def test_measurement(self, manager):
         method = self.pycls(
             potential_range_max=get_potential_range(7),
@@ -271,6 +275,7 @@ class TestOCP:
         method_old = open_circuit_potentiometry(**self.kwargs)
         assert isinstance(method_old, self.pscls)
 
+    @pytest.mark.instrument
     def test_measurement(self, manager):
         method = self.pycls(
             potential_range_max=get_potential_range(7),
@@ -309,6 +314,7 @@ class TestCA:
         method_old = chronoamperometry(**self.kwargs)
         assert isinstance(method_old, self.pscls)
 
+    @pytest.mark.instrument
     def test_measurement(self, manager):
         method = self.pycls(**self.kwargs)
         measurement = manager.measure(method.to_psobj())
@@ -346,6 +352,7 @@ class TestDP:
         method_old = differential_pulse_voltammetry(**self.kwargs)
         assert isinstance(method_old, self.pscls)
 
+    @pytest.mark.instrument
     def test_measurement(self, manager):
         method = self.pycls(**self.kwargs)
         measurement = manager.measure(method.to_psobj())
@@ -384,6 +391,7 @@ class TestMSA:
         method_old = multi_step_amperometry(**self.kwargs)
         assert isinstance(method_old, self.pscls)
 
+    @pytest.mark.instrument
     def test_measurement(self, manager):
         method = self.pycls(**self.kwargs)
         measurement = manager.measure(method.to_psobj())
@@ -424,6 +432,7 @@ class TestEIS:
         method_old = electrochemical_impedance_spectroscopy(**self.kwargs)
         assert isinstance(method_old, self.pscls)
 
+    @pytest.mark.instrument
     def test_measurement(self, manager):
         method = self.pycls(**self.kwargs)
         measurement = manager.measure(method.to_psobj())
@@ -499,6 +508,7 @@ class TestGIS:
         method_old = galvanostatic_impedance_spectroscopy(**self.kwargs)
         assert isinstance(method_old, self.pscls)
 
+    @pytest.mark.instrument
     def test_measurement(self, manager):
         method = self.pycls(**self.kwargs)
         measurement = manager.measure(method.to_psobj())
