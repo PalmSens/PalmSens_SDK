@@ -23,9 +23,9 @@ serial = manager.get_instrument_serial()
 print(serial)
 
 method = pspymethods.cyclic_voltammetry(
-    current_range_max=pspymethods.get_current_range(30),  # 1A range
-    current_range_min=pspymethods.get_current_range(4),  # 1µA range
-    current_range_start=pspymethods.get_current_range(8),  # 1mA range
+    current_range_max=pspymethods.CURRENT_RANGE.cr_1_A,  # 1A range
+    current_range_min=pspymethods.CURRENT_RANGE.cr_1_uA,  # 1µA range
+    current_range_start=pspymethods.CURRENT_RANGE.cr_1_mA,  # 1mA range
     equilibration_time=2,  # seconds
     begin_potential=-2,  # V
     vertex1_potential=-2,  # V

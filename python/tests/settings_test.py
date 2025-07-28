@@ -4,10 +4,10 @@ from PalmSens import Techniques
 
 from pspython.methods import settings
 from pspython.methods._shared import (
-    get_current_range,
+    CURRENT_RANGE,
+    POTENTIAL_RANGE,
     get_extra_value_mask,
     get_mux8r2_settings,
-    get_potential_range,
     set_extra_value_mask,
 )
 
@@ -54,9 +54,9 @@ def test_set_extra_value_mask():
 def test_AutorangingCurrentSettings():
     obj = Techniques.CyclicVoltammetry()
     params = settings.AutorangingCurrentSettings(
-        current_range_max=get_current_range(6),
-        current_range_min=get_current_range(3),
-        current_range_start=get_current_range(5),
+        current_range_max=CURRENT_RANGE.cr_100_uA,
+        current_range_min=CURRENT_RANGE.cr_100_nA,
+        current_range_start=CURRENT_RANGE.cr_10_uA,
     )
     params.update_psobj(obj=obj)
 
@@ -67,17 +67,17 @@ def test_AutorangingCurrentSettings():
     new_params = settings.AutorangingCurrentSettings()
     new_params.update_params(obj=obj)
 
-    assert new_params.current_range_max == get_current_range(6)
-    assert new_params.current_range_min == get_current_range(3)
-    assert new_params.current_range_start == get_current_range(5)
+    assert new_params.current_range_max == CURRENT_RANGE.cr_100_uA
+    assert new_params.current_range_min == CURRENT_RANGE.cr_100_nA
+    assert new_params.current_range_start == CURRENT_RANGE.cr_10_uA
 
 
 def test_AutorangingPotentialSettings():
     obj = Techniques.Potentiometry()
     params = settings.AutorangingPotentialSettings(
-        potential_range_max=get_potential_range(4),
-        potential_range_min=get_potential_range(0),
-        potential_range_start=get_potential_range(1),
+        potential_range_max=POTENTIAL_RANGE.pr_100_mV,
+        potential_range_min=POTENTIAL_RANGE.pr_1_mV,
+        potential_range_start=POTENTIAL_RANGE.pr_10_mV,
     )
     params.update_psobj(obj=obj)
     assert obj.RangingPotential.MaximumPotentialRange.Description == '100 mV'
@@ -87,9 +87,9 @@ def test_AutorangingPotentialSettings():
     new_params = settings.AutorangingPotentialSettings()
     new_params.update_params(obj=obj)
 
-    assert new_params.potential_range_max == get_potential_range(4)
-    assert new_params.potential_range_min == get_potential_range(0)
-    assert new_params.potential_range_start == get_potential_range(1)
+    assert new_params.potential_range_max == POTENTIAL_RANGE.pr_100_mV
+    assert new_params.potential_range_min == POTENTIAL_RANGE.pr_1_mV
+    assert new_params.potential_range_start == POTENTIAL_RANGE.pr_10_mV
 
 
 def test_PretreatmentSettings():
@@ -144,9 +144,9 @@ def test_BipotSettings():
     kwargs = {
         'bipot_mode': 1,
         'bipot_potential': 10.0,
-        'bipot_current_range_max': get_current_range(6),
-        'bipot_current_range_min': get_current_range(2),
-        'bipot_current_range_start': get_current_range(5),
+        'bipot_current_range_max': CURRENT_RANGE.cr_100_uA,
+        'bipot_current_range_min': CURRENT_RANGE.cr_10_nA,
+        'bipot_current_range_start': CURRENT_RANGE.cr_10_uA,
     }
 
     params = settings.BipotSettings(**kwargs)
@@ -163,9 +163,9 @@ def test_BipotSettings():
 
     assert new_params.bipot_mode == 1
     assert new_params.bipot_potential == 10.0
-    assert new_params.bipot_current_range_max == get_current_range(6)
-    assert new_params.bipot_current_range_min == get_current_range(2)
-    assert new_params.bipot_current_range_start == get_current_range(5)
+    assert new_params.bipot_current_range_max == CURRENT_RANGE.cr_100_uA
+    assert new_params.bipot_current_range_min == CURRENT_RANGE.cr_10_nA
+    assert new_params.bipot_current_range_start == CURRENT_RANGE.cr_10_uA
 
 
 def test_PostMeasurementSettings():

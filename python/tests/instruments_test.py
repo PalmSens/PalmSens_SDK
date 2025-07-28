@@ -8,9 +8,9 @@ from pspython import pspyinstruments
 from pspython.data.measurement import Measurement
 from pspython.methods import techniques
 from pspython.methods._shared import (
+    CURRENT_RANGE,
+    POTENTIAL_RANGE,
     ELevel,
-    get_current_range,
-    get_potential_range,
 )
 from pspython.methods.techniques_old import (
     chronoamperometry,
@@ -111,9 +111,9 @@ class TestCV:
     @pytest.mark.instrument
     def test_measurement(self, manager):
         method = self.pycls(
-            current_range_max=get_current_range(7),
-            current_range_min=get_current_range(3),
-            current_range_start=get_current_range(6),
+            current_range_max=CURRENT_RANGE.cr_1_mA,
+            current_range_min=CURRENT_RANGE.cr_100_nA,
+            current_range_start=CURRENT_RANGE.cr_100_uA,
             **self.kwargs,
         )
         measurement = manager.measure(method.to_psobj())
@@ -152,9 +152,9 @@ class TestLSV:
     @pytest.mark.instrument
     def test_measurement(self, manager):
         method = self.pycls(
-            current_range_max=get_current_range(7),
-            current_range_min=get_current_range(3),
-            current_range_start=get_current_range(6),
+            current_range_max=CURRENT_RANGE.cr_1_mA,
+            current_range_min=CURRENT_RANGE.cr_100_nA,
+            current_range_start=CURRENT_RANGE.cr_100_uA,
             **self.kwargs,
         )
         measurement = manager.measure(method.to_psobj())
@@ -197,9 +197,9 @@ class TestSWV:
     @pytest.mark.instrument
     def test_measurement(self, manager):
         method = self.pycls(
-            current_range_max=get_current_range(7),
-            current_range_min=get_current_range(3),
-            current_range_start=get_current_range(6),
+            current_range_max=CURRENT_RANGE.cr_1_mA,
+            current_range_min=CURRENT_RANGE.cr_100_nA,
+            current_range_start=CURRENT_RANGE.cr_100_uA,
             **self.kwargs,
         )
         measurement = manager.measure(method.to_psobj())
@@ -218,7 +218,7 @@ class TestSWV:
 class TestCP:
     kwargs = {
         'current': 0.0,
-        'applied_current_range': get_current_range(6),
+        'applied_current_range': CURRENT_RANGE.cr_100_uA,
         'interval_time': 0.1,
         'run_time': 1.0,
     }
@@ -239,9 +239,9 @@ class TestCP:
     @pytest.mark.instrument
     def test_measurement(self, manager):
         method = self.pycls(
-            potential_range_max=get_potential_range(7),
-            potential_range_min=get_potential_range(1),
-            potential_range_start=get_potential_range(7),
+            potential_range_max=POTENTIAL_RANGE.pr_1_V,
+            potential_range_min=POTENTIAL_RANGE.pr_10_mV,
+            potential_range_start=POTENTIAL_RANGE.pr_1_V,
             **self.kwargs,
         )
         measurement = manager.measure(method.to_psobj())
@@ -278,9 +278,9 @@ class TestOCP:
     @pytest.mark.instrument
     def test_measurement(self, manager):
         method = self.pycls(
-            potential_range_max=get_potential_range(7),
-            potential_range_min=get_potential_range(1),
-            potential_range_start=get_potential_range(7),
+            potential_range_max=POTENTIAL_RANGE.pr_1_V,
+            potential_range_min=POTENTIAL_RANGE.pr_10_mV,
+            potential_range_start=POTENTIAL_RANGE.pr_1_V,
             **self.kwargs,
         )
         measurement = manager.measure(method.to_psobj())
@@ -488,7 +488,7 @@ class TestEIS:
 
 class TestGIS:
     kwargs = {
-        'applied_current_range': get_current_range(5),
+        'applied_current_range': CURRENT_RANGE.cr_10_uA,
         'equilibration_time': 0.0,
         'n_frequencies': 7,
         'max_frequency': 1e5,

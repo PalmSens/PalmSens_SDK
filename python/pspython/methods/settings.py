@@ -34,14 +34,14 @@ class AutorangingCurrentSettings:
     current_range_start: CURRENT_RANGE = CURRENT_RANGE.cr_100_uA
 
     def update_psobj(self, *, obj):
-        obj.Ranging.MaximumCurrentRange = self.current_range_max
-        obj.Ranging.MinimumCurrentRange = self.current_range_min
-        obj.Ranging.StartCurrentRange = self.current_range_start
+        obj.Ranging.MaximumCurrentRange = self.current_range_max.to_psobj()
+        obj.Ranging.MinimumCurrentRange = self.current_range_min.to_psobj()
+        obj.Ranging.StartCurrentRange = self.current_range_start.to_psobj()
 
     def update_params(self, *, obj):
-        self.current_range_max = obj.Ranging.MaximumCurrentRange
-        self.current_range_min = obj.Ranging.MinimumCurrentRange
-        self.current_range_start = obj.Ranging.StartCurrentRange
+        self.current_range_max = CURRENT_RANGE(obj.Ranging.MaximumCurrentRange)
+        self.current_range_min = CURRENT_RANGE(obj.Ranging.MinimumCurrentRange)
+        self.current_range_start = CURRENT_RANGE(obj.Ranging.StartCurrentRange)
 
 
 @dataclass
@@ -66,14 +66,14 @@ class AutorangingPotentialSettings:
     potential_range_start: POTENTIAL_RANGE = POTENTIAL_RANGE.pr_1_V
 
     def update_psobj(self, *, obj):
-        obj.RangingPotential.MaximumPotentialRange = self.potential_range_max
-        obj.RangingPotential.MinimumPotentialRange = self.potential_range_min
-        obj.RangingPotential.StartPotentialRange = self.potential_range_start
+        obj.RangingPotential.MaximumPotentialRange = self.potential_range_max.to_psobj()
+        obj.RangingPotential.MinimumPotentialRange = self.potential_range_min.to_psobj()
+        obj.RangingPotential.StartPotentialRange = self.potential_range_start.to_psobj()
 
     def update_params(self, *, obj):
-        self.potential_range_max = obj.RangingPotential.MaximumPotentialRange
-        self.potential_range_min = obj.RangingPotential.MinimumPotentialRange
-        self.potential_range_start = obj.RangingPotential.StartPotentialRange
+        self.potential_range_max = POTENTIAL_RANGE(obj.RangingPotential.MaximumPotentialRange)
+        self.potential_range_min = POTENTIAL_RANGE(obj.RangingPotential.MinimumPotentialRange)
+        self.potential_range_start = POTENTIAL_RANGE(obj.RangingPotential.StartPotentialRange)
 
 
 @dataclass

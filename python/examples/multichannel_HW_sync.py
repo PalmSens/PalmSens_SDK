@@ -34,10 +34,10 @@ async def main():
 
     if all(connected) and 1 in managers:
         method = pspymethods.chronopotentiometry(
-            potential_range_max=pspymethods.get_potential_range(7),  # 1V range
-            potential_range_min=pspymethods.get_potential_range(1),  # 10mV range
-            potential_range_start=pspymethods.get_potential_range(7),  # 1V range
-            applied_current_range=pspymethods.get_current_range(5),  # 10µA range
+            potential_range_max=pspymethods.POTENTIAL_RANGE.pr_1_V,  # 1V range
+            potential_range_min=pspymethods.POTENTIAL_RANGE.pr_10_mV,  # 10mV range
+            potential_range_start=pspymethods.POTENTIAL_RANGE.pr_1_V,  # 1V range
+            applied_current_range=pspymethods.CURRENT_RANGE.cr_10_uA,  # 10µA range
             current=0.5,  # applied current in range, i.e. 5µA when the 10µA range is set as the applied range
             interval_time=0.05,  # seconds
             run_time=5,  # seconds

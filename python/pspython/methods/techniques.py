@@ -1,12 +1,15 @@
+from __future__ import annotations
+
 from dataclasses import dataclass, field
+from typing import TYPE_CHECKING
 
 from PalmSens import Method as PSMethod
 from PalmSens import Techniques
 from PalmSens.Techniques.Impedance import enumFrequencyType, enumScanType
 
 from ._shared import (
+    CURRENT_RANGE,
     ELevel,
-    get_current_range,
     get_extra_value_mask,
     set_extra_value_mask,
 )
@@ -28,6 +31,9 @@ from .settings import (
     VersusOcpSettings,
 )
 
+if TYPE_CHECKING:
+    from .method import Method
+
 
 class BaseParameters:
     """Provide generic methods for interacting with the PalmSens.Method
@@ -48,7 +54,7 @@ class BaseParameters:
 
     @classmethod
     def from_psobj(cls, obj: PSMethod):
-        """Generate parameters from dotnet method."""
+        """Generate parameters from dotnet method object."""
         new = cls()
 
         for parent in cls.__mro__:
@@ -57,6 +63,11 @@ class BaseParameters:
             new.update_params(obj=obj)
 
         return new
+
+    @classmethod
+    def from_method(cls, method: Method):
+        """Return parameters class from method."""
+        return cls.from_psobj(obj=method.psobj)
 
     def update_params(self, *, obj): ...
 
@@ -647,7 +658,7 @@ class OpenCircuitPotentiometryParameters(
         Record working electrode current (default: False)
     record_we_current_range: int
         Record working electrode current range (default: 1 µA)
-        Use `get_current_range()` to get the range.
+        Use `CURRENT_RANGE()` to define the range.
     """
 
     _PSMethod = Techniques.OpenCircuitPotentiometry
@@ -657,7 +668,7 @@ class OpenCircuitPotentiometryParameters(
 
     record_auxiliary_input: bool = False
     record_we_current: bool = False
-    record_we_current_range: int = get_current_range(4)
+    record_we_current_range: CURRENT_RANGE = CURRENT_RANGE.cr_1_uA
 
     def update_psobj(self, *, obj):
         """Update method with open circuit potentiometry settings."""
@@ -706,7 +717,7 @@ class ChronopotentiometryParameters(
         The current to apply. The unit of the value is the applied current range. So if 10 uA is the applied current range and 1.5 is given as value, the applied current will be 15 uA. (default: 0.0)
     applied_current_range : PalmSens.CurrentRange
         Applied current range (default: 100 µA).
-        Use `get_current_range()` to get the range.
+        Use `CURRENT_RANGE()` to define the range.
     interval_time : float
         Interval time in s (default: 0.1)
     run_time : float
@@ -722,7 +733,7 @@ class ChronopotentiometryParameters(
     _PSMethod = Techniques.Potentiometry
 
     current: float = 0.0
-    applied_current_range: int = get_current_range(6)
+    applied_current_range: CURRENT_RANGE = CURRENT_RANGE.cr_100_uA
     interval_time: float = 0.1
     run_time: float = 1.0
 
@@ -733,11 +744,11 @@ class ChronopotentiometryParameters(
     def update_psobj(self, *, obj):
         """Update method with potentiometry settings."""
         obj.Current = self.current
-        obj.AppliedCurrentRange = self.applied_current_range
+        obj.AppliedCurrentRange = self.applied_current_range.to_psobj()
         obj.IntervalTime = self.interval_time
         obj.RunTime = self.run_time
 
-        obj.AppliedCurrentRange = self.applied_current_range
+        obj.AppliedCurrentRange = self.applied_current_range.to_psobj()
 
         set_extra_value_mask(
             obj=obj,
@@ -840,7 +851,7 @@ class GalvanostaticImpedanceSpectroscopyParameters(
     ----------
     applied_current_range : PalmSens.CurrentRange
         Applied current range (default: 100 µA)
-        Use `get_current_range()` to get the range.
+        Use `CURRENT_RANGE()` to define the range.
     ac_current : float
         AC current in applied current range RMS (default: 0.01)
     dc_current : float
@@ -855,7 +866,7 @@ class GalvanostaticImpedanceSpectroscopyParameters(
 
     _PSMethod = Techniques.ImpedimetricGstatMethod
 
-    applied_current_range: float = get_current_range(6)
+    applied_current_range: CURRENT_RANGE = CURRENT_RANGE.cr_100_uA
     equilibration_time: float = 0.0
     ac_current: float = 0.01
     dc_current: float = 0.0
