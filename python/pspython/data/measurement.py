@@ -73,7 +73,7 @@ class Measurement:
         """Method related with this Measurement.
 
         The information from the Method is used when saving Curves."""
-        return Method(dotnet_method=self.dotnet_measurement.Method)
+        return Method(psobj=self.dotnet_measurement.Method)
 
     def ocp_value(self) -> float:
         """First OCP Value from either curves or EISData."""

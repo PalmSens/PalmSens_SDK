@@ -6,9 +6,9 @@ from pspython.methods._shared import CURRENT_RANGE, POTENTIAL_RANGE
 
 
 def test_current_range():
-    assert CURRENT_RANGE(0).to_psobj().ToString() == '100 pA'
-    assert CURRENT_RANGE(30).to_psobj().ToString() == '1 A'
-    assert CURRENT_RANGE(26).to_psobj().ToString() == '63 uA'
+    assert CURRENT_RANGE.cr_100_pA.to_psobj().ToString() == '100 pA'
+    assert CURRENT_RANGE.cr_1_A.to_psobj().ToString() == '1 A'
+    assert CURRENT_RANGE.cr_63_uA.to_psobj().ToString() == '63 uA'
 
     with pytest.raises(ValueError):
         CURRENT_RANGE(-1)
@@ -18,7 +18,7 @@ def test_current_range():
 def test_potential_range():
     assert POTENTIAL_RANGE.pr_1_mV.to_psobj().ToString() == '1 mV'
     assert POTENTIAL_RANGE.pr_100_mV.to_psobj().ToString() == '100 mV'
-    assert POTENTIAL_RANGE.pr_10_mV.to_psobj().ToString() == '1 V'
+    assert POTENTIAL_RANGE.pr_1_V.to_psobj().ToString() == '1 V'
 
     with pytest.raises(ValueError):
         POTENTIAL_RANGE(-1)
@@ -39,9 +39,9 @@ def test_method_current_range():
 
     supported_ranges = obj.Ranging.SupportedCurrentRanges
 
-    assert crmin in supported_ranges
-    assert crmax in supported_ranges
-    assert crstart in supported_ranges
+    assert crmin.to_psobj() in supported_ranges
+    assert crmax.to_psobj() in supported_ranges
+    assert crstart.to_psobj() in supported_ranges
 
     assert obj.Ranging.MinimumCurrentRange.Description == '100 nA'
     assert obj.Ranging.MaximumCurrentRange.Description == '1 mA'
@@ -61,9 +61,9 @@ def test_method_potential_range():
     obj = method.to_psobj()
     supported_ranges = obj.RangingPotential.SupportedPotentialRanges
 
-    assert potmin in supported_ranges
-    assert potmax in supported_ranges
-    assert potstart in supported_ranges
+    assert potmin.to_psobj() in supported_ranges
+    assert potmax.to_psobj() in supported_ranges
+    assert potstart.to_psobj() in supported_ranges
 
     assert obj.RangingPotential.MinimumPotentialRange.Description == '1 mV'
     assert obj.RangingPotential.MaximumPotentialRange.Description == '100 mV'

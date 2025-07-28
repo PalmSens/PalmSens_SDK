@@ -658,7 +658,7 @@ class OpenCircuitPotentiometryParameters(
         Record working electrode current (default: False)
     record_we_current_range: int
         Record working electrode current range (default: 1 µA)
-        Use `CURRENT_RANGE()` to define the range.
+        Use `CURRENT_RANGE` to define the range.
     """
 
     _PSMethod = Techniques.OpenCircuitPotentiometry
@@ -674,7 +674,7 @@ class OpenCircuitPotentiometryParameters(
         """Update method with open circuit potentiometry settings."""
         obj.IntervalTime = self.interval_time
         obj.RunTime = self.run_time
-        obj.AppliedCurrentRange = self.record_we_current_range
+        obj.AppliedCurrentRange = self.record_we_current_range.to_psobj()
 
         set_extra_value_mask(
             obj=obj,
@@ -685,7 +685,7 @@ class OpenCircuitPotentiometryParameters(
     def update_params(self, *, obj):
         self.interval_time = obj.IntervalTime
         self.run_time = obj.RunTime
-        self.record_we_current_range = obj.AppliedCurrentRange
+        self.record_we_current_range = CURRENT_RANGE(obj.AppliedCurrentRange)
 
         msk = get_extra_value_mask(obj)
 
@@ -717,7 +717,7 @@ class ChronopotentiometryParameters(
         The current to apply. The unit of the value is the applied current range. So if 10 uA is the applied current range and 1.5 is given as value, the applied current will be 15 uA. (default: 0.0)
     applied_current_range : PalmSens.CurrentRange
         Applied current range (default: 100 µA).
-        Use `CURRENT_RANGE()` to define the range.
+        Use `CURRENT_RANGE` to define the range.
     interval_time : float
         Interval time in s (default: 0.1)
     run_time : float
@@ -759,7 +759,7 @@ class ChronopotentiometryParameters(
 
     def update_params(self, *, obj):
         self.current = obj.Current
-        self.applied_current_range = obj.AppliedCurrentRange
+        self.applied_current_range = CURRENT_RANGE(int(obj.AppliedCurrentRange.CRbyte))
         self.interval_time = obj.IntervalTime
         self.run_time = obj.RunTime
 
@@ -851,7 +851,7 @@ class GalvanostaticImpedanceSpectroscopyParameters(
     ----------
     applied_current_range : PalmSens.CurrentRange
         Applied current range (default: 100 µA)
-        Use `CURRENT_RANGE()` to define the range.
+        Use `CURRENT_RANGE` to define the range.
     ac_current : float
         AC current in applied current range RMS (default: 0.01)
     dc_current : float
@@ -879,7 +879,7 @@ class GalvanostaticImpedanceSpectroscopyParameters(
 
         obj.ScanType = enumScanType.Fixed
         obj.FreqType = enumFrequencyType.Scan
-        obj.AppliedCurrentRange = self.applied_current_range
+        obj.AppliedCurrentRange = self.applied_current_range.to_psobj()
         obj.EquilibrationTime = self.equilibration_time
         obj.Iac = self.ac_current
         obj.Idc = self.dc_current
@@ -888,7 +888,7 @@ class GalvanostaticImpedanceSpectroscopyParameters(
         obj.MinFrequency = self.min_frequency
 
     def update_params(self, *, obj):
-        self.applied_current_range = obj.AppliedCurrentRange
+        self.applied_current_range = CURRENT_RANGE(int(obj.AppliedCurrentRange.CRbyte))
         self.equilibration_time = obj.EquilibrationTime
         self.ac_current = obj.Iac
         self.dc_current = obj.Idc

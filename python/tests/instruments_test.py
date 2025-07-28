@@ -120,7 +120,7 @@ class TestCV:
 
         assert measurement
         assert isinstance(measurement, Measurement)
-        assert measurement.method.dotnet_method.nScans == 2
+        assert measurement.method.psobj.nScans == 2
 
         dataset = measurement.dataset
         assert len(dataset) == 7
@@ -161,7 +161,7 @@ class TestLSV:
 
         assert measurement
         assert isinstance(measurement, Measurement)
-        assert measurement.method.dotnet_method.nScans == 1
+        assert measurement.method.psobj.nScans == 1
 
         dataset = measurement.dataset
         assert len(dataset) == 4
@@ -206,7 +206,7 @@ class TestSWV:
 
         assert measurement
         assert isinstance(measurement, Measurement)
-        assert measurement.method.dotnet_method.nScans == 1
+        assert measurement.method.psobj.nScans == 1
 
         dataset = measurement.dataset
         assert len(dataset) == 5

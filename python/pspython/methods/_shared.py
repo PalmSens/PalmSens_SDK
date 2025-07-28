@@ -8,6 +8,7 @@ from PalmSens import (
     CurrentRanges,
     ExtraValueMask,
     Method,
+    PotentialRange,
     PotentialRanges,
     Techniques,
 )
@@ -63,7 +64,7 @@ class POTENTIAL_RANGE(Enum):
 
     def to_psobj(self):
         """Get equivalent PS object."""
-        return PotentialRanges(self.value)
+        return PotentialRange(PotentialRanges(self.value))
 
 
 def single_to_double(val: float) -> float:
