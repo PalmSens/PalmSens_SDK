@@ -5,10 +5,10 @@ import PalmSens
 from PalmSens import MuxMethod as PSMuxMethod
 
 from ._shared import (
+    CURRENT_RANGE,
+    POTENTIAL_RANGE,
     convert_bools_to_int,
     convert_int_to_bools,
-    get_current_range,
-    get_potential_range,
 )
 
 
@@ -20,18 +20,18 @@ class AutorangingCurrentSettings:
     ----------
     current_range_max: int
         Maximum current range (default: 10 mA).
-        Use `get_current_range()` to get the range.
+        Use `CURRENT_RANGE` to define the range.
     current_range_min: int
         Minimum current range (default: 1 µA).
-        Use `get_current_range()` to get the range.
+        Use `CURRENT_RANGE` to define the range.
     current_range_start: int
          Start current range (default: 100 µA).
-         Use `get_current_range()` to get the range.
+         Use `CURRENT_RANGE` to define the range.
     """
 
-    current_range_max: int = get_current_range(8)
-    current_range_min: int = get_current_range(4)
-    current_range_start: int = get_current_range(6)
+    current_range_max: CURRENT_RANGE = CURRENT_RANGE.cr_10_mA
+    current_range_min: CURRENT_RANGE = CURRENT_RANGE.cr_1_uA
+    current_range_start: CURRENT_RANGE = CURRENT_RANGE.cr_100_uA
 
     def update_psobj(self, *, obj):
         obj.Ranging.MaximumCurrentRange = self.current_range_max
@@ -52,18 +52,18 @@ class AutorangingPotentialSettings:
     ----------
     potential_range_max: int
         Maximum potential range (default: 1V).
-        Use `get_potential_range()` to get the range.
+        Use `POTENTIAL_RANGE` to define the range.
     potential_range_min: int
         Minimum potential range (default: 10mV).
-        Use `get_potential_range()` to get the range.
+        Use `POTENTIAL_RANGE` to define the range.
     potential_range_start: int
         Start potential range (default: 1V).
-        Use `get_potential_range()` to get the range.
+        Use `POTENTIAL_RANGE` to define the range.
     """
 
-    potential_range_max: int = get_potential_range(7)
-    potential_range_min: int = get_potential_range(1)
-    potential_range_start: int = get_potential_range(7)
+    potential_range_max: POTENTIAL_RANGE = POTENTIAL_RANGE.pr_1_V
+    potential_range_min: POTENTIAL_RANGE = POTENTIAL_RANGE.pr_1_mV
+    potential_range_start: POTENTIAL_RANGE = POTENTIAL_RANGE.pr_1_V
 
     def update_psobj(self, *, obj):
         obj.RangingPotential.MaximumPotentialRange = self.potential_range_max
@@ -163,20 +163,20 @@ class BipotSettings:
         Set the bipotential in V (default: 0.0)
     bipot_current_range_max: int
         Maximum bipotential current range (default: 10 mA).
-        Use `get_current_range()` to get the range.
+        Use `CURRENT_RANGE` to define the range.
     bipot_current_range_min: int
         Minimum bipotential current range (default: 1 µA).
-        Use `get_current_range()` to get the range.
+        Use `CURRENT_RANGE` to define the range.
     bipot_current_range_start: int
         Start bipotential current range (default: 100 µA).
-        Use `get_current_range()` to get the range.
+        Use `CURRENT_RANGE` to define the range.
     """
 
     bipot_mode: int = 0
     bipot_potential: float = 0.0  # V
-    bipot_current_range_max: int = get_current_range(8)
-    bipot_current_range_min: int = get_current_range(4)
-    bipot_current_range_start: int = get_current_range(6)
+    bipot_current_range_max: CURRENT_RANGE = CURRENT_RANGE.cr_10_mA
+    bipot_current_range_min: CURRENT_RANGE = CURRENT_RANGE.cr_1_uA
+    bipot_current_range_start: CURRENT_RANGE = CURRENT_RANGE.cr_100_uA
 
     def update_psobj(self, *, obj):
         obj.BiPotModePS = PalmSens.Method.EnumPalmSensBipotMode(self.bipot_mode)
