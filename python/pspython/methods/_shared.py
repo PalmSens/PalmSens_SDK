@@ -103,18 +103,16 @@ def set_extra_value_mask(
     """Set the extra value mask for a given method."""
     extra_values = 0
 
-    if enable_bipot_current:
-        extra_values = extra_values | int(ExtraValueMask.BipotWE)
-    if record_auxiliary_input:
-        extra_values = extra_values | int(ExtraValueMask.AuxInput)
-    if record_cell_potential:
-        extra_values = extra_values | int(ExtraValueMask.CEPotential)
-    if record_we_potential:
-        extra_values = extra_values | int(ExtraValueMask.PotentialExtraRE)
-    if record_forward_and_reverse_currents:
-        extra_values = extra_values | int(ExtraValueMask.IForwardReverse)
-    if record_we_current:
-        extra_values = extra_values | int(ExtraValueMask.CurrentExtraWE)
+    for flag, enum in (
+        (enable_bipot_current, ExtraValueMask.BipotWE),
+        (record_auxiliary_input, ExtraValueMask.AuxInput),
+        (record_cell_potential, ExtraValueMask.CEPotential),
+        (record_we_potential, ExtraValueMask.PotentialExtraRE),
+        (record_forward_and_reverse_currents, ExtraValueMask.IForwardReverse),
+        (record_we_current, ExtraValueMask.CurrentExtraWE),
+    ):
+        if flag:
+            extra_values = extra_values | int(enum)
 
     obj.ExtraValueMsk = ExtraValueMask(extra_values)
 
