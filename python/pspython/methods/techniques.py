@@ -605,8 +605,7 @@ class MultiStepAmperometryParameters(
         self.interval_time = obj.IntervalTime
         self.n_cycles = obj.nCycles
 
-        # obj.Levels.Add(level) ??
-        # breakpoint()
+        self.levels = [ELevel.from_psobj(pslevel) for pslevel in obj.Levels]
 
         msk = get_extra_value_mask(obj)
 

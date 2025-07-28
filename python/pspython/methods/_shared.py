@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from typing import Any, Sequence
 
+import numpy as np
 from PalmSens import (
     CurrentRange,
     CurrentRanges,
@@ -11,6 +12,14 @@ from PalmSens import (
     Techniques,
 )
 from PalmSens.Devices import PalmSens4Capabilities
+
+
+def single_to_double(val: float) -> float:
+    """Cast single precision to double precision.
+
+    Pythonnet returns System.Single, whereas python defaults to double precision.
+    This leads to incorrect rounding, which makes comparing values difficult."""
+    return float(str(np.float32(val)))
 
 
 def convert_bools_to_int(lst: Sequence[bool]) -> int:
@@ -237,15 +246,16 @@ class ELevel:
         return obj
 
     @classmethod
-    def from_psobj(cls, psobj):
-        cls(
-            level=psobj.Level,
-            duration=psobj.Duration,
+    def from_psobj(cls, psobj: Techniques.ELevel):
+        """Construct ELevel dataclass from PalmSens.Techniques.ELevel object."""
+        return cls(
+            level=single_to_double(psobj.Level),
+            duration=single_to_double(psobj.Duration),
             record=psobj.Record,
             use_limit_current_max=psobj.UseMaxLimit,
-            limit_current_max=psobj.MaxLimit,
+            limit_current_max=single_to_double(psobj.MaxLimit),
             use_limit_current_min=psobj.UseMinLimit,
-            limit_current_min=psobj.MinLimit,
+            limit_current_min=single_to_double(psobj.MinLimit),
             trigger_at_level=psobj.UseTriggerOnStart,
             trigger_at_level_lines=convert_int_to_bools(psobj.TriggerValueOnStart),
         )

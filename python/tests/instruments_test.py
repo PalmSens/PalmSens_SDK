@@ -40,7 +40,7 @@ def assert_params_match_kwargs(params, *, kwargs):
             assert ret == exp, f'{key}: expected {exp}, got {ret}'
 
 
-def assert_params_are_reproducible(*, pscls, pycls, kwargs):
+def assert_params_round_trip_equal(*, pscls, pycls, kwargs):
     obj = pscls()
 
     params = pycls(**kwargs)
@@ -97,8 +97,8 @@ class TestCV:
     pycls = techniques.CyclicVoltammetryParameters
     pscls = Techniques.CyclicVoltammetry
 
-    def test_params_are_reproducible(self):
-        assert_params_are_reproducible(
+    def test_params_round_trip(self):
+        assert_params_round_trip_equal(
             pscls=self.pscls,
             pycls=self.pycls,
             kwargs=self.kwargs,
@@ -137,8 +137,8 @@ class TestLSV:
     pycls = techniques.LinearSweepParameters
     pscls = Techniques.LinearSweep
 
-    def test_params_are_reproducible(self):
-        assert_params_are_reproducible(
+    def test_params_round_trip(self):
+        assert_params_round_trip_equal(
             pscls=self.pscls,
             pycls=self.pycls,
             kwargs=self.kwargs,
@@ -181,8 +181,8 @@ class TestSWV:
     pycls = techniques.SquareWaveParameters
     pscls = Techniques.SquareWave
 
-    def test_params_are_reproducible(self):
-        assert_params_are_reproducible(
+    def test_params_round_trip(self):
+        assert_params_round_trip_equal(
             pscls=self.pscls,
             pycls=self.pycls,
             kwargs=self.kwargs,
@@ -222,8 +222,8 @@ class TestCP:
     pycls = techniques.ChronopotentiometryParameters
     pscls = Techniques.Potentiometry
 
-    def test_params_are_reproducible(self):
-        assert_params_are_reproducible(
+    def test_params_round_trip(self):
+        assert_params_round_trip_equal(
             pscls=self.pscls,
             pycls=self.pycls,
             kwargs=self.kwargs,
@@ -260,8 +260,8 @@ class TestOCP:
     pycls = techniques.OpenCircuitPotentiometryParameters
     pscls = Techniques.OpenCircuitPotentiometry
 
-    def test_params_are_reproducible(self):
-        assert_params_are_reproducible(
+    def test_params_round_trip(self):
+        assert_params_round_trip_equal(
             pscls=self.pscls,
             pycls=self.pycls,
             kwargs=self.kwargs,
@@ -298,8 +298,8 @@ class TestCA:
     pycls = techniques.ChronoAmperometryParameters
     pscls = Techniques.AmperometricDetection
 
-    def test_params_are_reproducible(self):
-        assert_params_are_reproducible(
+    def test_params_round_trip(self):
+        assert_params_round_trip_equal(
             pscls=self.pscls,
             pycls=self.pycls,
             kwargs=self.kwargs,
@@ -335,8 +335,8 @@ class TestDP:
     pycls = techniques.DifferentialPulseParameters
     pscls = Techniques.DifferentialPulse
 
-    def test_params_are_reproducible(self):
-        assert_params_are_reproducible(
+    def test_params_round_trip(self):
+        assert_params_round_trip_equal(
             pscls=self.pscls,
             pycls=self.pycls,
             kwargs=self.kwargs,
@@ -373,8 +373,8 @@ class TestMSA:
     pycls = techniques.MultiStepAmperometryParameters
     pscls = Techniques.MultistepAmperometry
 
-    def test_params_are_reproducible(self):
-        assert_params_are_reproducible(
+    def test_params_round_trip(self):
+        assert_params_round_trip_equal(
             pscls=self.pscls,
             pycls=self.pycls,
             kwargs=self.kwargs,
@@ -413,8 +413,8 @@ class TestEIS:
     pycls = techniques.ElectrochemicalImpedanceSpectroscopyParameters
     pscls = Techniques.ImpedimetricMethod
 
-    def test_params_are_reproducible(self):
-        assert_params_are_reproducible(
+    def test_params_round_trip(self):
+        assert_params_round_trip_equal(
             pscls=self.pscls,
             pycls=self.pycls,
             kwargs=self.kwargs,
@@ -488,8 +488,8 @@ class TestGIS:
     pycls = techniques.GalvanostaticImpedanceSpectroscopyParameters
     pscls = Techniques.ImpedimetricGstatMethod
 
-    def test_params_are_reproducible(self):
-        assert_params_are_reproducible(
+    def test_params_round_trip(self):
+        assert_params_round_trip_equal(
             pscls=self.pscls,
             pycls=self.pycls,
             kwargs=self.kwargs,
