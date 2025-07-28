@@ -8,9 +8,9 @@ from pspython import pspyinstruments
 from pspython.data.measurement import Measurement
 from pspython.methods import techniques
 from pspython.methods._shared import (
+    ELevel,
     get_current_range,
     get_potential_range,
-    multi_step_amperometry_level,
 )
 from pspython.methods.techniques_old import (
     chronoamperometry,
@@ -366,8 +366,8 @@ class TestMSA:
         'interval_time': 0.01,
         'n_cycles': 2,
         'levels': [
-            multi_step_amperometry_level(level=0.5, duration=0.1),
-            multi_step_amperometry_level(level=0.3, duration=0.2),
+            ELevel(level=0.5, duration=0.1),
+            ELevel(level=0.3, duration=0.2),
         ],
     }
     pycls = techniques.MultiStepAmperometryParameters

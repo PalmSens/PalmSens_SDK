@@ -5,9 +5,9 @@ from PalmSens import Techniques
 from PalmSens.Techniques.Impedance import enumFrequencyType, enumScanType
 
 from ._shared import (
+    ELevel,
     get_current_range,
     get_extra_value_mask,
-    multi_step_amperometry_level,
     set_extra_value_mask,
 )
 from .settings import (
@@ -547,8 +547,8 @@ class MultiStepAmperometryParameters(
     n_cycles : int
         Number of cycles (default: 1)
     levels : list
-        List of levels (default: [multi_step_amperometry_level()].
-        Use multi_step_amperometry_level() to create levels.
+        List of levels (default: [ELevel()].
+        Use ELevel() to create levels.
     enable_bipot_current: bool
         Enable bipot current (default: False)
     record_auxiliary_input : bool
@@ -566,9 +566,7 @@ class MultiStepAmperometryParameters(
     equilibration_time: float = 0.0
     interval_time: float = 0.1
     n_cycles: float = 1
-    levels: list[Techniques.ELevel] = field(
-        default_factory=lambda: [multi_step_amperometry_level()]
-    )
+    levels: list[ELevel] = field(default_factory=lambda: [ELevel()])
 
     record_auxiliary_input: bool = False
     record_cell_potential: bool = False
@@ -582,22 +580,17 @@ class MultiStepAmperometryParameters(
         obj.nCycles = self.n_cycles
         obj.Levels.Clear()
 
-        if len(self.levels) == 0:
+        if not self.levels:
             raise ValueError('At least one level must be specified.')
 
-        use_partial_record = False
-        use_level_limits = False
-
         for level in self.levels:
-            if level.Record:
-                use_partial_record = True
-            if level.UseMaxLimit or level.UseMinLimit:
-                use_level_limits = True
+            obj.Levels.Add(level.to_psobj())
 
-            obj.Levels.Add(level)
-
-        obj.UseSelectiveRecord = use_partial_record
-        obj.UseLimits = use_level_limits
+        obj.UseSelectiveRecord = any(level.record for level in self.levels)
+        obj.UseLimits = any(
+            (level.use_limit_current_min or level.use_limit_current_max)
+            for level in self.levels
+        )
 
         set_extra_value_mask(
             obj=obj,
@@ -613,6 +606,7 @@ class MultiStepAmperometryParameters(
         self.n_cycles = obj.nCycles
 
         # obj.Levels.Add(level) ??
+        # breakpoint()
 
         msk = get_extra_value_mask(obj)
 

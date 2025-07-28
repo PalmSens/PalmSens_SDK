@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from typing import Any, Sequence
 
 from PalmSens import (
@@ -7,9 +8,9 @@ from PalmSens import (
     Method,
     PotentialRange,
     PotentialRanges,
+    Techniques,
 )
 from PalmSens.Devices import PalmSens4Capabilities
-from PalmSens.Techniques import ELevel
 
 
 def convert_bools_to_int(lst: Sequence[bool]) -> int:
@@ -181,20 +182,11 @@ def get_method_estimated_duration(method, *, instrument_manager=None):
     return method.GetMinimumEstimatedMeasurementDuration(instrument_capabilities)
 
 
-def multi_step_amperometry_level(
-    level: float = 0.0,
-    duration: float = 1.0,
-    record: bool = True,
-    use_limit_current_max: bool = False,
-    limit_current_max: float = 0.0,
-    use_limit_current_min: bool = False,
-    limit_current_min: float = 0.0,
-    trigger_at_level: bool = False,
-    trigger_at_level_lines: tuple[bool, bool, bool, bool] = (False, False, False, False),
-):
+@dataclass
+class ELevel:
     """Create a multi-step amperometry level method object.
 
-    Parameters
+    Attributes
     ----------
     level : float
         Level in V (default: 0.0)
@@ -216,20 +208,44 @@ def multi_step_amperometry_level(
         Trigger at level lines (default: [False, False, False, False])
         [d0 high, d1 high, d2 high, d3 high]
     """
-    multi_step_amperometry_level = ELevel()
 
-    multi_step_amperometry_level.Level = level
-    multi_step_amperometry_level.Duration = duration
-    multi_step_amperometry_level.Record = record
+    level: float = 0.0
+    duration: float = 1.0
+    record: bool = True
+    use_limit_current_max: bool = False
+    limit_current_max: float = 0.0
+    use_limit_current_min: bool = False
+    limit_current_min: float = 0.0
+    trigger_at_level: bool = False
+    trigger_at_level_lines: tuple[bool, bool, bool, bool] = (False, False, False, False)
 
-    multi_step_amperometry_level.UseMaxLimit = use_limit_current_max
-    multi_step_amperometry_level.MaxLimit = limit_current_max
-    multi_step_amperometry_level.UseMinLimit = use_limit_current_min
-    multi_step_amperometry_level.MinLimit = limit_current_min
+    def to_psobj(self):
+        obj = Techniques.ELevel()
 
-    multi_step_amperometry_level.UseTriggerOnStart = trigger_at_level
-    multi_step_amperometry_level.TriggerValueOnStart = convert_bools_to_int(
-        trigger_at_level_lines
-    )
+        obj.Level = self.level
+        obj.Duration = self.duration
+        obj.Record = self.record
 
-    return multi_step_amperometry_level
+        obj.UseMaxLimit = self.use_limit_current_max
+        obj.MaxLimit = self.limit_current_max
+        obj.UseMinLimit = self.use_limit_current_min
+        obj.MinLimit = self.limit_current_min
+
+        obj.UseTriggerOnStart = self.trigger_at_level
+        obj.TriggerValueOnStart = convert_bools_to_int(self.trigger_at_level_lines)
+
+        return obj
+
+    @classmethod
+    def from_psobj(cls, psobj):
+        cls(
+            level=psobj.Level,
+            duration=psobj.Duration,
+            record=psobj.Record,
+            use_limit_current_max=psobj.UseMaxLimit,
+            limit_current_max=psobj.MaxLimit,
+            use_limit_current_min=psobj.UseMinLimit,
+            limit_current_min=psobj.MinLimit,
+            trigger_at_level=psobj.UseTriggerOnStart,
+            trigger_at_level_lines=convert_int_to_bools(psobj.TriggerValueOnStart),
+        )
