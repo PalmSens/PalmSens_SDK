@@ -5,6 +5,7 @@ from PalmSens import Techniques
 
 from pspython import pspyinstruments
 from pspython.data.measurement import Measurement
+from pspython.methods import techniques
 from pspython.methods._shared import (
     get_current_range,
     get_potential_range,
@@ -39,6 +40,12 @@ logger = logging.getLogger(__name__)
 
 
 pytestmark = pytest.mark.instrument
+
+
+def assert_params_match_kwargs(params, *, kwargs):
+    for key, exp in kwargs.items():
+        ret = getattr(params, key)
+        assert ret == exp, f'{key}: expected {exp}, got {ret}'
 
 
 @pytest.fixture(scope='module')
@@ -136,11 +143,8 @@ def test_method_potential_range():
     assert obj.RangingPotential.StartPotentialRange.Description == '10 mV'
 
 
-def test_cv(manager):
+class TestCV:
     kwargs = {
-        'current_range_max': get_current_range(30),
-        'current_range_min': get_current_range(4),
-        'current_range_start': get_current_range(8),
         'begin_potential': -1,
         'vertex1_potential': -1,
         'vertex2_potential': 1,
@@ -148,20 +152,39 @@ def test_cv(manager):
         'scanrate': 5,
         'n_scans': 2,
     }
-    method_old = cyclic_voltammetry(**kwargs)
-    assert isinstance(method_old, Techniques.CyclicVoltammetry)
 
-    method = CyclicVoltammetryParameters(**kwargs)
-    measurement = manager.measure(method.to_psobj())
+    def test_measurement(self, manager):
+        method = CyclicVoltammetryParameters(
+            current_range_max=get_current_range(7),
+            current_range_min=get_current_range(3),
+            current_range_start=get_current_range(6),
+            **self.kwargs,
+        )
+        measurement = manager.measure(method.to_psobj())
 
-    assert measurement
-    assert isinstance(measurement, Measurement)
-    assert measurement.method.dotnet_method.nScans == 2
+        assert measurement
+        assert isinstance(measurement, Measurement)
+        assert measurement.method.dotnet_method.nScans == 2
 
-    dataset = measurement.dataset
-    assert len(dataset) == 7
-    assert dataset.array_names == {'scan1', 'scan2', 'time'}
-    assert dataset.array_quantities == {'Charge', 'Current', 'Potential', 'Time'}
+        dataset = measurement.dataset
+        assert len(dataset) == 7
+        assert dataset.array_names == {'scan1', 'scan2', 'time'}
+        assert dataset.array_quantities == {'Charge', 'Current', 'Potential', 'Time'}
+
+    def test_old_interface(self):
+        method_old = cyclic_voltammetry(**self.kwargs)
+        assert isinstance(method_old, Techniques.CyclicVoltammetry)
+
+    def test_update_params(self):
+        obj = Techniques.CyclicVoltammetry()
+
+        params = techniques.CyclicVoltammetryParameters(**self.kwargs)
+        params.update_psobj(obj=obj)
+
+        new_params = techniques.CyclicVoltammetryParameters()
+        new_params.update_params(obj=obj)
+
+        assert_params_match_kwargs(params, kwargs=self.kwargs)
 
 
 def test_lsv(manager):

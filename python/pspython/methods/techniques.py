@@ -4,7 +4,12 @@ from PalmSens import Method as PSMethod
 from PalmSens import Techniques
 from PalmSens.Techniques.Impedance import enumFrequencyType, enumScanType
 
-from ._shared import get_current_range, multi_step_amperometry_level, set_extra_value_mask
+from ._shared import (
+    get_current_range,
+    get_extra_value_mask,
+    multi_step_amperometry_level,
+    set_extra_value_mask,
+)
 from .settings import (
     AutorangingCurrentSettings,
     AutorangingPotentialSettings,
@@ -133,7 +138,24 @@ class CyclicVoltammetryParameters(
             enable_bipot_current=self.enable_bipot_current,
         )
 
-    def update_params(self, *, obj): ...
+    def update_params(self, *, obj):
+        self.equilibration_time = obj.EquilibrationTime
+        self.begin_potential = obj.BeginPotential
+        self.vertex1_potential = obj.Vtx1Potential
+        self.vertex2_potential = obj.Vtx2Potential
+        self.step_potential = obj.StepPotential
+        self.scanrate = obj.Scanrate
+        self.n_scans = obj.nScans
+
+        msk = get_extra_value_mask(obj)
+
+        for key in (
+            'record_auxiliary_input',
+            'record_cell_potential',
+            'record_we_potential',
+            'enable_bipot_current',
+        ):
+            setattr(self, key, msk[key])
 
 
 @dataclass
