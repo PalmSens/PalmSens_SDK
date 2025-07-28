@@ -124,6 +124,21 @@ def set_extra_value_mask(
     obj.ExtraValueMsk = ExtraValueMask(extra_values)
 
 
+def get_extra_value_mask(obj) -> dict[str, Any]:
+    mask = obj.ExtraValueMsk
+
+    ret = {
+        'enable_bipot_current': mask.HasFlag(ExtraValueMask.BipotWE),
+        'record_auxiliary_input': mask.HasFlag(ExtraValueMask.AuxInput),
+        'record_cell_potential': mask.HasFlag(ExtraValueMask.CEPotential),
+        'record_we_potential': mask.HasFlag(ExtraValueMask.PotentialExtraRE),
+        'record_forward_and_reverse_currents': mask.HasFlag(ExtraValueMask.IForwardReverse),
+        'record_we_current': mask.HasFlag(ExtraValueMask.CurrentExtraWE),
+    }
+
+    return ret
+
+
 def get_mux8r2_settings(
     *,
     connect_sense_to_working_electrode: bool = False,

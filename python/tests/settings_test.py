@@ -5,6 +5,7 @@ from PalmSens import Techniques
 from pspython.methods import settings
 from pspython.methods._shared import (
     get_current_range,
+    get_extra_value_mask,
     get_mux8r2_settings,
     get_potential_range,
     set_extra_value_mask,
@@ -23,6 +24,15 @@ def test_set_extra_value_mask():
     )
     assert obj.ExtraValueMsk.value__ == 274
 
+    dct = get_extra_value_mask(obj)
+
+    assert dct['record_auxiliary_input']
+    assert dct['record_cell_potential']
+    assert dct['record_we_potential']
+    assert not dct['enable_bipot_current']
+    assert not dct['record_forward_and_reverse_currents']
+    assert not dct['record_we_current']
+
     set_extra_value_mask(
         obj=obj,
         enable_bipot_current=True,
@@ -32,8 +42,17 @@ def test_set_extra_value_mask():
     )
     assert obj.ExtraValueMsk.value__ == 101
 
+    dct = get_extra_value_mask(obj)
 
-def test_get_extra_value_mask(): ...
+    assert dct['enable_bipot_current']
+    assert dct['record_forward_and_reverse_currents']
+    assert dct['record_we_current']
+    assert not dct['record_auxiliary_input']
+    assert not dct['record_cell_potential']
+    assert not dct['record_we_potential']
+
+    # this is not an extra value mask property
+    assert 'record_we_current_range' not in dct
 
 
 def test_AutorangingCurrentSettings():
