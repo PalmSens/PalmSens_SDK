@@ -19,9 +19,9 @@ from .settings import (
     ChargeLimitSettings,
     CommonSettings,
     CurrentLimitSettings,
-    FilterSettings,
     IrDropCompensationSettings,
     MultiplexerSettings,
+    PeakSettings,
     PostMeasurementSettings,
     PotentialLimitSettings,
     PretreatmentSettings,
@@ -82,7 +82,7 @@ class CyclicVoltammetryParameters(
     IrDropCompensationSettings,
     TriggerAtEquilibrationSettings,
     TriggerAtMeasurementSettings,
-    FilterSettings,
+    PeakSettings,
     CommonSettings,
 ):
     """Create cyclic voltammetry method parameters.
@@ -180,7 +180,7 @@ class LinearSweepParameters(
     IrDropCompensationSettings,
     TriggerAtEquilibrationSettings,
     TriggerAtMeasurementSettings,
-    FilterSettings,
+    PeakSettings,
     MultiplexerSettings,
     CommonSettings,
 ):
@@ -263,7 +263,7 @@ class SquareWaveParameters(
     IrDropCompensationSettings,
     TriggerAtEquilibrationSettings,
     TriggerAtMeasurementSettings,
-    FilterSettings,
+    PeakSettings,
     MultiplexerSettings,
     CommonSettings,
 ):
@@ -361,7 +361,7 @@ class DifferentialPulseParameters(
     IrDropCompensationSettings,
     TriggerAtEquilibrationSettings,
     TriggerAtMeasurementSettings,
-    FilterSettings,
+    PeakSettings,
     MultiplexerSettings,
     CommonSettings,
 ):
@@ -461,7 +461,7 @@ class ChronoAmperometryParameters(
     IrDropCompensationSettings,
     TriggerAtEquilibrationSettings,
     TriggerAtMeasurementSettings,
-    FilterSettings,
+    PeakSettings,
     MultiplexerSettings,
     CommonSettings,
 ):
@@ -542,7 +542,7 @@ class MultiStepAmperometryParameters(
     PostMeasurementSettings,
     CurrentLimitSettings,
     IrDropCompensationSettings,
-    FilterSettings,
+    PeakSettings,
     MultiplexerSettings,
     CommonSettings,
 ):
@@ -571,7 +571,7 @@ class MultiStepAmperometryParameters(
         Reference electrode vs ground.
     """
 
-    _id = 'ms'
+    _id = 'ma'
 
     equilibration_time: float = 0.0
     interval_time: float = 0.1
@@ -637,7 +637,7 @@ class OpenCircuitPotentiometryParameters(
     PostMeasurementSettings,
     PotentialLimitSettings,
     TriggerAtMeasurementSettings,
-    FilterSettings,
+    PeakSettings,
     MultiplexerSettings,
     CommonSettings,
 ):
@@ -704,7 +704,7 @@ class ChronopotentiometryParameters(
     PostMeasurementSettings,
     PotentialLimitSettings,
     TriggerAtMeasurementSettings,
-    FilterSettings,
+    PeakSettings,
     MultiplexerSettings,
     CommonSettings,
 ):
@@ -729,7 +729,7 @@ class ChronopotentiometryParameters(
         Record working electrode current (default: False)
     """
 
-    _id = 'cp'
+    _id = 'pot'
 
     current: float = 0.0
     applied_current_range: CURRENT_RANGE = CURRENT_RANGE.cr_100_uA

@@ -75,11 +75,6 @@ class Method:
         """The technique number used in the firmware."""
         return self.psobj.Technique
 
-    @property
-    def notes(self) -> str:
-        """Some user notes for use with this method."""
-        return self.psobj.Notes
-
     def to_parameters(self) -> techniques.BaseParameters:
         """Extract techniques parameters as dataclass."""
         cls = ID_TO_PARAMETER_MAPPING[self.id]

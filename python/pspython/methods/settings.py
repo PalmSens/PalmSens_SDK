@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import Optional
+from typing import Literal, Optional
 
 import PalmSens
 from PalmSens import MuxMethod as PSMuxMethod
@@ -477,14 +477,19 @@ class MultiplexerSettings:
 
 
 @dataclass
-class FilterSettings:
+class PeakSettings:
     """Set the filter settings for a given method.
 
     Attributes
     ----------
-    dc_mains_filter: int
-        Set the DC mains filter in Hz. Set to 50 Hz or 60 Hz depending on your region (default: 50).
-    default_curve_post_processing_filter: int = 0
+    min_peak_height: float
+        Determines the minimum peak height in µA.
+        Peaks lower than this value are neglected (default: 0.0 uA).
+    min_peak_width: float
+        The minimum peak width,
+        in the unit of the curves X axis (V).
+        Peaks narrower than this value are neglected (default: 0.1 V).
+    smooth_level: int
         Set the default curve post processing filter (default: 0)
            -1 = no filter
             0 = spike rejection
@@ -494,16 +499,19 @@ class FilterSettings:
             4 = spike rejection + Savitsky-golay window 25
     """
 
-    dc_mains_filter: int = 50  # Hz
     default_curve_post_processing_filter: int = 0
+    min_peak_height: float = 0.0  # uA
+    min_peak_width: float = 0.1  # V
 
     def update_psobj(self, *, obj):
-        obj.DCMainsFilter = self.dc_mains_filter
-        obj.DefaultCurvePostProcessingFilter = self.default_curve_post_processing_filter
+        obj.SmoothLevel = self.smooth_level
+        obj.MinPeakHeight = self.min_peak_height
+        obj.MinPeakWidth = self.min_peak_width
 
     def update_params(self, *, obj):
-        self.dc_mains_filter = obj.DCMainsFilter
-        self.default_curve_post_processing_filter = obj.DefaultCurvePostProcessingFilter
+        self.smooth_level = obj.SmoothLevel
+        self.min_peak_width = obj.MinPeakWidth
+        self.min_peak_height = obj.MinPeakHeight
 
 
 @dataclass
@@ -512,23 +520,34 @@ class CommonSettings:
 
     Attributes
     ----------
+    notes : str
+        Add some user notes for use with this technique
     save_on_internal_storage: bool
         Save on internal storage (default: False)
-
     use_hardware_sync: bool
         Use hardware synchronization with other channels/instruments (default: False)
+    power_frequency: int
+        Set the DC mains filter in Hz.
+        Adjusts sampling on instrument to account for mains frequency.
+        Set to 50 Hz or 60 Hz depending on your region (default: 50).
+
+
+
     """
 
-    # internal storage
     save_on_internal_storage: bool = False
-
-    # use hardware synchronization with other channels/instruments
     use_hardware_sync: bool = False
+    notes: str = ''
+    power_frequency: Literal[50, 60] = 50
 
     def update_psobj(self, *, obj):
         obj.SaveOnDevice = self.save_on_internal_storage
         obj.UseHWSync = self.use_hardware_sync
+        obj.Notes = self.notes
+        obj.PowerFreq = self.power_frequency
 
     def update_params(self, *, obj):
         self.save_on_internal_storage = obj.SaveOnDevice
         self.use_hardware_sync = obj.UseHWSync
+        self.notes = obj.Notes
+        self.power_frequency = obj.PowerFreq

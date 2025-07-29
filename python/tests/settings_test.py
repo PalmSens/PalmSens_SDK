@@ -173,7 +173,8 @@ def test_PostMeasurementSettings():
 
     kwargs = {
         'cell_on_after_measurement': True,
-        'cell_on_after_measurement_potential': 123,
+        'standby_potential': 123,
+        'standby_time': 678,
     }
 
     params = settings.PostMeasurementSettings(**kwargs)
@@ -181,6 +182,7 @@ def test_PostMeasurementSettings():
 
     assert obj.CellOnAfterMeasurement is True
     assert obj.StandbyPotential == 123
+    assert obj.StandbyTime == 678
 
     new_params = settings.PostMeasurementSettings()
     new_params.update_params(obj=obj)
@@ -364,24 +366,25 @@ def test_FilterSettings():
         'default_curve_post_processing_filter': 1,
     }
 
-    params = settings.FilterSettings(**kwargs)
+    params = settings.PeakSettings(**kwargs)
     params.update_psobj(obj=obj)
 
-    assert obj.DCMainsFilter == 60
-    assert obj.DefaultCurvePostProcessingFilter == 1
+    assert obj.PowerFrequency == 60
+    assert obj.SmoothLevel == 1
 
-    new_params = settings.FilterSettings()
+    new_params = settings.PeakSettings()
     new_params.update_params(obj=obj)
 
     assert asdict(new_params) == kwargs
 
 
-def test_OtherSettings():
+def test_CommonSettings():
     obj = Techniques.CyclicVoltammetry()
 
     kwargs = {
         'save_on_internal_storage': True,
         'use_hardware_sync': True,
+        'notes': 'testtest',
     }
 
     params = settings.CommonSettings(**kwargs)
@@ -389,6 +392,7 @@ def test_OtherSettings():
 
     obj.SaveOnDevice = True
     obj.UseHWSync = True
+    obj.Notes = 'testtest'
 
     new_params = settings.CommonSettings()
     new_params.update_params(obj=obj)
