@@ -34,11 +34,10 @@ if TYPE_CHECKING:
     from .method import Method
 
 
+@dataclass
 class BaseParameters:
     """Provide generic methods for interacting with the PalmSens.Method
     object."""
-
-    _id: str = ''
 
     def to_psobj(self):
         """Convert parameters to dotnet method."""
@@ -59,7 +58,7 @@ class BaseParameters:
         for parent in cls.__mro__:
             if parent in (object, BaseParameters):
                 continue
-            new.update_params(obj=obj)
+            parent.update_params(new, obj=obj)
 
         return new
 

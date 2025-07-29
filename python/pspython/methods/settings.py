@@ -1,7 +1,8 @@
 from dataclasses import dataclass, field
-from typing import Literal, Optional
+from typing import Literal
 
 import PalmSens
+from PalmSens import Method as PSMethod
 from PalmSens import MuxMethod as PSMuxMethod
 
 from ._shared import (
@@ -433,16 +434,25 @@ class MultiplexerSettings:
         In consecutive mode all selections are valid.
         In alternating mode the first channel must be selected and all other
         channels should be consequtive i.e. (channel 1, channel 2, channel 3 and so on).
-    set_mux8r2_settings: Optional[PalmSens.Method.MuxSettings]
-        Initialize the settings for the MUX8R2 multiplexer (default: None).
-        use `get_mux8r2_settings()` to create the settings.
+    connect_sense_to_working_electrode: bool
+        Connect the sense electrode to the working electrode. Default is False.
+    combine_reference_and_counter_electrodes: bool
+        Combine the reference and counter electrodes. Default is False.
+    use_channel_1_reference_and_counter_electrodes: bool
+        Use channel 1 reference and counter electrodes for all working electrodes. Default is False.
+    set_unselected_channel_working_electrode: int
+        Set the unselected channel working electrode to 0 = Disconnected / floating, 1 = Ground, 2 = Standby potential. Default is 0.
+
     """
 
     set_mux_mode: int = -1
     set_mux_channels: list[bool] = field(
         default_factory=lambda: [False, False, False, False, False, False, False, False]
     )
-    set_mux8r2_settings: Optional[PalmSens.Method.MuxSettings] = None
+    connect_sense_to_working_electrode: bool = False
+    combine_reference_and_counter_electrodes: bool = False
+    use_channel_1_reference_and_counter_electrodes: bool = False
+    set_unselected_channel_working_electrode: int = 0
 
     def update_psobj(self, *, obj):
         # Create a mux8r2 multiplexer settings settings object
@@ -456,11 +466,12 @@ class MultiplexerSettings:
         for i, use_channel in enumerate(self.set_mux_channels):
             obj.UseMuxChannel[i] = use_channel
 
-        if self.set_mux8r2_settings:
-            obj.MuxSett.ConnSEWE = self.set_mux8r2_settings.ConnSEWE
-            obj.MuxSett.ConnectCERE = self.set_mux8r2_settings.ConnectCERE
-            obj.MuxSett.CommonCERE = self.set_mux8r2_settings.CommonCERE
-            obj.MuxSett.UnselWE = self.set_mux8r2_settings.UnselWE
+        obj.MuxSett.ConnSEWE = self.connect_sense_to_working_electrode
+        obj.MuxSett.ConnectCERE = self.combine_reference_and_counter_electrodes
+        obj.MuxSett.CommonCERE = self.use_channel_1_reference_and_counter_electrodes
+        obj.MuxSett.UnselWE = PSMethod.MuxSettings.UnselWESetting(
+            self.set_unselected_channel_working_electrode
+        )
 
     def update_params(self, *, obj):
         self.set_mux_mode = int(obj.MuxMethod)
@@ -468,12 +479,10 @@ class MultiplexerSettings:
         channels = [i for i in range(len(obj.UseMuxChannel)) if obj.UseMuxChannel[i]]
         self.set_mux_channels = [i in channels for i in range(max(channels) + 1)]
 
-        self.set_mux8r2_settings = {
-            'connect_sense_to_working_electrode': obj.MuxSett.ConnSEWE,
-            'combine_reference_and_counter_electrodes': obj.MuxSett.ConnectCERE,
-            'use_channel_1_reference_and_counter_electrodes': obj.MuxSett.CommonCERE,
-            'set_unselected_channel_working_electrode': int(obj.MuxSett.UnselWE),
-        }
+        self.connect_sense_to_working_electrode = obj.MuxSett.ConnSEWE
+        self.combine_reference_and_counter_electrodes = obj.MuxSett.ConnectCERE
+        self.use_channel_1_reference_and_counter_electrodes = obj.MuxSett.CommonCERE
+        self.set_unselected_channel_working_electrode = int(obj.MuxSett.UnselWE)
 
 
 @dataclass
@@ -499,7 +508,7 @@ class PeakSettings:
             4 = spike rejection + Savitsky-golay window 25
     """
 
-    default_curve_post_processing_filter: int = 0
+    smooth_level: int = 0
     min_peak_height: float = 0.0  # uA
     min_peak_width: float = 0.1  # V
 

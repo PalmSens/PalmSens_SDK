@@ -7,7 +7,6 @@ from PalmSens import (
     CurrentRange,
     CurrentRanges,
     ExtraValueMask,
-    Method,
     PotentialRange,
     PotentialRanges,
     Techniques,
@@ -137,38 +136,6 @@ def get_extra_value_mask(obj) -> dict[str, Any]:
     }
 
     return ret
-
-
-def get_mux8r2_settings(
-    *,
-    connect_sense_to_working_electrode: bool = False,
-    combine_reference_and_counter_electrodes: bool = False,
-    use_channel_1_reference_and_counter_electrodes: bool = False,
-    set_unselected_channel_working_electrode: int = 0,
-):
-    """Create a mux8r2 multiplexer settings settings object.
-
-    Parameters
-    ----------
-    connect_sense_to_working_electrode: bool
-        Connect the sense electrode to the working electrode. Default is False.
-    combine_reference_and_counter_electrodes: bool
-        Combine the reference and counter electrodes. Default is False.
-    use_channel_1_reference_and_counter_electrodes: bool
-        Use channel 1 reference and counter electrodes for all working electrodes. Default is False.
-    set_unselected_channel_working_electrode: int
-        Set the unselected channel working electrode to 0 = Disconnected / floating, 1 = Ground, 2 = Standby potential. Default is 0.
-    """
-
-    mux_settings = Method.MuxSettings(False)
-    mux_settings.ConnSEWE = connect_sense_to_working_electrode
-    mux_settings.ConnectCERE = combine_reference_and_counter_electrodes
-    mux_settings.CommonCERE = use_channel_1_reference_and_counter_electrodes
-    mux_settings.UnselWE = Method.MuxSettings.UnselWESetting(
-        set_unselected_channel_working_electrode
-    )
-
-    return mux_settings
 
 
 def get_method_estimated_duration(method, *, instrument_manager=None):
