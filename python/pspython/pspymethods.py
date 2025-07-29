@@ -1,5 +1,3 @@
-from PalmSens.Techniques import MethodScriptSandbox
-
 from .methods._shared import (
     CURRENT_RANGE,
     POTENTIAL_RANGE,

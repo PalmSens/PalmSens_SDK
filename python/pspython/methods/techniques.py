@@ -907,13 +907,13 @@ class MethodScriptParameters(ParametersMixin):
 
     Attributes
     ----------
-    method_script : str
+    script : str
         Method script
     """
 
     _id = 'ms'
 
-    method_script: str = ''
+    script: str = ''
 
     def update_psmethod(self, *, obj):
         """Update method with MethodScript."""

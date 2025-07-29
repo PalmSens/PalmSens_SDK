@@ -1,4 +1,5 @@
-from pspython import pspyinstruments, pspymethods
+from pspython import pspyinstruments
+from pspython.methods import ChronoAmperometryParameters, SquareWaveParameters
 
 
 def new_data_callback(new_data):
@@ -25,9 +26,9 @@ for channel in range(n_multiplexer_channels):
     manager.set_multiplexer_channel(channel)
 
 # When measuring alternatingly the selection is restricted to the first n channels
-altnernating_multiplexer_method = pspymethods.chronoamperometry(
+altnernating_multiplexer_method = ChronoAmperometryParameters(
     interval_time=0.5,  # seconds
-    e=1.0,  # volts
+    potential=1.0,  # volts
     run_time=5.0,  # seconds
     set_mux_mode=1,  # -1 = disabled, 0 = sequential, 1 = alternating
     # 8 channels, 1 and 2 are enabled
@@ -55,8 +56,7 @@ if measurement is not None:
 else:
     print('failed to start measurement')
 
-consecutive_multiplexer_method = pspymethods.square_wave_voltammetry(
-    equilibrium_time=0,  # seconds
+consecutive_multiplexer_method = SquareWaveParameters(
     begin_potential=-0.5,  # volts
     end_potential=0.5,  # volts
     step_potential=0.01,  # volts

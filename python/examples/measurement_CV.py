@@ -1,4 +1,5 @@
 from pspython import pspyinstruments, pspymethods
+from pspython.methods import CyclicVoltammetryParameters
 
 
 def new_data_callback(new_data):
@@ -22,7 +23,7 @@ print('connection established')
 serial = manager.get_instrument_serial()
 print(serial)
 
-method = pspymethods.cyclic_voltammetry(
+method = CyclicVoltammetryParameters(
     current_range_max=pspymethods.CURRENT_RANGE.cr_1_A,  # 1A range
     current_range_min=pspymethods.CURRENT_RANGE.cr_1_uA,  # 1µA range
     current_range_start=pspymethods.CURRENT_RANGE.cr_1_mA,  # 1mA range

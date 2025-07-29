@@ -202,7 +202,8 @@ class InstrumentManager:
 
         return True, None
 
-    def measure(self, method):
+    def measure(self, parameters):
+        method = parameters.to_psmethod()
         if self.__comm is None:
             print('Not connected to an instrument')
             return None

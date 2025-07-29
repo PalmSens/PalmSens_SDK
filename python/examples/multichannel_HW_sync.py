@@ -1,6 +1,7 @@
 import asyncio
 
-from pspython import pspyinstruments, pspymethods
+from pspython import pspyinstruments
+from pspython.methods import CURRENT_RANGE, POTENTIAL_RANGE, ChronopotentiometryParameters
 
 
 def new_data_callback(channel):
@@ -33,11 +34,11 @@ async def main():
     follower_channels = [manager for (channel, manager) in managers.items() if channel != 1]
 
     if all(connected) and 1 in managers:
-        method = pspymethods.chronopotentiometry(
-            potential_range_max=pspymethods.POTENTIAL_RANGE.pr_1_V,  # 1V range
-            potential_range_min=pspymethods.POTENTIAL_RANGE.pr_10_mV,  # 10mV range
-            potential_range_start=pspymethods.POTENTIAL_RANGE.pr_1_V,  # 1V range
-            applied_current_range=pspymethods.CURRENT_RANGE.cr_10_uA,  # 10µA range
+        method = ChronopotentiometryParameters(
+            potential_range_max=POTENTIAL_RANGE.pr_1_V,  # 1V range
+            potential_range_min=POTENTIAL_RANGE.pr_10_mV,  # 10mV range
+            potential_range_start=POTENTIAL_RANGE.pr_1_V,  # 1V range
+            applied_current_range=CURRENT_RANGE.cr_10_uA,  # 10µA range
             current=0.5,  # applied current in range, i.e. 5µA when the 10µA range is set as the applied range
             interval_time=0.05,  # seconds
             run_time=5,  # seconds

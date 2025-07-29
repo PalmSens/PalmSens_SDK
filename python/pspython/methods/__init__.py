@@ -4,10 +4,34 @@ from ._shared import (
     get_method_estimated_duration,
     set_extra_value_mask,
 )
+from .techniques import (
+    ChronoAmperometryParameters,
+    ChronopotentiometryParameters,
+    CyclicVoltammetryParameters,
+    DifferentialPulseParameters,
+    ElectrochemicalImpedanceSpectroscopyParameters,
+    GalvanostaticImpedanceSpectroscopyParameters,
+    LinearSweepParameters,
+    MethodScriptParameters,
+    MultiStepAmperometryParameters,
+    OpenCircuitPotentiometryParameters,
+    SquareWaveParameters,
+)
 
 __all__ = [
     'CURRENT_RANGE',
+    'ChronoAmperometryParameters',
+    'ChronopotentiometryParameters',
+    'CyclicVoltammetryParameters',
+    'DifferentialPulseParameters',
+    'ElectrochemicalImpedanceSpectroscopyParameters',
+    'GalvanostaticImpedanceSpectroscopyParameters',
+    'LinearSweepParameters',
+    'MethodScriptParameters',
+    'MultiStepAmperometryParameters',
+    'OpenCircuitPotentiometryParameters',
     'POTENTIAL_RANGE',
-    'set_extra_value_mask',
+    'SquareWaveParameters',
     'get_method_estimated_duration',
+    'set_extra_value_mask',
 ]

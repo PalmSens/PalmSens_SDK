@@ -117,11 +117,11 @@ class TestCV:
             current_range_start=CURRENT_RANGE.cr_100_uA,
             **self.kwargs,
         )
-        measurement = manager.measure(method.to_psmethod())
+        measurement = manager.measure(method)
 
         assert measurement
         assert isinstance(measurement, Measurement)
-        assert measurement.method.psobj.nScans == 2
+        assert measurement.method.psmethod.nScans == 2
 
         dataset = measurement.dataset
         assert len(dataset) == 7
@@ -158,11 +158,11 @@ class TestLSV:
             current_range_start=CURRENT_RANGE.cr_100_uA,
             **self.kwargs,
         )
-        measurement = manager.measure(method.to_psmethod())
+        measurement = manager.measure(method)
 
         assert measurement
         assert isinstance(measurement, Measurement)
-        assert measurement.method.psobj.nScans == 1
+        assert measurement.method.psmethod.nScans == 1
 
         dataset = measurement.dataset
         assert len(dataset) == 4
@@ -203,11 +203,11 @@ class TestSWV:
             current_range_start=CURRENT_RANGE.cr_100_uA,
             **self.kwargs,
         )
-        measurement = manager.measure(method.to_psmethod())
+        measurement = manager.measure(method)
 
         assert measurement
         assert isinstance(measurement, Measurement)
-        assert measurement.method.psobj.nScans == 1
+        assert measurement.method.psmethod.nScans == 1
 
         dataset = measurement.dataset
         assert len(dataset) == 5
@@ -245,7 +245,7 @@ class TestCP:
             potential_range_start=POTENTIAL_RANGE.pr_1_V,
             **self.kwargs,
         )
-        measurement = manager.measure(method.to_psmethod())
+        measurement = manager.measure(method)
 
         assert measurement
         assert isinstance(measurement, Measurement)
@@ -284,7 +284,7 @@ class TestOCP:
             potential_range_start=POTENTIAL_RANGE.pr_1_V,
             **self.kwargs,
         )
-        measurement = manager.measure(method.to_psmethod())
+        measurement = manager.measure(method)
 
         assert measurement
         assert isinstance(measurement, Measurement)
@@ -318,7 +318,7 @@ class TestCA:
     @pytest.mark.instrument
     def test_measurement(self, manager):
         method = self.pycls(**self.kwargs)
-        measurement = manager.measure(method.to_psmethod())
+        measurement = manager.measure(method)
 
         assert measurement
         assert isinstance(measurement, Measurement)
@@ -356,7 +356,7 @@ class TestDP:
     @pytest.mark.instrument
     def test_measurement(self, manager):
         method = self.pycls(**self.kwargs)
-        measurement = manager.measure(method.to_psmethod())
+        measurement = manager.measure(method)
 
         assert measurement
         assert isinstance(measurement, Measurement)
@@ -395,7 +395,7 @@ class TestMSA:
     @pytest.mark.instrument
     def test_measurement(self, manager):
         method = self.pycls(**self.kwargs)
-        measurement = manager.measure(method.to_psmethod())
+        measurement = manager.measure(method)
 
         assert measurement
         assert isinstance(measurement, Measurement)
@@ -436,7 +436,7 @@ class TestEIS:
     @pytest.mark.instrument
     def test_measurement(self, manager):
         method = self.pycls(**self.kwargs)
-        measurement = manager.measure(method.to_psmethod())
+        measurement = manager.measure(method)
 
         assert measurement
         assert isinstance(measurement, Measurement)
@@ -512,7 +512,7 @@ class TestGIS:
     @pytest.mark.instrument
     def test_measurement(self, manager):
         method = self.pycls(**self.kwargs)
-        measurement = manager.measure(method.to_psmethod())
+        measurement = manager.measure(method)
 
         assert measurement
         assert isinstance(measurement, Measurement)
