@@ -13,7 +13,7 @@ def test_properties(method):
     assert method.id == 'cv'
     assert method.name == 'Cyclic Voltammetry'
     assert method.short_name == 'CV'
-    assert method.number == ...
+    assert method.technique_number == 5
 
 
 def test_to_dict(method):

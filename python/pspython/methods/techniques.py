@@ -4,7 +4,6 @@ from dataclasses import dataclass, field
 from typing import TYPE_CHECKING
 
 from PalmSens import Method as PSMethod
-from PalmSens import Techniques
 from PalmSens.Techniques.Impedance import enumFrequencyType, enumScanType
 
 from ._shared import (
@@ -35,16 +34,15 @@ if TYPE_CHECKING:
     from .method import Method
 
 
-@dataclass
 class BaseParameters:
     """Provide generic methods for interacting with the PalmSens.Method
     object."""
 
-    _PSMethod: PSMethod = PSMethod
+    _id: str = ''
 
     def to_psobj(self):
         """Convert parameters to dotnet method."""
-        obj = self._PSMethod()
+        obj = PSMethod.FromMethodID(self._id)
 
         for parent in self.__class__.__mro__:
             if parent in (object, BaseParameters):
@@ -117,7 +115,7 @@ class CyclicVoltammetryParameters(
         Reference electrode vs ground.
     """
 
-    _PSMethod = Techniques.CyclicVoltammetry
+    _id = 'cv'
 
     equilibration_time: float = 0.0
     begin_potential: float = -0.5
@@ -210,7 +208,7 @@ class LinearSweepParameters(
         Reference electrode vs ground.
     """
 
-    _PSMethod = Techniques.LinearSweep
+    _id = 'lsv'
 
     begin_potential: float = -0.5
     end_potential: float = 0.5
@@ -299,7 +297,7 @@ class SquareWaveParameters(
         Record forward and reverse currents (default: False)
     """
 
-    _PSMethod = Techniques.SquareWave
+    _id = 'swv'
 
     equilibration_time: float = 0.0
     begin_potential: float = -0.5
@@ -397,7 +395,7 @@ class DifferentialPulseParameters(
         Reference electrode vs ground.
     """
 
-    _PSMethod = Techniques.DifferentialPulse
+    _id = 'dpv'
 
     equilibration_time: float = 0.0  # Time (s)
     begin_potential: float = -0.5  # potential (V)
@@ -491,7 +489,7 @@ class ChronoAmperometryParameters(
         Reference electrode vs ground.
     """
 
-    _PSMethod = Techniques.AmperometricDetection
+    _id = 'ad'
 
     equilibration_time: float = 0.0
     interval_time: float = 0.1
@@ -573,7 +571,7 @@ class MultiStepAmperometryParameters(
         Reference electrode vs ground.
     """
 
-    _PSMethod = Techniques.MultistepAmperometry
+    _id = 'ms'
 
     equilibration_time: float = 0.0
     interval_time: float = 0.1
@@ -662,7 +660,7 @@ class OpenCircuitPotentiometryParameters(
         Use `CURRENT_RANGE` to define the range.
     """
 
-    _PSMethod = Techniques.OpenCircuitPotentiometry
+    _id = 'ocp'
 
     interval_time: float = 0.1  # Time (s)
     run_time: float = 1.0  # Time (s)
@@ -731,7 +729,7 @@ class ChronopotentiometryParameters(
         Record working electrode current (default: False)
     """
 
-    _PSMethod = Techniques.Potentiometry
+    _id = 'cp'
 
     current: float = 0.0
     applied_current_range: CURRENT_RANGE = CURRENT_RANGE.cr_100_uA
@@ -805,7 +803,7 @@ class ElectrochemicalImpedanceSpectroscopyParameters(
         Minimum frequency in Hz (default: 1e3)
     """
 
-    _PSMethod = Techniques.ImpedimetricMethod
+    _id = 'eis'
 
     equilibration_time: float = 0.0
     dc_potential: float = 0.0
@@ -865,7 +863,7 @@ class GalvanostaticImpedanceSpectroscopyParameters(
         Minimum frequency in Hz (default: 1e3)
     """
 
-    _PSMethod = Techniques.ImpedimetricGstatMethod
+    _id = 'gis'
 
     applied_current_range: CURRENT_RANGE = CURRENT_RANGE.cr_100_uA
     equilibration_time: float = 0.0
