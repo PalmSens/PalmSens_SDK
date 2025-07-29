@@ -5,38 +5,6 @@ from PalmSens import Method as PSMethod
 
 from . import techniques
 
-ID_TO_PARAMETER_MAPPING = {
-    'acv': None,
-    'ad': techniques.ChronoAmperometryParameters,
-    'cc': None,
-    'cp': techniques.ChronopotentiometryParameters,
-    'cpot': None,
-    'cv': techniques.CyclicVoltammetryParameters,
-    'dpv': techniques.DifferentialPulseParameters,
-    'eis': techniques.ElectrochemicalImpedanceSpectroscopyParameters,
-    'fam': None,
-    'fcv': None,
-    'fgis': None,
-    'fis': None,
-    'gis': techniques.GalvanostaticImpedanceSpectroscopyParameters,
-    'gs': None,
-    'lp': None,
-    'lsp': None,
-    'lsv': techniques.LinearSweepParameters,
-    'ma': None,
-    'mm': None,
-    'mp': None,
-    'mpad': None,
-    'ms': techniques.MultiStepAmperometryParameters,
-    'npv': None,
-    'ocp': techniques.OpenCircuitPotentiometryParameters,
-    'pad': None,
-    'pot': None,
-    'ps': None,
-    'scp': None,
-    'swv': techniques.SquareWaveParameters,
-}
-
 
 def _method_ids() -> list[str]:
     """Return list of all possible method ids."""
@@ -75,12 +43,9 @@ class Method:
         """The technique number used in the firmware."""
         return self.psobj.Technique
 
-    def to_parameters(self) -> techniques.BaseParameters:
+    def to_parameters(self):
         """Extract techniques parameters as dataclass."""
-        cls = ID_TO_PARAMETER_MAPPING[self.id]
-        if not cls:
-            raise NotImplementedError(f'Mapping of {self.id} parameters is not implemented yet')
-        return cls.from_method(self)
+        return techniques.psmethod_to_parameters(psobj=self.psobj)
 
     def to_dict(self) -> dict[str, Any]:
         """Return dictionary with technique parameters."""

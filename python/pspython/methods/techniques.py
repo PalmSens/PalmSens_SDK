@@ -34,45 +34,51 @@ if TYPE_CHECKING:
     from .method import Method
 
 
-@dataclass
-class BaseParameters:
-    """Provide generic methods for interacting with the PalmSens.Method
-    object."""
+def parameters_to_psmethod(params) -> Method:
+    """Convert parameters to dotnet method."""
+    psobj = PSMethod.FromMethodID(params._id)
+
+    for parent in params.__class__.__mro__:
+        if parent in (ParametersMixin, object):
+            continue
+        parent.update_psobj(params, obj=psobj)
+
+    return psobj
+
+
+def psmethod_to_parameters(psobj: PSMethod):
+    """Generate parameters from dotnet method object."""
+    id = psobj.MethodID
+
+    cls = ID_TO_PARAMETER_MAPPING[id]
+
+    if not cls:
+        raise NotImplementedError(f'Mapping of {id} parameters is not implemented yet')
+
+    new = cls()
+
+    for parent in new.__class__.__mro__:
+        if parent in (object, ParametersMixin):
+            continue
+        parent.update_params(new, obj=psobj)  # type: ignore
+
+    return new
+
+
+class ParametersMixin:
+    """Provide generic methods for parameters."""
 
     def to_psobj(self):
-        """Convert parameters to dotnet method."""
-        obj = PSMethod.FromMethodID(self._id)
+        return parameters_to_psmethod(self)
 
-        for parent in self.__class__.__mro__:
-            if parent in (object, BaseParameters):
-                continue
-            parent.update_psobj(self, obj=obj)
-
-        return obj
-
-    @classmethod
-    def from_psobj(cls, obj: PSMethod):
-        """Generate parameters from dotnet method object."""
-        new = cls()
-
-        for parent in cls.__mro__:
-            if parent in (object, BaseParameters):
-                continue
-            parent.update_params(new, obj=obj)
-
-        return new
-
-    @classmethod
-    def from_method(cls, method: Method):
-        """Return parameters class from method."""
-        return cls.from_psobj(obj=method.psobj)
-
-    def update_params(self, *, obj): ...
+    @staticmethod
+    def from_psobj(obj):
+        psmethod_to_parameters(obj)
 
 
 @dataclass
 class CyclicVoltammetryParameters(
-    BaseParameters,
+    ParametersMixin,
     AutorangingCurrentSettings,
     PretreatmentSettings,
     VersusOcpSettings,
@@ -169,7 +175,7 @@ class CyclicVoltammetryParameters(
 
 @dataclass
 class LinearSweepParameters(
-    BaseParameters,
+    ParametersMixin,
     AutorangingCurrentSettings,
     PretreatmentSettings,
     VersusOcpSettings,
@@ -253,7 +259,7 @@ class LinearSweepParameters(
 
 @dataclass
 class SquareWaveParameters(
-    BaseParameters,
+    ParametersMixin,
     AutorangingCurrentSettings,
     PretreatmentSettings,
     VersusOcpSettings,
@@ -351,7 +357,7 @@ class SquareWaveParameters(
 
 @dataclass
 class DifferentialPulseParameters(
-    BaseParameters,
+    ParametersMixin,
     AutorangingCurrentSettings,
     PretreatmentSettings,
     VersusOcpSettings,
@@ -449,7 +455,7 @@ class DifferentialPulseParameters(
 
 @dataclass
 class ChronoAmperometryParameters(
-    BaseParameters,
+    ParametersMixin,
     AutorangingCurrentSettings,
     PretreatmentSettings,
     VersusOcpSettings,
@@ -534,7 +540,7 @@ class ChronoAmperometryParameters(
 
 @dataclass
 class MultiStepAmperometryParameters(
-    BaseParameters,
+    ParametersMixin,
     AutorangingCurrentSettings,
     PretreatmentSettings,
     BipotSettings,
@@ -629,7 +635,7 @@ class MultiStepAmperometryParameters(
 
 @dataclass
 class OpenCircuitPotentiometryParameters(
-    BaseParameters,
+    ParametersMixin,
     AutorangingCurrentSettings,
     AutorangingPotentialSettings,
     PretreatmentSettings,
@@ -696,7 +702,7 @@ class OpenCircuitPotentiometryParameters(
 
 @dataclass
 class ChronopotentiometryParameters(
-    BaseParameters,
+    ParametersMixin,
     AutorangingCurrentSettings,
     AutorangingPotentialSettings,
     PretreatmentSettings,
@@ -773,7 +779,7 @@ class ChronopotentiometryParameters(
 
 @dataclass
 class ElectrochemicalImpedanceSpectroscopyParameters(
-    BaseParameters,
+    ParametersMixin,
     AutorangingCurrentSettings,
     AutorangingPotentialSettings,
     PretreatmentSettings,
@@ -833,7 +839,7 @@ class ElectrochemicalImpedanceSpectroscopyParameters(
 
 @dataclass
 class GalvanostaticImpedanceSpectroscopyParameters(
-    BaseParameters,
+    ParametersMixin,
     AutorangingCurrentSettings,
     AutorangingPotentialSettings,
     PretreatmentSettings,
@@ -893,3 +899,36 @@ class GalvanostaticImpedanceSpectroscopyParameters(
         self.n_frequencies = obj.nFrequencies
         self.max_frequency = obj.MaxFrequency
         self.min_frequency = obj.MinFrequency
+
+
+ID_TO_PARAMETER_MAPPING = {
+    'acv': None,
+    'ad': ChronoAmperometryParameters,
+    'cc': None,
+    'cp': ChronopotentiometryParameters,
+    'cpot': None,
+    'cv': CyclicVoltammetryParameters,
+    'dpv': DifferentialPulseParameters,
+    'eis': ElectrochemicalImpedanceSpectroscopyParameters,
+    'fam': None,
+    'fcv': None,
+    'fgis': None,
+    'fis': None,
+    'gis': GalvanostaticImpedanceSpectroscopyParameters,
+    'gs': None,
+    'lp': None,
+    'lsp': None,
+    'lsv': LinearSweepParameters,
+    'ma': None,
+    'mm': None,
+    'mp': None,
+    'mpad': None,
+    'ms': MultiStepAmperometryParameters,
+    'npv': None,
+    'ocp': OpenCircuitPotentiometryParameters,
+    'pad': None,
+    'pot': None,
+    'ps': None,
+    'scp': None,
+    'swv': SquareWaveParameters,
+}
