@@ -34,7 +34,7 @@ class AutorangingCurrentSettings:
     current_range_min: CURRENT_RANGE = CURRENT_RANGE.cr_1_uA
     current_range_start: CURRENT_RANGE = CURRENT_RANGE.cr_100_uA
 
-    def update_psobj(self, *, obj):
+    def update_psmethod(self, *, obj):
         obj.Ranging.MaximumCurrentRange = self.current_range_max.to_psobj()
         obj.Ranging.MinimumCurrentRange = self.current_range_min.to_psobj()
         obj.Ranging.StartCurrentRange = self.current_range_start.to_psobj()
@@ -66,7 +66,7 @@ class AutorangingPotentialSettings:
     potential_range_min: POTENTIAL_RANGE = POTENTIAL_RANGE.pr_1_mV
     potential_range_start: POTENTIAL_RANGE = POTENTIAL_RANGE.pr_1_V
 
-    def update_psobj(self, *, obj):
+    def update_psmethod(self, *, obj):
         obj.RangingPotential.MaximumPotentialRange = self.potential_range_max.to_psobj()
         obj.RangingPotential.MinimumPotentialRange = self.potential_range_min.to_psobj()
         obj.RangingPotential.StartPotentialRange = self.potential_range_start.to_psobj()
@@ -104,7 +104,7 @@ class PretreatmentSettings:
     conditioning_potential: float = 0.0
     conditioning_time: float = 0.0
 
-    def update_psobj(self, *, obj):
+    def update_psmethod(self, *, obj):
         obj.DepositionPotential = self.deposition_potential
         obj.DepositionTime = self.deposition_time
         obj.ConditioningPotential = self.conditioning_potential
@@ -145,7 +145,7 @@ class VersusOcpSettings:
     versus_ocp_max_ocp_time: float = 20.0  # Time (s)
     versus_ocp_stability_criterion: int = 0
 
-    def update_psobj(self, *, obj):
+    def update_psmethod(self, *, obj):
         obj.OCPmode = self.versus_ocp_mode
         obj.OCPMaxOCPTime = self.versus_ocp_max_ocp_time
         obj.OCPStabilityCriterion = self.versus_ocp_stability_criterion
@@ -185,7 +185,7 @@ class BipotSettings:
     bipot_current_range_min: CURRENT_RANGE = CURRENT_RANGE.cr_1_uA
     bipot_current_range_start: CURRENT_RANGE = CURRENT_RANGE.cr_100_uA
 
-    def update_psobj(self, *, obj):
+    def update_psmethod(self, *, obj):
         obj.BiPotModePS = PalmSens.Method.EnumPalmSensBipotMode(self.bipot_mode)
         obj.BiPotPotential = self.bipot_potential
         obj.BipotRanging.MaximumCurrentRange = self.bipot_current_range_max.to_psobj()
@@ -226,7 +226,7 @@ class PostMeasurementSettings:
     standby_potential: float = 0.0  # V
     standby_time: float = 0.0  # s
 
-    def update_psobj(self, *, obj):
+    def update_psmethod(self, *, obj):
         obj.CellOnAfterMeasurement = self.cell_on_after_measurement
         obj.StandbyPotential = self.standby_potential
         obj.StandbyTime = self.standby_time
@@ -260,7 +260,7 @@ class CurrentLimitSettings:
     use_limit_current_min: bool = False
     limit_current_min: float = 0.0  # µA
 
-    def update_psobj(self, *, obj):
+    def update_psmethod(self, *, obj):
         obj.UseLimitMaxValue = self.use_limit_current_max
         obj.LimitMaxValue = self.limit_current_max
         obj.UseLimitMinValue = self.use_limit_current_min
@@ -294,7 +294,7 @@ class PotentialLimitSettings:
     use_limit_potential_min: bool = False
     limit_potential_min: float = 0.0  # V
 
-    def update_psobj(self, *, obj):
+    def update_psmethod(self, *, obj):
         obj.UseLimitMaxValue = self.use_limit_potential_max
         obj.LimitMaxValue = self.limit_potential_max
         obj.UseLimitMinValue = self.use_limit_potential_min
@@ -328,7 +328,7 @@ class ChargeLimitSettings:
     use_limit_charge_min: bool = False
     limit_charge_min: float = 0.0  # in µC
 
-    def update_psobj(self, *, obj):
+    def update_psmethod(self, *, obj):
         obj.UseChargeLimitMax = self.use_limit_charge_max
         obj.ChargeLimitMax = self.limit_charge_max
         obj.UseChargeLimitMin = self.use_limit_charge_min
@@ -357,7 +357,7 @@ class IrDropCompensationSettings:
     use_ir_compensation: bool = False
     ir_compensation: float = 0.0  # Ω
 
-    def update_psobj(self, *, obj):
+    def update_psmethod(self, *, obj):
         obj.UseIRDropComp = self.use_ir_compensation
         obj.IRDropCompRes = self.ir_compensation
 
@@ -383,7 +383,7 @@ class TriggerAtEquilibrationSettings:
     trigger_at_equilibration: bool = False
     trigger_at_equilibration_lines: tuple[bool, bool, bool, bool] = (False, False, False, False)
 
-    def update_psobj(self, *, obj):
+    def update_psmethod(self, *, obj):
         obj.UseTriggerOnEquil = self.trigger_at_equilibration
         obj.TriggerValueOnEquil = convert_bools_to_int(self.trigger_at_equilibration_lines)
 
@@ -409,7 +409,7 @@ class TriggerAtMeasurementSettings:
     trigger_at_measurement: bool = False
     trigger_at_measurement_lines: tuple[bool, bool, bool, bool] = (False, False, False, False)
 
-    def update_psobj(self, *, obj):
+    def update_psmethod(self, *, obj):
         obj.UseTriggerOnStart = self.trigger_at_measurement
         obj.TriggerValueOnStart = convert_bools_to_int(self.trigger_at_measurement_lines)
 
@@ -454,7 +454,7 @@ class MultiplexerSettings:
     use_channel_1_reference_and_counter_electrodes: bool = False
     set_unselected_channel_working_electrode: int = 0
 
-    def update_psobj(self, *, obj):
+    def update_psmethod(self, *, obj):
         # Create a mux8r2 multiplexer settings settings object
         obj.MuxMethod = PSMuxMethod(self.set_mux_mode)
 
@@ -512,7 +512,7 @@ class PeakSettings:
     min_peak_height: float = 0.0  # uA
     min_peak_width: float = 0.1  # V
 
-    def update_psobj(self, *, obj):
+    def update_psmethod(self, *, obj):
         obj.SmoothLevel = self.smooth_level
         obj.MinPeakHeight = self.min_peak_height
         obj.MinPeakWidth = self.min_peak_width
@@ -549,7 +549,7 @@ class CommonSettings:
     notes: str = ''
     power_frequency: Literal[50, 60] = 50
 
-    def update_psobj(self, *, obj):
+    def update_psmethod(self, *, obj):
         obj.SaveOnDevice = self.save_on_internal_storage
         obj.UseHWSync = self.use_hardware_sync
         obj.Notes = self.notes

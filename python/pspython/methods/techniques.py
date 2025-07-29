@@ -36,19 +36,19 @@ if TYPE_CHECKING:
 
 def parameters_to_psmethod(params) -> Method:
     """Convert parameters to dotnet method."""
-    psobj = PSMethod.FromMethodID(params._id)
+    psmethod = PSMethod.FromMethodID(params._id)
 
     for parent in params.__class__.__mro__:
         if parent in (ParametersMixin, object):
             continue
-        parent.update_psobj(params, obj=psobj)
+        parent.update_psmethod(params, obj=psmethod)
 
-    return psobj
+    return psmethod
 
 
-def psmethod_to_parameters(psobj: PSMethod):
+def psmethod_to_parameters(psmethod: PSMethod):
     """Generate parameters from dotnet method object."""
-    id = psobj.MethodID
+    id = psmethod.MethodID
 
     cls = ID_TO_PARAMETER_MAPPING[id]
 
@@ -60,7 +60,7 @@ def psmethod_to_parameters(psobj: PSMethod):
     for parent in new.__class__.__mro__:
         if parent in (object, ParametersMixin):
             continue
-        parent.update_params(new, obj=psobj)  # type: ignore
+        parent.update_params(new, obj=psmethod)  # type: ignore
 
     return new
 
@@ -68,11 +68,11 @@ def psmethod_to_parameters(psobj: PSMethod):
 class ParametersMixin:
     """Provide generic methods for parameters."""
 
-    def to_psobj(self):
+    def to_psmethod(self):
         return parameters_to_psmethod(self)
 
     @staticmethod
-    def from_psobj(obj):
+    def from_psmethod(obj):
         psmethod_to_parameters(obj)
 
 
@@ -135,7 +135,7 @@ class CyclicVoltammetryParameters(
     record_cell_potential: bool = False
     record_we_potential: bool = False
 
-    def update_psobj(self, *, obj):
+    def update_psmethod(self, *, obj):
         """Update method with cyclic voltammetry settings."""
         obj.EquilibrationTime = self.equilibration_time
         obj.BeginPotential = self.begin_potential
@@ -225,7 +225,7 @@ class LinearSweepParameters(
     record_we_potential: bool = False
     enable_bipot_current: bool = False
 
-    def update_psobj(self, *, obj):
+    def update_psmethod(self, *, obj):
         """Update method with linear sweep settings."""
         obj.BeginPotential = self.begin_potential
         obj.EndPotential = self.end_potential
@@ -317,7 +317,7 @@ class SquareWaveParameters(
     enable_bipot_current: bool = False
     record_forward_and_reverse_currents: bool = False
 
-    def update_psobj(self, *, obj):
+    def update_psmethod(self, *, obj):
         """Update method with linear sweep settings."""
         obj.EquilibrationTime = self.equilibration_time
         obj.BeginPotential = self.begin_potential
@@ -415,7 +415,7 @@ class DifferentialPulseParameters(
     record_we_potential: bool = False
     enable_bipot_current: bool = False
 
-    def update_psobj(self, *, obj):
+    def update_psmethod(self, *, obj):
         """Update method with linear sweep settings."""
         obj.EquilibrationTime = self.equilibration_time
         obj.BeginPotential = self.begin_potential
@@ -506,7 +506,7 @@ class ChronoAmperometryParameters(
     record_we_potential: bool = False
     enable_bipot_current: bool = False
 
-    def update_psobj(self, *, obj):
+    def update_psmethod(self, *, obj):
         """Update method with chrono amperometry settings."""
         obj.EquilibrationTime = self.equilibration_time
         obj.IntervalTime = self.interval_time
@@ -588,7 +588,7 @@ class MultiStepAmperometryParameters(
     record_we_potential: bool = False
     enable_bipot_current: bool = False
 
-    def update_psobj(self, *, obj):
+    def update_psmethod(self, *, obj):
         """Update method with chrono amperometry settings."""
         obj.EquilibrationTime = self.equilibration_time
         obj.IntervalTime = self.interval_time
@@ -674,7 +674,7 @@ class OpenCircuitPotentiometryParameters(
     record_we_current: bool = False
     record_we_current_range: CURRENT_RANGE = CURRENT_RANGE.cr_1_uA
 
-    def update_psobj(self, *, obj):
+    def update_psmethod(self, *, obj):
         """Update method with open circuit potentiometry settings."""
         obj.IntervalTime = self.interval_time
         obj.RunTime = self.run_time
@@ -745,7 +745,7 @@ class ChronopotentiometryParameters(
     record_cell_potential: bool = False
     record_we_current: bool = False
 
-    def update_psobj(self, *, obj):
+    def update_psmethod(self, *, obj):
         """Update method with potentiometry settings."""
         obj.Current = self.current
         obj.AppliedCurrentRange = self.applied_current_range.to_psobj()
@@ -817,7 +817,7 @@ class ElectrochemicalImpedanceSpectroscopyParameters(
     max_frequency: float = 1e5
     min_frequency: float = 1e3
 
-    def update_psobj(self, *, obj):
+    def update_psmethod(self, *, obj):
         """Update method with potentiometry settings."""
         obj.ScanType = enumScanType.Fixed
         obj.FreqType = enumFrequencyType.Scan
@@ -878,7 +878,7 @@ class GalvanostaticImpedanceSpectroscopyParameters(
     max_frequency: float = 1e5
     min_frequency: float = 1e3
 
-    def update_psobj(self, *, obj):
+    def update_psmethod(self, *, obj):
         """Update method with potentiometry settings."""
 
         obj.ScanType = enumScanType.Fixed

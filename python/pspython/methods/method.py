@@ -45,7 +45,7 @@ class Method:
 
     def to_parameters(self):
         """Extract techniques parameters as dataclass."""
-        return techniques.psmethod_to_parameters(psobj=self.psobj)
+        return techniques.psmethod_to_parameters(psmethod=self.psobj)
 
     def to_dict(self) -> dict[str, Any]:
         """Return dictionary with technique parameters."""
