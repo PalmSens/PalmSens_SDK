@@ -18,11 +18,11 @@ from .settings import (
     AutorangingPotentialSettings,
     BipotSettings,
     ChargeLimitSettings,
+    CommonSettings,
     CurrentLimitSettings,
     FilterSettings,
     IrDropCompensationSettings,
     MultiplexerSettings,
-    OtherSettings,
     PostMeasurementSettings,
     PotentialLimitSettings,
     PretreatmentSettings,
@@ -35,6 +35,7 @@ if TYPE_CHECKING:
     from .method import Method
 
 
+@dataclass
 class BaseParameters:
     """Provide generic methods for interacting with the PalmSens.Method
     object."""
@@ -84,7 +85,7 @@ class CyclicVoltammetryParameters(
     TriggerAtEquilibrationSettings,
     TriggerAtMeasurementSettings,
     FilterSettings,
-    OtherSettings,
+    CommonSettings,
 ):
     """Create cyclic voltammetry method parameters.
 
@@ -183,7 +184,7 @@ class LinearSweepParameters(
     TriggerAtMeasurementSettings,
     FilterSettings,
     MultiplexerSettings,
-    OtherSettings,
+    CommonSettings,
 ):
     """Create linear sweep method parameters.
 
@@ -266,7 +267,7 @@ class SquareWaveParameters(
     TriggerAtMeasurementSettings,
     FilterSettings,
     MultiplexerSettings,
-    OtherSettings,
+    CommonSettings,
 ):
     """Create square wave method parameters.
 
@@ -364,7 +365,7 @@ class DifferentialPulseParameters(
     TriggerAtMeasurementSettings,
     FilterSettings,
     MultiplexerSettings,
-    OtherSettings,
+    CommonSettings,
 ):
     """Create square wave method parameters.
 
@@ -464,7 +465,7 @@ class ChronoAmperometryParameters(
     TriggerAtMeasurementSettings,
     FilterSettings,
     MultiplexerSettings,
-    OtherSettings,
+    CommonSettings,
 ):
     """Create chrono amperometry method parameters.
 
@@ -545,7 +546,7 @@ class MultiStepAmperometryParameters(
     IrDropCompensationSettings,
     FilterSettings,
     MultiplexerSettings,
-    OtherSettings,
+    CommonSettings,
 ):
     """Create multi-step amperometry method parameters.
 
@@ -640,7 +641,7 @@ class OpenCircuitPotentiometryParameters(
     TriggerAtMeasurementSettings,
     FilterSettings,
     MultiplexerSettings,
-    OtherSettings,
+    CommonSettings,
 ):
     """Create open circuit potentiometry method parameters.
 
@@ -707,7 +708,7 @@ class ChronopotentiometryParameters(
     TriggerAtMeasurementSettings,
     FilterSettings,
     MultiplexerSettings,
-    OtherSettings,
+    CommonSettings,
 ):
     """Create potentiometry method parameters.
 
@@ -784,7 +785,7 @@ class ElectrochemicalImpedanceSpectroscopyParameters(
     TriggerAtMeasurementSettings,
     TriggerAtEquilibrationSettings,
     MultiplexerSettings,
-    OtherSettings,
+    CommonSettings,
 ):
     """Create potentiometry method parameters.
 
@@ -843,7 +844,7 @@ class GalvanostaticImpedanceSpectroscopyParameters(
     TriggerAtEquilibrationSettings,
     TriggerAtMeasurementSettings,
     MultiplexerSettings,
-    OtherSettings,
+    CommonSettings,
 ):
     """Create potentiometry method parameters.
 

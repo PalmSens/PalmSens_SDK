@@ -212,21 +212,28 @@ class PostMeasurementSettings:
     Attributes
     ----------
     cell_on_after_measurement: bool
-        Cell on after measurement (default: False)
-    cell_on_after_measurement_potential: float
-        Cell on after measurement potential in V (default: 0.0)
+        Enable/disable cell after measurement (default: False)
+    standby_potential: float
+        Standby potential for use with cell on after measurement.
+        Potential in V (default: 0.0)
+    standby_time: float
+        Standby time for use with cell on after measurement.
+        Time in s (default)
     """
 
     cell_on_after_measurement: bool = False
-    cell_on_after_measurement_potential: float = 0.0  # V
+    standby_potential: float = 0.0  # V
+    standby_time: float = 0.0  # s
 
     def update_psobj(self, *, obj):
         obj.CellOnAfterMeasurement = self.cell_on_after_measurement
-        obj.StandbyPotential = self.cell_on_after_measurement_potential
+        obj.StandbyPotential = self.standby_potential
+        obj.StandbyTime = self.standby_time
 
     def update_params(self, *, obj):
         self.cell_on_after_measurement = obj.CellOnAfterMeasurement
-        self.cell_on_after_measurement_potential = obj.StandbyPotential
+        self.standby_potential = obj.StandbyPotential
+        self.standby_time = obj.StandbyTime
 
 
 @dataclass
@@ -500,7 +507,7 @@ class FilterSettings:
 
 
 @dataclass
-class OtherSettings:
+class CommonSettings:
     """Sets general/other settings for a given method.
 
     Attributes

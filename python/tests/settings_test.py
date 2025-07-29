@@ -384,13 +384,13 @@ def test_OtherSettings():
         'use_hardware_sync': True,
     }
 
-    params = settings.OtherSettings(**kwargs)
+    params = settings.CommonSettings(**kwargs)
     params.update_psobj(obj=obj)
 
     obj.SaveOnDevice = True
     obj.UseHWSync = True
 
-    new_params = settings.OtherSettings()
+    new_params = settings.CommonSettings()
     new_params.update_params(obj=obj)
 
     assert asdict(new_params) == kwargs

@@ -38,14 +38,13 @@ ID_TO_PARAMETER_MAPPING = {
 }
 
 
-def method_ids() -> list[str]:
+def _method_ids() -> list[str]:
     """Return list of all possible method ids."""
     return list(PSMethod.MethodIds)
 
 
-def method_ids_by_technique_id() -> dict[int, list[str]]:
+def _method_ids_by_technique_id() -> dict[int, list[str]]:
     """Unique id for method."""
-
     return {k: list(v) for k, v in dict(PSMethod.MethodIdsByTechniqueId).items()}
 
 
@@ -72,27 +71,22 @@ class Method:
         return self.psobj.ShortName
 
     @property
-    def technique(self) -> int:
-        """
-        The technique number used in the firmware
-        """
+    def technique_number(self) -> int:
+        """The technique number used in the firmware."""
         return self.psobj.Technique
 
     @property
     def notes(self) -> str:
-        """
-        Some user notes for use with this method
-        """
+        """Some user notes for use with this method."""
         return self.psobj.Notes
 
     def to_parameters(self) -> techniques.BaseParameters:
-        """Return parameters class."""
+        """Extract techniques parameters as dataclass."""
         cls = ID_TO_PARAMETER_MAPPING[self.id]
         if not cls:
-            raise NotImplementedError(f'Method {self.id} is not implemented yet')
+            raise NotImplementedError(f'Mapping of {self.id} parameters is not implemented yet')
         return cls.from_method(self)
 
     def to_dict(self) -> dict[str, Any]:
-        """Return dictionary with method properties."""
-        return self.to_parameters().__dict__
-        asdict(self.to_parameters())
+        """Return dictionary with technique parameters."""
+        return asdict(self.to_parameters())
