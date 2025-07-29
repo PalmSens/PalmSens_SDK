@@ -685,7 +685,7 @@ class OpenCircuitPotentiometryParameters(
     def update_params(self, *, obj):
         self.interval_time = obj.IntervalTime
         self.run_time = obj.RunTime
-        self.record_we_current_range = CURRENT_RANGE(obj.AppliedCurrentRange)
+        self.record_we_current_range = CURRENT_RANGE.from_psobj(obj.AppliedCurrentRange)
 
         msk = get_extra_value_mask(obj)
 
@@ -759,7 +759,7 @@ class ChronopotentiometryParameters(
 
     def update_params(self, *, obj):
         self.current = obj.Current
-        self.applied_current_range = CURRENT_RANGE(int(obj.AppliedCurrentRange.CRbyte))
+        self.applied_current_range = CURRENT_RANGE.from_psobj(obj.AppliedCurrentRange)
         self.interval_time = obj.IntervalTime
         self.run_time = obj.RunTime
 
@@ -888,7 +888,7 @@ class GalvanostaticImpedanceSpectroscopyParameters(
         obj.MinFrequency = self.min_frequency
 
     def update_params(self, *, obj):
-        self.applied_current_range = CURRENT_RANGE(int(obj.AppliedCurrentRange.CRbyte))
+        self.applied_current_range = CURRENT_RANGE.from_psobj(obj.AppliedCurrentRange)
         self.equilibration_time = obj.EquilibrationTime
         self.ac_current = obj.Iac
         self.dc_current = obj.Idc

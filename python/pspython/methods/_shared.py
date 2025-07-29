@@ -49,6 +49,11 @@ class CURRENT_RANGE(Enum):
         """Get equivalent PS object."""
         return CurrentRange(CurrentRanges(self.value))
 
+    @classmethod
+    def from_psobj(cls, psobj):
+        """Convert from PS object."""
+        return cls(int(CurrentRange.GetCRfromCRByte(psobj.CRbyte)))
+
 
 class POTENTIAL_RANGE(Enum):
     """Get the id for a given current range."""
@@ -65,6 +70,11 @@ class POTENTIAL_RANGE(Enum):
     def to_psobj(self):
         """Get equivalent PS object."""
         return PotentialRange(PotentialRanges(self.value))
+
+    @classmethod
+    def from_psobj(cls, psobj):
+        """Convert from PS object."""
+        return cls(int(PotentialRange.get_PR(psobj)))
 
 
 def single_to_double(val: float) -> float:

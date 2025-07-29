@@ -39,9 +39,9 @@ class AutorangingCurrentSettings:
         obj.Ranging.StartCurrentRange = self.current_range_start.to_psobj()
 
     def update_params(self, *, obj):
-        self.current_range_max = CURRENT_RANGE(int(obj.Ranging.MaximumCurrentRange.CRbyte))
-        self.current_range_min = CURRENT_RANGE(int(obj.Ranging.MinimumCurrentRange.CRbyte))
-        self.current_range_start = CURRENT_RANGE(int(obj.Ranging.StartCurrentRange.CRbyte))
+        self.current_range_max = CURRENT_RANGE.from_psobj(obj.Ranging.MaximumCurrentRange)
+        self.current_range_min = CURRENT_RANGE.from_psobj(obj.Ranging.MinimumCurrentRange)
+        self.current_range_start = CURRENT_RANGE.from_psobj(obj.Ranging.StartCurrentRange)
 
 
 @dataclass
@@ -71,14 +71,14 @@ class AutorangingPotentialSettings:
         obj.RangingPotential.StartPotentialRange = self.potential_range_start.to_psobj()
 
     def update_params(self, *, obj):
-        self.potential_range_max = POTENTIAL_RANGE(
-            int(obj.RangingPotential.MaximumPotentialRange.PR)
+        self.potential_range_max = POTENTIAL_RANGE.from_psobj(
+            obj.RangingPotential.MaximumPotentialRange
         )
-        self.potential_range_min = POTENTIAL_RANGE(
-            int(obj.RangingPotential.MinimumPotentialRange.PR)
+        self.potential_range_min = POTENTIAL_RANGE.from_psobj(
+            obj.RangingPotential.MinimumPotentialRange
         )
-        self.potential_range_start = POTENTIAL_RANGE(
-            int(obj.RangingPotential.StartPotentialRange.PR)
+        self.potential_range_start = POTENTIAL_RANGE.from_psobj(
+            obj.RangingPotential.StartPotentialRange
         )
 
 
@@ -194,14 +194,14 @@ class BipotSettings:
     def update_params(self, *, obj):
         self.bipot_mode = int(obj.BiPotModePS)
         self.bipot_potential = obj.BiPotPotential
-        self.bipot_current_range_max = CURRENT_RANGE(
-            int(obj.BipotRanging.MaximumCurrentRange.CRbyte)
+        self.bipot_current_range_max = CURRENT_RANGE.from_psobj(
+            obj.BipotRanging.MaximumCurrentRange
         )
-        self.bipot_current_range_min = CURRENT_RANGE(
-            int(obj.BipotRanging.MinimumCurrentRange.CRbyte)
+        self.bipot_current_range_min = CURRENT_RANGE.from_psobj(
+            obj.BipotRanging.MinimumCurrentRange
         )
-        self.bipot_current_range_start = CURRENT_RANGE(
-            int(obj.BipotRanging.StartCurrentRange.CRbyte)
+        self.bipot_current_range_start = CURRENT_RANGE.from_psobj(
+            obj.BipotRanging.StartCurrentRange
         )
 
 
