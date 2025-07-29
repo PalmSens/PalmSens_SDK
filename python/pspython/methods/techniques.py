@@ -901,6 +901,28 @@ class GalvanostaticImpedanceSpectroscopyParameters(
         self.min_frequency = obj.MinFrequency
 
 
+@dataclass
+class MethodScriptParameters(ParametersMixin):
+    """Create a method script sandbox object.
+
+    Attributes
+    ----------
+    method_script : str
+        Method script
+    """
+
+    _id = 'ms'
+
+    method_script: str = ''
+
+    def update_psmethod(self, *, obj):
+        """Update method with MethodScript."""
+        obj.MethodScript = self.method_script
+
+    def update_params(self, *, obj):
+        self.method_script = obj.MethodScript
+
+
 ID_TO_PARAMETER_MAPPING = {
     'acv': None,
     'ad': ChronoAmperometryParameters,
@@ -919,11 +941,11 @@ ID_TO_PARAMETER_MAPPING = {
     'lp': None,
     'lsp': None,
     'lsv': LinearSweepParameters,
-    'ma': None,
+    'ma': MultiStepAmperometryParameters,
     'mm': None,
     'mp': None,
     'mpad': None,
-    'ms': MultiStepAmperometryParameters,
+    'ms': MethodScriptParameters,
     'npv': None,
     'ocp': OpenCircuitPotentiometryParameters,
     'pad': None,

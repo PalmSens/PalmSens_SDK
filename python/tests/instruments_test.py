@@ -20,6 +20,7 @@ from pspython.methods.techniques_old import (
     electrochemical_impedance_spectroscopy,
     galvanostatic_impedance_spectroscopy,
     linear_sweep_voltammetry,
+    method_script_sandbox,
     multi_step_amperometry,
     open_circuit_potentiometry,
     square_wave_voltammetry,
@@ -560,3 +561,31 @@ class TestGIS:
             'Z',
             "Z'",
         }
+
+
+class TestMS:
+    kwargs = {'method_script': ''}
+    pycls = techniques.MethodScriptParameters
+    pscls = Techniques.MethodScriptSandbox
+
+    def test_params_round_trip(self):
+        assert_params_round_trip_equal(
+            pscls=self.pscls,
+            pycls=self.pycls,
+            kwargs=self.kwargs,
+        )
+
+    def test_old_interface(self):
+        method_old = method_script_sandbox(**self.kwargs)
+        assert isinstance(method_old, self.pscls)
+
+    @pytest.mark.xfail(
+        reason='Not fully implemented yet: https://github.com/PalmSens/PalmSens_SDK/issues/47.'
+    )
+    @pytest.mark.instrument
+    def test_measurement(self, manager):
+        method = self.pycls(**self.kwargs)
+        measurement = manager.measure(method)
+
+        assert measurement
+        assert isinstance(measurement, Measurement)

@@ -59,3 +59,9 @@ def galvanostatic_impedance_spectroscopy(**kwargs):
     """Alias for backwards compatibility."""
     method = techniques.GalvanostaticImpedanceSpectroscopyParameters(**kwargs)
     return method.to_psmethod()
+
+
+def method_script_sandbox(**kwargs):
+    """Alias for backwards compatibility."""
+    method = techniques.MethodScriptParameters(**kwargs)
+    return method.to_psmethod()
