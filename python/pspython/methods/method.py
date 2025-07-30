@@ -1,23 +1,18 @@
 from dataclasses import asdict
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from PalmSens import Method as PSMethod
 
 from . import techniques
 
-
-def _method_ids() -> list[str]:
-    """Return list of all possible method ids."""
-    return list(PSMethod.MethodIds)
-
-
-def _method_ids_by_technique_id() -> dict[int, list[str]]:
-    """Unique id for method."""
-    return {k: list(v) for k, v in dict(PSMethod.MethodIdsByTechniqueId).items()}
+if TYPE_CHECKING:
+    from .techniques import ParameterType
 
 
 class Method:
-    def __init__(self, *, psmethod):
+    """Wrapper for PalmSens.Method."""
+
+    def __init__(self, *, psmethod: PSMethod):
         self.psmethod = psmethod
 
     def __repr__(self) -> str:
@@ -43,7 +38,7 @@ class Method:
         """The technique number used in the firmware."""
         return self.psmethod.Technique
 
-    def to_parameters(self):
+    def to_parameters(self) -> ParameterType:
         """Extract techniques parameters as dataclass."""
         return techniques.psmethod_to_parameters(psmethod=self.psmethod)
 

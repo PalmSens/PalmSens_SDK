@@ -1,8 +1,10 @@
 from __future__ import annotations
 
+from abc import abstractmethod
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING
 
+from _typeshed import DataclassInstance
 from PalmSens import Method as PSMethod
 from PalmSens.Techniques.Impedance import enumFrequencyType, enumScanType
 
@@ -31,6 +33,8 @@ from .settings import (
 )
 
 if TYPE_CHECKING:
+    from _typeshed import DataclassInstance
+
     from .method import Method
 
 
@@ -39,14 +43,14 @@ def parameters_to_psmethod(params) -> Method:
     psmethod = PSMethod.FromMethodID(params._id)
 
     for parent in params.__class__.__mro__:
-        if parent in (ParametersMixin, object):
+        if parent in (ParameterType, object):
             continue
         parent.update_psmethod(params, obj=psmethod)
 
     return psmethod
 
 
-def psmethod_to_parameters(psmethod: PSMethod):
+def psmethod_to_parameters(psmethod: PSMethod) -> ParameterType:
     """Generate parameters from dotnet method object."""
     id = psmethod.MethodID
 
@@ -58,27 +62,33 @@ def psmethod_to_parameters(psmethod: PSMethod):
     new = cls()
 
     for parent in new.__class__.__mro__:
-        if parent in (object, ParametersMixin):
+        if parent in (object, ParameterType):
             continue
         parent.update_params(new, obj=psmethod)  # type: ignore
 
     return new
 
 
-class ParametersMixin:
+class ParameterType(DataclassInstance):
     """Provide generic methods for parameters."""
 
     def to_psmethod(self):
         return parameters_to_psmethod(self)
 
     @staticmethod
-    def from_psmethod(obj):
-        psmethod_to_parameters(obj)
+    def from_psmethod(obj: PSMethod) -> ParameterType:
+        return psmethod_to_parameters(obj)
+
+    @abstractmethod
+    def update_psmethod(self, *, obj: PSMethod) -> None: ...
+
+    @abstractmethod
+    def update_params(self, *, obj: PSMethod) -> None: ...
 
 
 @dataclass
 class CyclicVoltammetryParameters(
-    ParametersMixin,
+    ParameterType,
     AutorangingCurrentSettings,
     PretreatmentSettings,
     VersusOcpSettings,
@@ -175,7 +185,7 @@ class CyclicVoltammetryParameters(
 
 @dataclass
 class LinearSweepParameters(
-    ParametersMixin,
+    ParameterType,
     AutorangingCurrentSettings,
     PretreatmentSettings,
     VersusOcpSettings,
@@ -259,7 +269,7 @@ class LinearSweepParameters(
 
 @dataclass
 class SquareWaveParameters(
-    ParametersMixin,
+    ParameterType,
     AutorangingCurrentSettings,
     PretreatmentSettings,
     VersusOcpSettings,
@@ -357,7 +367,7 @@ class SquareWaveParameters(
 
 @dataclass
 class DifferentialPulseParameters(
-    ParametersMixin,
+    ParameterType,
     AutorangingCurrentSettings,
     PretreatmentSettings,
     VersusOcpSettings,
@@ -455,7 +465,7 @@ class DifferentialPulseParameters(
 
 @dataclass
 class ChronoAmperometryParameters(
-    ParametersMixin,
+    ParameterType,
     AutorangingCurrentSettings,
     PretreatmentSettings,
     VersusOcpSettings,
@@ -540,7 +550,7 @@ class ChronoAmperometryParameters(
 
 @dataclass
 class MultiStepAmperometryParameters(
-    ParametersMixin,
+    ParameterType,
     AutorangingCurrentSettings,
     PretreatmentSettings,
     BipotSettings,
@@ -635,7 +645,7 @@ class MultiStepAmperometryParameters(
 
 @dataclass
 class OpenCircuitPotentiometryParameters(
-    ParametersMixin,
+    ParameterType,
     AutorangingCurrentSettings,
     AutorangingPotentialSettings,
     PretreatmentSettings,
@@ -702,7 +712,7 @@ class OpenCircuitPotentiometryParameters(
 
 @dataclass
 class ChronopotentiometryParameters(
-    ParametersMixin,
+    ParameterType,
     AutorangingCurrentSettings,
     AutorangingPotentialSettings,
     PretreatmentSettings,
@@ -779,7 +789,7 @@ class ChronopotentiometryParameters(
 
 @dataclass
 class ElectrochemicalImpedanceSpectroscopyParameters(
-    ParametersMixin,
+    ParameterType,
     AutorangingCurrentSettings,
     AutorangingPotentialSettings,
     PretreatmentSettings,
@@ -839,7 +849,7 @@ class ElectrochemicalImpedanceSpectroscopyParameters(
 
 @dataclass
 class GalvanostaticImpedanceSpectroscopyParameters(
-    ParametersMixin,
+    ParameterType,
     AutorangingCurrentSettings,
     AutorangingPotentialSettings,
     PretreatmentSettings,
@@ -902,7 +912,7 @@ class GalvanostaticImpedanceSpectroscopyParameters(
 
 
 @dataclass
-class MethodScriptParameters(ParametersMixin):
+class MethodScriptParameters(ParameterType):
     """Create a method script sandbox object.
 
     Attributes
