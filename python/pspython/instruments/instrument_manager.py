@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import asyncio
 import traceback
 from time import sleep
@@ -19,6 +21,8 @@ from PalmSens.Windows.Devices import (
     USBCDCDevice,
 )
 from System import EventHandler  # type: ignore
+
+from pspython.methods.techniques import ParameterType
 
 from ..data._shared import ArrayType, _get_values_from_NETArray
 from ..data.measurement import Measurement
@@ -202,7 +206,7 @@ class InstrumentManager:
 
         return True, None
 
-    def measure(self, parameters):
+    def measure(self, parameters: ParameterType):
         method = parameters.to_psmethod()
         if self.__comm is None:
             print('Not connected to an instrument')
