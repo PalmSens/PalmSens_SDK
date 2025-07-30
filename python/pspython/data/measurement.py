@@ -95,12 +95,12 @@ class Measurement:
         All values are related by means of their indices.
         Data arrays in a dataset should always have an equal amount of entries.
         """
-        return DataSet(dotnet_dataset=self.psmeasurement.DataSet)
+        return DataSet(psdataset=self.psmeasurement.DataSet)
 
     @property
     def eis_data(self) -> Any:
         """EIS data in measurement."""
-        return EISData(dotnet_eisdata=self.psmeasurement.EISdata)
+        return list(EISData(pseis=pseis) for pseis in self.psmeasurement.EISdata)
 
     def get_curve_by_index(self, index: int) -> Curve:
         """Retrieve curve with given index."""
@@ -123,8 +123,8 @@ class Measurement:
         return self.psmeasurement.nCurves
 
     def n_eis_data(self) -> int:
-        """Number of EISdata curves that are part of the Measurement class."""
-        return self.psmeasurement.nEISData
+        """Number of EISdata curves (channels) that are part of the Measurement class."""
+        return self.psmeasurement.nEISdata
 
     @property
     def peaks(self) -> list[Peak]:

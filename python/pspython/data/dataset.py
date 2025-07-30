@@ -1,13 +1,18 @@
+from __future__ import annotations
+
 from collections.abc import Mapping
 from typing import Callable, Generator
+
+import clr
+from PalmSens.Data import CurrentReading
 
 from ._shared import ArrayType
 from .data_array import DataArray
 
 
 class DataSet(Mapping):
-    def __init__(self, *, dotnet_dataset):
-        self.dotnet_dataset = dotnet_dataset
+    def __init__(self, *, psdataset):
+        self.psdataset = psdataset
 
     def __repr__(self):
         return f'{self.__class__.__name__}({list(self.keys())})'
@@ -28,11 +33,11 @@ class DataSet(Mapping):
         return ret[0]
 
     def __iter__(self) -> Generator[tuple[str, str], None, None]:
-        for array in self.dotnet_dataset:
+        for array in self.psdataset:
             yield (array.Description, array.Unit.Quantity)
 
     def __len__(self):
-        return self.dotnet_dataset.Count
+        return self.psdataset.Count
 
     def _filter(self, key: Callable) -> list[DataArray]:
         """Filter array list based on callable.
@@ -41,7 +46,7 @@ class DataSet(Mapping):
         """
         return [
             DataArray(dotnet_data_array=dotnet_data_array)
-            for dotnet_data_array in self.dotnet_dataset
+            for dotnet_data_array in self.psdataset
             if key(dotnet_data_array)
         ]
 
@@ -98,17 +103,17 @@ class DataSet(Mapping):
     @property
     def array_types(self) -> set[ArrayType]:
         """Return unique set of array type (enum) for arrays in dataset."""
-        return set(ArrayType(arr.ArrayType) for arr in self.dotnet_dataset)
+        return set(ArrayType(arr.ArrayType) for arr in self.psdataset)
 
     @property
     def array_names(self) -> set[str]:
         """Return unique set of names for arrays in dataset."""
-        return set(arr.Description for arr in self.dotnet_dataset)
+        return set(arr.Description for arr in self.psdataset)
 
     @property
     def array_quantities(self) -> set[str]:
         """Return unique set of quantities for arrays in dataset."""
-        return set(arr.Unit.Quantity for arr in self.dotnet_dataset)
+        return set(arr.Unit.Quantity for arr in self.psdataset)
 
     @property
     def arrays(self) -> list[DataArray]:
@@ -149,3 +154,13 @@ class DataSet(Mapping):
     def aux_input_arrays(self) -> list[DataArray]:
         """Return all AuxInput arrays."""
         return self.arrays_by_type(ArrayType.AuxInput)
+
+    @property
+    def current_range(self) -> list[str]:
+        """Return current range as list of strings."""
+        array = self[('Idc', 'Current')]
+
+        clr_type = clr.GetClrType(CurrentReading)
+        field_info = clr_type.GetField('CurrentRange')
+
+        return [field_info.GetValue(val).ToString() for val in array.dotnet_data_array]
