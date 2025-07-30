@@ -1,10 +1,9 @@
 from __future__ import annotations
 
 from abc import abstractmethod
-from dataclasses import dataclass, field
-from typing import TYPE_CHECKING
+from dataclasses import Field, dataclass, field
+from typing import TYPE_CHECKING, Any, ClassVar, Generic, Protocol
 
-from _typeshed import DataclassInstance
 from PalmSens import Method as PSMethod
 from PalmSens.Techniques.Impedance import enumFrequencyType, enumScanType
 
@@ -33,9 +32,26 @@ from .settings import (
 )
 
 if TYPE_CHECKING:
-    from _typeshed import DataclassInstance
-
     from .method import Method
+
+
+class ParameterType(Protocol):
+    """Protocol to provide generic methods for parameters."""
+
+    __dataclass_fields__: ClassVar[dict[str, Field[Any]]]
+
+    def to_psmethod(self):
+        return parameters_to_psmethod(self)
+
+    @staticmethod
+    def from_psmethod(obj: PSMethod) -> ParameterType:
+        return psmethod_to_parameters(obj)
+
+    @abstractmethod
+    def update_psmethod(self, *, obj: PSMethod) -> None: ...
+
+    @abstractmethod
+    def update_params(self, *, obj: PSMethod) -> None: ...
 
 
 def parameters_to_psmethod(params) -> Method:
@@ -43,7 +59,7 @@ def parameters_to_psmethod(params) -> Method:
     psmethod = PSMethod.FromMethodID(params._id)
 
     for parent in params.__class__.__mro__:
-        if parent in (ParameterType, object):
+        if parent in (Generic, ParameterType, Protocol, object):
             continue
         parent.update_psmethod(params, obj=psmethod)
 
@@ -62,28 +78,11 @@ def psmethod_to_parameters(psmethod: PSMethod) -> ParameterType:
     new = cls()
 
     for parent in new.__class__.__mro__:
-        if parent in (object, ParameterType):
+        if parent in (Generic, ParameterType, Protocol, object):
             continue
         parent.update_params(new, obj=psmethod)  # type: ignore
 
     return new
-
-
-class ParameterType(DataclassInstance):
-    """Provide generic methods for parameters."""
-
-    def to_psmethod(self):
-        return parameters_to_psmethod(self)
-
-    @staticmethod
-    def from_psmethod(obj: PSMethod) -> ParameterType:
-        return psmethod_to_parameters(obj)
-
-    @abstractmethod
-    def update_psmethod(self, *, obj: PSMethod) -> None: ...
-
-    @abstractmethod
-    def update_params(self, *, obj: PSMethod) -> None: ...
 
 
 @dataclass
@@ -927,10 +926,10 @@ class MethodScriptParameters(ParameterType):
 
     def update_psmethod(self, *, obj):
         """Update method with MethodScript."""
-        obj.MethodScript = self.method_script
+        obj.MethodScript = self.script
 
     def update_params(self, *, obj):
-        self.method_script = obj.MethodScript
+        self.script = obj.MethodScript
 
 
 ID_TO_PARAMETER_MAPPING = {

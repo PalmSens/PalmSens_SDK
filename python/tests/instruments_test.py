@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import logging
 
 import pytest
@@ -564,7 +566,7 @@ class TestGIS:
 
 
 class TestMS:
-    kwargs = {'method_script': ''}
+    kwargs = {'script': ''}
     pycls = techniques.MethodScriptParameters
     pscls = Techniques.MethodScriptSandbox
 
