@@ -15,6 +15,20 @@ from .peak import Peak
 
 @dataclass(frozen=True)
 class DeviceInfo:
+    """Dataclass for device information.
+
+    Attributes
+    ----------
+    type : str
+        Device type
+    firmware : str
+        Firmware version
+    serial : str
+        Serial number
+    id : int
+        Device ID
+    """
+
     type: str
     firmware: str
     serial: str
