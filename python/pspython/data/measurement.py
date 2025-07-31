@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any
+from typing import Union
 
 from PalmSens import Measurement as PSMeasurement
 
@@ -98,9 +98,11 @@ class Measurement:
         return DataSet(psdataset=self.psmeasurement.DataSet)
 
     @property
-    def eis_data(self) -> Any:
+    def eis_data(self) -> Union[EISData, list[EISData]]:
         """EIS data in measurement."""
-        return list(EISData(pseis=pseis) for pseis in self.psmeasurement.EISdata)
+        lst = [EISData(pseis=pseis) for pseis in self.psmeasurement.EISdata]
+
+        return lst
 
     def get_curve_by_index(self, index: int) -> Curve:
         """Retrieve curve with given index."""
@@ -114,14 +116,17 @@ class Measurement:
         The information from the Method is used when saving Curves."""
         return Method(psmethod=self.psmeasurement.Method)
 
+    @property
     def ocp_value(self) -> float:
         """First OCP Value from either curves or EISData."""
         return self.psmeasurement.OcpValue
 
+    @property
     def n_curves(self) -> int:
         """Number of curves that are part of the Measurement class."""
         return self.psmeasurement.nCurves
 
+    @property
     def n_eis_data(self) -> int:
         """Number of EISdata curves (channels) that are part of the Measurement class."""
         return self.psmeasurement.nEISdata

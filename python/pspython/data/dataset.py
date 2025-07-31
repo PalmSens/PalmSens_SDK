@@ -40,7 +40,7 @@ class DataSet(Mapping):
             yield ArrayType(array.ArrayType).name
 
     def __len__(self):
-        return self.psdataset.Count
+        return len(self.psarrays())
 
     def _filter(self, key: Callable) -> list[DataArray]:
         """Filter array list based on callable.
@@ -161,7 +161,6 @@ class DataSet(Mapping):
         """Return all AuxInput arrays."""
         return self.arrays_by_type(ArrayType.AuxInput)
 
-    @property
     def current_range(self) -> list[str]:
         """Return current range as list of strings."""
         array = self['Current']

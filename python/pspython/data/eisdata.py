@@ -40,9 +40,9 @@ class EISData:
 
     def __repr__(self):
         data = [
-            f'title={self.title}, ',
-            f'n_points={self.n_points}, ',
-            f'n_frequencies={self.n_frequencies}, ',
+            f'title={self.title}',
+            f'n_points={self.n_points}',
+            f'n_frequencies={self.n_frequencies}',
         ]
         if self.has_subscans:
             data.append(f'n_subscans={self.n_subscans}')
@@ -108,7 +108,7 @@ class EISData:
     @property
     def has_subscans(self) -> bool:
         """Return True if data contains subscans."""
-        return self.pseis.HasSubscans
+        return self.pseis.HasSubScans
 
     @property
     def mux_channel(self) -> int:
