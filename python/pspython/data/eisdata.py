@@ -39,13 +39,16 @@ class EISData:
         self.pseis = pseis
 
     def __repr__(self):
-        return (
-            f'{self.__class__.__name__}('
-            f'title={self.title}, '
-            f'n_points={self.n_points}, '
-            f'n_frequencies={self.n_frequencies}, '
-            f'n_subscans={self.n_subscans})'
-        )
+        data = [
+            f'title={self.title}, ',
+            f'n_points={self.n_points}, ',
+            f'n_frequencies={self.n_frequencies}, ',
+        ]
+        if self.has_subscans:
+            data.append(f'n_subscans={self.n_subscans}')
+
+        s = ', '.join(data)
+        return f'{self.__class__.__name__}({s})'
 
     @property
     def title(self) -> str:

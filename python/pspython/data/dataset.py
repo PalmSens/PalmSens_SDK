@@ -54,7 +54,7 @@ class DataSet(Mapping):
         return self.psdataset.GetDataArrays()
 
     def to_dict(self) -> dict[str, DataArray]:
-        """Return DataSet as dictionary."""
+        """Return arrays as dictionary."""
         return dict(self)
 
     def to_list(self) -> list[DataArray]:
@@ -170,3 +170,32 @@ class DataSet(Mapping):
         field_info = clr_type.GetField('CurrentRange')
 
         return [field_info.GetValue(val).ToString() for val in array.psarray]
+
+    def reading_status(self) -> list[str]:
+        """Return reading status as list of strings."""
+        array = self['Current']
+
+        clr_type = clr.GetClrType(CurrentReading)
+        field_info = clr_type.GetField('ReadingStatus')
+
+        return [field_info.GetValue(val).ToString() for val in array.psarray]
+
+    def timing_status(self) -> list[str]:
+        """Return timing status as list of strings."""
+        array = self['Current']
+
+        clr_type = clr.GetClrType(CurrentReading)
+        field_info = clr_type.GetField('TimingStatus')
+
+        return [field_info.GetValue(val).ToString() for val in array.psarray]
+
+    def to_dataframe(self):
+        """Return dataset as pandas dataframe."""
+        import pandas as pd
+
+        data = self.arrays()
+
+        df = pd.DataFrame({arr.name: arr.to_list() for arr in data if len(arr)})
+        df['CR'] = self.current_range
+        df['ReadingStatus'] = self.reading_status
+        return df
