@@ -1,6 +1,37 @@
 from __future__ import annotations
 
+from enum import Enum
+
+from .data_array import DataArray
 from .dataset import DataSet
+
+
+class EISValueType(Enum):
+    X = 0
+    Freq = 1
+    Logf = 2
+    LogZ = 3
+    Edc = 4
+    mEdc = 5
+    Eac = 6
+    Time = 7
+    Idc = 8
+    Iac = 9
+    miDC = 10
+    ZRe = 11
+    ZIm = 12
+    Z = 13
+    MinPhase = 14
+    Rct = 15
+    LogY = 16
+    YRe = 17
+    YIm = 18
+    Y = 19
+    Cs = 20
+    CsRe = 21
+    CsIm = 22
+    iDCinRange = 23
+    AuxInput = 24
 
 
 class EISData:
@@ -8,59 +39,103 @@ class EISData:
         self.pseis = pseis
 
     def __repr__(self):
-        return f'{self.__class__.__name__}(title={self.title!r})'
+        return (
+            f'{self.__class__.__name__}('
+            f'title={self.title}, '
+            f'n_points={self.n_points}, '
+            f'n_frequencies={self.n_frequencies}, '
+            f'n_subscans={self.n_subscans})'
+        )
 
     @property
     def title(self) -> str:
         return self.pseis.Title
 
     @property
-    def dataset(self) -> DataSet:
-        """Dataset containing multiple arrays of values.
+    def frequency_type(self) -> str:
+        return str(self.pseis.FreqType)
 
-        All values are related by means of their indices.
-        Data arrays in a dataset should always have an equal amount of entries.
-        """
+    @property
+    def scan_type(self) -> str:
+        return str(self.pseis.ScanType)
+
+    @property
+    def dataset(self) -> DataSet:
         return DataSet(psdataset=self.pseis.EISDataSet)
 
     @property
     def subscans(self) -> list[EISData]:
         return [EISData(pseis=subscan) for subscan in self.pseis.GetSubScans()]
 
+    @property
     def n_points(self) -> int:
         return self.pseis.NPoints
 
+    @property
     def n_frequencies(self) -> int:
         return self.pseis.NFrequencies
 
+    @property
+    def n_subscans(self) -> int:
+        return len(self.pseis.GetSubScans())
 
-"""
-CDC None
-CDCValues System.Double[]
-EISDataSet PalmSens.Data.DataSetEIS
-EISValueType <class 'PalmSens.Plottables.EISValueType'>
-FreqType Scan
-FrequencyCurves None
-GetAllEISDatas <bound method 'GetAllEISDatas'>
-GetCurrentRange <bound method 'GetCurrentRange'>
-GetDataArrayVsX <bound method 'GetDataArrayVsX'>
-GetDataValue <bound method 'GetDataValue'>
-GetDebugValue <bound method 'GetDebugValue'>
-GetFreqScanSelectedSeries <bound method 'GetFreqScanSelectedSeries'>
-GetIQRValues <bound method 'GetIQRValues'>
-GetNPoints <bound method 'GetNPoints'>
-GetPotentialRange <bound method 'GetPotentialRange'>
-GetScanTypeString <bound method 'GetScanTypeString'>
-GetSubScans <bound method 'GetSubScans'>
-GetType <bound method 'GetType'>
-HasSubScans True
-MuxChannel -1
-NFrequencies 89
-NPoints 801
-OCPValue 0.0005855560302734375
-ScanType PGScan
-SecondaryPlotMode None
-Title CH 3: PGScan at 89 freqs [6]
-ToString <bound method 'ToString'>
-XUnit V
-"""
+    @property
+    def x_unit(self) -> str:
+        """Unit for array."""
+        return self.pseis.XUnit.ToString()
+
+    @property
+    def x_quantity(self) -> str:
+        """Quantity for array."""
+        return self.pseis.XUnit.Quantity
+
+    @property
+    def ocp_value(self) -> float:
+        """OCP Value."""
+        return self.pseis.OCPValue
+
+    @property
+    def has_subscans(self) -> bool:
+        return self.pseis.HasSubscans
+
+    @property
+    def mux_channel(self) -> int:
+        return self.pseis.MuxChannel
+
+    def get_data_for_frequency(self, frequency: int) -> dict[str, DataArray]:
+        """Returns dictionary with data per frequency.
+
+        Parameters
+        ----------
+        frequency : int
+            Index of the frequency to retrieve the data for.
+
+        Returns
+        -------
+        dict[str, DataArray]
+            Data are returned as a dictionary keyed by the data type.
+        """
+        if not (0 <= frequency < self.n_frequencies):
+            raise ValueError(f'Frequency must be between 0 and {self.n_frequencies}')
+
+        return {
+            str(row.Key): DataArray(psarray=row.Value)
+            for row in self.pseis.GetDataArrayVsX(frequency)
+        }
+
+    def array_list(self):
+        return self.dataset.to_list()
+
+    def array_dict(self):
+        return self.dataset.to_dict()
+
+    def current_range(self) -> list[str]:
+        return [self.pseis.GetCurrentRange(val).Description for val in range(self.n_points)]
+
+    def cdc(self) -> str:
+        """Gets the CDC circuit for fitting."""
+        return self.pseis.CDC
+
+    def cdc_values(self) -> list[float]:
+        """Return values for circuit description code (CDC)."""
+        return list(self.pseis.CDCValues)

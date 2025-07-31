@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import pytest
 
 from pspython.data._shared import ArrayType

@@ -14,27 +14,30 @@ class DataSet(Mapping):
     def __init__(self, *, psdataset):
         self.psdataset = psdataset
 
+        arrays = [array for array in psdataset.GetDataArrays()]
+        array_names = {array.Description for array in arrays}
+
+        if len(array_names) != len(arrays):
+            raise ValueError(f'Data arrays are not unique, {len(array_names)} {len(arrays)}')
+
     def __repr__(self):
         return f'{self.__class__.__name__}({list(self.keys())})'
 
-    def __getitem__(self, key: tuple[str, str]):
-        if not (isinstance(key, tuple) and len(key) == 2):
-            raise KeyError(f'Key must be a tuple with 2 values, got: {key}')
-        name, quantity = key
-
-        ret = self._filter(
-            key=lambda array: array.Description == name and array.Unit.Quantity == quantity
-        )
+    def __getitem__(self, key: str):
+        ret = self._filter(key=lambda array: ArrayType(array.ArrayType).name == key)
 
         if not ret:
             raise KeyError(f'{key}')
         if len(ret) > 1:
-            raise KeyError(f'This should not happen, got multiple instances for key: {key}')
+            raise KeyError(f'Internal error, got multiple instances for key: {key}')
+
         return ret[0]
 
-    def __iter__(self) -> Generator[tuple[str, str], None, None]:
-        for array in self.psdataset:
-            yield (array.Description, array.Unit.Quantity)
+    def __iter__(self) -> Generator[str, None, None]:
+        # Note that iterating over self.psdataset also returns the 'hidden' debug arrays
+        # `.GetDataArrays()` excludes those.
+        for array in self.psarrays():
+            yield ArrayType(array.ArrayType).name
 
     def __len__(self):
         return self.psdataset.Count
@@ -44,13 +47,12 @@ class DataSet(Mapping):
 
         Callable takes dotnet DataArray as its only argument.
         """
-        return [
-            DataArray(dotnet_data_array=dotnet_data_array)
-            for dotnet_data_array in self.psdataset
-            if key(dotnet_data_array)
-        ]
+        return [DataArray(psarray=psarray) for psarray in self.psarrays() if key(psarray)]
 
-    def to_dict(self) -> dict[tuple[str, str], DataArray]:
+    def psarrays(self):
+        return self.psdataset.GetDataArrays()
+
+    def to_dict(self) -> dict[str, DataArray]:
         """Return DataSet as dictionary."""
         return dict(self)
 
@@ -58,19 +60,27 @@ class DataSet(Mapping):
         """Return list of arrays."""
         return list(self.values())
 
-    def arrays_by_name(self, description: str) -> list[DataArray]:
-        """Get arrays by description.
+    def arrays(self) -> list[DataArray]:
+        """Return list of all arrays. Alias for `.to_list()`"""
+        return self.to_list()
+
+    def hidden_arrays(self) -> list[DataArray]:
+        """Return 'hidden' arrays used for debugging."""
+        return [DataArray(psarray=psarray) for psarray in self.psdataset if psarray.Hidden]
+
+    def arrays_by_name(self, name: str) -> list[DataArray]:
+        """Get arrays by name.
 
         Parameters
         ----------
-        description : str
-            Description of the array.
+        name : str
+            Name of the array.
 
         Returns
         -------
         arrays : list[DataArray]
         """
-        return self._filter(key=lambda array: array.Description == description)
+        return self._filter(key=lambda array: array.Description == name)
 
     def arrays_by_quantity(self, quantity: str) -> list[DataArray]:
         """Get arrays by quantity.
@@ -103,22 +113,17 @@ class DataSet(Mapping):
     @property
     def array_types(self) -> set[ArrayType]:
         """Return unique set of array type (enum) for arrays in dataset."""
-        return set(ArrayType(arr.ArrayType) for arr in self.psdataset)
+        return set(array.type for array in self.arrays())
 
     @property
     def array_names(self) -> set[str]:
         """Return unique set of names for arrays in dataset."""
-        return set(arr.Description for arr in self.psdataset)
+        return set(array.name for array in self.arrays())
 
     @property
     def array_quantities(self) -> set[str]:
         """Return unique set of quantities for arrays in dataset."""
-        return set(arr.Unit.Quantity for arr in self.psdataset)
-
-    @property
-    def arrays(self) -> list[DataArray]:
-        """Return list of all arrays. Alias for `.to_list()`"""
-        return self.to_list()
+        return set(arr.quantity for arr in self.arrays())
 
     @property
     def current_arrays(self) -> list[DataArray]:
@@ -158,9 +163,9 @@ class DataSet(Mapping):
     @property
     def current_range(self) -> list[str]:
         """Return current range as list of strings."""
-        array = self[('Idc', 'Current')]
+        array = self['Current']
 
         clr_type = clr.GetClrType(CurrentReading)
         field_info = clr_type.GetField('CurrentRange')
 
-        return [field_info.GetValue(val).ToString() for val in array.dotnet_data_array]
+        return [field_info.GetValue(val).ToString() for val in array.psarray]
