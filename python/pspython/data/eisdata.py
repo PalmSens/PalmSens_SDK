@@ -49,34 +49,42 @@ class EISData:
 
     @property
     def title(self) -> str:
+        """Tite for EIS data."""
         return self.pseis.Title
 
     @property
     def frequency_type(self) -> str:
+        """Frequency type."""
         return str(self.pseis.FreqType)
 
     @property
     def scan_type(self) -> str:
+        """Scan type."""
         return str(self.pseis.ScanType)
 
     @property
     def dataset(self) -> DataSet:
+        """Dataset which contains multiple arrays of values."""
         return DataSet(psdataset=self.pseis.EISDataSet)
 
     @property
     def subscans(self) -> list[EISData]:
+        """Get list of subscans."""
         return [EISData(pseis=subscan) for subscan in self.pseis.GetSubScans()]
 
     @property
     def n_points(self) -> int:
+        """Number of points (including subscans)."""
         return self.pseis.NPoints
 
     @property
     def n_frequencies(self) -> int:
+        """Number of frequencies."""
         return self.pseis.NFrequencies
 
     @property
     def n_subscans(self) -> int:
+        """Number of subscans."""
         return len(self.pseis.GetSubScans())
 
     @property
@@ -96,10 +104,12 @@ class EISData:
 
     @property
     def has_subscans(self) -> bool:
+        """Return True if data contains subscans."""
         return self.pseis.HasSubscans
 
     @property
     def mux_channel(self) -> int:
+        """Mux channel."""
         return self.pseis.MuxChannel
 
     def get_data_for_frequency(self, frequency: int) -> dict[str, DataArray]:
@@ -124,12 +134,15 @@ class EISData:
         }
 
     def array_list(self):
+        """Complete list of data arrays."""
         return self.dataset.to_list()
 
     def array_dict(self):
+        """Complete list of data arrays keyed by array description."""
         return self.dataset.to_dict()
 
     def current_range(self) -> list[str]:
+        """Current ranges for the measurement."""
         return [self.pseis.GetCurrentRange(val).Description for val in range(self.n_points)]
 
     def cdc(self) -> str:

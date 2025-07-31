@@ -50,6 +50,7 @@ class DataSet(Mapping):
         return [DataArray(psarray=psarray) for psarray in self.psarrays() if key(psarray)]
 
     def psarrays(self):
+        """Return underlying PalmSens SDK objects."""
         return self.psdataset.GetDataArrays()
 
     def to_dict(self) -> dict[str, DataArray]:
