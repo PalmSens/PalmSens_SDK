@@ -136,13 +136,9 @@ class EISData:
             for row in self.pseis.GetDataArrayVsX(frequency)
         }
 
-    def array_list(self):
+    def arrays(self) -> list[DataArray]:
         """Complete list of data arrays."""
-        return self.dataset.to_list()
-
-    def array_dict(self):
-        """Complete list of data arrays keyed by array description."""
-        return self.dataset.to_dict()
+        return list(self.dataset.values())
 
     def current_range(self) -> list[str]:
         """Current ranges for the measurement."""
