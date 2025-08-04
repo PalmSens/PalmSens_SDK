@@ -198,7 +198,16 @@ class DataSet(Mapping):
         """Return dataset as pandas dataframe."""
         import pandas as pd
 
-        df = pd.DataFrame({arr.name: arr.to_list() for arr in self.values() if len(arr)})
-        df['CR'] = self.current_range
-        df['ReadingStatus'] = self.reading_status
+        cols, arrays = zip(*[(key, arr.to_list()) for key, arr in self.items() if len(arr)])
+
+        arrays = list(arrays)
+        arrays.append(self.current_range())
+        arrays.append(self.reading_status())
+
+        cols = list(cols)
+        cols.append('CR')
+        cols.append('ReadingStatus')
+
+        df = pd.DataFrame(arrays, index=cols).T
+
         return df
