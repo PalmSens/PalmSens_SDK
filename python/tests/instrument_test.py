@@ -4,25 +4,45 @@ import warnings
 from dataclasses import dataclass
 
 import pytest
+from PalmSens.Comm import enumDeviceType
 
-from pspython import __minimum_firmware_version__
 from pspython.instruments.common import firmware_warning
 
 
 @dataclass
 class MockCapabilities:
     DeviceType: str
-    FirmwareVersion: float | str
+    FirmwareVersion: float
+    MinFirmwareVersionRequired: float
 
 
 @pytest.mark.parametrize(
     'cap',
     (
-        MockCapabilities(DeviceType='PalmSens4', FirmwareVersion=13.37),
-        MockCapabilities(DeviceType='idontexist', FirmwareVersion=0.0),
         MockCapabilities(
-            DeviceType='EmStat4HR',
-            FirmwareVersion=__minimum_firmware_version__['EmStat4HR'],
+            DeviceType=enumDeviceType.Unknown,
+            FirmwareVersion=0.0,
+            MinFirmwareVersionRequired=1.2,
+        ),
+        MockCapabilities(
+            DeviceType=enumDeviceType.PalmSens4,
+            FirmwareVersion=1.9,
+            MinFirmwareVersionRequired=1.9,
+        ),
+        MockCapabilities(
+            DeviceType=enumDeviceType.PalmSens4,
+            FirmwareVersion=2.8,
+            MinFirmwareVersionRequired=1.9,
+        ),
+        MockCapabilities(
+            DeviceType=enumDeviceType.EmStat4HR,
+            FirmwareVersion=1.307,
+            MinFirmwareVersionRequired=1.301,
+        ),
+        MockCapabilities(
+            DeviceType=enumDeviceType.EmStat4HR,
+            FirmwareVersion=1.401,
+            MinFirmwareVersionRequired=1.307,
         ),
     ),
 )
@@ -32,8 +52,31 @@ def test_firmware_warning_ok(cap):
         firmware_warning(cap)
 
 
-def test_firmware_warning_fail():
-    cap = MockCapabilities(DeviceType='PalmSens4', FirmwareVersion=0.123)
-
+@pytest.mark.parametrize(
+    'cap',
+    (
+        MockCapabilities(
+            DeviceType=enumDeviceType.PalmSens4,
+            FirmwareVersion=1.2,
+            MinFirmwareVersionRequired=1.9,
+        ),
+        MockCapabilities(
+            DeviceType=enumDeviceType.PalmSens4,
+            FirmwareVersion=2.8,
+            MinFirmwareVersionRequired=3.1,
+        ),
+        MockCapabilities(
+            DeviceType=enumDeviceType.EmStat4HR,
+            FirmwareVersion=1.207,
+            MinFirmwareVersionRequired=1.307,
+        ),
+        MockCapabilities(
+            DeviceType=enumDeviceType.EmStat4HR,
+            FirmwareVersion=1.307,
+            MinFirmwareVersionRequired=1.401,
+        ),
+    ),
+)
+def test_firmware_warning_fail(cap):
     with pytest.warns(UserWarning):
         firmware_warning(cap)
