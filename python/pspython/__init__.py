@@ -15,9 +15,9 @@ ble_dll = ROOT_DIR / 'PalmSens.Core.Windows.BLE.dll'
 
 def unblock(path: Path):
     """Unblock DLL: https://stackoverflow.com/q/20886450"""
-    path.with_name(path.name + ':Zone.Identifier')
-    if path.exists():
-        path.unlink()
+    zone_id = path.with_name(path.name + ':Zone.Identifier')
+    if zone_id.exists():
+        zone_id.unlink()
 
 
 if sys.platform == 'win32':
