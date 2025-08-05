@@ -23,6 +23,7 @@ from PalmSens.Windows.Devices import (
 from System import EventHandler
 from System.Threading.Tasks import Task
 
+from pspython.methods import CURRENT_RANGE
 from pspython.methods.techniques import ParameterType
 
 from ..data._shared import ArrayType, _get_values_from_NETArray
@@ -128,7 +129,7 @@ class InstrumentManagerAsync:
                 # release lock on library (required when communicating with instrument)
                 self.__comm.ClientConnection.Semaphore.Release()
 
-    async def set_current_range(self, current_range):
+    async def set_current_range(self, current_range: CURRENT_RANGE):
         if self.__comm is None:
             print('Not connected to an instrument')
             return 0
@@ -136,7 +137,7 @@ class InstrumentManagerAsync:
         await create_future(self.__comm.ClientConnection.Semaphore.WaitAsync())
 
         try:
-            await create_future(self.__comm.SetCurrentRangeAsync(current_range))
+            await create_future(self.__comm.SetCurrentRangeAsync(current_range.to_psobj()))
             self.__comm.ClientConnection.Semaphore.Release()
         except Exception:
             traceback.print_exc()
