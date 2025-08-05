@@ -22,9 +22,10 @@ jobs:
   test:
     if: github.event.pull_request.draft == false
     name: Run Coverage and Tests
-    runs-on: windows-latest
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
+        os: ['windows-latest']
         python-version: ['3.9', '3.13']
     defaults:
       run:
