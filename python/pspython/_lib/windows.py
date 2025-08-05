@@ -1,12 +1,13 @@
 from __future__ import annotations
 
 import atexit
+from importlib.resources import files
 from pathlib import Path
 
 import clr
 from pythonnet import unload
 
-PSSDK_DIR = Path(__file__).parents[1] / '_pssdk' / 'win'
+PSSDK_DIR = files('pspython._pssdk.win')
 
 core_dll = PSSDK_DIR / 'PalmSens.Core.dll'
 ble_dll = PSSDK_DIR / 'PalmSens.Core.Windows.BLE.dll'
@@ -19,8 +20,9 @@ def unblock(path: Path):
         zone_id.unlink()
 
 
-unblock(core_dll)
-unblock(ble_dll)
+for dll in (core_dll, ble_dll):
+    assert isinstance(dll, Path)
+    unblock(dll)
 
 # This dll contains the classes in which the data is stored
 clr.AddReference(str(core_dll))
