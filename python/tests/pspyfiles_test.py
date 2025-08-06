@@ -5,13 +5,33 @@ from dataclasses import asdict
 from pytest import approx
 
 from pspython.methods import techniques
-from pspython.pspyfiles import load_method_file, save_method_file
+from pspython.pspyfiles import (
+    load_method_file,
+    load_session_file,
+    save_method_file,
+    save_session_file,
+)
 
 
-def test_save_session():
-    ...
+def test_save_load_session(tmpdir, data_dpv):
+    path = tmpdir / 'test.pssession'
 
-    # session.MethodForEditor.MethodFilename = path.name
+    save_session_file(path=path, measurements=data_dpv)
+
+    data_dpv2 = load_session_file(path=path)
+
+    assert len(data_dpv2) == len(data_dpv)
+
+    meas = data_dpv[0]
+    meas2 = data_dpv2[0]
+
+    assert meas2.method.filename == path
+    assert meas2.method.filename.is_absolute()
+
+    assert meas == meas2
+    assert meas.timestamp == meas2.timestamp
+    assert meas.title == meas2.title
+    assert meas.device == meas2.device
 
 
 def test_save_load_method(tmpdir):

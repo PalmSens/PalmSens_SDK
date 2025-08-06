@@ -59,7 +59,10 @@ def load_session_file(
     with stream_reader(str(path)) as stream:
         session.Load(stream.BaseStream, str(path))
 
-    session.MethodForEditor.MethodFilename = path.name
+    session.MethodForEditor.MethodFilename = str(path.absolute())
+
+    for psmeasurement in session:
+        psmeasurement.Method.MethodFilename = str(path.absolute())
 
     return [Measurement(psmeasurement=m) for m in session]
 
@@ -74,18 +77,17 @@ def save_session_file(path: Union[str, Path], measurements: list[Measurement]):
     measurements : list[Measurement]
         List of measurements to save
     """
+    path = Path(path)
+
     if any((measurement is None) for measurement in measurements):
         raise ValueError('cannot save null measurement')
 
     session = SessionManager()
     session.MethodForEditor = measurements[0].psmeasurement.Method
+    session.MethodForEditor.MethodFilename = str(path.absolute())
 
     for measurement in measurements:
         session.AddMeasurement(measurement.psmeasurement)
-
-    path = Path(path)
-
-    session.MethodForEditor.MethodFilename = path.name
 
     with stream_writer(str(path), False, Encoding.Unicode) as stream:
         session.Save(stream.BaseStream, str(path))
