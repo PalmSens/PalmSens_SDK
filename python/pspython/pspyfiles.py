@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import os
+from contextlib import contextmanager
 from pathlib import Path
 from typing import TYPE_CHECKING, Union
 
@@ -9,10 +10,31 @@ from PalmSens.DataFiles import MethodFile, MethodFile2
 from System.IO import StreamReader, StreamWriter
 from System.Text import Encoding
 
+from pspython.methods.method import Method
+from pspython.methods.techniques import ParameterType
+
 from .data.measurement import Measurement
 
 if TYPE_CHECKING:
     from .methods.method import Method
+
+
+@contextmanager
+def stream_reader(*args, **kwargs):
+    sr = StreamReader(*args, **kwargs)
+    try:
+        yield sr
+    finally:
+        sr.Close()
+
+
+@contextmanager
+def stream_writer(*args, **kwargs):
+    sw = StreamWriter(*args, **kwargs)
+    try:
+        yield sw
+    finally:
+        sw.Close()
 
 
 def load_session_file(
@@ -33,11 +55,9 @@ def load_session_file(
     path = Path(path)
 
     session = SessionManager()
-    stream = StreamReader(str(path))
 
-    session.Load(stream.BaseStream, str(path))
-
-    stream.Close()
+    with stream_reader(str(path)) as stream:
+        session.Load(stream.BaseStream, str(path))
 
     session.MethodForEditor.MethodFilename = path.name
 
@@ -67,14 +87,11 @@ def save_session_file(path: Union[str, Path], measurements: list[Measurement]):
 
     session.MethodForEditor.MethodFilename = path.name
 
-    stream = StreamWriter(str(path), False, Encoding.Unicode)
-
-    session.Save(stream.BaseStream, str(path))
-
-    stream.Close()
+    with stream_writer(str(path), False, Encoding.Unicode) as stream:
+        session.Save(stream.BaseStream, str(path))
 
 
-def load_method_file(path: Union[str, Path]):
+def load_method_file(path: Union[str, Path]) -> Method:
     """Load a method file (.psmethod).
 
     Parameters
@@ -89,21 +106,18 @@ def load_method_file(path: Union[str, Path]):
     """
     path = Path(path)
 
-    stream = StreamReader(str(path))
-
-    if path.suffix == MethodFile2.FileExtension:
-        method = MethodFile2.FromStream(stream)
-    else:
-        method = MethodFile.FromStream(stream, str(path))
-
-    stream.Close()
+    with stream_reader(str(path)) as stream:
+        if path.suffix == MethodFile2.FileExtension:
+            method = MethodFile2.FromStream(stream)
+        else:
+            method = MethodFile.FromStream(stream, str(path))
 
     method.MethodFilename = str(path.absolute())
 
-    return method
+    return Method(psmethod=method)
 
 
-def save_method_file(path: Union[str, Path], method: Method):
+def save_method_file(path: Union[str, Path], method: Union[Method, ParameterType]):
     """Load a method file (.psmethod).
 
     Parameters
@@ -113,15 +127,19 @@ def save_method_file(path: Union[str, Path], method: Method):
     method : Method
         Method to save
     """
-    path = Path(path)
-
-    stream = StreamWriter(str(path), False, Encoding.Unicode)
-
     from pspython import __sdk_version__
 
-    MethodFile2.Save(method, stream.BaseStream, str(path), True, __sdk_version__)
+    if isinstance(method, ParameterType):
+        psmethod = method.to_psmethod()
+    elif isinstance(method, Method):
+        psmethod = method.psmethod
+    else:
+        raise ValueError(f'Unknown data type: {type(method)}')
 
-    stream.Close()
+    path = Path(path)
+
+    with stream_writer(str(path), False, Encoding.Unicode) as stream:
+        MethodFile2.Save(psmethod, stream.BaseStream, str(path), True, __sdk_version__)
 
 
 def read_notes(path: Union[str, Path], n_chars: int = 3000):

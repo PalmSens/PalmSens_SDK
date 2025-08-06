@@ -49,6 +49,6 @@ from System import Diagnostics  # noqa: E402
 
 CoreDependencies.Init()
 
-version = Diagnostics.FileVersionInfo.GetVersionInfo(str(core_dll)).ProductVersion
+sdk_version = Diagnostics.FileVersionInfo.GetVersionInfo(str(core_dll)).ProductVersion
 
 atexit.register(unload)
