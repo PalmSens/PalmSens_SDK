@@ -1,21 +1,18 @@
 from __future__ import annotations
 
 import os
-import sys
 from pathlib import Path
-from typing import Union
+from typing import TYPE_CHECKING, Union
 
-from PalmSens.Data import SessionManager  # type: ignore
+from PalmSens.Data import SessionManager
 from PalmSens.DataFiles import MethodFile, MethodFile2
-from PalmSens.Windows import LoadSaveHelperFunctions  # type: ignore
-from System.IO import StreamReader
+from System.IO import StreamReader, StreamWriter
+from System.Text import Encoding
 
 from .data.measurement import Measurement
 
-if sys.platform == 'win32':
-    from PalmSens.Windows import LoadSaveHelperFunctions  # type: ignore
-else:
-    raise ImportError('Loading and saving session/method files is implemented on Linux/OSX.')
+if TYPE_CHECKING:
+    from .methods.method import Method
 
 
 def load_session_file(
@@ -66,7 +63,15 @@ def save_session_file(path: Union[str, Path], measurements: list[Measurement]):
     for measurement in measurements:
         session.AddMeasurement(measurement.psmeasurement)
 
-    LoadSaveHelperFunctions.SaveSessionFile(str(path), session)
+    path = Path(path)
+
+    session.MethodForEditor.MethodFilename = path.name
+
+    stream = StreamWriter(str(path), False, Encoding.Unicode)
+
+    session.Save(stream.BaseStream, str(path))
+
+    stream.Close()
 
 
 def load_method_file(path: Union[str, Path]):
@@ -98,17 +103,25 @@ def load_method_file(path: Union[str, Path]):
     return method
 
 
-def save_method_file(path: Union[str, Path], method):
+def save_method_file(path: Union[str, Path], method: Method):
     """Load a method file (.psmethod).
 
     Parameters
     ----------
     path : Path | str
         Path to save the method file
-    method : method
+    method : Method
         Method to save
     """
-    LoadSaveHelperFunctions.SaveMethod(method, str(path))
+    path = Path(path)
+
+    stream = StreamWriter(str(path), False, Encoding.Unicode)
+
+    from pspython import __sdk_version__
+
+    MethodFile2.Save(method, stream.BaseStream, str(path), True, __sdk_version__)
+
+    stream.Close()
 
 
 def read_notes(path: Union[str, Path], n_chars: int = 3000):

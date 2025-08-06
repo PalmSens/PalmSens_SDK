@@ -35,12 +35,12 @@ clr.AddReference('System')
 
 from PalmSens.Windows import (  # type: ignore  # noqa: E402
     CoreDependencies,
-    LoadSaveHelperFunctions,
 )
+from System import Diagnostics  # type: ignore  # noqa: E402
 
 CoreDependencies.Init()
 
 atexit.register(unload)
 
 __version__ = '0.0.1'
-__sdk_version__ = LoadSaveHelperFunctions.GetExecutingAssemblyNameAndVersion()
+__sdk_version__ = Diagnostics.FileVersionInfo.GetVersionInfo(str(core_dll)).ProductVersion
