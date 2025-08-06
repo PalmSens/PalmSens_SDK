@@ -1,13 +1,21 @@
 from __future__ import annotations
 
 import os
+import sys
 from pathlib import Path
 from typing import Union
 
 from PalmSens.Data import SessionManager  # type: ignore
+from PalmSens.DataFiles import MethodFile, MethodFile2
 from PalmSens.Windows import LoadSaveHelperFunctions  # type: ignore
+from System.IO import StreamReader
 
 from .data.measurement import Measurement
+
+if sys.platform == 'win32':
+    from PalmSens.Windows import LoadSaveHelperFunctions  # type: ignore
+else:
+    raise ImportError('Loading and saving session/method files is implemented on Linux/OSX.')
 
 
 def load_session_file(
@@ -25,7 +33,17 @@ def load_session_file(
     measurements : list[Measurement]
         Return list of measurements
     """
-    session = LoadSaveHelperFunctions.LoadSessionFile(str(path))
+    path = Path(path)
+
+    session = SessionManager()
+    stream = StreamReader(str(path))
+
+    session.Load(stream.BaseStream, str(path))
+
+    stream.Close()
+
+    session.MethodForEditor.MethodFilename = path.name
+
     return [Measurement(psmeasurement=m) for m in session]
 
 
@@ -64,7 +82,19 @@ def load_method_file(path: Union[str, Path]):
     method : Method
         Return method instance
     """
-    method = LoadSaveHelperFunctions.LoadMethod(str(path))
+    path = Path(path)
+
+    stream = StreamReader(str(path))
+
+    if path.suffix == MethodFile2.FileExtension:
+        method = MethodFile2.FromStream(stream)
+    else:
+        method = MethodFile.FromStream(stream, str(path))
+
+    stream.Close()
+
+    method.MethodFilename = str(path.absolute())
+
     return method
 
 
