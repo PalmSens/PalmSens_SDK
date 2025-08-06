@@ -55,6 +55,7 @@ jobs:
           coverage run -m pytest -m "not examples and not instrument"
 
       - name: Report coverage
+        if: ${{ matrix.os }} == 'windows-latest'
         run: |
           coverage json
           $TOTAL = python -c "import json;print(json.load(open('coverage.json'))['totals']['percent_covered_display'])"
