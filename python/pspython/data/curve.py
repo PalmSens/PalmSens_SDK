@@ -65,14 +65,14 @@ class Curve:
         -------
         peak_list : list[Peak]
         """
-        dotnet_peaks = self.pscurve.FindPeaks(
+        pspeaks = self.pscurve.FindPeaks(
             minPeakWidth=min_peak_width,
             minPeakHeight=min_peak_height,
             peakShoulders=peak_shoulders,
             mergeOverlappingPeaks=merge_overlapping_peaks,
         )
 
-        peaks_list = [Peak(dotnet_peak=peak) for peak in dotnet_peaks]
+        peaks_list = [Peak(pspeak=peak) for peak in pspeaks]
 
         return peaks_list
 
@@ -177,7 +177,7 @@ class Curve:
     def peaks(self) -> list[Peak]:
         """Return peaks stored on object."""
         try:
-            peaks = [Peak(dotnet_peak=peak) for peak in self.pscurve.Peaks]
+            peaks = [Peak(pspeak=peak) for peak in self.pscurve.Peaks]
         except TypeError:
             peaks = []
         return peaks
