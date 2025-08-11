@@ -32,7 +32,7 @@ class Peak:
         from .curve import Curve
 
         if not self._curve:
-            self._curve = Curve(dotnet_curve=self.dotnet_peak.Curve)
+            self._curve = Curve(pscurve=self.dotnet_peak.Curve)
         return self._curve
 
     @property
