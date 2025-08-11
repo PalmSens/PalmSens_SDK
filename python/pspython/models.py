@@ -6,6 +6,7 @@ from typing import Literal, Optional
 from PalmSens import Fitting as PSFitting
 from System import Array
 
+from pspython.data.curve import Curve
 from pspython.data.eisdata import EISData
 
 
@@ -14,6 +15,8 @@ class FitResult:
     """
     Attributes
     ----------
+    cdc: str
+        Circuit model CDC values.
     chisq: float
         Chi-squared goodness of fit statistic.
     exit_code: str
@@ -26,6 +29,7 @@ class FitResult:
         Standard deviations on parameters.
     """
 
+    cdc: str
     chisq: float
     exit_code: str
     n_iter: int
@@ -33,13 +37,14 @@ class FitResult:
     std: list[float]
 
     @classmethod
-    def from_psfitresult(cls, result: PSFitting.FitResult):
+    def from_psfitresult(cls, result: PSFitting.FitResult, **kwargs):
         return cls(
             chisq=result.ChiSq,
             exit_code=result.ExitCode.ToString(),
             n_iter=result.NIterations - 1,
             parameters=list(result.FinalParameters),
             std=list(result.ParameterSDs),
+            **kwargs,
         )
 
 
@@ -172,42 +177,39 @@ class CircuitModel:
         fitter = PSFitting.FitAlgorithm.FromAlgorithm(opts)
         fitter.ApplyFitCircuit()
         self._last_psfitter = fitter
-        self._last_result = FitResult.from_psfitresult(fitter.FitResult)
+        self._last_result = FitResult.from_psfitresult(fitter.FitResult, cdc=self.cdc)
         return self._last_result
 
-    def get_fitted_curves(self):
-        pass
-        # modelFit = PalmSens.Fitting.Models.CircuitModel();
-        # modelFit.SetEISdata(self.EISData);
-        # modelFit.SetCircuit(System.String(self.CDC));
-        # modelFit.SetInitialParameters(fitParamters);
+    def get_fitted_curves(self, data: EISData, result: FitResult):
+        """This probably better fits as a method on on EISData:
 
-        # %Nyquist curve
-        # nyquist = modelFit.GetNyquist();
-        # nyquist = nyquist(1);
-        # ZRe = nyquist.XAxisDataArray;
-        # ZIm = nyquist.YAxisDataArray;
-        # curves(1).xUnit = ['ZRe(' char(ZRe.Unit.ToString()) ')'];
-        # curves(1).xData = double(ZRe.GetValues());
-        # curves(1).yUnit = ['ZIm(' char(ZIm.Unit.ToString()) ')'];
-        # curves(1).yData = double(ZIm.GetValues());
+        ```
+        def eisdata.plot(self, fitresult=Optional[fitresult]=None):
+        if fitresult:
+            ...
 
-        # %Bode curves
-        # %Impedance over Frequency
-        # zvsFreq = modelFit.GetCurveZabsOverFrequency(false);
-        # zvsFreq = zvsFreq(1);
-        # Frequency = zvsFreq.XAxisDataArray;
-        # Zabs = zvsFreq.YAxisDataArray;
-        # curves(2).xUnit = ['Frequency(' char(Frequency.Unit.ToString()) ')'];
-        # curves(2).xData = double(Frequency.GetValues());
-        # curves(2).yUnit = ['Z(' char(Zabs.Unit.ToString()) ')'];
-        # curves(2).yData = double(Zabs.GetValues());
+        Alternatively, the plot code itself can be on fitresult.
+        ```
 
-        # %-Phase over Frequency
-        # phasevsFreq = modelFit.GetCurvePhaseOverFrequency(false);
-        # phasevsFreq = phasevsFreq(1);
-        # Phase = phasevsFreq.YAxisDataArray;
-        # curves(3).xUnit = ['Frequency(' char(Frequency.Unit.ToString()) ')'];
-        # curves(3).xData = double(Frequency.GetValues());
-        # curves(3).yUnit = ['-Phase(' char(Phase.Unit.ToString()) ')'];
-        # curves(3).yData = -1 .* double(Phase.GetValues());
+
+        """
+        curves = []
+
+        modelFit = PSFitting.Models.CircuitModel()
+        modelFit.SetEISdata(data.pseis)
+        modelFit.SetCircuit(result.cdc)
+        modelFit.SetInitialParameters(result.parameters)
+
+        nyquist = modelFit.GetNyquist()
+        calc, obs = (Curve(pscurve=pscurve) for pscurve in nyquist)
+        curves.append(calc)
+
+        zvsFreq = modelFit.GetCurveZabsOverFrequency(True)
+        calc, obs = (Curve(pscurve=pscurve) for pscurve in zvsFreq)
+        curves.append(calc)
+
+        phasevsFreq = modelFit.GetCurvePhaseOverFrequency(True)
+        calc, obs = (Curve(pscurve=pscurve) for pscurve in phasevsFreq)
+        curves.append(calc)
+
+        return curves

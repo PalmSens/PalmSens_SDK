@@ -232,8 +232,8 @@ class Curve:
 
         fig, ax = plt.subplots()
         ax.plot(self.x_array, self.y_array, label=self.title)
-        ax.set_xlabel(f'{self.x_label} / {self.x_label}')
-        ax.set_xlabel(f'{self.y_label} / {self.y_label}')
+        ax.set_xlabel(f'{self.x_label} ({self.x_unit})')
+        ax.set_ylabel(f'{self.y_label} ({self.y_unit})')
 
         if peaks := self.peaks:
             x, y = list(zip(*((peak.x, peak.y) for peak in peaks)))
