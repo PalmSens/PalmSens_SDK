@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from types import MappingProxyType
 from typing import Literal, Optional
 
 from PalmSens import Fitting as PSFitting
@@ -8,6 +9,52 @@ from System import Array
 
 from pspython.data.curve import Curve
 from pspython.data.eisdata import EISData
+
+
+class Parameter:
+    def __init__(self, psparameter: PSFitting.Parameter) -> None:
+        self.psparameter = psparameter
+
+    def __repr__(self):
+        return (
+            f'{self.__class__.__name__}('
+            f'value={self.value}, '
+            f'min={self.min}, '
+            f'max={self.max}, '
+            f'fixed={self.fixed})'
+        )
+
+    @property
+    def value(self) -> float:
+        return self.psparameter.Value
+
+    @value.setter
+    def value(self, value):
+        self.psparameter.Value = value
+
+    @property
+    def min(self) -> float:
+        return self.psparameter.MinValue
+
+    @min.setter
+    def min(self, value):
+        self.psparameter.MinValue = value
+
+    @property
+    def max(self) -> float:
+        return self.psparameter.MaxValue
+
+    @max.setter
+    def max(self, value):
+        self.psparameter.MaxValue = value
+
+    @property
+    def fixed(self) -> bool:
+        return self.psparameter.Fixed
+
+    @fixed.setter
+    def fixed(self, value):
+        self.psparameter.Fixed = value
 
 
 @dataclass(frozen=True)
@@ -26,7 +73,7 @@ class FitResult:
     parameters: list[float]
         Optimized parameters for CDC.
     std: list[float]
-        Standard deviations on parameters.
+        Standard deviations (%) on parameters.
     """
 
     cdc: str
@@ -90,19 +137,24 @@ class CircuitModel:
     _last_result: Optional[FitResult] = None
     _last_psfitter: Optional[PSFitting.FitAlgorithm] = None
 
-    def psmodel(self, data: EISData) -> PSFitting.Models.CircuitModel:
-        model = PSFitting.Models.CircuitModel()
-        model.SetEISdata(data.pseis)
-        model.SetCircuit(self.cdc)
+    def __post_init__(self):
+        self.model = PSFitting.Models.CircuitModel()
+        self.model.SetCircuit(self.cdc)
 
-        return model
+    @property
+    def parameters(self) -> MappingProxyType:
+        """Proxy to parameters. Use this to modify parameter values."""
+        psmodel = PSFitting.Models.CircuitModel()
+        psmodel.SetCircuit(self.cdc)
 
-    def psfitoptions(
-        self,
-        data: EISData,
-        *,
-        guess: Optional[list[float]] = None,
-    ) -> PSFitting.FitOptions:
+        return MappingProxyType(
+            {
+                psparam.Name: Parameter(psparameter=psparam)
+                for psparam in self.model.InitialParameters
+            }
+        )
+
+    def psfitoptions(self, data: EISData) -> PSFitting.FitOptions:
         """Fit circuit model.
 
         Parameters
@@ -110,16 +162,8 @@ class CircuitModel:
         data : EISData
             Input data.
         """
-        model = PSFitting.Models.CircuitModel()
-        model.SetCircuit(self.cdc)
+        model = self.model  # TODO: can we make a copy of this?
         model.SetEISdata(data.pseis)
-
-        # model.fit(eis_data, guess=[(random.random()-0.5)*100000000 for x in range(3)])
-
-        if guess:
-            if len(guess) != model.NParameters:
-                raise ValueError(f'Initial guess must be of length {model.NParameters}')
-            model.SetInitialParameters(guess)
 
         opts = PSFitting.FitOptionsCircuit()
         opts.Model = model
@@ -148,20 +192,13 @@ class CircuitModel:
     def last_psfitter(self):
         return self._last_psfitter
 
-    def fit(
-        self,
-        data: EISData,
-        *,
-        guess: Optional[list[float]] = None,
-    ) -> FitResult:
+    def fit(self, data: EISData) -> FitResult:
         """Fit circuit model.
 
         Parameters
         ----------
         data : EISData
             Input data.
-        guess : list[float]
-            Optional initial guess for starting parameters for minimization.
         """
         if not data.frequency_type == 'Scan':
             raise ValueError(
@@ -172,7 +209,7 @@ class CircuitModel:
                 f'Fit only supports EIS scans at a fixed potential, got {data.scan_type=}.'
             )
 
-        opts = self.psfitoptions(data=data, guess=guess)
+        opts = self.psfitoptions(data=data)
 
         fitter = PSFitting.FitAlgorithm.FromAlgorithm(opts)
         fitter.ApplyFitCircuit()
