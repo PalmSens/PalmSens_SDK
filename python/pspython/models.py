@@ -1,7 +1,7 @@
 from __future__ import annotations
 
+from collections.abc import Sequence
 from dataclasses import dataclass
-from types import MappingProxyType
 from typing import Literal, Optional
 
 from PalmSens import Fitting as PSFitting
@@ -11,55 +11,86 @@ from pspython.data.curve import Curve
 from pspython.data.eisdata import EISData
 
 
+@dataclass
 class Parameter:
-    def __init__(self, psparameter: PSFitting.Parameter) -> None:
-        self.psparameter = psparameter
+    """Set or update Parameter attributes.
 
-    def __repr__(self):
-        return (
-            f'{self.__class__.__name__}('
-            f'value={self.value}, '
-            f'min={self.min}, '
-            f'max={self.max}, '
-            f'fixed={self.fixed})'
+    Attributes
+    ----------
+    symbol: str
+        Name of the parameter (not used in minimization).
+    value: float
+        Initial value of the parameter."
+    min: float
+        Minimum (lower bound) for the parameter.
+    max:
+        Maximum (upper bound) for the parameter.
+    fixed:
+        If True, fix the value for this parameter.
+    """
+
+    symbol: str
+    value: Optional[float] = None
+    min: Optional[float] = None
+    max: Optional[float] = None
+    fixed: Optional[bool] = None
+
+    @classmethod
+    def from_psparameter(cls, psparameter: PSFitting.Parameter):
+        return cls(
+            symbol=psparameter.Symbol,
+            value=psparameter.Value,
+            min=psparameter.MinValue,
+            max=psparameter.MaxValue,
+            fixed=psparameter.Fixed,
         )
 
-    @property
-    def value(self) -> float:
-        return self.psparameter.Value
+    def update_psparameter(self, psparameter: PSFitting.Parameter):
+        if self.value:
+            psparameter.Value = self.value
+        if self.min:
+            psparameter.MinValue = self.min
+        if self.max:
+            psparameter.MaxValue = self.max
+        if self.fixed:
+            psparameter.Fixed = self.fixed
 
-    @value.setter
-    def value(self, value):
-        self.psparameter.Value = value
 
-    @property
-    def min(self) -> float:
-        return self.psparameter.MinValue
+class Parameters(Sequence):
+    def __init__(self, cdc: str):
+        self.cdc = cdc
+        model = PSFitting.Models.CircuitModel()
+        model.SetCircuit(cdc)
+        self._parameters = tuple(
+            Parameter.from_psparameter(psparam) for psparam in model.InitialParameters
+        )
 
-    @min.setter
-    def min(self, value):
-        self.psparameter.MinValue = value
+    def __len__(self):
+        return len(self._parameters)
 
-    @property
-    def max(self) -> float:
-        return self.psparameter.MaxValue
+    def __getitem__(self, key):
+        return self._parameters[key]
 
-    @max.setter
-    def max(self, value):
-        self.psparameter.MaxValue = value
+    def __repr__(self) -> str:
+        return self._parameters.__repr__()
 
-    @property
-    def fixed(self) -> bool:
-        return self.psparameter.Fixed
+    def __str__(self) -> str:
+        return self._parameters.__str__()
 
-    @fixed.setter
-    def fixed(self, value):
-        self.psparameter.Fixed = value
+    def update_psmodel_parameters(self, psmodel: PSFitting.CircuitModel) -> None:
+        # if self.cdc != psmodel.CDC:
+        #     raise ValueError(
+        #         f'Parameters cdc ({self.cdc}) does not match Model ({psmodel.CDC})'
+        #     )
+
+        for param, psparam in zip(self, psmodel.InitialParameters):
+            param.update_psparameter(psparam)
 
 
 @dataclass(frozen=True)
 class FitResult:
-    """
+    """Container for fitting results.
+
     Attributes
     ----------
     cdc: str
@@ -72,8 +103,8 @@ class FitResult:
         Total number of iterations.
     parameters: list[float]
         Optimized parameters for CDC.
-    std: list[float]
-        Standard deviations (%) on parameters.
+    error: list[float]
+        Error (%) on parameters.
     """
 
     cdc: str
@@ -81,7 +112,7 @@ class FitResult:
     exit_code: str
     n_iter: int
     parameters: list[float]
-    std: list[float]
+    error: list[float]
 
     @classmethod
     def from_psfitresult(cls, result: PSFitting.FitResult, **kwargs):
@@ -90,7 +121,7 @@ class FitResult:
             exit_code=result.ExitCode.ToString(),
             n_iter=result.NIterations - 1,
             parameters=list(result.FinalParameters),
-            std=list(result.ParameterSDs),
+            error=list(result.ParameterSDs),
             **kwargs,
         )
 
@@ -137,24 +168,16 @@ class CircuitModel:
     _last_result: Optional[FitResult] = None
     _last_psfitter: Optional[PSFitting.FitAlgorithm] = None
 
-    def __post_init__(self):
-        self.model = PSFitting.Models.CircuitModel()
-        self.model.SetCircuit(self.cdc)
+    def default_parameters(self) -> Parameters:
+        """Get default parameters. Use this to modify parameter values."""
+        return Parameters(self.cdc)
 
-    @property
-    def parameters(self) -> MappingProxyType:
-        """Proxy to parameters. Use this to modify parameter values."""
-        psmodel = PSFitting.Models.CircuitModel()
-        psmodel.SetCircuit(self.cdc)
-
-        return MappingProxyType(
-            {
-                psparam.Name: Parameter(psparameter=psparam)
-                for psparam in self.model.InitialParameters
-            }
-        )
-
-    def psfitoptions(self, data: EISData) -> PSFitting.FitOptions:
+    def psfitoptions(
+        self,
+        data: EISData,
+        *,
+        parameters: Optional[Sequence] = None,
+    ) -> PSFitting.FitOptions:
         """Fit circuit model.
 
         Parameters
@@ -162,8 +185,18 @@ class CircuitModel:
         data : EISData
             Input data.
         """
-        model = self.model  # TODO: can we make a copy of this?
+        model = PSFitting.Models.CircuitModel()
+        model.SetCircuit(self.cdc)
         model.SetEISdata(data.pseis)
+
+        if parameters:
+            if len(parameters) != model.NParameters:
+                raise ValueError(f'Parameters must be of length {model.NParameters}')
+
+            if isinstance(parameters, Parameters):
+                parameters.update_psmodel_parameters(model)
+            else:
+                model.SetInitialParameters(parameters)
 
         opts = PSFitting.FitOptionsCircuit()
         opts.Model = model
@@ -192,7 +225,7 @@ class CircuitModel:
     def last_psfitter(self):
         return self._last_psfitter
 
-    def fit(self, data: EISData) -> FitResult:
+    def fit(self, data: EISData, *, parameters: Optional[Sequence] = None) -> FitResult:
         """Fit circuit model.
 
         Parameters
@@ -209,7 +242,7 @@ class CircuitModel:
                 f'Fit only supports EIS scans at a fixed potential, got {data.scan_type=}.'
             )
 
-        opts = self.psfitoptions(data=data)
+        opts = self.psfitoptions(data=data, parameters=parameters)
 
         fitter = PSFitting.FitAlgorithm.FromAlgorithm(opts)
         fitter.ApplyFitCircuit()
