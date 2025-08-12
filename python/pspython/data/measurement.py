@@ -1,11 +1,11 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Union
 
 from PalmSens import Measurement as PSMeasurement
 
 from ..methods.method import Method
+from ..models import FitResult
 from .curve import Curve
 from .dataset import DataSet
 from .eisdata import EISData
@@ -100,7 +100,7 @@ class Measurement:
         return DataSet(psdataset=self.psmeasurement.DataSet)
 
     @property
-    def eis_data(self) -> Union[EISData, list[EISData]]:
+    def eis_data(self) -> list[EISData]:
         """EIS data in measurement."""
         lst = [EISData(pseis=pseis) for pseis in self.psmeasurement.EISdata]
 
@@ -146,6 +146,19 @@ class Measurement:
         for curve in self.curves:
             peaks.extend(curve.peaks)
         return peaks
+
+    @property
+    def eis_fit(self) -> list[FitResult]:
+        """Get all EIS fits from measurement
+
+        Returns
+        -------
+        eis_fits : list[EISFitResults]
+            Return list of EIS fits
+        """
+        eisdatas = self.eis_data
+        eis_fits = [FitResult.from_eisdata(eisdata) for eisdata in eisdatas]
+        return eis_fits
 
     @property
     def curves(self) -> list[Curve]:

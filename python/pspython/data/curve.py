@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, Optional, Union
 from .peak import Peak
 
 if TYPE_CHECKING:
-    from matplotlib import axes
+    from matplotlib import axes, fig
 
 
 class Curve:
@@ -225,8 +225,28 @@ class Curve:
         else:
             return self.pscurve.LLS()
 
-    def plot(self, ax: Optional[axes.Axes] = None, legend: bool = True, **plot_kwargs):
-        """Generate simple plot for this curve using matplotlib."""
+    def plot(
+        self,
+        ax: Optional[axes.Axes] = None,
+        legend: bool = True,
+        **plot_kwargs,
+    ) -> fig.Figure:
+        """Generate simple plot for this curve using matplotlib.
+
+        Parameters
+        ----------
+        ax : Optional[axes.Axes]
+            Add plot to this ax if specified.
+        legend : bool
+            If True, add legend.
+        plot_kwargs
+            These keyword arguments are passed to `ax.plot`.
+
+        Returns
+        -------
+        fig : fig.Figure
+            Matplotlib figure. Use `fig.show()` to render plot.
+        """
         import matplotlib.pyplot as plt
 
         if not ax:
@@ -242,3 +262,5 @@ class Curve:
 
         if legend:
             ax.legend()
+
+        return ax.figure

@@ -128,21 +128,34 @@ class FitResult:
     """
 
     cdc: str
+    parameters: list[float]
     chisq: float
     exit_code: str
     n_iter: int
-    parameters: list[float]
     error: list[float]
 
     @classmethod
-    def from_psfitresult(cls, result: PSFitting.FitResult, **kwargs):
+    def from_psfitresult(cls, result: PSFitting.FitResult, cdc: str):
+        """Construct fitresult from SDK FitResult."""
         return cls(
+            cdc=cdc,
             chisq=result.ChiSq,
             exit_code=result.ExitCode.ToString(),
             n_iter=result.NIterations - 1,
             parameters=list(result.FinalParameters),
             error=list(result.ParameterSDs),
-            **kwargs,
+        )
+
+    @classmethod
+    def from_eisdata(cls, data: EISData):
+        """Construct fitresulf from EISData."""
+        return cls(
+            cdc=data.cdc,
+            parameters=data.cdc_values,
+            chisq=0,
+            error=[0.0 for _ in data.cdc_values],
+            exit_code='',
+            n_iter=0,
         )
 
     def get_psmodel(self, data: EISData) -> PSFitting.Models.CircuitModel:
