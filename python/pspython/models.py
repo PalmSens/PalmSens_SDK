@@ -11,7 +11,7 @@ from pspython.data.curve import Curve
 from pspython.data.eisdata import EISData
 
 
-@dataclass
+@dataclass(slots=True)
 class Parameter:
     """Set or update Parameter attributes.
 
