@@ -1,8 +1,11 @@
 from __future__ import annotations
 
-from typing import Optional, Union
+from typing import TYPE_CHECKING, Optional, Union
 
 from .peak import Peak
+
+if TYPE_CHECKING:
+    from matplotlib import axes
 
 
 class Curve:
@@ -222,16 +225,14 @@ class Curve:
         else:
             return self.pscurve.LLS()
 
-    # FindLevels
-    # ClearLevels
-    # Levels
-
-    def plot(self):
+    def plot(self, ax: Optional[axes.Axes] = None, legend: bool = True, **plot_kwargs):
         """Generate simple plot for this curve using matplotlib."""
         import matplotlib.pyplot as plt
 
-        fig, ax = plt.subplots()
-        ax.plot(self.x_array, self.y_array, label=self.title)
+        if not ax:
+            fig, ax = plt.subplots()
+
+        ax.plot(self.x_array, self.y_array, label=self.title, **plot_kwargs)
         ax.set_xlabel(f'{self.x_label} ({self.x_unit})')
         ax.set_ylabel(f'{self.y_label} ({self.y_unit})')
 
@@ -239,4 +240,5 @@ class Curve:
             x, y = list(zip(*((peak.x, peak.y) for peak in peaks)))
             ax.scatter(x, y, label='Peaks')
 
-        plt.legend()
+        if legend:
+            ax.legend()

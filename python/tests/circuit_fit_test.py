@@ -63,6 +63,10 @@ def test_circuit_fit(data_eis_5freq):
     assert result.n_iter <= 10
     assert result.exit_code == 'MinimumDeltaErrorTerm'
 
+    assert len(result.get_nyquist(data=eis_data)) == 2
+    assert len(result.get_bode_z(data=eis_data)) == 2
+    assert len(result.get_bode_phase(data=eis_data)) == 2
+
     assert_allclose(result.parameters, [564, 10077, 3.3275e-08], rtol=2e-3)
     assert_allclose(result.error, [1.471, 1.541, 1.925], rtol=1e-3)
     assert result.chisq < 0.0005
@@ -80,5 +84,3 @@ def test_circuit_fit(data_eis_5freq):
     result3 = model.fit(eis_data, parameters=parameters)
 
     assert min(result3.parameters) >= 123
-
-    curves = model.get_fitted_curves(data=eis_data, result=result)

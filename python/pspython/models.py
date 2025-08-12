@@ -2,13 +2,16 @@ from __future__ import annotations
 
 from collections.abc import Sequence
 from dataclasses import dataclass
-from typing import Literal, Optional
+from typing import TYPE_CHECKING, Literal, Optional
 
 from PalmSens import Fitting as PSFitting
 from System import Array
 
 from pspython.data.curve import Curve
 from pspython.data.eisdata import EISData
+
+if TYPE_CHECKING:
+    from matplotlib import fig
 
 
 @dataclass(slots=True)
@@ -141,6 +144,126 @@ class FitResult:
             error=list(result.ParameterSDs),
             **kwargs,
         )
+
+    def get_psmodel(self, data: EISData) -> PSFitting.Models.CircuitModel:
+        """Get SDK Circuit model object"""
+        psmodel = PSFitting.Models.CircuitModel()
+        psmodel.SetEISdata(data.pseis)
+        psmodel.SetCircuit(self.cdc)
+        psmodel.SetInitialParameters(self.parameters)
+        return psmodel
+
+    def get_nyquist(self, data: EISData) -> tuple[Curve, Curve]:
+        """Calculate observed and calculated nyquist curves.
+
+        Parameters
+        ----------
+        data : EISData
+            Input EIS data.
+
+        Returns
+        -------
+        calc, meas : tuple[Curve, Curve]
+            Returns the nyquist curve calculated from the model parameters
+            and the measured curve from the EIS data.
+        """
+        psmodel = self.get_psmodel(data=data)
+        curves = psmodel.GetNyquist()
+        calc, meas = (Curve(pscurve=pscurve) for pscurve in curves)
+        return calc, meas
+
+    def get_bode_z(self, data: EISData) -> tuple[Curve, Curve]:
+        """Calculate observed and calculated Bode curve Z vs Frequency.
+
+        Parameters
+        ----------
+        data : EISData
+            Input EIS data.
+
+        Returns
+        -------
+        calc, meas : tuple[Curve, Curve]
+            Returns the nyquist curve calculated from the model parameters
+            and the measured curve from the EIS data.
+        """
+        psmodel = self.get_psmodel(data=data)
+        curves = psmodel.GetCurveZabsOverFrequency(False)
+        calc, meas = (Curve(pscurve=pscurve) for pscurve in curves)
+        return calc, meas
+
+    def get_bode_phase(self, data: EISData) -> tuple[Curve, Curve]:
+        """Calculate observed and calculated Bode curve phase vs Frequency.
+
+        Parameters
+        ----------
+        data : EISData
+            Input EIS data.
+
+        Returns
+        -------
+        calc, meas : tuple[Curve, Curve]
+            Returns the nyquist curve calculated from the model parameters
+            and the measured curve from the EIS data.
+        """
+        psmodel = self.get_psmodel(data=data)
+        curves = psmodel.GetCurvePhaseOverFrequency(False)
+        calc, meas = (Curve(pscurve=pscurve) for pscurve in curves)
+        return calc, meas
+
+    def plot_nyquist(self, data: EISData) -> fig.Figure:
+        """Make nyquist plot.
+
+        Parameters
+        ----------
+        data : EISData
+            Input EIS data.
+
+        Returns
+        -------
+        fig : fig.Figure
+            Returns matplotlib figure object. use `fig.show()` to render plot.
+        """
+        import matplotlib.pyplot as plt
+
+        calc, meas = self.get_nyquist(data=data)
+        fig, ax = plt.subplots()
+        ax.set_title('Nyquist plot')
+
+        calc.plot(ax=ax)
+        meas.plot(ax=ax, marker='^', linestyle='None')
+
+        return fig
+
+    def plot_bode(self, data: EISData) -> fig.Figure:
+        """Make bode plot.
+
+        Parameters
+        ----------
+        data : EISData
+            Input EIS data.
+
+        Returns
+        -------
+        fig : fig.Figure
+            Returns matplotlib figure object. use `fig.show()` to render plot.
+        """
+        import matplotlib.pyplot as plt
+
+        calc_z, meas_z = self.get_bode_z(data=data)
+        calc_ph, meas_ph = self.get_bode_phase(data=data)
+        fig, ax1 = plt.subplots()
+        ax1.set_title('Bode plot')
+        ax1.set_xscale('log')
+
+        calc_z.plot(ax=ax1, legend=False, color='C0')
+        meas_z.plot(ax=ax1, marker='^', linestyle='None', color='C0', legend=False)
+
+        ax2 = ax1.twinx()
+        calc_ph.plot(ax=ax2, legend=False, color='C1')
+        meas_ph.plot(ax=ax2, marker='^', linestyle='None', color='C1', legend=False)
+
+        fig.legend()
+        return fig
 
 
 @dataclass
@@ -317,37 +440,3 @@ class CircuitModel:
         self._last_psfitter = fitter
         self._last_result = FitResult.from_psfitresult(fitter.FitResult, cdc=self.cdc)
         return self._last_result
-
-    def get_fitted_curves(self, data: EISData, result: FitResult):
-        """This probably better fits as a method on on EISData:
-
-        ```
-        def eisdata.plot(self, fitresult=Optional[fitresult]=None):
-        if fitresult:
-            ...
-
-        Alternatively, the plot code itself can be on fitresult.
-        ```
-
-
-        """
-        curves = []
-
-        modelFit = PSFitting.Models.CircuitModel()
-        modelFit.SetEISdata(data.pseis)
-        modelFit.SetCircuit(result.cdc)
-        modelFit.SetInitialParameters(result.parameters)
-
-        nyquist = modelFit.GetNyquist()
-        calc, obs = (Curve(pscurve=pscurve) for pscurve in nyquist)
-        curves.append(calc)
-
-        zvsFreq = modelFit.GetCurveZabsOverFrequency(True)
-        calc, obs = (Curve(pscurve=pscurve) for pscurve in zvsFreq)
-        curves.append(calc)
-
-        phasevsFreq = modelFit.GetCurvePhaseOverFrequency(True)
-        calc, obs = (Curve(pscurve=pscurve) for pscurve in phasevsFreq)
-        curves.append(calc)
-
-        return curves
