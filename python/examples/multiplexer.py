@@ -1,5 +1,5 @@
-from pspython import instruments
-from pspython.methods import ChronoAmperometryParameters, SquareWaveParameters
+from pypalmsens import instruments
+from pypalmsens.methods import ChronoAmperometryParameters, SquareWaveParameters
 
 
 def new_data_callback(new_data):

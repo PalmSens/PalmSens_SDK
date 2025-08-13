@@ -1,5 +1,5 @@
-from pspython import instruments
-from pspython.methods import CyclicVoltammetryParameters, CURRENT_RANGE
+from pypalmsens import instruments
+from pypalmsens.methods import CyclicVoltammetryParameters, CURRENT_RANGE
 
 
 def new_data_callback(new_data):

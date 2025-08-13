@@ -63,7 +63,7 @@ package-dir = {"" = "src"}
 
 [tool.coverage.run]
 branch = true
-source = ["pspython"]
+source = ["pypalmsens"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
@@ -92,7 +92,7 @@ ignore = [
 ]
 
 [tool.ruff.lint.isort]
-known-first-party=["pspython"]
+known-first-party=["pypalmsens"]
 known-third-party = []
 required-imports = ["from __future__ import annotations"]
 

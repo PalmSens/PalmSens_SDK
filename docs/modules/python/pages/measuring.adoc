@@ -2,7 +2,7 @@
 
 The following chapter details how to connect to a device, read data from the device, manually controlling the potential, run measurements on the device and finally how to properly close a connection to a device.
 
-The `pspyinstruments.py` script in the `pspython` module contains all the relevant functions for discovering and controlling instruments.
+The `pspyinstruments.py` script in the `pypalmsens` module contains all the relevant functions for discovering and controlling instruments.
 The `InstrumentManager` and `InstrumentManagerAsync` class are wrappers around our .NET libraries which make it possible to connect to and control PalmSens instruments from Python.
 
 == Connecting to a device
@@ -18,7 +18,7 @@ manager = instruments.InstrumentManager()
 manager.connect(available_instruments[0])
 ----
 
-Currently the `pspython` module supports discovering instruments connected via FTDI, serial (usbcdc/com), and Bluetooth (classic/low energy). By default scanning with Bluetooth is disabled.
+Currently the `pypalmsens` module supports discovering instruments connected via FTDI, serial (usbcdc/com), and Bluetooth (classic/low energy). By default scanning with Bluetooth is disabled.
 
 == Manually controlling the device
 

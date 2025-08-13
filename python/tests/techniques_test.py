@@ -6,15 +6,15 @@ import pytest
 from PalmSens import Techniques
 from pytest import approx
 
-from pspython import instruments
-from pspython.data.measurement import Measurement
-from pspython.methods import techniques
-from pspython.methods._shared import (
+from pypalmsens import instruments
+from pypalmsens.data.measurement import Measurement
+from pypalmsens.methods import techniques
+from pypalmsens.methods._shared import (
     CURRENT_RANGE,
     POTENTIAL_RANGE,
     ELevel,
 )
-from pspython.methods.techniques_old import (
+from pypalmsens.methods.techniques_old import (
     chronoamperometry,
     chronopotentiometry,
     cyclic_voltammetry,

@@ -1,5 +1,5 @@
-from pspython import instruments
-from pspython.methods import SquareWaveParameters
+from pypalmsens import instruments
+from pypalmsens.methods import SquareWaveParameters
 
 
 def new_data_callback(new_data):

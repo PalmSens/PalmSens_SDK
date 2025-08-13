@@ -1,5 +1,5 @@
-from pspython import instruments
-from pspython.methods import MethodScriptParameters
+from pypalmsens import instruments
+from pypalmsens.methods import MethodScriptParameters
 
 
 def new_data_callback(new_data):

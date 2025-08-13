@@ -1,8 +1,8 @@
 import asyncio
 import csv
 
-from pspython import instruments
-from pspython.methods import ChronoAmperometryParameters
+from pypalmsens import instruments
+from pypalmsens.methods import ChronoAmperometryParameters
 
 
 def stream_to_csv_callback(csv_writer):

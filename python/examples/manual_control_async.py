@@ -1,7 +1,7 @@
 import asyncio
 
-from pspython import instruments
-from pspython.methods import CURRENT_RANGE
+from pypalmsens import instruments
+from pypalmsens.methods import CURRENT_RANGE
 
 
 async def main():

@@ -1,7 +1,7 @@
 import asyncio
 
-from pspython import instruments
-from pspython.methods import ChronoAmperometryParameters
+from pypalmsens import instruments
+from pypalmsens.methods import ChronoAmperometryParameters
 
 
 def new_data_callback(new_data):

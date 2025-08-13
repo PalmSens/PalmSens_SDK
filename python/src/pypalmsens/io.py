@@ -10,8 +10,8 @@ from PalmSens.DataFiles import MethodFile, MethodFile2
 from System.IO import StreamReader, StreamWriter
 from System.Text import Encoding
 
-from pspython.methods.method import Method
-from pspython.methods.techniques import ParameterType
+from pypalmsens.methods.method import Method
+from pypalmsens.methods.techniques import ParameterType
 
 from .data.measurement import Measurement
 
@@ -129,7 +129,7 @@ def save_method_file(path: Union[str, Path], method: Union[Method, ParameterType
     method : Method
         Method to save
     """
-    from pspython import __sdk_version__
+    from pypalmsens import __sdk_version__
 
     if isinstance(method, ParameterType):
         psmethod = method.to_psmethod()

@@ -2,8 +2,13 @@ from pathlib import Path
 
 import pandas as pd
 
-from pspython import methods
-from pspython.io import load_method_file, save_method_file, load_session_file, save_session_file
+from pypalmsens import methods
+from pypalmsens.io import (
+    load_method_file,
+    save_method_file,
+    load_session_file,
+    save_session_file,
+)
 
 script_dir = Path(__file__).parent
 
