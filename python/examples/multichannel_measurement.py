@@ -1,7 +1,7 @@
 import asyncio
 import csv
 
-from pspython import pspyinstruments
+from pspython import instruments
 from pspython.methods import ChronoAmperometryParameters
 
 
@@ -14,13 +14,13 @@ def stream_to_csv_callback(csv_writer):
 
 
 async def main():
-    available_instruments = await pspyinstruments.discover_instruments_async()
+    available_instruments = await instruments.discover_instruments_async()
     managers = {}
 
     # create an instance of the instrumentmanager per channel
     async def connect(instrument, index):
         managers[index] = (
-            pspyinstruments.InstrumentManagerAsync()
+            instruments.InstrumentManagerAsync()
         )  # new_data_callback=new_data_callback(index)))
         success = await managers[index].connect(instrument)
         if success:

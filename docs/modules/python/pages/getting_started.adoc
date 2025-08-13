@@ -63,7 +63,7 @@ This example creates a method for a square-wave voltammetry measurement versus t
 
 [source,python]
 ----
-method = pspymethods.square_wave_voltammetry(
+method = methods.square_wave_voltammetry(
     conditioning_potential = 2.0,  # V
     conditioning_time = 2,  # seconds
     versus_ocp_mode = 3,  # versus begin and end potential

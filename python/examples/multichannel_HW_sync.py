@@ -1,6 +1,6 @@
 import asyncio
 
-from pspython import pspyinstruments
+from pspython import instruments
 from pspython.methods import CURRENT_RANGE, POTENTIAL_RANGE, ChronopotentiometryParameters
 
 
@@ -13,12 +13,12 @@ def new_data_callback(channel):
 
 
 async def main():
-    available_instruments = await pspyinstruments.discover_instruments_async()
+    available_instruments = await instruments.discover_instruments_async()
     managers = {}
 
     # create an instance of the instrumentmanager per channel
     async def connect(instrument, index):
-        managers[index] = pspyinstruments.InstrumentManagerAsync(
+        managers[index] = instruments.InstrumentManagerAsync(
             new_data_callback=new_data_callback(index)
         )
         success = await managers[index].connect(instrument)

@@ -1,4 +1,4 @@
-from pspython import pspyinstruments
+from pspython import instruments
 from pspython.methods import SquareWaveParameters
 
 
@@ -7,9 +7,9 @@ def new_data_callback(new_data):
         print(point)
 
 
-available_instruments = pspyinstruments.discover_instruments()
+available_instruments = instruments.discover_instruments()
 
-manager = pspyinstruments.InstrumentManager(new_data_callback=new_data_callback)
+manager = instruments.InstrumentManager(new_data_callback=new_data_callback)
 connected = manager.connect(available_instruments[0])
 
 if connected != 1:

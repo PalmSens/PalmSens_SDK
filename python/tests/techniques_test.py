@@ -6,7 +6,7 @@ import pytest
 from PalmSens import Techniques
 from pytest import approx
 
-from pspython import pspyinstruments
+from pspython import instruments
 from pspython.data.measurement import Measurement
 from pspython.methods import techniques
 from pspython.methods._shared import (
@@ -54,9 +54,9 @@ def assert_params_round_trip_equal(*, pscls, pycls, kwargs):
 
 @pytest.fixture(scope='module')
 def manager():
-    mgr = pspyinstruments.InstrumentManager()
+    mgr = instruments.InstrumentManager()
 
-    available_instruments = pspyinstruments.discover_instruments()
+    available_instruments = instruments.discover_instruments()
     logger.warning('Connecting to %s' % available_instruments[0].name)
     success = mgr.connect(available_instruments[0])
     assert success

@@ -1,6 +1,6 @@
 import asyncio
 
-from pspython import pspyinstruments
+from pspython import instruments
 from pspython.methods import ChronoAmperometryParameters
 
 
@@ -10,8 +10,8 @@ def new_data_callback(new_data):
 
 
 async def main():
-    manager = pspyinstruments.InstrumentManagerAsync(new_data_callback=new_data_callback)
-    available_instruments = await pspyinstruments.discover_instruments_async()
+    manager = instruments.InstrumentManagerAsync(new_data_callback=new_data_callback)
+    available_instruments = await instruments.discover_instruments_async()
     print('connecting to ' + available_instruments[0].name)
     success = await manager.connect(available_instruments[0])
 
