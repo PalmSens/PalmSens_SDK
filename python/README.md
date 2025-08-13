@@ -14,20 +14,14 @@ PyPalmSens controls your instruments, and automates running electrochemical expe
 from pypalmsens import instruments
 from pypalmsens.methods import ChronoAmperometryParameters
 
-available_instruments = instruments.discover_instruments()
-
-manager = instruments.InstrumentManager()
-manager.connect(available_instruments[0])
-
 method = ChronoAmperometryParameters(
     interval_time=0.01,
     potential=1.0,
     run_time=10.0,
 )
 
-measurement = manager.measure(method)
-
-manager.disconnect()
+with instruments.connect() as manager:
+    measurement = manager.measure(method)
 ```
 
 For more information, see the [documentation](http://palmsens.github.io/palmsens_sdk/python).

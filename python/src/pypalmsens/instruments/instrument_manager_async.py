@@ -3,7 +3,8 @@ from __future__ import annotations
 import asyncio
 import sys
 import traceback
-from typing import Callable, Optional
+from contextlib import asynccontextmanager
+from typing import AsyncGenerator, Callable, Optional
 
 import clr
 import PalmSens
@@ -95,6 +96,30 @@ async def discover_instruments_async(
 
     available_instruments.sort(key=lambda instrument: instrument.name)
     return available_instruments
+
+
+@asynccontextmanager
+async def connect_async(
+    device: Optional[Instrument] = None,
+) -> AsyncGenerator[InstrumentManagerAsync, None]:
+    """Async context manager for device connection."""
+    # connect to first device if not specified
+    if not device:
+        available_instruments = await discover_instruments_async()
+
+        if not available_instruments:
+            raise ConnectionError('No instruments were discovered.')
+
+        # connect to first instrument
+        device = available_instruments[0]
+
+    manager = InstrumentManagerAsync()
+    await manager.connect(device)
+
+    try:
+        yield manager
+    finally:
+        await manager.disconnect()
 
 
 class InstrumentManagerAsync:
