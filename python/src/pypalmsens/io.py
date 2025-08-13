@@ -10,10 +10,8 @@ from PalmSens.DataFiles import MethodFile, MethodFile2
 from System.IO import StreamReader, StreamWriter
 from System.Text import Encoding
 
-from pypalmsens.methods.method import Method
-from pypalmsens.methods.techniques import ParameterType
-
 from .data.measurement import Measurement
+from .methods import Method, ParameterType
 
 if TYPE_CHECKING:
     from .methods.method import Method
