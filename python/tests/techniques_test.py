@@ -14,19 +14,6 @@ from pypalmsens.methods._shared import (
     POTENTIAL_RANGE,
     ELevel,
 )
-from pypalmsens.methods.techniques_old import (
-    chronoamperometry,
-    chronopotentiometry,
-    cyclic_voltammetry,
-    differential_pulse_voltammetry,
-    electrochemical_impedance_spectroscopy,
-    galvanostatic_impedance_spectroscopy,
-    linear_sweep_voltammetry,
-    method_script_sandbox,
-    multi_step_amperometry,
-    open_circuit_potentiometry,
-    square_wave_voltammetry,
-)
 
 logger = logging.getLogger(__name__)
 
@@ -107,10 +94,6 @@ class TestCV:
             kwargs=self.kwargs,
         )
 
-    def test_old_interface(self):
-        method_old = cyclic_voltammetry(**self.kwargs)
-        assert isinstance(method_old, self.pscls)
-
     @pytest.mark.instrument
     def test_measurement(self, manager):
         method = self.pycls(
@@ -157,10 +140,6 @@ class TestLSV:
             kwargs=self.kwargs,
         )
 
-    def test_old_interface(self):
-        method_old = linear_sweep_voltammetry(**self.kwargs)
-        assert isinstance(method_old, self.pscls)
-
     @pytest.mark.instrument
     def test_measurement(self, manager):
         method = self.pycls(
@@ -202,10 +181,6 @@ class TestSWV:
             kwargs=self.kwargs,
         )
 
-    def test_old_interface(self):
-        method_old = square_wave_voltammetry(**self.kwargs)
-        assert isinstance(method_old, self.pscls)
-
     @pytest.mark.instrument
     def test_measurement(self, manager):
         method = self.pycls(
@@ -244,10 +219,6 @@ class TestCP:
             kwargs=self.kwargs,
         )
 
-    def test_old_interface(self):
-        method_old = chronopotentiometry(**self.kwargs)
-        assert isinstance(method_old, self.pscls)
-
     @pytest.mark.instrument
     def test_measurement(self, manager):
         method = self.pycls(
@@ -282,10 +253,6 @@ class TestOCP:
             pycls=self.pycls,
             kwargs=self.kwargs,
         )
-
-    def test_old_interface(self):
-        method_old = open_circuit_potentiometry(**self.kwargs)
-        assert isinstance(method_old, self.pscls)
 
     @pytest.mark.instrument
     def test_measurement(self, manager):
@@ -322,10 +289,6 @@ class TestCA:
             kwargs=self.kwargs,
         )
 
-    def test_old_interface(self):
-        method_old = chronoamperometry(**self.kwargs)
-        assert isinstance(method_old, self.pscls)
-
     @pytest.mark.instrument
     def test_measurement(self, manager):
         method = self.pycls(**self.kwargs)
@@ -359,10 +322,6 @@ class TestDP:
             pycls=self.pycls,
             kwargs=self.kwargs,
         )
-
-    def test_old_interface(self):
-        method_old = differential_pulse_voltammetry(**self.kwargs)
-        assert isinstance(method_old, self.pscls)
 
     @pytest.mark.instrument
     def test_measurement(self, manager):
@@ -399,10 +358,6 @@ class TestMA:
             kwargs=self.kwargs,
         )
 
-    def test_old_interface(self):
-        method_old = multi_step_amperometry(**self.kwargs)
-        assert isinstance(method_old, self.pscls)
-
     @pytest.mark.instrument
     def test_measurement(self, manager):
         method = self.pycls(**self.kwargs)
@@ -438,10 +393,6 @@ class TestEIS:
             pycls=self.pycls,
             kwargs=self.kwargs,
         )
-
-    def test_old_interface(self):
-        method_old = electrochemical_impedance_spectroscopy(**self.kwargs)
-        assert isinstance(method_old, self.pscls)
 
     @pytest.mark.instrument
     def test_measurement(self, manager):
@@ -509,10 +460,6 @@ class TestGIS:
             pycls=self.pycls,
             kwargs=self.kwargs,
         )
-
-    def test_old_interface(self):
-        method_old = galvanostatic_impedance_spectroscopy(**self.kwargs)
-        assert isinstance(method_old, self.pscls)
 
     @pytest.mark.instrument
     def test_measurement(self, manager):
@@ -590,10 +537,6 @@ class TestMS:
             pycls=self.pycls,
             kwargs=self.kwargs,
         )
-
-    def test_old_interface(self):
-        method_old = method_script_sandbox(**self.kwargs)
-        assert isinstance(method_old, self.pscls)
 
     @pytest.mark.instrument
     def test_measurement(self, manager):
