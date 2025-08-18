@@ -188,12 +188,12 @@ The following example loads a collection of measurements from a session file and
 
 [source,python]
 ----
-import pypalmsens
+from pypalmsens import load_session_file
 
-measurements = pypalmsens.load_session_file('Demo CV DPV EIS IS-C electrode.pssession')
+measurements = load_session_file('my_measurement.pssession')
 
 pypalmsens.save_session_file(
-    'Demo CV DPV EIS IS-C electrode_copy.pssession',
+    'my_measurement_copy.pssession',
     [measurements[0]]
 )
 ----
