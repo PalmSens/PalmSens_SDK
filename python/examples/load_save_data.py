@@ -2,16 +2,12 @@ from pathlib import Path
 
 import pandas as pd
 
-from pypalmsens import methods
 import pypalmsens
 
 script_dir = Path(__file__).parent
 
 # load a method file
-method = pypalmsens.load_method_file(script_dir / 'PSDummyCell_LSV.psmethod')
-print(
-    f'loaded method, estimated duration: {methods.get_method_estimated_duration(method)} seconds'
-)
+method = pypalmsens.load_method_file(script_dir / 'PSDummyCell_LSV.psmethod', as_method=True)
 
 # save the method file
 pypalmsens.save_method_file(script_dir / 'PSDummyCell_LSV_copy.psmethod', method)
