@@ -41,7 +41,7 @@ async def main():
         {'current': 2, 'limit_potential_min': -2, 'limit_potential_max': 2},
     ]
 
-    available_instruments = await instruments.discover_instruments_async()
+    available_instruments = await instruments.discover_async()
     managers = {}
 
     # create an instance of the instrumentmanager per channel

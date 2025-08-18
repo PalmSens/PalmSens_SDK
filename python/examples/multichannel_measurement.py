@@ -14,7 +14,7 @@ def stream_to_csv_callback(csv_writer):
 
 
 async def main():
-    available_instruments = await instruments.discover_instruments_async()
+    available_instruments = await instruments.discover_async()
     managers = {}
 
     # create an instance of the instrumentmanager per channel

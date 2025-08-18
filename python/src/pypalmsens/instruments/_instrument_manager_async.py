@@ -21,7 +21,7 @@ from System.Threading.Tasks import Task
 from ..data._shared import ArrayType, _get_values_from_NETArray
 from ..data.measurement import Measurement
 from ..methods import CURRENT_RANGE, ParameterType
-from .common import Instrument, create_future, firmware_warning
+from ._common import Instrument, create_future, firmware_warning
 
 WINDOWS = sys.platform == 'win32'
 LINUX = not WINDOWS
@@ -38,7 +38,7 @@ if LINUX:
     from PalmSens.Core.Linux.Comm.Devices import FTDIDevice, SerialPortDevice
 
 
-async def discover_instruments_async(
+async def discover_async(
     ftdi: bool = False,
     usbcdc: bool = True,
     bluetooth: bool = False,

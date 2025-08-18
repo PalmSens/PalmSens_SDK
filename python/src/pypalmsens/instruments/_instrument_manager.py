@@ -21,7 +21,7 @@ from System import EventHandler  # type: ignore
 from ..data._shared import ArrayType, _get_values_from_NETArray
 from ..data.measurement import Measurement
 from ..methods import CURRENT_RANGE, ParameterType
-from .common import Instrument, create_future, firmware_warning
+from ._common import Instrument, create_future, firmware_warning
 
 WINDOWS = sys.platform == 'win32'
 LINUX = not WINDOWS
@@ -37,7 +37,7 @@ else:
     from PalmSens.Core.Linux.Comm.Devices import FTDIDevice, SerialPortDevice
 
 
-def discover_instruments(
+def discover(
     ftdi: bool = False,
     usbcdc: bool = True,
     bluetooth: bool = False,
