@@ -18,9 +18,7 @@ async def main():
 
     # create an instance of the instrumentmanager per channel
     async def connect(instrument, index):
-        managers[index] = instruments.InstrumentManagerAsync(
-            new_data_callback=new_data_callback(index)
-        )
+        managers[index] = instruments.InstrumentManagerAsync(callback=new_data_callback(index))
         success = await managers[index].connect(instrument)
         if success:
             print(f'{index + 1}: connected to {instrument.name}')

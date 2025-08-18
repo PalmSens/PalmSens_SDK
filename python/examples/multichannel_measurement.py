@@ -43,7 +43,7 @@ async def main():
         async def measure(manager, channel):
             csv_file = open(f'test{channel + 1}.csv', 'w', newline='')
             csv_writer = csv.writer(csv_file, delimiter=' ')
-            manager.new_data_callback = stream_to_csv_callback(csv_writer)
+            manager.callback = stream_to_csv_callback(csv_writer)
             measurement = await manager.measure(method)
             csv_file.close()
             return measurement
