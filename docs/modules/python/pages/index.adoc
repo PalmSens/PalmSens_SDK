@@ -26,41 +26,11 @@ For specific installation instructions for your platform, see xref:installation.
 
 == Getting started
 
-The following example shows how to discover devices and manually read out the current.
+The following example shows how to set up and measure a simple chronoamperometry experiment:
 
 ```python
-from pypalmsens import instruments
-from pypalmsens.methods import CURRENT_RANGE
-
-manager = instruments.InstrumentManager()
-
-available_instruments = instruments.discover_instruments()
-manager.connect(available_instruments[0])
-
-# enable cell
-manager.set_cell(True)
-# set potential to 1 V
-manager.set_potential(1)
-# set current range to 1 mA
-manager.set_current_range(CURRENT_RANGE.cr_1_mA)
-
-current = manager.read_current()
-print(f'{current=} µA')
-
-manager.set_cell(False)
-manager.disconnect()
-```
-
-Set up and measure a simple chronoamperometry experiment:
-
-```python
-from pypalmsens import instruments
+import pypalmsens
 from pypalmsens.methods import ChronoAmperometryParameters
-
-manager = instruments.InstrumentManager()
-
-available_instruments = instruments.discover_instruments()
-manager.connect(available_instruments[0])
 
 method = ChronoAmperometryParameters(
     interval_time=0.01,
@@ -68,9 +38,32 @@ method = ChronoAmperometryParameters(
     run_time=10.0,
 )
 
-measurement = manager.measure(method)
-manager.disconnect()
+with pypalmsens.connect() as manager:
+    measurement = manager.measure(method)
 ```
+
+The following example shows how to discover devices and manually read out the current.
+
+```python
+import pypalmsens
+from pypalmsens.methods import CURRENT_RANGE
+
+instruments = pypalmsens.discover()
+
+with pypalmsens.connect(device=instruments[0]) as manager:
+    # enable cell
+    manager.set_cell(True)
+    # set potential to 1 V
+    manager.set_potential(1)
+    # set current range to 1 mA
+    manager.set_current_range(CURRENT_RANGE.cr_1_mA)
+
+    current = manager.read_current()
+    print(f'{current=} µA')
+
+    manager.set_cell(False)
+```
+
 
 Analyze a previous measurement with https://pandas.pydata.org/[pandas]:
 

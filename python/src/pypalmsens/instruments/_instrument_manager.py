@@ -96,20 +96,35 @@ def discover(
 
 
 @contextmanager
-def connect(device: Optional[Instrument] = None) -> Generator[InstrumentManager, None, None]:
-    """Context manager for device connection."""
+def connect(
+    instrument: Optional[Instrument] = None,
+) -> Generator[InstrumentManager, None, None]:
+    """Context manager for device connection.
+
+    Parameters
+    ----------
+    instrument : Instrument, optional
+        Connect to this instrument.
+        If not specified, automatically discover and connect to the first instrument.
+
+    Returns
+    -------
+    manager : InstrumentManager
+        Return instance of `InstrumentManager` connected to the given instrument.
+        The connection will be terminated after the context ends.
+    """
     # connect to first device if not specified
-    if not device:
+    if not instrument:
         available_instruments = discover()
 
         if not available_instruments:
             raise ConnectionError('No instruments were discovered.')
 
         # connect to first instrument
-        device = available_instruments[0]
+        instrument = available_instruments[0]
 
     manager = InstrumentManager()
-    manager.connect(device)
+    manager.connect(instrument)
     try:
         yield manager
     finally:

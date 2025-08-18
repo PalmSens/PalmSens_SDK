@@ -100,21 +100,34 @@ async def discover_async(
 
 @asynccontextmanager
 async def connect_async(
-    device: Optional[Instrument] = None,
+    instrument: Optional[Instrument] = None,
 ) -> AsyncGenerator[InstrumentManagerAsync, None]:
-    """Async context manager for device connection."""
+    """Async context manager for device connection.
+
+    Parameters
+    ----------
+    instrument : Instrument, optional
+        Connect to this instrument.
+        If not specified, automatically discover and connect to the first instrument.
+
+    Returns
+    -------
+    manager : InstrumentManagerAsync
+        Return instance of `InstrumentManagerAsync` connected to the given instrument.
+        The connection will be terminated after the context ends.
+    """
     # connect to first device if not specified
-    if not device:
+    if not instrument:
         available_instruments = await discover_async()
 
         if not available_instruments:
             raise ConnectionError('No instruments were discovered.')
 
         # connect to first instrument
-        device = available_instruments[0]
+        instrument = available_instruments[0]
 
     manager = InstrumentManagerAsync()
-    await manager.connect(device)
+    await manager.connect(instrument)
 
     try:
         yield manager
