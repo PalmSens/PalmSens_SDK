@@ -480,10 +480,7 @@ class MultiplexerSettings:
 
         channels = [i for i in range(len(obj.UseMuxChannel)) if obj.UseMuxChannel[i]]
 
-        if not channels:
-            n_channels = 8
-        else:
-            n_channels = max(max(channels) + 1, 8)
+        n_channels = max(channels) + 1 if channels else 0
 
         self.set_mux_channels = [i in channels for i in range(n_channels)]
 

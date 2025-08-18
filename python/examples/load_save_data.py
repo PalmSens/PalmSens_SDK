@@ -3,7 +3,7 @@ from pathlib import Path
 import pandas as pd
 
 from pypalmsens import methods
-from pypalmsens.io import (
+from pypalmsens import (
     load_method_file,
     save_method_file,
     load_session_file,

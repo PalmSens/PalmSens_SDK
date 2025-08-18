@@ -76,7 +76,7 @@ Analyze a previous measurement with https://pandas.pydata.org/[pandas]:
 
 ```python
 import pandas as pd
-from pypalmsens.io import load_session_file
+from pypalmsens import load_session_file
 
 measurements = load_session_file('Demo CV DPV EIS IS-C electrode.pssession')
 

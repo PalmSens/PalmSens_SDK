@@ -91,13 +91,15 @@ def save_session_file(path: Union[str, Path], measurements: list[Measurement]):
         session.Save(stream.BaseStream, str(path))
 
 
-def load_method_file(path: Union[str, Path]) -> ParameterType:
+def load_method_file(path: Union[str, Path], as_method: bool = False) -> ParameterType | Method:
     """Load a method file (.psmethod).
 
     Parameters
     ----------
     path : Path | str
         Path to method file
+    as_method : bool
+        If True, load as method wrapper object
 
     Returns
     -------
@@ -108,13 +110,18 @@ def load_method_file(path: Union[str, Path]) -> ParameterType:
 
     with stream_reader(str(path)) as stream:
         if path.suffix == MethodFile2.FileExtension:
-            method = MethodFile2.FromStream(stream)
+            psmethod = MethodFile2.FromStream(stream)
         else:
-            method = MethodFile.FromStream(stream, str(path))
+            psmethod = MethodFile.FromStream(stream, str(path))
 
-    method.MethodFilename = str(path.absolute())
+    psmethod.MethodFilename = str(path.absolute())
 
-    return Method(psmethod=method).to_parameters()
+    method = Method(psmethod=psmethod)
+
+    if as_method:
+        return method
+    else:
+        return method.to_parameters()
 
 
 def save_method_file(path: Union[str, Path], method: Union[Method, ParameterType]):

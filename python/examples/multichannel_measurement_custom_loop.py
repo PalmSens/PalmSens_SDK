@@ -1,7 +1,7 @@
 import asyncio
 from dataclasses import replace
 from pypalmsens import instruments
-from pypalmsens.io import save_session_file
+from pypalmsens import save_session_file
 from pypalmsens.methods import CURRENT_RANGE, POTENTIAL_RANGE, ChronopotentiometryParameters
 
 
