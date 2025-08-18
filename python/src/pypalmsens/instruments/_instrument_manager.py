@@ -22,7 +22,7 @@ from System import EventHandler  # type: ignore
 from ..data._shared import ArrayType, _get_values_from_NETArray
 from ..data.measurement import Measurement
 from ..methods import CURRENT_RANGE, ParameterType
-from .common import Instrument, create_future, firmware_warning
+from ._common import Instrument, create_future, firmware_warning
 
 WINDOWS = sys.platform == 'win32'
 LINUX = not WINDOWS
@@ -38,7 +38,7 @@ else:
     from PalmSens.Core.Linux.Comm.Devices import FTDIDevice, SerialPortDevice
 
 
-def discover_instruments(
+def discover(
     ftdi: bool = False,
     usbcdc: bool = True,
     bluetooth: bool = False,
@@ -100,7 +100,7 @@ def connect(device: Optional[Instrument] = None) -> Generator[InstrumentManager,
     """Context manager for device connection."""
     # connect to first device if not specified
     if not device:
-        available_instruments = discover_instruments()
+        available_instruments = discover()
 
         if not available_instruments:
             raise ConnectionError('No instruments were discovered.')
@@ -117,8 +117,8 @@ def connect(device: Optional[Instrument] = None) -> Generator[InstrumentManager,
 
 
 class InstrumentManager:
-    def __init__(self, new_data_callback: Optional[Callable] = None):
-        self.new_data_callback = new_data_callback
+    def __init__(self, callback: Optional[Callable] = None):
+        self.callback = callback
         self.__comm = None
         self.__measuring = False
         self.__active_measurement = None
@@ -303,7 +303,7 @@ class InstrumentManager:
                 point['y_unit'] = curve.YUnit.ToString()
                 point['y_type'] = ArrayType(curve.YAxisDataArray.ArrayType).name
                 data.append(point)
-            self.new_data_callback(data)
+            self.callback(data)
 
         def eis_data_new_data_added(eis_data, start, count):
             data = []
@@ -322,7 +322,7 @@ class InstrumentManager:
                     elif array_type == ArrayType.ZIm:
                         point['zim'] = _get_values_from_NETArray(array, start=i, count=1)[0]
                 data.append(point)
-            self.new_data_callback(data)
+            self.callback(data)
 
         def comm_error():
             self.__measuring = False
@@ -386,7 +386,7 @@ class InstrumentManager:
             self.__comm.EndMeasurement += end_measurement_handler
             self.__comm.Disconnected += comm_error_handler
 
-            if self.new_data_callback is not None:
+            if self.callback is not None:
                 self.__comm.BeginReceiveEISData += begin_receive_eis_data_handler
                 self.__comm.BeginReceiveCurve += begin_receive_curve_handler
 
@@ -412,7 +412,7 @@ class InstrumentManager:
             self.__comm.EndMeasurement -= end_measurement_handler
             self.__comm.Disconnected -= comm_error_handler
 
-            if self.new_data_callback is not None:
+            if self.callback is not None:
                 self.__comm.BeginReceiveEISData -= begin_receive_eis_data_handler
                 self.__comm.BeginReceiveCurve -= begin_receive_curve_handler
 
@@ -436,7 +436,7 @@ class InstrumentManager:
             self.__comm.EndMeasurement -= end_measurement_handler
             self.__comm.Disconnected -= comm_error_handler
 
-            if self.new_data_callback is not None:
+            if self.callback is not None:
                 self.__comm.BeginReceiveEISData -= begin_receive_eis_data_handler
                 self.__comm.BeginReceiveCurve -= begin_receive_curve_handler
 
