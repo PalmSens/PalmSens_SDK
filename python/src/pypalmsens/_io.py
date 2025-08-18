@@ -91,7 +91,7 @@ def save_session_file(path: Union[str, Path], measurements: list[Measurement]):
         session.Save(stream.BaseStream, str(path))
 
 
-def load_method_file(path: Union[str, Path]) -> Method:
+def load_method_file(path: Union[str, Path]) -> ParameterType:
     """Load a method file (.psmethod).
 
     Parameters
@@ -101,8 +101,8 @@ def load_method_file(path: Union[str, Path]) -> Method:
 
     Returns
     -------
-    method : Method
-        Return method instance
+    method : Parameters
+        Return method parameters
     """
     path = Path(path)
 
@@ -114,7 +114,7 @@ def load_method_file(path: Union[str, Path]) -> Method:
 
     method.MethodFilename = str(path.absolute())
 
-    return Method(psmethod=method)
+    return Method(psmethod=method).to_parameters()
 
 
 def save_method_file(path: Union[str, Path], method: Union[Method, ParameterType]):
