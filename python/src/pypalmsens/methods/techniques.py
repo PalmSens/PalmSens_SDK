@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from abc import abstractmethod
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, ClassVar, Protocol, Type, runtime_checkable
 
 import attr
 from PalmSens import Method as PSMethod
@@ -26,6 +26,7 @@ from .settings import (
     PostMeasurementSettings,
     PotentialLimitSettings,
     PretreatmentSettings,
+    SettingsType,
     TriggerAtEquilibrationSettings,
     TriggerAtMeasurementSettings,
     VersusOcpSettings,
@@ -59,8 +60,11 @@ BipotField = make_field(BipotSettings)
 ChargeLimitField = make_field(ChargeLimitSettings)
 
 
-class ParameterType:
+@runtime_checkable
+class ParameterType(Protocol):
     """Protocol to provide generic methods for parameters."""
+
+    __attrs_attrs__: ClassVar[list[attr.Attribute]]
 
     def to_psmethod(self):
         return parameters_to_psmethod(self)
@@ -80,10 +84,10 @@ def parameters_to_psmethod(params) -> Method:
     """Convert parameters to dotnet method."""
     psmethod = PSMethod.FromMethodID(params._id)
 
-    # for attrib in params.__attrs_attrs__:
-    #     if isinstance(attrib.type, SettingsType):
-    #         sett = getattr(params, attrib.name)
-    #         sett.update_psmethod(obj=psmethod)
+    for attrib in params.__attrs_attrs__:
+        if isinstance(attrib.type, SettingsType):
+            sett = getattr(params, attrib.name)
+            sett.update_psmethod(obj=psmethod)
 
     return psmethod
 
@@ -99,10 +103,10 @@ def psmethod_to_parameters(psmethod: PSMethod) -> ParameterType:
 
     new = cls()
 
-    # for attrib in new.__attrs_attrs__:
-    # if isinstance(attrib.type, SettingsType):
-    #     sett = getattr(new, attrib.name)
-    #     sett.update_params(obj=psmethod)
+    for attrib in new.__attrs_attrs__:
+        if isinstance(attrib.type, SettingsType):
+            sett = getattr(new, attrib.name)
+            sett.update_params(obj=psmethod)
 
     return new
 
@@ -204,9 +208,7 @@ class CyclicVoltammetryParameters(ParameterType):
 
 
 @attr.define
-class LinearSweepParameters(
-    ParameterType,
-):
+class LinearSweepParameters(ParameterType):
     """Create linear sweep method parameters.
 
     Attributes
@@ -386,9 +388,7 @@ class SquareWaveParameters(ParameterType):
 
 
 @attr.define
-class DifferentialPulseParameters(
-    ParameterType,
-):
+class DifferentialPulseParameters(ParameterType):
     """Create square wave method parameters.
 
     Attributes
@@ -485,9 +485,7 @@ class DifferentialPulseParameters(
 
 
 @attr.define
-class ChronoAmperometryParameters(
-    ParameterType,
-):
+class ChronoAmperometryParameters(ParameterType):
     """Create chrono amperometry method parameters.
 
     Attributes
@@ -571,9 +569,7 @@ class ChronoAmperometryParameters(
 
 
 @attr.define
-class MultiStepAmperometryParameters(
-    ParameterType,
-):
+class MultiStepAmperometryParameters(ParameterType):
     """Create multi-step amperometry method parameters.
 
     Attributes
@@ -667,9 +663,7 @@ class MultiStepAmperometryParameters(
 
 
 @attr.define
-class OpenCircuitPotentiometryParameters(
-    ParameterType,
-):
+class OpenCircuitPotentiometryParameters(ParameterType):
     """Create open circuit potentiometry method parameters.
 
     Attributes
@@ -735,9 +729,7 @@ class OpenCircuitPotentiometryParameters(
 
 
 @attr.define
-class ChronopotentiometryParameters(
-    ParameterType,
-):
+class ChronopotentiometryParameters(ParameterType):
     """Create potentiometry method parameters.
 
     Attributes
@@ -813,9 +805,7 @@ class ChronopotentiometryParameters(
 
 
 @attr.define
-class ElectrochemicalImpedanceSpectroscopyParameters(
-    ParameterType,
-):
+class ElectrochemicalImpedanceSpectroscopyParameters(ParameterType):
     """Create potentiometry method parameters.
 
     Attributes
@@ -874,9 +864,7 @@ class ElectrochemicalImpedanceSpectroscopyParameters(
 
 
 @attr.define
-class GalvanostaticImpedanceSpectroscopyParameters(
-    ParameterType,
-):
+class GalvanostaticImpedanceSpectroscopyParameters(ParameterType):
     """Create potentiometry method parameters.
 
     Attributes
@@ -966,7 +954,7 @@ endif
         self.script = obj.MethodScript
 
 
-ID_TO_PARAMETER_MAPPING = {
+ID_TO_PARAMETER_MAPPING: dict[str, Type[ParameterType] | None] = {
     'acv': None,
     'ad': ChronoAmperometryParameters,
     'cc': None,
