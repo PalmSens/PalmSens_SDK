@@ -54,20 +54,16 @@ The following example shows how to discover devices and manually read out the cu
 >>> instruments = pypalmsens.discover()
 
 >>> with pypalmsens.connect(device=instruments[0]) as manager:
-...     manager.set_cell(True)  # <1>
-...     manager.set_potential(1)  # <2>
-...     manager.set_current_range(CURRENT_RANGE.cr_1_mA)  # <3>
+...     manager.set_cell(True)
+...     manager.set_potential(1)
+...     manager.set_current_range(CURRENT_RANGE.cr_1_mA)
 ...
 ...     current = manager.read_current()
 ...     print(f'{current=} µA')
 ...
-...     manager.set_cell(False)  # <4>
+...     manager.set_cell(False)
 current=92.8065 µA
 ----
-<1> enable cell
-<2> set potential to 1 V
-<3> set current range to 1 mA
-<4> disable cell
 
 Analyze a previous measurement with https://pandas.pydata.org/[pandas]:
 
