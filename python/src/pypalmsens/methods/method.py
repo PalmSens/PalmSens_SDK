@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-from dataclasses import asdict
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Union
 
+from attrs import asdict
 from PalmSens import Method as PSMethod
 from PalmSens.Devices import PalmSens4Capabilities
 

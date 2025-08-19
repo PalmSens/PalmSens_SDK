@@ -1,9 +1,9 @@
 from __future__ import annotations
 
 from abc import abstractmethod
-from dataclasses import Field, dataclass, field
-from typing import TYPE_CHECKING, Any, ClassVar, Generic, Protocol, runtime_checkable
+from typing import TYPE_CHECKING, Any
 
+import attr
 from PalmSens import Method as PSMethod
 from PalmSens.Techniques.Impedance import enumFrequencyType, enumScanType
 
@@ -35,11 +35,32 @@ if TYPE_CHECKING:
     from .method import Method
 
 
-@runtime_checkable
-class ParameterType(Protocol):
-    """Protocol to provide generic methods for parameters."""
+def make_field(Settings: Any) -> Any:
+    return attr.field(
+        factory=Settings,
+        converter=lambda _: Settings(**_) if isinstance(_, dict) else _,
+    )
 
-    __dataclass_fields__: ClassVar[dict[str, Field[Any]]]
+
+AutorangingCurrentField = make_field(AutorangingCurrentSettings)
+PretreatmentField = make_field(PretreatmentSettings)
+VersusOcpField = make_field(VersusOcpSettings)
+PostMeasurementField = make_field(PostMeasurementSettings)
+CurrentLimitField = make_field(CurrentLimitSettings)
+IrDropCompensationField = make_field(IrDropCompensationSettings)
+TriggerAtEquilibrationField = make_field(TriggerAtEquilibrationSettings)
+TriggerAtMeasurementField = make_field(TriggerAtMeasurementSettings)
+PeakField = make_field(PeakSettings)
+CommonField = make_field(CommonSettings)
+AutorangingPotentialField = make_field(AutorangingPotentialSettings)
+PotentialLimitField = make_field(PotentialLimitSettings)
+MultiplexerField = make_field(MultiplexerSettings)
+BipotField = make_field(BipotSettings)
+ChargeLimitField = make_field(ChargeLimitSettings)
+
+
+class ParameterType:
+    """Protocol to provide generic methods for parameters."""
 
     def to_psmethod(self):
         return parameters_to_psmethod(self)
@@ -59,10 +80,10 @@ def parameters_to_psmethod(params) -> Method:
     """Convert parameters to dotnet method."""
     psmethod = PSMethod.FromMethodID(params._id)
 
-    for parent in params.__class__.__mro__:
-        if parent in (Generic, ParameterType, Protocol, object):
-            continue
-        parent.update_psmethod(params, obj=psmethod)
+    # for attrib in params.__attrs_attrs__:
+    #     if isinstance(attrib.type, SettingsType):
+    #         sett = getattr(params, attrib.name)
+    #         sett.update_psmethod(obj=psmethod)
 
     return psmethod
 
@@ -78,28 +99,16 @@ def psmethod_to_parameters(psmethod: PSMethod) -> ParameterType:
 
     new = cls()
 
-    for parent in new.__class__.__mro__:
-        if parent in (Generic, ParameterType, Protocol, object):
-            continue
-        parent.update_params(new, obj=psmethod)  # type: ignore
+    # for attrib in new.__attrs_attrs__:
+    # if isinstance(attrib.type, SettingsType):
+    #     sett = getattr(new, attrib.name)
+    #     sett.update_params(obj=psmethod)
 
     return new
 
 
-@dataclass
-class CyclicVoltammetryParameters(
-    ParameterType,
-    AutorangingCurrentSettings,
-    PretreatmentSettings,
-    VersusOcpSettings,
-    PostMeasurementSettings,
-    CurrentLimitSettings,
-    IrDropCompensationSettings,
-    TriggerAtEquilibrationSettings,
-    TriggerAtMeasurementSettings,
-    PeakSettings,
-    CommonSettings,
-):
+@attr.define
+class CyclicVoltammetryParameters(ParameterType):
     """Create cyclic voltammetry method parameters.
 
     Attributes
@@ -145,6 +154,17 @@ class CyclicVoltammetryParameters(
     record_cell_potential: bool = False
     record_we_potential: bool = False
 
+    current_ranges: AutorangingCurrentSettings = AutorangingCurrentField
+    pretreatment: PretreatmentSettings = PretreatmentField
+    versus_ocp: VersusOcpSettings = VersusOcpField
+    post_measurement: PostMeasurementSettings = PostMeasurementField
+    current_limits: CurrentLimitSettings = CurrentLimitField
+    ir_drop_compensation: IrDropCompensationSettings = IrDropCompensationField
+    equilibrion_triggers: TriggerAtEquilibrationSettings = TriggerAtEquilibrationField
+    measurement_triggers: TriggerAtMeasurementSettings = TriggerAtMeasurementField
+    peaks: PeakSettings = PeakField
+    general: CommonSettings = CommonField
+
     def update_psmethod(self, *, obj):
         """Update method with cyclic voltammetry settings."""
         obj.EquilibrationTime = self.equilibration_time
@@ -183,21 +203,9 @@ class CyclicVoltammetryParameters(
             setattr(self, key, msk[key])
 
 
-@dataclass
+@attr.define
 class LinearSweepParameters(
     ParameterType,
-    AutorangingCurrentSettings,
-    PretreatmentSettings,
-    VersusOcpSettings,
-    BipotSettings,
-    PostMeasurementSettings,
-    CurrentLimitSettings,
-    IrDropCompensationSettings,
-    TriggerAtEquilibrationSettings,
-    TriggerAtMeasurementSettings,
-    PeakSettings,
-    MultiplexerSettings,
-    CommonSettings,
 ):
     """Create linear sweep method parameters.
 
@@ -235,6 +243,19 @@ class LinearSweepParameters(
     record_we_potential: bool = False
     enable_bipot_current: bool = False
 
+    current_ranges: AutorangingCurrentSettings = AutorangingCurrentField
+    pretreatment: PretreatmentSettings = PretreatmentField
+    versus_ocp: VersusOcpSettings = VersusOcpField
+    bipot: BipotSettings = BipotField
+    post_measurement: PostMeasurementSettings = PostMeasurementField
+    current_limits: CurrentLimitSettings = CurrentLimitField
+    ir_drop: IrDropCompensationSettings = IrDropCompensationField
+    equilibration_triggers: TriggerAtEquilibrationSettings = TriggerAtEquilibrationField
+    measurement_triggers: TriggerAtMeasurementSettings = TriggerAtMeasurementField
+    peaks: PeakSettings = PeakField
+    multiplexer: MultiplexerSettings = MultiplexerField
+    common: CommonSettings = CommonField
+
     def update_psmethod(self, *, obj):
         """Update method with linear sweep settings."""
         obj.BeginPotential = self.begin_potential
@@ -267,21 +288,8 @@ class LinearSweepParameters(
             setattr(self, key, msk[key])
 
 
-@dataclass
-class SquareWaveParameters(
-    ParameterType,
-    AutorangingCurrentSettings,
-    PretreatmentSettings,
-    VersusOcpSettings,
-    BipotSettings,
-    PostMeasurementSettings,
-    IrDropCompensationSettings,
-    TriggerAtEquilibrationSettings,
-    TriggerAtMeasurementSettings,
-    PeakSettings,
-    MultiplexerSettings,
-    CommonSettings,
-):
+@attr.define
+class SquareWaveParameters(ParameterType):
     """Create square wave method parameters.
 
     Attributes
@@ -327,6 +335,18 @@ class SquareWaveParameters(
     enable_bipot_current: bool = False
     record_forward_and_reverse_currents: bool = False
 
+    current_ranges: AutorangingCurrentSettings = AutorangingCurrentField
+    pretreatment: PretreatmentSettings = PretreatmentField
+    versus_ocp: VersusOcpSettings = VersusOcpField
+    bipot: BipotSettings = BipotField
+    post_measurement: PostMeasurementSettings = PostMeasurementField
+    ir_drop: IrDropCompensationSettings = IrDropCompensationField
+    equilibration_triggers: TriggerAtEquilibrationSettings = TriggerAtEquilibrationField
+    measurement_triggers: TriggerAtMeasurementSettings = TriggerAtMeasurementField
+    peaks: PeakSettings = PeakField
+    multiplexer: MultiplexerSettings = MultiplexerField
+    common: CommonSettings = CommonField
+
     def update_psmethod(self, *, obj):
         """Update method with linear sweep settings."""
         obj.EquilibrationTime = self.equilibration_time
@@ -365,20 +385,9 @@ class SquareWaveParameters(
             setattr(self, key, msk[key])
 
 
-@dataclass
+@attr.define
 class DifferentialPulseParameters(
     ParameterType,
-    AutorangingCurrentSettings,
-    PretreatmentSettings,
-    VersusOcpSettings,
-    BipotSettings,
-    PostMeasurementSettings,
-    IrDropCompensationSettings,
-    TriggerAtEquilibrationSettings,
-    TriggerAtMeasurementSettings,
-    PeakSettings,
-    MultiplexerSettings,
-    CommonSettings,
 ):
     """Create square wave method parameters.
 
@@ -425,6 +434,18 @@ class DifferentialPulseParameters(
     record_we_potential: bool = False
     enable_bipot_current: bool = False
 
+    current_ranges: AutorangingCurrentSettings = AutorangingCurrentField
+    pretreatment: PretreatmentSettings = PretreatmentField
+    versus_ocp: VersusOcpSettings = VersusOcpField
+    bipot: BipotSettings = BipotField
+    post_measurement: PostMeasurementSettings = PostMeasurementField
+    ir_drop: IrDropCompensationSettings = IrDropCompensationField
+    equilibration_triggers: TriggerAtEquilibrationSettings = TriggerAtEquilibrationField
+    measurement_triggers: TriggerAtMeasurementSettings = TriggerAtMeasurementField
+    peaks: PeakSettings = PeakField
+    multiplexer: MultiplexerSettings = MultiplexerField
+    common: CommonSettings = CommonField
+
     def update_psmethod(self, *, obj):
         """Update method with linear sweep settings."""
         obj.EquilibrationTime = self.equilibration_time
@@ -463,22 +484,9 @@ class DifferentialPulseParameters(
             setattr(self, key, msk[key])
 
 
-@dataclass
+@attr.define
 class ChronoAmperometryParameters(
     ParameterType,
-    AutorangingCurrentSettings,
-    PretreatmentSettings,
-    VersusOcpSettings,
-    BipotSettings,
-    PostMeasurementSettings,
-    CurrentLimitSettings,
-    ChargeLimitSettings,
-    IrDropCompensationSettings,
-    TriggerAtEquilibrationSettings,
-    TriggerAtMeasurementSettings,
-    PeakSettings,
-    MultiplexerSettings,
-    CommonSettings,
 ):
     """Create chrono amperometry method parameters.
 
@@ -516,6 +524,20 @@ class ChronoAmperometryParameters(
     record_we_potential: bool = False
     enable_bipot_current: bool = False
 
+    current_ranges: AutorangingCurrentSettings = AutorangingCurrentField
+    pretreatment: PretreatmentSettings = PretreatmentField
+    versus_ocp: VersusOcpSettings = VersusOcpField
+    bipot: BipotSettings = BipotField
+    post_measurement: PostMeasurementSettings = PostMeasurementField
+    current_limits: CurrentLimitSettings = CurrentLimitField
+    charge_limits: ChargeLimitSettings = ChargeLimitField
+    ir_drop: IrDropCompensationSettings = IrDropCompensationField
+    equilibration_triggers: TriggerAtEquilibrationSettings = TriggerAtEquilibrationField
+    measurement_triggers: TriggerAtMeasurementSettings = TriggerAtMeasurementField
+    peaks: PeakSettings = PeakField
+    multiplexer: MultiplexerSettings = MultiplexerField
+    common: CommonSettings = CommonField
+
     def update_psmethod(self, *, obj):
         """Update method with chrono amperometry settings."""
         obj.EquilibrationTime = self.equilibration_time
@@ -548,18 +570,9 @@ class ChronoAmperometryParameters(
             setattr(self, key, msk[key])
 
 
-@dataclass
+@attr.define
 class MultiStepAmperometryParameters(
     ParameterType,
-    AutorangingCurrentSettings,
-    PretreatmentSettings,
-    BipotSettings,
-    PostMeasurementSettings,
-    CurrentLimitSettings,
-    IrDropCompensationSettings,
-    PeakSettings,
-    MultiplexerSettings,
-    CommonSettings,
 ):
     """Create multi-step amperometry method parameters.
 
@@ -591,12 +604,22 @@ class MultiStepAmperometryParameters(
     equilibration_time: float = 0.0
     interval_time: float = 0.1
     n_cycles: float = 1
-    levels: list[ELevel] = field(default_factory=lambda: [ELevel()])
+    levels: list[ELevel] = attr.field(factory=lambda: [ELevel()])
 
     record_auxiliary_input: bool = False
     record_cell_potential: bool = False
     record_we_potential: bool = False
     enable_bipot_current: bool = False
+
+    current_ranges: AutorangingCurrentSettings = AutorangingCurrentField
+    pretreatment: PretreatmentSettings = PretreatmentField
+    bipot: BipotSettings = BipotField
+    post_measurement: PostMeasurementSettings = PostMeasurementField
+    current_limits: CurrentLimitSettings = CurrentLimitField
+    ir_drop: IrDropCompensationSettings = IrDropCompensationField
+    peaks: PeakSettings = PeakField
+    multiplexer: MultiplexerSettings = MultiplexerField
+    common: CommonSettings = CommonField
 
     def update_psmethod(self, *, obj):
         """Update method with chrono amperometry settings."""
@@ -643,18 +666,9 @@ class MultiStepAmperometryParameters(
             setattr(self, key, msk[key])
 
 
-@dataclass
+@attr.define
 class OpenCircuitPotentiometryParameters(
     ParameterType,
-    AutorangingCurrentSettings,
-    AutorangingPotentialSettings,
-    PretreatmentSettings,
-    PostMeasurementSettings,
-    PotentialLimitSettings,
-    TriggerAtMeasurementSettings,
-    PeakSettings,
-    MultiplexerSettings,
-    CommonSettings,
 ):
     """Create open circuit potentiometry method parameters.
 
@@ -684,6 +698,16 @@ class OpenCircuitPotentiometryParameters(
     record_we_current: bool = False
     record_we_current_range: CURRENT_RANGE = CURRENT_RANGE.cr_1_uA
 
+    current_ranges: AutorangingCurrentSettings = AutorangingCurrentField
+    potential_ranges: AutorangingPotentialSettings = AutorangingPotentialField
+    pretreatment: PretreatmentSettings = PretreatmentField
+    post_measurement: PostMeasurementSettings = PostMeasurementField
+    potential_limits: PotentialLimitSettings = PotentialLimitField
+    measurement_triggers: TriggerAtMeasurementSettings = TriggerAtMeasurementField
+    peaks: PeakSettings = PeakField
+    multiplexer: MultiplexerSettings = MultiplexerField
+    common: CommonSettings = CommonField
+
     def update_psmethod(self, *, obj):
         """Update method with open circuit potentiometry settings."""
         obj.IntervalTime = self.interval_time
@@ -710,18 +734,9 @@ class OpenCircuitPotentiometryParameters(
             setattr(self, key, msk[key])
 
 
-@dataclass
+@attr.define
 class ChronopotentiometryParameters(
     ParameterType,
-    AutorangingCurrentSettings,
-    AutorangingPotentialSettings,
-    PretreatmentSettings,
-    PostMeasurementSettings,
-    PotentialLimitSettings,
-    TriggerAtMeasurementSettings,
-    PeakSettings,
-    MultiplexerSettings,
-    CommonSettings,
 ):
     """Create potentiometry method parameters.
 
@@ -755,6 +770,16 @@ class ChronopotentiometryParameters(
     record_cell_potential: bool = False
     record_we_current: bool = False
 
+    current_ranges: AutorangingCurrentSettings = AutorangingCurrentField
+    potential_ranges: AutorangingPotentialSettings = AutorangingPotentialField
+    pretreatment: PretreatmentSettings = PretreatmentField
+    post_measurement: PostMeasurementSettings = PostMeasurementField
+    potential_limits: PotentialLimitSettings = PotentialLimitField
+    measurement_triggers: TriggerAtMeasurementSettings = TriggerAtMeasurementField
+    peaks: PeakSettings = PeakField
+    multiplexer: MultiplexerSettings = MultiplexerField
+    common: CommonSettings = CommonField
+
     def update_psmethod(self, *, obj):
         """Update method with potentiometry settings."""
         obj.Current = self.current
@@ -787,18 +812,9 @@ class ChronopotentiometryParameters(
             setattr(self, key, msk[key])
 
 
-@dataclass
+@attr.define
 class ElectrochemicalImpedanceSpectroscopyParameters(
     ParameterType,
-    AutorangingCurrentSettings,
-    AutorangingPotentialSettings,
-    PretreatmentSettings,
-    VersusOcpSettings,
-    PostMeasurementSettings,
-    TriggerAtMeasurementSettings,
-    TriggerAtEquilibrationSettings,
-    MultiplexerSettings,
-    CommonSettings,
 ):
     """Create potentiometry method parameters.
 
@@ -827,6 +843,16 @@ class ElectrochemicalImpedanceSpectroscopyParameters(
     max_frequency: float = 1e5
     min_frequency: float = 1e3
 
+    current_ranges: AutorangingCurrentSettings = AutorangingCurrentField
+    potential_ranges: AutorangingPotentialSettings = AutorangingPotentialField
+    pretreatment: PretreatmentSettings = PretreatmentField
+    versus_ocp: VersusOcpSettings = VersusOcpField
+    post_measurement: PostMeasurementSettings = PostMeasurementField
+    equilibration_triggers: TriggerAtMeasurementSettings = TriggerAtMeasurementField
+    measurement_triggers: TriggerAtEquilibrationSettings = TriggerAtEquilibrationField
+    multiplexer: MultiplexerSettings = MultiplexerField
+    common: CommonSettings = CommonField
+
     def update_psmethod(self, *, obj):
         """Update method with potentiometry settings."""
         obj.ScanType = enumScanType.Fixed
@@ -847,17 +873,9 @@ class ElectrochemicalImpedanceSpectroscopyParameters(
         self.min_frequency = obj.MinFrequency
 
 
-@dataclass
+@attr.define
 class GalvanostaticImpedanceSpectroscopyParameters(
     ParameterType,
-    AutorangingCurrentSettings,
-    AutorangingPotentialSettings,
-    PretreatmentSettings,
-    PostMeasurementSettings,
-    TriggerAtEquilibrationSettings,
-    TriggerAtMeasurementSettings,
-    MultiplexerSettings,
-    CommonSettings,
 ):
     """Create potentiometry method parameters.
 
@@ -888,6 +906,15 @@ class GalvanostaticImpedanceSpectroscopyParameters(
     max_frequency: float = 1e5
     min_frequency: float = 1e3
 
+    current_ranges: AutorangingCurrentSettings = AutorangingCurrentField
+    potential_ranges: AutorangingPotentialSettings = AutorangingPotentialField
+    pretreatment: PretreatmentSettings = PretreatmentField
+    post_measurement: PostMeasurementSettings = PostMeasurementField
+    equilibration_triggers: TriggerAtEquilibrationSettings = TriggerAtEquilibrationField
+    measurement_triggers: TriggerAtMeasurementSettings = TriggerAtMeasurementField
+    multiplexer: MultiplexerSettings = MultiplexerField
+    common: CommonSettings = CommonField
+
     def update_psmethod(self, *, obj):
         """Update method with potentiometry settings."""
 
@@ -911,7 +938,7 @@ class GalvanostaticImpedanceSpectroscopyParameters(
         self.min_frequency = obj.MinFrequency
 
 
-@dataclass
+@attr.define
 class MethodScriptParameters(ParameterType):
     """Create a method script sandbox object.
 
