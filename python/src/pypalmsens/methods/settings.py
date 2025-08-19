@@ -166,49 +166,43 @@ class BipotSettings:
 
     Attributes
     ----------
-    bipot_mode: str
+    mode: str
         Set the bipotential mode, 'constant' (default) or 'offset'
-    bipot_potential: float
+    potential: float
         Set the bipotential in V (default: 0.0)
-    bipot_current_range_max: int
+    current_range_max: int
         Maximum bipotential current range (default: 10 mA).
         Use `CURRENT_RANGE` to define the range.
-    bipot_current_range_min: int
+    current_range_min: int
         Minimum bipotential current range (default: 1 µA).
         Use `CURRENT_RANGE` to define the range.
-    bipot_current_range_start: int
+    current_range_start: int
         Start bipotential current range (default: 100 µA).
         Use `CURRENT_RANGE` to define the range.
     """
 
-    bipot_mode: Literal['constant', 'offset'] = 'constant'
-    bipot_potential: float = 0.0  # V
-    bipot_current_range_max: CURRENT_RANGE = CURRENT_RANGE.cr_10_mA
-    bipot_current_range_min: CURRENT_RANGE = CURRENT_RANGE.cr_1_uA
-    bipot_current_range_start: CURRENT_RANGE = CURRENT_RANGE.cr_100_uA
+    mode: Literal['constant', 'offset'] = 'constant'
+    potential: float = 0.0  # V
+    current_range_max: CURRENT_RANGE = CURRENT_RANGE.cr_10_mA
+    current_range_min: CURRENT_RANGE = CURRENT_RANGE.cr_1_uA
+    current_range_start: CURRENT_RANGE = CURRENT_RANGE.cr_100_uA
 
     _BIPOT_MODES = ('constant', 'offset')
 
     def update_psmethod(self, *, obj):
-        bipot_num = self._BIPOT_MODES.index(self.bipot_mode)
+        bipot_num = self._BIPOT_MODES.index(self.mode)
         obj.BipotModePS = PalmSens.Method.EnumPalmSensBipotMode(bipot_num)
-        obj.BiPotPotential = self.bipot_potential
-        obj.BipotRanging.MaximumCurrentRange = self.bipot_current_range_max.to_psobj()
-        obj.BipotRanging.MinimumCurrentRange = self.bipot_current_range_min.to_psobj()
-        obj.BipotRanging.StartCurrentRange = self.bipot_current_range_start.to_psobj()
+        obj.BiPotPotential = self.potential
+        obj.BipotRanging.MaximumCurrentRange = self.current_range_max.to_psobj()
+        obj.BipotRanging.MinimumCurrentRange = self.current_range_min.to_psobj()
+        obj.BipotRanging.StartCurrentRange = self.current_range_start.to_psobj()
 
     def update_params(self, *, obj):
-        self.bipot_mode = self._BIPOT_MODES[int(obj.BipotModePS)]
-        self.bipot_potential = obj.BiPotPotential
-        self.bipot_current_range_max = CURRENT_RANGE.from_psobj(
-            obj.BipotRanging.MaximumCurrentRange
-        )
-        self.bipot_current_range_min = CURRENT_RANGE.from_psobj(
-            obj.BipotRanging.MinimumCurrentRange
-        )
-        self.bipot_current_range_start = CURRENT_RANGE.from_psobj(
-            obj.BipotRanging.StartCurrentRange
-        )
+        self.mode = self._BIPOT_MODES[int(obj.BipotModePS)]
+        self.potential = obj.BiPotPotential
+        self.current_range_max = CURRENT_RANGE.from_psobj(obj.BipotRanging.MaximumCurrentRange)
+        self.current_range_min = CURRENT_RANGE.from_psobj(obj.BipotRanging.MinimumCurrentRange)
+        self.current_range_start = CURRENT_RANGE.from_psobj(obj.BipotRanging.StartCurrentRange)
 
 
 @dataclass
@@ -444,14 +438,14 @@ class MultiplexerSettings:
 
     Attributes
     ----------
-    set_mux_mode: int = -1
+    mode: int = -1
         Set multiplexer mode
            -1 = No multiplexer (disable)
             0 = Consecutive
             1 = Alternate
-    set_mux_channels: list[bool]
-        Set multiplexer channels as a list of bools for each channel (channel 1, channel 2, ..., channel 128).
-        In consecutive mode all selections are valid.
+    channels: list[bool]
+        Set multiplexer channels as a list of indexes for which channels to enable (max 128).
+        For example, [0,3,7]. In consecutive mode all selections are valid.
         In alternating mode the first channel must be selected and all other
         channels should be consequtive i.e. (channel 1, channel 2, channel 3 and so on).
     connect_sense_to_working_electrode: bool
@@ -465,10 +459,8 @@ class MultiplexerSettings:
 
     """
 
-    set_mux_mode: Literal['none', 'consecutive', 'alternate'] = 'none'
-    set_mux_channels: list[bool] = field(
-        default_factory=lambda: [False, False, False, False, False, False, False, False]
-    )
+    mode: Literal['none', 'consecutive', 'alternate'] = 'none'
+    channels: list[int] = field(default_factory=list)
     connect_sense_to_working_electrode: bool = False
     combine_reference_and_counter_electrodes: bool = False
     use_channel_1_reference_and_counter_electrodes: bool = False
@@ -478,16 +470,16 @@ class MultiplexerSettings:
 
     def update_psmethod(self, *, obj):
         # Create a mux8r2 multiplexer settings settings object
-        mux_mode = self._MUX_MODES.index(self.set_mux_mode) - 1
+        mux_mode = self._MUX_MODES.index(self.mode) - 1
         obj.MuxMethod = PSMuxMethod(mux_mode)
 
-        # disable all mux channels
+        # disable all mux channels (range 0-127)
         for i in range(len(obj.UseMuxChannel)):
             obj.UseMuxChannel[i] = False
 
         # set the selected mux channels
-        for i, use_channel in enumerate(self.set_mux_channels):
-            obj.UseMuxChannel[i] = use_channel
+        for i in self.channels:
+            obj.UseMuxChannel[i - 1] = True
 
         obj.MuxSett.ConnSEWE = self.connect_sense_to_working_electrode
         obj.MuxSett.ConnectCERE = self.combine_reference_and_counter_electrodes
@@ -497,13 +489,9 @@ class MultiplexerSettings:
         )
 
     def update_params(self, *, obj):
-        self.set_mux_mode = self._MUX_MODES[int(obj.MuxMethod) + 1]
+        self.mode = self._MUX_MODES[int(obj.MuxMethod) + 1]
 
-        channels = [i for i in range(len(obj.UseMuxChannel)) if obj.UseMuxChannel[i]]
-
-        n_channels = max(channels) + 1 if channels else 0
-
-        self.set_mux_channels = [i in channels for i in range(n_channels)]
+        self.channels = [i + 1 for i in range(len(obj.UseMuxChannel)) if obj.UseMuxChannel[i]]
 
         self.connect_sense_to_working_electrode = obj.MuxSett.ConnSEWE
         self.combine_reference_and_counter_electrodes = obj.MuxSett.ConnectCERE

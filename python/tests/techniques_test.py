@@ -89,9 +89,11 @@ class TestCV:
     @pytest.mark.instrument
     def test_measurement(self, manager):
         method = self.pycls(
-            current_range_max=CURRENT_RANGE.cr_1_mA,
-            current_range_min=CURRENT_RANGE.cr_100_nA,
-            current_range_start=CURRENT_RANGE.cr_100_uA,
+            current_ranges={
+                'max': CURRENT_RANGE.cr_1_mA,
+                'min': CURRENT_RANGE.cr_100_nA,
+                'start': CURRENT_RANGE.cr_100_uA,
+            },
             **self.kwargs,
         )
         measurement = manager.measure(method)
@@ -135,9 +137,11 @@ class TestLSV:
     @pytest.mark.instrument
     def test_measurement(self, manager):
         method = self.pycls(
-            current_range_max=CURRENT_RANGE.cr_1_mA,
-            current_range_min=CURRENT_RANGE.cr_100_nA,
-            current_range_start=CURRENT_RANGE.cr_100_uA,
+            current_ranges={
+                'max': CURRENT_RANGE.cr_1_mA,
+                'min': CURRENT_RANGE.cr_100_nA,
+                'start': CURRENT_RANGE.cr_100_uA,
+            },
             **self.kwargs,
         )
         measurement = manager.measure(method)
@@ -176,9 +180,11 @@ class TestSWV:
     @pytest.mark.instrument
     def test_measurement(self, manager):
         method = self.pycls(
-            current_range_max=CURRENT_RANGE.cr_1_mA,
-            current_range_min=CURRENT_RANGE.cr_100_nA,
-            current_range_start=CURRENT_RANGE.cr_100_uA,
+            current_ranges={
+                'max': CURRENT_RANGE.cr_1_mA,
+                'min': CURRENT_RANGE.cr_100_nA,
+                'start': CURRENT_RANGE.cr_100_uA,
+            },
             **self.kwargs,
         )
         measurement = manager.measure(method)
@@ -214,9 +220,11 @@ class TestCP:
     @pytest.mark.instrument
     def test_measurement(self, manager):
         method = self.pycls(
-            potential_range_max=POTENTIAL_RANGE.pr_1_V,
-            potential_range_min=POTENTIAL_RANGE.pr_10_mV,
-            potential_range_start=POTENTIAL_RANGE.pr_1_V,
+            potential_ranges={
+                'max': POTENTIAL_RANGE.pr_1_V,
+                'min': POTENTIAL_RANGE.pr_10_mV,
+                'start': POTENTIAL_RANGE.pr_1_V,
+            },
             **self.kwargs,
         )
         measurement = manager.measure(method)
@@ -249,9 +257,11 @@ class TestOCP:
     @pytest.mark.instrument
     def test_measurement(self, manager):
         method = self.pycls(
-            potential_range_max=POTENTIAL_RANGE.pr_1_V,
-            potential_range_min=POTENTIAL_RANGE.pr_10_mV,
-            potential_range_start=POTENTIAL_RANGE.pr_1_V,
+            potential_ranges={
+                'max': POTENTIAL_RANGE.pr_1_V,
+                'min': POTENTIAL_RANGE.pr_10_mV,
+                'start': POTENTIAL_RANGE.pr_1_V,
+            },
             **self.kwargs,
         )
         measurement = manager.measure(method)

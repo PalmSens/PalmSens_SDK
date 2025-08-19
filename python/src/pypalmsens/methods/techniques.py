@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from abc import abstractmethod
-from typing import TYPE_CHECKING, Any, ClassVar, Protocol, Type, runtime_checkable
+from typing import TYPE_CHECKING, ClassVar, Protocol, Type, runtime_checkable
 
 import attr
 from PalmSens import Method as PSMethod
@@ -11,6 +11,7 @@ from ._shared import (
     CURRENT_RANGE,
     ELevel,
     get_extra_value_mask,
+    make_field,
     set_extra_value_mask,
 )
 from .settings import (
@@ -36,13 +37,6 @@ if TYPE_CHECKING:
     from .method import Method
 
 
-def make_field(Settings: Any) -> Any:
-    return attr.field(
-        factory=Settings,
-        converter=lambda _: Settings(**_) if isinstance(_, dict) else _,
-    )
-
-
 AutorangingCurrentField = make_field(AutorangingCurrentSettings)
 PretreatmentField = make_field(PretreatmentSettings)
 VersusOcpField = make_field(VersusOcpSettings)
@@ -64,7 +58,7 @@ ChargeLimitField = make_field(ChargeLimitSettings)
 class ParameterType(Protocol):
     """Protocol to provide generic methods for parameters."""
 
-    __attrs_attrs__: ClassVar[list[attr.Attribute]]
+    __attrs_attrs__: ClassVar[list[attr.Attribute]] = []
 
     def to_psmethod(self):
         return parameters_to_psmethod(self)
@@ -83,6 +77,8 @@ class ParameterType(Protocol):
 def parameters_to_psmethod(params) -> Method:
     """Convert parameters to dotnet method."""
     psmethod = PSMethod.FromMethodID(params._id)
+
+    params.update_psmethod(obj=psmethod)
 
     for attrib in params.__attrs_attrs__:
         if isinstance(attrib.type, SettingsType):

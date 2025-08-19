@@ -54,9 +54,9 @@ def test_set_extra_value_mask():
 
 def test_AutorangingCurrentSettings():
     kwargs = {
-        'current_range_max': CURRENT_RANGE.cr_100_uA,
-        'current_range_min': CURRENT_RANGE.cr_100_nA,
-        'current_range_start': CURRENT_RANGE.cr_10_uA,
+        'max': CURRENT_RANGE.cr_100_uA,
+        'min': CURRENT_RANGE.cr_100_nA,
+        'start': CURRENT_RANGE.cr_10_uA,
     }
 
     obj = Techniques.CyclicVoltammetry()
@@ -76,9 +76,9 @@ def test_AutorangingCurrentSettings():
 
 def test_AutorangingPotentialSettings():
     kwargs = {
-        'potential_range_max': POTENTIAL_RANGE.pr_100_mV,
-        'potential_range_min': POTENTIAL_RANGE.pr_1_mV,
-        'potential_range_start': POTENTIAL_RANGE.pr_10_mV,
+        'max': POTENTIAL_RANGE.pr_100_mV,
+        'min': POTENTIAL_RANGE.pr_1_mV,
+        'start': POTENTIAL_RANGE.pr_10_mV,
     }
 
     obj = Techniques.Potentiometry()
@@ -124,9 +124,9 @@ def test_VersusOcpSettings():
     obj = Techniques.CyclicVoltammetry()
 
     kwargs = {
-        'versus_ocp_mode': 7,
-        'versus_ocp_max_ocp_time': 200.0,
-        'versus_ocp_stability_criterion': 123,
+        'mode': 7,
+        'max_ocp_time': 200.0,
+        'stability_criterion': 123,
     }
 
     params = settings.VersusOcpSettings(**kwargs)
@@ -146,11 +146,11 @@ def test_BipotSettings():
     obj = Techniques.CyclicVoltammetry()
 
     kwargs = {
-        'bipot_mode': 'offset',
-        'bipot_potential': 10.0,
-        'bipot_current_range_max': CURRENT_RANGE.cr_100_uA,
-        'bipot_current_range_min': CURRENT_RANGE.cr_10_nA,
-        'bipot_current_range_start': CURRENT_RANGE.cr_10_uA,
+        'mode': 'offset',
+        'potential': 10.0,
+        'current_range_max': CURRENT_RANGE.cr_100_uA,
+        'current_range_min': CURRENT_RANGE.cr_10_nA,
+        'current_range_start': CURRENT_RANGE.cr_10_uA,
     }
 
     params = settings.BipotSettings(**kwargs)
@@ -194,10 +194,10 @@ def test_CurrentLimitSettings():
     obj = Techniques.CyclicVoltammetry()
 
     kwargs = {
-        'use_limit_current_max': True,
-        'limit_current_max': 123.0,
-        'use_limit_current_min': True,
-        'limit_current_min': 678.0,
+        'use_limit_max': True,
+        'limit_max': 123.0,
+        'use_limit_min': True,
+        'limit_min': 678.0,
     }
 
     params = settings.CurrentLimitSettings(**kwargs)
@@ -218,10 +218,10 @@ def test_PotentialLimitSettings():
     obj = Techniques.CyclicVoltammetry()
 
     kwargs = {
-        'use_limit_potential_max': True,
-        'limit_potential_max': 123.0,
-        'use_limit_potential_min': True,
-        'limit_potential_min': 678.0,
+        'use_limit_max': True,
+        'limit_max': 123.0,
+        'use_limit_min': True,
+        'limit_min': 678.0,
     }
 
     params = settings.PotentialLimitSettings(**kwargs)
@@ -242,10 +242,10 @@ def test_ChargeLimitSettings():
     obj = Techniques.CyclicVoltammetry()
 
     kwargs = {
-        'use_limit_charge_max': True,
-        'limit_charge_max': 123.0,
-        'use_limit_charge_min': True,
-        'limit_charge_min': 678.0,
+        'use_limit_max': True,
+        'limit_max': 123.0,
+        'use_limit_min': True,
+        'limit_min': 678.0,
     }
 
     params = settings.ChargeLimitSettings(**kwargs)
@@ -266,7 +266,7 @@ def test_IrDropCompensationSettings():
     obj = Techniques.CyclicVoltammetry()
 
     kwargs = {
-        'use_ir_compensation': True,
+        'enable': True,
         'ir_compensation': 123.0,
     }
 
@@ -286,8 +286,11 @@ def test_TriggerAtEquilibrationSettings():
     obj = Techniques.CyclicVoltammetry()
 
     kwargs = {
-        'trigger_at_equilibration': True,
-        'trigger_at_equilibration_lines': (True, False, True, True),
+        'enable': True,
+        'd0': True,
+        'd1': False,
+        'd2': True,
+        'd3': True,
     }
 
     params = settings.TriggerAtEquilibrationSettings(**kwargs)
@@ -306,8 +309,11 @@ def test_TriggerAtMeasurementSettings():
     obj = Techniques.CyclicVoltammetry()
 
     kwargs = {
-        'trigger_at_measurement': True,
-        'trigger_at_measurement_lines': (True, True, False, True),
+        'enable': True,
+        'd0': True,
+        'd1': True,
+        'd2': False,
+        'd3': True,
     }
 
     params = settings.TriggerAtMeasurementSettings(**kwargs)
@@ -326,8 +332,8 @@ def test_MultiplexerSettings():
     obj = Techniques.CyclicVoltammetry()
 
     kwargs = {
-        'set_mux_mode': 0,
-        'set_mux_channels': [True, False, True, False, True],
+        'mode': 'consecutive',
+        'channels': [1, 3, 5],
         'connect_sense_to_working_electrode': True,
         'combine_reference_and_counter_electrodes': True,
         'use_channel_1_reference_and_counter_electrodes': True,
@@ -357,8 +363,8 @@ def test_PeakSettings():
 
     kwargs = {
         'smooth_level': 1,
-        'min_peak_width': 13,
-        'min_peak_height': 37,
+        'min_width': 13,
+        'min_height': 37,
     }
 
     params = settings.PeakSettings(**kwargs)

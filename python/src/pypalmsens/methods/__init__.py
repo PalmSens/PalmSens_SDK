@@ -22,7 +22,6 @@ from .techniques import (
 )
 
 __all__ = [
-    'CURRENT_RANGE',
     'ChronoAmperometryParameters',
     'ChronopotentiometryParameters',
     'CyclicVoltammetryParameters',
@@ -35,7 +34,8 @@ __all__ = [
     'MultiStepAmperometryParameters',
     'OpenCircuitPotentiometryParameters',
     'ParameterType',
-    'POTENTIAL_RANGE',
     'SquareWaveParameters',
     'set_extra_value_mask',
+    'POTENTIAL_RANGE',
+    'CURRENT_RANGE',
 ]

@@ -1,7 +1,6 @@
 from __future__ import annotations
 
-from dataclasses import asdict
-
+from attrs import asdict
 from pytest import approx
 
 from pypalmsens import (
