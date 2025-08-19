@@ -146,7 +146,7 @@ def test_BipotSettings():
     obj = Techniques.CyclicVoltammetry()
 
     kwargs = {
-        'bipot_mode': 1,
+        'bipot_mode': 'offset',
         'bipot_potential': 10.0,
         'bipot_current_range_max': CURRENT_RANGE.cr_100_uA,
         'bipot_current_range_min': CURRENT_RANGE.cr_10_nA,

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Literal
+from typing import Literal, Protocol, runtime_checkable
 
 import PalmSens
 from PalmSens import Method as PSMethod
@@ -13,6 +13,14 @@ from ._shared import (
     convert_bools_to_int,
     convert_int_to_bools,
 )
+
+
+@runtime_checkable
+class SettingsType(Protocol):
+    """Protocol to provide generic methods for parameters."""
+
+    def update_psmethod(self, *, obj): ...
+    def update_params(self, *, obj): ...
 
 
 @dataclass
@@ -164,10 +172,8 @@ class BipotSettings:
 
     Attributes
     ----------
-    enable_bipot_current: bool
-        Enable bipotential current (default: False)
-    bipot_mode: int
-        Set the bipotential mode, 0 = constant, 1 = offset (default: 0)
+    bipot_mode: str
+        Set the bipotential mode, 'constant' (default) or 'offset'
     bipot_potential: float
         Set the bipotential in V (default: 0.0)
     bipot_current_range_max: int
@@ -181,21 +187,24 @@ class BipotSettings:
         Use `CURRENT_RANGE` to define the range.
     """
 
-    bipot_mode: int = 0
+    bipot_mode: Literal['constant', 'offset'] = 'constant'
     bipot_potential: float = 0.0  # V
     bipot_current_range_max: CURRENT_RANGE = CURRENT_RANGE.cr_10_mA
     bipot_current_range_min: CURRENT_RANGE = CURRENT_RANGE.cr_1_uA
     bipot_current_range_start: CURRENT_RANGE = CURRENT_RANGE.cr_100_uA
 
+    _BIPOT_MODES = ('constant', 'offset')
+
     def update_psmethod(self, *, obj):
-        obj.BipotModePS = PalmSens.Method.EnumPalmSensBipotMode(self.bipot_mode)
+        bipot_num = self._BIPOT_MODES.index(self.bipot_mode)
+        obj.BipotModePS = PalmSens.Method.EnumPalmSensBipotMode(bipot_num)
         obj.BiPotPotential = self.bipot_potential
         obj.BipotRanging.MaximumCurrentRange = self.bipot_current_range_max.to_psobj()
         obj.BipotRanging.MinimumCurrentRange = self.bipot_current_range_min.to_psobj()
         obj.BipotRanging.StartCurrentRange = self.bipot_current_range_start.to_psobj()
 
     def update_params(self, *, obj):
-        self.bipot_mode = int(obj.BipotModePS)
+        self.bipot_mode = self._BIPOT_MODES[int(obj.BipotModePS)]
         self.bipot_potential = obj.BiPotPotential
         self.bipot_current_range_max = CURRENT_RANGE.from_psobj(
             obj.BipotRanging.MaximumCurrentRange
@@ -544,9 +553,6 @@ class CommonSettings:
         Set the DC mains filter in Hz.
         Adjusts sampling on instrument to account for mains frequency.
         Set to 50 Hz or 60 Hz depending on your region (default: 50).
-
-
-
     """
 
     save_on_internal_storage: bool = False
