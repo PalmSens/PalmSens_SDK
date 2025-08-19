@@ -3,9 +3,8 @@ from __future__ import annotations
 import asyncio
 import sys
 import traceback
-from contextlib import contextmanager
 from time import sleep
-from typing import Callable, Generator, Optional
+from typing import Callable, Optional
 
 import clr
 import PalmSens
@@ -95,11 +94,10 @@ def discover(
     return available_instruments
 
 
-@contextmanager
 def connect(
     instrument: Optional[Instrument] = None,
-) -> Generator[InstrumentManager, None, None]:
-    """Context manager for device connection.
+) -> InstrumentManager:
+    """Connect to instrument and return InstrumentManager.
 
     Parameters
     ----------
@@ -123,30 +121,43 @@ def connect(
         # connect to first instrument
         instrument = available_instruments[0]
 
-    manager = InstrumentManager()
-    manager.connect(instrument)
-    try:
-        yield manager
-    finally:
-        manager.disconnect()
+    manager = InstrumentManager(instrument)
+    manager.connect()
+    return manager
 
 
 class InstrumentManager:
-    def __init__(self, callback: Optional[Callable] = None):
+    def __init__(self, instrument: Instrument, *, callback: Optional[Callable] = None):
         self.callback = callback
+        self.instrument = instrument
         self.__comm = None
         self.__measuring = False
         self.__active_measurement = None
         self.__active_measurement_error = None
 
-    def connect(self, instrument):
+    def __repr__(self):
+        return f'{self.__class__.__name__}({self.instrument.name})'
+
+    def __enter__(self):
+        if not self.is_connected():
+            self.connect()
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        self.disconnect()
+
+    def is_connected(self) -> bool:
+        """Return True if an instrument connection exists."""
+        return self.__comm is not None
+
+    def connect(self):
         if self.__comm is not None:
             print(
                 'An instance of the InstrumentManager can only be connected to one instrument at a time'
             )
             return 0
         try:
-            __instrument = instrument.device
+            __instrument = self.instrument.device
             __instrument.Open()
             self.__comm = CommManager(__instrument)
 

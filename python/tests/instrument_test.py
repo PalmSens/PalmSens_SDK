@@ -92,7 +92,7 @@ def test_connect():
 @pytest.mark.instrument
 @pytest.mark.asyncio
 async def test_connect_async():
-    async with pypalmsens.connect_async() as manager:
+    async with await pypalmsens.connect_async() as manager:
         assert isinstance(manager, pypalmsens.instruments.InstrumentManagerAsync)
 
 

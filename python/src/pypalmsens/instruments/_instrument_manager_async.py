@@ -3,8 +3,7 @@ from __future__ import annotations
 import asyncio
 import sys
 import traceback
-from contextlib import asynccontextmanager
-from typing import AsyncGenerator, Callable, Optional
+from typing import Callable, Optional
 
 import clr
 import PalmSens
@@ -98,11 +97,10 @@ async def discover_async(
     return available_instruments
 
 
-@asynccontextmanager
 async def connect_async(
     instrument: Optional[Instrument] = None,
-) -> AsyncGenerator[InstrumentManagerAsync, None]:
-    """Async context manager for device connection.
+) -> InstrumentManagerAsync:
+    """Connect to instrument and return InstrumentManagerAsync.
 
     Parameters
     ----------
@@ -126,24 +124,35 @@ async def connect_async(
         # connect to first instrument
         instrument = available_instruments[0]
 
-    manager = InstrumentManagerAsync()
-    await manager.connect(instrument)
-
-    try:
-        yield manager
-    finally:
-        await manager.disconnect()
+    manager = InstrumentManagerAsync(instrument)
+    await manager.connect()
+    return manager
 
 
 class InstrumentManagerAsync:
-    def __init__(self, callback: Optional[Callable] = None):
+    def __init__(self, instrument, *, callback: Optional[Callable] = None):
         self.callback = callback
+        self.instrument = instrument
         self.__comm = None
         self.__measuring = False
         self.__active_measurement = None
         self.__active_measurement_error = None
 
-    async def connect(self, instrument):
+    def __repr__(self):
+        return f'{self.__class__.__name__}({self.instrument.name})'
+
+    async def __aenter__(self):
+        if not self.is_connected():
+            await self.connect()
+        return self
+
+    async def __aexit__(self, exc_type, exc_value, traceback):
+        return await self.disconnect()
+
+    def is_connected(self) -> bool:
+        return self.__comm is not None
+
+    async def connect(self):
         if self.__comm is not None:
             print(
                 'An instance of the InstrumentManager can only be connected to one instrument at a time'
@@ -151,7 +160,7 @@ class InstrumentManagerAsync:
             return 0
 
         try:
-            __instrument = instrument.device
+            __instrument = self.instrument.device
             await create_future(__instrument.OpenAsync())
             self.__comm = await create_future(CommManager.CommManagerAsync(__instrument))
 
