@@ -7,6 +7,8 @@ import PalmSens
 from PalmSens import Method as PSMethod
 from PalmSens import MuxMethod as PSMuxMethod
 
+from pypalmsens._shared import single_to_double
+
 from ._shared import (
     CURRENT_RANGE,
     POTENTIAL_RANGE,
@@ -45,9 +47,6 @@ class CurrentRanges(BaseSettings):
     start: CURRENT_RANGE = CURRENT_RANGE.cr_100_uA
 
     def _update_psmethod(self, *, obj):
-        obj.Ranging.MaximumCurrentRange = self.max.to_psobj()
-        obj.Ranging.MinimumCurrentRange = self.min.to_psobj()
-        obj.Ranging.StartCurrentRange = self.start.to_psobj()
         obj.Ranging.MaximumCurrentRange = self.max._to_psobj()
         obj.Ranging.MinimumCurrentRange = self.min._to_psobj()
         obj.Ranging.StartCurrentRange = self.start._to_psobj()
@@ -535,8 +534,8 @@ class DataProcessing(BaseSettings):
 
     def _update_params(self, *, obj):
         self.smooth_level = obj.SmoothLevel
-        self.min_width = obj.MinPeakWidth
-        self.min_height = obj.MinPeakHeight
+        self.min_width = single_to_double(obj.MinPeakWidth)
+        self.min_height = single_to_double(obj.MinPeakHeight)
 
 
 @attrs.define
