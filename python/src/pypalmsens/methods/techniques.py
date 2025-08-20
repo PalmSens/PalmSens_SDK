@@ -7,7 +7,6 @@ import attrs
 from PalmSens import Method as PSMethod
 from PalmSens.Techniques.Impedance import enumFrequencyType, enumScanType
 
-from . import settings
 from ._shared import (
     CURRENT_RANGE,
     ELevel,
@@ -15,22 +14,22 @@ from ._shared import (
     set_extra_value_mask,
 )
 from .settings import (
-    AutorangingCurrentSettings,
-    AutorangingPotentialSettings,
-    BipotSettings,
-    ChargeLimitSettings,
-    CommonSettings,
-    CurrentLimitSettings,
-    IrDropCompensationSettings,
-    MultiplexerSettings,
-    PeakSettings,
-    PostMeasurementSettings,
-    PotentialLimitSettings,
-    PretreatmentSettings,
+    BiPot,
+    ChargeLimits,
+    CurrentLimits,
+    CurrentRanges,
+    DataProcessing,
+    EquilibriumTriggers,
+    General,
+    IrDropCompensation,
+    MeasurementTriggers,
+    Multiplexer,
+    PostMeasurement,
+    PotentialLimits,
+    PotentialRanges,
+    Pretreatment,
     SettingsType,
-    TriggerAtEquilibrationSettings,
-    TriggerAtMeasurementSettings,
-    VersusOcpSettings,
+    VersusOCP,
 )
 
 if TYPE_CHECKING:
@@ -63,7 +62,7 @@ def parameters_to_psmethod(params) -> Method:
 
     params.update_psmethod(obj=psmethod)
 
-    for attrib in attrs.fields(params):
+    for attrib in params.__attrs_attrs__:
         if isinstance(attrib.type, SettingsType):
             sett = getattr(params, attrib.name)
             sett.update_psmethod(obj=psmethod)
@@ -137,35 +136,16 @@ class CyclicVoltammetry(BaseConfig):
     record_cell_potential: bool = False
     record_we_potential: bool = False
 
-    current_ranges: AutorangingCurrentSettings = attrs.field(
-        factory=AutorangingCurrentSettings, converter=settings.to_AutorangingCurrentSettings
-    )
-    pretreatment: PretreatmentSettings = attrs.field(
-        factory=PretreatmentSettings, converter=settings.to_PretreatmentSettings
-    )
-    versus_ocp: VersusOcpSettings = attrs.field(
-        factory=VersusOcpSettings, converter=settings.to_VersusOcpSettings
-    )
-    post_measurement: PostMeasurementSettings = attrs.field(
-        factory=PostMeasurementSettings, converter=settings.to_PostMeasurementSettings
-    )
-    current_limits: CurrentLimitSettings = attrs.field(
-        factory=CurrentLimitSettings, converter=settings.to_CurrentLimitSettings
-    )
-    ir_drop_compensation: IrDropCompensationSettings = attrs.field(
-        factory=IrDropCompensationSettings, converter=settings.to_IrDropCompensationSettings
-    )
-    equilibrion_triggers: TriggerAtEquilibrationSettings = attrs.field(
-        factory=TriggerAtEquilibrationSettings,
-        converter=settings.to_TriggerAtEquilibrationSettings,
-    )
-    measurement_triggers: TriggerAtMeasurementSettings = attrs.field(
-        factory=TriggerAtMeasurementSettings, converter=settings.to_TriggerAtMeasurementSettings
-    )
-    peaks: PeakSettings = attrs.field(factory=PeakSettings, converter=settings.to_PeakSettings)
-    general: CommonSettings = attrs.field(
-        factory=CommonSettings, converter=settings.to_CommonSettings
-    )
+    current_ranges: CurrentRanges = attrs.field(factory=CurrentRanges)
+    pretreatment: Pretreatment = attrs.field(factory=Pretreatment)
+    versus_ocp: VersusOCP = attrs.field(factory=VersusOCP)
+    post_measurement: PostMeasurement = attrs.field(factory=PostMeasurement)
+    current_limits: CurrentLimits = attrs.field(factory=CurrentLimits)
+    ir_drop_compensation: IrDropCompensation = attrs.field(factory=IrDropCompensation)
+    equilibrion_triggers: EquilibriumTriggers = attrs.field(factory=EquilibriumTriggers)
+    measurement_triggers: MeasurementTriggers = attrs.field(factory=MeasurementTriggers)
+    data_processing: DataProcessing = attrs.field(factory=DataProcessing)
+    general: General = attrs.field(factory=General)
 
     def update_psmethod(self, *, obj):
         """Update method with cyclic voltammetry settings."""
@@ -243,41 +223,18 @@ class LinearSweepVoltammetry(BaseConfig):
     record_we_potential: bool = False
     enable_bipot_current: bool = False
 
-    current_ranges: AutorangingCurrentSettings = attrs.field(
-        factory=AutorangingCurrentSettings, converter=settings.to_AutorangingCurrentSettings
-    )
-    pretreatment: PretreatmentSettings = attrs.field(
-        factory=PretreatmentSettings, converter=settings.to_PretreatmentSettings
-    )
-    versus_ocp: VersusOcpSettings = attrs.field(
-        factory=VersusOcpSettings, converter=settings.to_VersusOcpSettings
-    )
-    bipot: BipotSettings = attrs.field(
-        factory=BipotSettings, converter=settings.to_BipotSettings
-    )
-    post_measurement: PostMeasurementSettings = attrs.field(
-        factory=PostMeasurementSettings, converter=settings.to_PostMeasurementSettings
-    )
-    current_limits: CurrentLimitSettings = attrs.field(
-        factory=CurrentLimitSettings, converter=settings.to_CurrentLimitSettings
-    )
-    ir_drop: IrDropCompensationSettings = attrs.field(
-        factory=IrDropCompensationSettings, converter=settings.to_IrDropCompensationSettings
-    )
-    equilibration_triggers: TriggerAtEquilibrationSettings = attrs.field(
-        factory=TriggerAtEquilibrationSettings,
-        converter=settings.to_TriggerAtEquilibrationSettings,
-    )
-    measurement_triggers: TriggerAtMeasurementSettings = attrs.field(
-        factory=TriggerAtMeasurementSettings, converter=settings.to_TriggerAtMeasurementSettings
-    )
-    peaks: PeakSettings = attrs.field(factory=PeakSettings, converter=settings.to_PeakSettings)
-    multiplexer: MultiplexerSettings = attrs.field(
-        factory=MultiplexerSettings, converter=settings.to_MultiplexerSettings
-    )
-    common: CommonSettings = attrs.field(
-        factory=CommonSettings, converter=settings.to_CommonSettings
-    )
+    current_ranges: CurrentRanges = attrs.field(factory=CurrentRanges)
+    pretreatment: Pretreatment = attrs.field(factory=Pretreatment)
+    versus_ocp: VersusOCP = attrs.field(factory=VersusOCP)
+    bipot: BiPot = attrs.field(factory=BiPot)
+    post_measurement: PostMeasurement = attrs.field(factory=PostMeasurement)
+    current_limits: CurrentLimits = attrs.field(factory=CurrentLimits)
+    ir_drop: IrDropCompensation = attrs.field(factory=IrDropCompensation)
+    equilibration_triggers: EquilibriumTriggers = attrs.field(factory=EquilibriumTriggers)
+    measurement_triggers: MeasurementTriggers = attrs.field(factory=MeasurementTriggers)
+    data_processing: DataProcessing = attrs.field(factory=DataProcessing)
+    multiplexer: Multiplexer = attrs.field(factory=Multiplexer)
+    general: General = attrs.field(factory=General)
 
     def update_psmethod(self, *, obj):
         """Update method with linear sweep settings."""
@@ -358,38 +315,17 @@ class SquareWaveVoltammetry(BaseConfig):
     enable_bipot_current: bool = False
     record_forward_and_reverse_currents: bool = False
 
-    current_ranges: AutorangingCurrentSettings = attrs.field(
-        factory=AutorangingCurrentSettings, converter=settings.to_AutorangingCurrentSettings
-    )
-    pretreatment: PretreatmentSettings = attrs.field(
-        factory=PretreatmentSettings, converter=settings.to_PretreatmentSettings
-    )
-    versus_ocp: VersusOcpSettings = attrs.field(
-        factory=VersusOcpSettings, converter=settings.to_VersusOcpSettings
-    )
-    bipot: BipotSettings = attrs.field(
-        factory=BipotSettings, converter=settings.to_BipotSettings
-    )
-    post_measurement: PostMeasurementSettings = attrs.field(
-        factory=PostMeasurementSettings, converter=settings.to_PostMeasurementSettings
-    )
-    ir_drop: IrDropCompensationSettings = attrs.field(
-        factory=IrDropCompensationSettings, converter=settings.to_IrDropCompensationSettings
-    )
-    equilibration_triggers: TriggerAtEquilibrationSettings = attrs.field(
-        factory=TriggerAtEquilibrationSettings,
-        converter=settings.to_TriggerAtEquilibrationSettings,
-    )
-    measurement_triggers: TriggerAtMeasurementSettings = attrs.field(
-        factory=TriggerAtMeasurementSettings, converter=settings.to_TriggerAtMeasurementSettings
-    )
-    peaks: PeakSettings = attrs.field(factory=PeakSettings, converter=settings.to_PeakSettings)
-    multiplexer: MultiplexerSettings = attrs.field(
-        factory=MultiplexerSettings, converter=settings.to_MultiplexerSettings
-    )
-    common: CommonSettings = attrs.field(
-        factory=CommonSettings, converter=settings.to_CommonSettings
-    )
+    current_ranges: CurrentRanges = attrs.field(factory=CurrentRanges)
+    pretreatment: Pretreatment = attrs.field(factory=Pretreatment)
+    versus_ocp: VersusOCP = attrs.field(factory=VersusOCP)
+    bipot: BiPot = attrs.field(factory=BiPot)
+    post_measurement: PostMeasurement = attrs.field(factory=PostMeasurement)
+    ir_drop: IrDropCompensation = attrs.field(factory=IrDropCompensation)
+    equilibration_triggers: EquilibriumTriggers = attrs.field(factory=EquilibriumTriggers)
+    measurement_triggers: MeasurementTriggers = attrs.field(factory=MeasurementTriggers)
+    data_processing: DataProcessing = attrs.field(factory=DataProcessing)
+    multiplexer: Multiplexer = attrs.field(factory=Multiplexer)
+    general: General = attrs.field(factory=General)
 
     def update_psmethod(self, *, obj):
         """Update method with linear sweep settings."""
@@ -476,38 +412,17 @@ class DifferentialPulseVoltammetry(BaseConfig):
     record_we_potential: bool = False
     enable_bipot_current: bool = False
 
-    current_ranges: AutorangingCurrentSettings = attrs.field(
-        factory=AutorangingCurrentSettings, converter=settings.to_AutorangingCurrentSettings
-    )
-    pretreatment: PretreatmentSettings = attrs.field(
-        factory=PretreatmentSettings, converter=settings.to_PretreatmentSettings
-    )
-    versus_ocp: VersusOcpSettings = attrs.field(
-        factory=VersusOcpSettings, converter=settings.to_VersusOcpSettings
-    )
-    bipot: BipotSettings = attrs.field(
-        factory=BipotSettings, converter=settings.to_BipotSettings
-    )
-    post_measurement: PostMeasurementSettings = attrs.field(
-        factory=PostMeasurementSettings, converter=settings.to_PostMeasurementSettings
-    )
-    ir_drop: IrDropCompensationSettings = attrs.field(
-        factory=IrDropCompensationSettings, converter=settings.to_IrDropCompensationSettings
-    )
-    equilibration_triggers: TriggerAtEquilibrationSettings = attrs.field(
-        factory=TriggerAtEquilibrationSettings,
-        converter=settings.to_TriggerAtEquilibrationSettings,
-    )
-    measurement_triggers: TriggerAtMeasurementSettings = attrs.field(
-        factory=TriggerAtMeasurementSettings, converter=settings.to_TriggerAtMeasurementSettings
-    )
-    peaks: PeakSettings = attrs.field(factory=PeakSettings, converter=settings.to_PeakSettings)
-    multiplexer: MultiplexerSettings = attrs.field(
-        factory=MultiplexerSettings, converter=settings.to_MultiplexerSettings
-    )
-    common: CommonSettings = attrs.field(
-        factory=CommonSettings, converter=settings.to_CommonSettings
-    )
+    current_ranges: CurrentRanges = attrs.field(factory=CurrentRanges)
+    pretreatment: Pretreatment = attrs.field(factory=Pretreatment)
+    versus_ocp: VersusOCP = attrs.field(factory=VersusOCP)
+    bipot: BiPot = attrs.field(factory=BiPot)
+    post_measurement: PostMeasurement = attrs.field(factory=PostMeasurement)
+    ir_drop: IrDropCompensation = attrs.field(factory=IrDropCompensation)
+    equilibration_triggers: EquilibriumTriggers = attrs.field(factory=EquilibriumTriggers)
+    measurement_triggers: MeasurementTriggers = attrs.field(factory=MeasurementTriggers)
+    data_processing: DataProcessing = attrs.field(factory=DataProcessing)
+    multiplexer: Multiplexer = attrs.field(factory=Multiplexer)
+    general: General = attrs.field(factory=General)
 
     def update_psmethod(self, *, obj):
         """Update method with linear sweep settings."""
@@ -585,44 +500,19 @@ class ChronoAmperometry(BaseConfig):
     record_we_potential: bool = False
     enable_bipot_current: bool = False
 
-    current_ranges: AutorangingCurrentSettings = attrs.field(
-        factory=AutorangingCurrentSettings, converter=settings.to_AutorangingCurrentSettings
-    )
-    pretreatment: PretreatmentSettings = attrs.field(
-        factory=PretreatmentSettings, converter=settings.to_PretreatmentSettings
-    )
-    versus_ocp: VersusOcpSettings = attrs.field(
-        factory=VersusOcpSettings, converter=settings.to_VersusOcpSettings
-    )
-    bipot: BipotSettings = attrs.field(
-        factory=BipotSettings, converter=settings.to_BipotSettings
-    )
-    post_measurement: PostMeasurementSettings = attrs.field(
-        factory=PostMeasurementSettings, converter=settings.to_PostMeasurementSettings
-    )
-    current_limits: CurrentLimitSettings = attrs.field(
-        factory=CurrentLimitSettings, converter=settings.to_CurrentLimitSettings
-    )
-    charge_limits: ChargeLimitSettings = attrs.field(
-        factory=ChargeLimitSettings, converter=settings.to_ChargeLimitSettings
-    )
-    ir_drop: IrDropCompensationSettings = attrs.field(
-        factory=IrDropCompensationSettings, converter=settings.to_IrDropCompensationSettings
-    )
-    equilibration_triggers: TriggerAtEquilibrationSettings = attrs.field(
-        factory=TriggerAtEquilibrationSettings,
-        converter=settings.to_TriggerAtEquilibrationSettings,
-    )
-    measurement_triggers: TriggerAtMeasurementSettings = attrs.field(
-        factory=TriggerAtMeasurementSettings, converter=settings.to_TriggerAtMeasurementSettings
-    )
-    peaks: PeakSettings = attrs.field(factory=PeakSettings, converter=settings.to_PeakSettings)
-    multiplexer: MultiplexerSettings = attrs.field(
-        factory=MultiplexerSettings, converter=settings.to_MultiplexerSettings
-    )
-    common: CommonSettings = attrs.field(
-        factory=CommonSettings, converter=settings.to_CommonSettings
-    )
+    current_ranges: CurrentRanges = attrs.field(factory=CurrentRanges)
+    pretreatment: Pretreatment = attrs.field(factory=Pretreatment)
+    versus_ocp: VersusOCP = attrs.field(factory=VersusOCP)
+    bipot: BiPot = attrs.field(factory=BiPot)
+    post_measurement: PostMeasurement = attrs.field(factory=PostMeasurement)
+    current_limits: CurrentLimits = attrs.field(factory=CurrentLimits)
+    charge_limits: ChargeLimits = attrs.field(factory=ChargeLimits)
+    ir_drop: IrDropCompensation = attrs.field(factory=IrDropCompensation)
+    equilibration_triggers: EquilibriumTriggers = attrs.field(factory=EquilibriumTriggers)
+    measurement_triggers: MeasurementTriggers = attrs.field(factory=MeasurementTriggers)
+    data_processing: DataProcessing = attrs.field(factory=DataProcessing)
+    multiplexer: Multiplexer = attrs.field(factory=Multiplexer)
+    general: General = attrs.field(factory=General)
 
     def update_psmethod(self, *, obj):
         """Update method with chrono amperometry settings."""
@@ -695,31 +585,15 @@ class MultiStepAmperometry(BaseConfig):
     record_we_potential: bool = False
     enable_bipot_current: bool = False
 
-    current_ranges: AutorangingCurrentSettings = attrs.field(
-        factory=AutorangingCurrentSettings, converter=settings.to_AutorangingCurrentSettings
-    )
-    pretreatment: PretreatmentSettings = attrs.field(
-        factory=PretreatmentSettings, converter=settings.to_PretreatmentSettings
-    )
-    bipot: BipotSettings = attrs.field(
-        factory=BipotSettings, converter=settings.to_BipotSettings
-    )
-    post_measurement: PostMeasurementSettings = attrs.field(
-        factory=PostMeasurementSettings, converter=settings.to_PostMeasurementSettings
-    )
-    current_limits: CurrentLimitSettings = attrs.field(
-        factory=CurrentLimitSettings, converter=settings.to_CurrentLimitSettings
-    )
-    ir_drop: IrDropCompensationSettings = attrs.field(
-        factory=IrDropCompensationSettings, converter=settings.to_IrDropCompensationSettings
-    )
-    peaks: PeakSettings = attrs.field(factory=PeakSettings, converter=settings.to_PeakSettings)
-    multiplexer: MultiplexerSettings = attrs.field(
-        factory=MultiplexerSettings, converter=settings.to_MultiplexerSettings
-    )
-    common: CommonSettings = attrs.field(
-        factory=CommonSettings, converter=settings.to_CommonSettings
-    )
+    current_ranges: CurrentRanges = attrs.field(factory=CurrentRanges)
+    pretreatment: Pretreatment = attrs.field(factory=Pretreatment)
+    bipot: BiPot = attrs.field(factory=BiPot)
+    post_measurement: PostMeasurement = attrs.field(factory=PostMeasurement)
+    current_limits: CurrentLimits = attrs.field(factory=CurrentLimits)
+    ir_drop: IrDropCompensation = attrs.field(factory=IrDropCompensation)
+    data_processing: DataProcessing = attrs.field(factory=DataProcessing)
+    multiplexer: Multiplexer = attrs.field(factory=Multiplexer)
+    general: General = attrs.field(factory=General)
 
     def update_psmethod(self, *, obj):
         """Update method with chrono amperometry settings."""
@@ -796,31 +670,15 @@ class OpenCircuitPotentiometry(BaseConfig):
     record_we_current: bool = False
     record_we_current_range: CURRENT_RANGE = CURRENT_RANGE.cr_1_uA
 
-    current_ranges: AutorangingCurrentSettings = attrs.field(
-        factory=AutorangingCurrentSettings, converter=settings.to_AutorangingCurrentSettings
-    )
-    potential_ranges: AutorangingPotentialSettings = attrs.field(
-        factory=AutorangingPotentialSettings, converter=settings.to_AutorangingPotentialSettings
-    )
-    pretreatment: PretreatmentSettings = attrs.field(
-        factory=PretreatmentSettings, converter=settings.to_PretreatmentSettings
-    )
-    post_measurement: PostMeasurementSettings = attrs.field(
-        factory=PostMeasurementSettings, converter=settings.to_PostMeasurementSettings
-    )
-    potential_limits: PotentialLimitSettings = attrs.field(
-        factory=PotentialLimitSettings, converter=settings.to_PotentialLimitSettings
-    )
-    measurement_triggers: TriggerAtMeasurementSettings = attrs.field(
-        factory=TriggerAtMeasurementSettings, converter=settings.to_TriggerAtMeasurementSettings
-    )
-    peaks: PeakSettings = attrs.field(factory=PeakSettings, converter=settings.to_PeakSettings)
-    multiplexer: MultiplexerSettings = attrs.field(
-        factory=MultiplexerSettings, converter=settings.to_MultiplexerSettings
-    )
-    common: CommonSettings = attrs.field(
-        factory=CommonSettings, converter=settings.to_CommonSettings
-    )
+    current_ranges: CurrentRanges = attrs.field(factory=CurrentRanges)
+    potential_ranges: PotentialRanges = attrs.field(factory=PotentialRanges)
+    pretreatment: Pretreatment = attrs.field(factory=Pretreatment)
+    post_measurement: PostMeasurement = attrs.field(factory=PostMeasurement)
+    potential_limits: PotentialLimits = attrs.field(factory=PotentialLimits)
+    measurement_triggers: MeasurementTriggers = attrs.field(factory=MeasurementTriggers)
+    data_processing: DataProcessing = attrs.field(factory=DataProcessing)
+    multiplexer: Multiplexer = attrs.field(factory=Multiplexer)
+    general: General = attrs.field(factory=General)
 
     def update_psmethod(self, *, obj):
         """Update method with open circuit potentiometry settings."""
@@ -882,31 +740,15 @@ class ChronoPotentiometry(BaseConfig):
     record_cell_potential: bool = False
     record_we_current: bool = False
 
-    current_ranges: AutorangingCurrentSettings = attrs.field(
-        factory=AutorangingCurrentSettings, converter=settings.to_AutorangingCurrentSettings
-    )
-    potential_ranges: AutorangingPotentialSettings = attrs.field(
-        factory=AutorangingPotentialSettings, converter=settings.to_AutorangingPotentialSettings
-    )
-    pretreatment: PretreatmentSettings = attrs.field(
-        factory=PretreatmentSettings, converter=settings.to_PretreatmentSettings
-    )
-    post_measurement: PostMeasurementSettings = attrs.field(
-        factory=PostMeasurementSettings, converter=settings.to_PostMeasurementSettings
-    )
-    potential_limits: PotentialLimitSettings = attrs.field(
-        factory=PotentialLimitSettings, converter=settings.to_PotentialLimitSettings
-    )
-    measurement_triggers: TriggerAtMeasurementSettings = attrs.field(
-        factory=TriggerAtMeasurementSettings, converter=settings.to_TriggerAtMeasurementSettings
-    )
-    peaks: PeakSettings = attrs.field(factory=PeakSettings, converter=settings.to_PeakSettings)
-    multiplexer: MultiplexerSettings = attrs.field(
-        factory=MultiplexerSettings, converter=settings.to_MultiplexerSettings
-    )
-    common: CommonSettings = attrs.field(
-        factory=CommonSettings, converter=settings.to_CommonSettings
-    )
+    current_ranges: CurrentRanges = attrs.field(factory=CurrentRanges)
+    potential_ranges: PotentialRanges = attrs.field(factory=PotentialRanges)
+    pretreatment: Pretreatment = attrs.field(factory=Pretreatment)
+    post_measurement: PostMeasurement = attrs.field(factory=PostMeasurement)
+    potential_limits: PotentialLimits = attrs.field(factory=PotentialLimits)
+    measurement_triggers: MeasurementTriggers = attrs.field(factory=MeasurementTriggers)
+    data_processing: DataProcessing = attrs.field(factory=DataProcessing)
+    multiplexer: Multiplexer = attrs.field(factory=Multiplexer)
+    general: General = attrs.field(factory=General)
 
     def update_psmethod(self, *, obj):
         """Update method with potentiometry settings."""
@@ -969,34 +811,15 @@ class ElectrochemicalImpedanceSpectroscopy(BaseConfig):
     max_frequency: float = 1e5
     min_frequency: float = 1e3
 
-    current_ranges: AutorangingCurrentSettings = attrs.field(
-        factory=AutorangingCurrentSettings, converter=settings.to_AutorangingCurrentSettings
-    )
-    potential_ranges: AutorangingPotentialSettings = attrs.field(
-        factory=AutorangingPotentialSettings, converter=settings.to_AutorangingPotentialSettings
-    )
-    pretreatment: PretreatmentSettings = attrs.field(
-        factory=PretreatmentSettings, converter=settings.to_PretreatmentSettings
-    )
-    versus_ocp: VersusOcpSettings = attrs.field(
-        factory=VersusOcpSettings, converter=settings.to_VersusOcpSettings
-    )
-    post_measurement: PostMeasurementSettings = attrs.field(
-        factory=PostMeasurementSettings, converter=settings.to_PostMeasurementSettings
-    )
-    equilibration_triggers: TriggerAtMeasurementSettings = attrs.field(
-        factory=TriggerAtMeasurementSettings, converter=settings.to_TriggerAtMeasurementSettings
-    )
-    measurement_triggers: TriggerAtEquilibrationSettings = attrs.field(
-        factory=TriggerAtEquilibrationSettings,
-        converter=settings.to_TriggerAtEquilibrationSettings,
-    )
-    multiplexer: MultiplexerSettings = attrs.field(
-        factory=MultiplexerSettings, converter=settings.to_MultiplexerSettings
-    )
-    common: CommonSettings = attrs.field(
-        factory=CommonSettings, converter=settings.to_CommonSettings
-    )
+    current_ranges: CurrentRanges = attrs.field(factory=CurrentRanges)
+    potential_ranges: PotentialRanges = attrs.field(factory=PotentialRanges)
+    pretreatment: Pretreatment = attrs.field(factory=Pretreatment)
+    versus_ocp: VersusOCP = attrs.field(factory=VersusOCP)
+    post_measurement: PostMeasurement = attrs.field(factory=PostMeasurement)
+    measurement_triggers: MeasurementTriggers = attrs.field(factory=MeasurementTriggers)
+    equilibration_triggers: EquilibriumTriggers = attrs.field(factory=EquilibriumTriggers)
+    multiplexer: Multiplexer = attrs.field(factory=Multiplexer)
+    general: General = attrs.field(factory=General)
 
     def update_psmethod(self, *, obj):
         """Update method with potentiometry settings."""
@@ -1049,31 +872,14 @@ class GalvanostaticImpedanceSpectroscopy(BaseConfig):
     max_frequency: float = 1e5
     min_frequency: float = 1e3
 
-    current_ranges: AutorangingCurrentSettings = attrs.field(
-        factory=AutorangingCurrentSettings, converter=settings.to_AutorangingCurrentSettings
-    )
-    potential_ranges: AutorangingPotentialSettings = attrs.field(
-        factory=AutorangingPotentialSettings, converter=settings.to_AutorangingPotentialSettings
-    )
-    pretreatment: PretreatmentSettings = attrs.field(
-        factory=PretreatmentSettings, converter=settings.to_PretreatmentSettings
-    )
-    post_measurement: PostMeasurementSettings = attrs.field(
-        factory=PostMeasurementSettings, converter=settings.to_PostMeasurementSettings
-    )
-    equilibration_triggers: TriggerAtEquilibrationSettings = attrs.field(
-        factory=TriggerAtEquilibrationSettings,
-        converter=settings.to_TriggerAtEquilibrationSettings,
-    )
-    measurement_triggers: TriggerAtMeasurementSettings = attrs.field(
-        factory=TriggerAtMeasurementSettings, converter=settings.to_TriggerAtMeasurementSettings
-    )
-    multiplexer: MultiplexerSettings = attrs.field(
-        factory=MultiplexerSettings, converter=settings.to_MultiplexerSettings
-    )
-    common: CommonSettings = attrs.field(
-        factory=CommonSettings, converter=settings.to_CommonSettings
-    )
+    current_ranges: CurrentRanges = attrs.field(factory=CurrentRanges)
+    potential_ranges: PotentialRanges = attrs.field(factory=PotentialRanges)
+    pretreatment: Pretreatment = attrs.field(factory=Pretreatment)
+    post_measurement: PostMeasurement = attrs.field(factory=PostMeasurement)
+    equilibration_triggers: EquilibriumTriggers = attrs.field(factory=EquilibriumTriggers)
+    measurement_triggers: MeasurementTriggers = attrs.field(factory=MeasurementTriggers)
+    multiplexer: Multiplexer = attrs.field(factory=Multiplexer)
+    general: General = attrs.field(factory=General)
 
     def update_psmethod(self, *, obj):
         """Update method with potentiometry settings."""

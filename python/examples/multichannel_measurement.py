@@ -20,10 +20,12 @@ async def main():
 
     # create an instance of the instrumentmanager per channel
     async def connect(instrument, index):
-        managers[index] = (
-            instruments.InstrumentManagerAsync()
-        )  # new_data_callback=new_data_callback(index)))
-        success = await managers[index].connect(instrument)
+        managers[index] = instruments.InstrumentManagerAsync(
+            instrument,
+            # callback=new_data_callback(index)
+        )
+
+        success = await managers[index].connect()
         if success:
             print(f'{index + 1}: connected to {instrument.name}')
         else:
@@ -57,9 +59,9 @@ async def main():
         async def disconnect(instrument_manager, channel):
             success = await instrument_manager.disconnect()
             if success:
-                print('channel ' + str(channel + 1) + ': disconnected')
+                print(f'channel {channel + 1}: disconnected')
             else:
-                print('channel ' + str(channel + 1) + ': error while disconnecting')
+                print(f'channel {channel + 1}: error while disconnecting')
             return success
 
         tasks = [disconnect(manager, channel) for (channel, manager) in managers.items()]

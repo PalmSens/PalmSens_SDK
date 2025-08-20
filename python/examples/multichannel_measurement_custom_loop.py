@@ -1,8 +1,9 @@
 import asyncio
-from dataclasses import replace
+from attrs import evolve as replace
 from pypalmsens import instruments
 from pypalmsens import save_session_file
 from pypalmsens.methods import CURRENT_RANGE, POTENTIAL_RANGE, ChronoPotentiometry
+import pypalmsens
 
 
 def new_data_callback(channel):
@@ -16,9 +17,11 @@ def new_data_callback(channel):
 async def run_steps(manager, channel, steps):
     # Create a new method, a separate method is required for each channel
     method = ChronoPotentiometry(
-        potential_range_max=POTENTIAL_RANGE.pr_1_V,  # 1V range
-        potential_range_min=POTENTIAL_RANGE.pr_10_mV,  # 10mV range
-        potential_range_start=POTENTIAL_RANGE.pr_1_V,  # 1V range
+        potential_ranges=pypalmsens.config.PotentialRanges(
+            max=POTENTIAL_RANGE.pr_1_V,  # 1V range
+            min=POTENTIAL_RANGE.pr_10_mV,  # 10mV range
+            start=POTENTIAL_RANGE.pr_1_V,  # 1V range
+        ),
         applied_current_range=CURRENT_RANGE.cr_10_uA,  # 10µA range
         current=0.5,  # applied current in range, i.e. 5µA when the 10µA range is set as the applied range
         interval_time=0.05,  # seconds
@@ -36,9 +39,9 @@ async def run_steps(manager, channel, steps):
 async def main():
     # Create a list of of parameters you want to change
     steps = [
-        {'current': 0.1, 'limit_potential_max': 2, 'use_limit_potential_min': False},
-        {'current': -0.2, 'limit_potential_min': -0.5, 'use_limit_potential_max': False},
-        {'current': 2, 'limit_potential_min': -2, 'limit_potential_max': 2},
+        {'current': 0.1, 'potential_limits': {'limit_max': 2, 'use_limit_min': False}},
+        {'current': -0.2, 'potential_limits': {'limit_max': -0.5, 'use_limit_max': False}},
+        {'current': 2, 'potential_limits': {'limit_min': 2, 'limit_max': 2}},
     ]
 
     available_instruments = await instruments.discover_async()
@@ -46,8 +49,10 @@ async def main():
 
     # create an instance of the instrumentmanager per channel
     async def connect(instrument, index):
-        managers[index] = instruments.InstrumentManagerAsync(callback=new_data_callback(index))
-        success = await managers[index].connect(instrument)
+        managers[index] = instruments.InstrumentManagerAsync(
+            instrument, callback=new_data_callback(index)
+        )
+        success = await managers[index].connect()
         if success:
             print(f'{index + 1}: connected to {instrument.name}')
         else:

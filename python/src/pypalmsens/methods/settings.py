@@ -24,7 +24,7 @@ class SettingsType(Protocol):
 
 
 @dataclass
-class AutorangingCurrentSettings:
+class CurrentRanges:
     """Set the autoranging current for a given method.
 
     Attributes
@@ -56,7 +56,7 @@ class AutorangingCurrentSettings:
 
 
 @dataclass
-class AutorangingPotentialSettings:
+class PotentialRanges:
     """Set the autoranging potential for a given method.
 
     Attributes
@@ -88,7 +88,7 @@ class AutorangingPotentialSettings:
 
 
 @dataclass
-class PretreatmentSettings:
+class Pretreatment:
     """Set the pretreatment settings for a given method.
 
     Attributes
@@ -122,7 +122,7 @@ class PretreatmentSettings:
 
 
 @dataclass
-class VersusOcpSettings:
+class VersusOCP:
     """Set the versus OCP settings for a given method.
 
     Attributes
@@ -161,7 +161,7 @@ class VersusOcpSettings:
 
 
 @dataclass
-class BipotSettings:
+class BiPot:
     """Set the bipot settings for a given method.
 
     Attributes
@@ -206,7 +206,7 @@ class BipotSettings:
 
 
 @dataclass
-class PostMeasurementSettings:
+class PostMeasurement:
     """Set the post measurement settings for a given method.
 
     Attributes
@@ -237,7 +237,7 @@ class PostMeasurementSettings:
 
 
 @dataclass
-class CurrentLimitSettings:
+class CurrentLimits:
     """Set the limit settings for a given method.
 
     Attributes
@@ -273,7 +273,7 @@ class CurrentLimitSettings:
 
 
 @dataclass
-class PotentialLimitSettings:
+class PotentialLimits:
     """Set the limit settings for a given method.
 
     Attributes
@@ -307,7 +307,7 @@ class PotentialLimitSettings:
 
 
 @dataclass
-class ChargeLimitSettings:
+class ChargeLimits:
     """Set the charge limit settings for a given method.
 
     Attributes
@@ -341,7 +341,7 @@ class ChargeLimitSettings:
 
 
 @dataclass
-class IrDropCompensationSettings:
+class IrDropCompensation:
     """Set the iR drop compensation settings for a given method.
 
     Attributes
@@ -365,7 +365,7 @@ class IrDropCompensationSettings:
 
 
 @dataclass
-class TriggerAtEquilibrationSettings:
+class EquilibriumTriggers:
     """Set the trigger at equilibration settings for a given method.
 
     Attributes
@@ -399,7 +399,7 @@ class TriggerAtEquilibrationSettings:
 
 
 @dataclass
-class TriggerAtMeasurementSettings:
+class MeasurementTriggers:
     """Set the trigger at measurement settings for a given method.
 
     Attributes
@@ -433,7 +433,7 @@ class TriggerAtMeasurementSettings:
 
 
 @dataclass
-class MultiplexerSettings:
+class Multiplexer:
     """Set the multiplexer settings for a given method.
 
     Attributes
@@ -499,16 +499,16 @@ class MultiplexerSettings:
 
 
 @dataclass
-class PeakSettings:
-    """Set the filter settings for a given method.
+class DataProcessing:
+    """Set the data processing settings for a given method.
 
     Attributes
     ----------
     min_height: float
-        Determines the minimum peak height in µA.
+        Determines the minimum peak height in µA for peak finding.
         Peaks lower than this value are neglected (default: 0.0 uA).
     min_width: float
-        The minimum peak width,
+        The minimum peak width for peak finding,
         in the unit of the curves X axis (V).
         Peaks narrower than this value are neglected (default: 0.1 V).
     smooth_level: int
@@ -537,7 +537,7 @@ class PeakSettings:
 
 
 @dataclass
-class CommonSettings:
+class General:
     """Sets general/other settings for a given method.
 
     Attributes
@@ -570,123 +570,3 @@ class CommonSettings:
         self.use_hardware_sync = obj.UseHWSync
         self.notes = obj.Notes
         self.power_frequency = obj.PowerFreq
-
-
-def to_AutorangingCurrentSettings(
-    obj: dict | AutorangingCurrentSettings,
-) -> AutorangingCurrentSettings:
-    if isinstance(obj, dict):
-        return AutorangingCurrentSettings(**obj)
-    return obj
-
-
-def to_AutorangingPotentialSettings(
-    obj: dict | AutorangingPotentialSettings,
-) -> AutorangingPotentialSettings:
-    if isinstance(obj, dict):
-        return AutorangingPotentialSettings(**obj)
-    return obj
-
-
-def to_PretreatmentSettings(
-    obj: dict | PretreatmentSettings,
-) -> PretreatmentSettings:
-    if isinstance(obj, dict):
-        return PretreatmentSettings(**obj)
-    return obj
-
-
-def to_VersusOcpSettings(
-    obj: dict | VersusOcpSettings,
-) -> VersusOcpSettings:
-    if isinstance(obj, dict):
-        return VersusOcpSettings(**obj)
-    return obj
-
-
-def to_BipotSettings(
-    obj: dict | BipotSettings,
-) -> BipotSettings:
-    if isinstance(obj, dict):
-        return BipotSettings(**obj)
-    return obj
-
-
-def to_PostMeasurementSettings(
-    obj: dict | PostMeasurementSettings,
-) -> PostMeasurementSettings:
-    if isinstance(obj, dict):
-        return PostMeasurementSettings(**obj)
-    return obj
-
-
-def to_CurrentLimitSettings(
-    obj: dict | CurrentLimitSettings,
-) -> CurrentLimitSettings:
-    if isinstance(obj, dict):
-        return CurrentLimitSettings(**obj)
-    return obj
-
-
-def to_PotentialLimitSettings(
-    obj: dict | PotentialLimitSettings,
-) -> PotentialLimitSettings:
-    if isinstance(obj, dict):
-        return PotentialLimitSettings(**obj)
-    return obj
-
-
-def to_ChargeLimitSettings(
-    obj: dict | ChargeLimitSettings,
-) -> ChargeLimitSettings:
-    if isinstance(obj, dict):
-        return ChargeLimitSettings(**obj)
-    return obj
-
-
-def to_IrDropCompensationSettings(
-    obj: dict | IrDropCompensationSettings,
-) -> IrDropCompensationSettings:
-    if isinstance(obj, dict):
-        return IrDropCompensationSettings(**obj)
-    return obj
-
-
-def to_TriggerAtEquilibrationSettings(
-    obj: dict | TriggerAtEquilibrationSettings,
-) -> TriggerAtEquilibrationSettings:
-    if isinstance(obj, dict):
-        return TriggerAtEquilibrationSettings(**obj)
-    return obj
-
-
-def to_TriggerAtMeasurementSettings(
-    obj: dict | TriggerAtMeasurementSettings,
-) -> TriggerAtMeasurementSettings:
-    if isinstance(obj, dict):
-        return TriggerAtMeasurementSettings(**obj)
-    return obj
-
-
-def to_MultiplexerSettings(
-    obj: dict | MultiplexerSettings,
-) -> MultiplexerSettings:
-    if isinstance(obj, dict):
-        return MultiplexerSettings(**obj)
-    return obj
-
-
-def to_PeakSettings(
-    obj: dict | PeakSettings,
-) -> PeakSettings:
-    if isinstance(obj, dict):
-        return PeakSettings(**obj)
-    return obj
-
-
-def to_CommonSettings(
-    obj: dict | CommonSettings,
-) -> CommonSettings:
-    if isinstance(obj, dict):
-        return CommonSettings(**obj)
-    return obj

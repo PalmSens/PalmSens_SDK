@@ -8,7 +8,7 @@ async def main():
     available_instruments = await pypalmsens.discover_async()
     print(f'connecting to {available_instruments[0].name}')
 
-    async with pypalmsens.connect_async(available_instruments[0]) as manager:
+    async with await pypalmsens.connect_async(available_instruments[0]) as manager:
         print('connection established')
 
         await manager.set_cell(True)

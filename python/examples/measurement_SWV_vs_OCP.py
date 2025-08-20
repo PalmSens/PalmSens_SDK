@@ -15,14 +15,14 @@ with pypalmsens.connect(available_instruments[0]) as manager:
     manager.callback = new_data_callback
 
     method = SquareWaveVoltammetry(
-        pretreatment={
-            'conditioning_potential': 2.0,  # V
-            'conditioning_time': 2,  # seconds
-        },
-        versus_ocp={
-            'mode': 3,  # versus begin and end potential
-            'max_ocp_time': 1,  # seconds
-        },
+        pretreatment=pypalmsens.config.Pretreatment(
+            conditioning_potential=2.0,  # V
+            conditioning_time=2,  # seconds
+        ),
+        versus_ocp=pypalmsens.config.VersusOCP(
+            mode=3,  # versus begin and end potential
+            max_ocp_time=1,  # seconds
+        ),
         begin_potential=-0.5,  # V
         end_potential=0.5,  # V
         step_potential=0.01,  # V
