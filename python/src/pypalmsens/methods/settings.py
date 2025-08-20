@@ -365,7 +365,7 @@ class IrDropCompensation:
 
 
 @dataclass
-class EquilibriumTriggers:
+class EquilibrationTriggers:
     """Set the trigger at equilibration settings for a given method.
 
     Attributes

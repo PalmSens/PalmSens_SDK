@@ -19,7 +19,7 @@ from .settings import (
     CurrentLimits,
     CurrentRanges,
     DataProcessing,
-    EquilibriumTriggers,
+    EquilibrationTriggers,
     General,
     IrDropCompensation,
     MeasurementTriggers,
@@ -132,7 +132,7 @@ class CyclicVoltammetry(BaseConfig):
     post_measurement: PostMeasurement = attrs.field(factory=PostMeasurement)
     current_limits: CurrentLimits = attrs.field(factory=CurrentLimits)
     ir_drop_compensation: IrDropCompensation = attrs.field(factory=IrDropCompensation)
-    equilibrion_triggers: EquilibriumTriggers = attrs.field(factory=EquilibriumTriggers)
+    equilibrion_triggers: EquilibrationTriggers = attrs.field(factory=EquilibrationTriggers)
     measurement_triggers: MeasurementTriggers = attrs.field(factory=MeasurementTriggers)
     data_processing: DataProcessing = attrs.field(factory=DataProcessing)
     general: General = attrs.field(factory=General)
@@ -220,7 +220,7 @@ class LinearSweepVoltammetry(BaseConfig):
     post_measurement: PostMeasurement = attrs.field(factory=PostMeasurement)
     current_limits: CurrentLimits = attrs.field(factory=CurrentLimits)
     ir_drop: IrDropCompensation = attrs.field(factory=IrDropCompensation)
-    equilibration_triggers: EquilibriumTriggers = attrs.field(factory=EquilibriumTriggers)
+    equilibration_triggers: EquilibrationTriggers = attrs.field(factory=EquilibrationTriggers)
     measurement_triggers: MeasurementTriggers = attrs.field(factory=MeasurementTriggers)
     data_processing: DataProcessing = attrs.field(factory=DataProcessing)
     multiplexer: Multiplexer = attrs.field(factory=Multiplexer)
@@ -311,7 +311,7 @@ class SquareWaveVoltammetry(BaseConfig):
     bipot: BiPot = attrs.field(factory=BiPot)
     post_measurement: PostMeasurement = attrs.field(factory=PostMeasurement)
     ir_drop: IrDropCompensation = attrs.field(factory=IrDropCompensation)
-    equilibration_triggers: EquilibriumTriggers = attrs.field(factory=EquilibriumTriggers)
+    equilibration_triggers: EquilibrationTriggers = attrs.field(factory=EquilibrationTriggers)
     measurement_triggers: MeasurementTriggers = attrs.field(factory=MeasurementTriggers)
     data_processing: DataProcessing = attrs.field(factory=DataProcessing)
     multiplexer: Multiplexer = attrs.field(factory=Multiplexer)
@@ -408,7 +408,7 @@ class DifferentialPulseVoltammetry(BaseConfig):
     bipot: BiPot = attrs.field(factory=BiPot)
     post_measurement: PostMeasurement = attrs.field(factory=PostMeasurement)
     ir_drop: IrDropCompensation = attrs.field(factory=IrDropCompensation)
-    equilibration_triggers: EquilibriumTriggers = attrs.field(factory=EquilibriumTriggers)
+    equilibration_triggers: EquilibrationTriggers = attrs.field(factory=EquilibrationTriggers)
     measurement_triggers: MeasurementTriggers = attrs.field(factory=MeasurementTriggers)
     data_processing: DataProcessing = attrs.field(factory=DataProcessing)
     multiplexer: Multiplexer = attrs.field(factory=Multiplexer)
@@ -498,7 +498,7 @@ class ChronoAmperometry(BaseConfig):
     current_limits: CurrentLimits = attrs.field(factory=CurrentLimits)
     charge_limits: ChargeLimits = attrs.field(factory=ChargeLimits)
     ir_drop: IrDropCompensation = attrs.field(factory=IrDropCompensation)
-    equilibration_triggers: EquilibriumTriggers = attrs.field(factory=EquilibriumTriggers)
+    equilibration_triggers: EquilibrationTriggers = attrs.field(factory=EquilibrationTriggers)
     measurement_triggers: MeasurementTriggers = attrs.field(factory=MeasurementTriggers)
     data_processing: DataProcessing = attrs.field(factory=DataProcessing)
     multiplexer: Multiplexer = attrs.field(factory=Multiplexer)
@@ -807,7 +807,7 @@ class ElectrochemicalImpedanceSpectroscopy(BaseConfig):
     versus_ocp: VersusOCP = attrs.field(factory=VersusOCP)
     post_measurement: PostMeasurement = attrs.field(factory=PostMeasurement)
     measurement_triggers: MeasurementTriggers = attrs.field(factory=MeasurementTriggers)
-    equilibration_triggers: EquilibriumTriggers = attrs.field(factory=EquilibriumTriggers)
+    equilibration_triggers: EquilibrationTriggers = attrs.field(factory=EquilibrationTriggers)
     multiplexer: Multiplexer = attrs.field(factory=Multiplexer)
     general: General = attrs.field(factory=General)
 
@@ -866,7 +866,7 @@ class GalvanostaticImpedanceSpectroscopy(BaseConfig):
     potential_ranges: PotentialRanges = attrs.field(factory=PotentialRanges)
     pretreatment: Pretreatment = attrs.field(factory=Pretreatment)
     post_measurement: PostMeasurement = attrs.field(factory=PostMeasurement)
-    equilibration_triggers: EquilibriumTriggers = attrs.field(factory=EquilibriumTriggers)
+    equilibration_triggers: EquilibrationTriggers = attrs.field(factory=EquilibrationTriggers)
     measurement_triggers: MeasurementTriggers = attrs.field(factory=MeasurementTriggers)
     multiplexer: Multiplexer = attrs.field(factory=Multiplexer)
     general: General = attrs.field(factory=General)

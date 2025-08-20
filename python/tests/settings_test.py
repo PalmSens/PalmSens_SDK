@@ -293,13 +293,13 @@ def test_TriggerAtEquilibrationSettings():
         'd3': True,
     }
 
-    params = settings.EquilibriumTriggers(**kwargs)
+    params = settings.EquilibrationTriggers(**kwargs)
     params._update_psmethod(obj=obj)
 
     assert obj.UseTriggerOnEquil is True
     assert obj.TriggerValueOnEquil == 13
 
-    new_params = settings.EquilibriumTriggers()
+    new_params = settings.EquilibrationTriggers()
     new_params._update_params(obj=obj)
 
     assert asdict(new_params) == kwargs
