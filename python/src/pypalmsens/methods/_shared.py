@@ -4,7 +4,6 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Sequence
 
-import attr
 from PalmSens import (
     CurrentRange,
     CurrentRanges,
@@ -15,13 +14,6 @@ from PalmSens import (
 )
 
 from .._shared import single_to_double
-
-
-def make_field(Settings: Any) -> Any:
-    return attr.field(
-        factory=Settings,
-        converter=lambda _: Settings(**_) if isinstance(_, dict) else _,
-    )
 
 
 class CURRENT_RANGE(Enum):

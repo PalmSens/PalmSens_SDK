@@ -106,6 +106,6 @@ indent-style = "space"
 quote-style = "single"
 
 [tool.mypy]
-files = ["src", "tests"]
+files = ["src", "tests", "examples"]
 allow_redefinition = true
 ignore_missing_imports = true

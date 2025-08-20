@@ -1,8 +1,9 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Literal, Protocol, runtime_checkable
+from typing import Any, Literal, Protocol, runtime_checkable
 
+import attrs
 import PalmSens
 from PalmSens import Method as PSMethod
 from PalmSens import MuxMethod as PSMuxMethod
@@ -21,6 +22,18 @@ class SettingsType(Protocol):
 
     def update_psmethod(self, *, obj): ...
     def update_params(self, *, obj): ...
+
+
+def make_field(Settings: Any) -> Any:
+    def _converter(obj: SettingsType | dict[str, Any]) -> SettingsType:
+        if isinstance(obj, dict):
+            return Settings(**obj)
+        return obj
+
+    return attrs.field(
+        factory=Settings,
+        converter=_converter,
+    )
 
 
 @dataclass

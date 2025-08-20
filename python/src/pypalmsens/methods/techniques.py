@@ -3,7 +3,7 @@ from __future__ import annotations
 from abc import abstractmethod
 from typing import TYPE_CHECKING, ClassVar, Protocol, Type, runtime_checkable
 
-import attr
+import attrs
 from PalmSens import Method as PSMethod
 from PalmSens.Techniques.Impedance import enumFrequencyType, enumScanType
 
@@ -11,7 +11,6 @@ from ._shared import (
     CURRENT_RANGE,
     ELevel,
     get_extra_value_mask,
-    make_field,
     set_extra_value_mask,
 )
 from .settings import (
@@ -31,6 +30,7 @@ from .settings import (
     TriggerAtEquilibrationSettings,
     TriggerAtMeasurementSettings,
     VersusOcpSettings,
+    make_field,
 )
 
 if TYPE_CHECKING:
@@ -58,7 +58,7 @@ ChargeLimitField = make_field(ChargeLimitSettings)
 class BaseConfig(Protocol):
     """Protocol to provide generic methods for parameters."""
 
-    __attrs_attrs__: ClassVar[list[attr.Attribute]] = []
+    __attrs_attrs__: ClassVar[list[attrs.Attribute]] = []
 
     def to_psmethod(self):
         return parameters_to_psmethod(self)
@@ -107,7 +107,7 @@ def psmethod_to_parameters(psmethod: PSMethod) -> BaseConfig:
     return new
 
 
-@attr.define
+@attrs.define
 class CyclicVoltammetry(BaseConfig):
     """Create cyclic voltammetry method parameters.
 
@@ -203,7 +203,7 @@ class CyclicVoltammetry(BaseConfig):
             setattr(self, key, msk[key])
 
 
-@attr.define
+@attrs.define
 class LinearSweepVoltammetry(BaseConfig):
     """Create linear sweep method parameters.
 
@@ -286,7 +286,7 @@ class LinearSweepVoltammetry(BaseConfig):
             setattr(self, key, msk[key])
 
 
-@attr.define
+@attrs.define
 class SquareWaveVoltammetry(BaseConfig):
     """Create square wave method parameters.
 
@@ -383,7 +383,7 @@ class SquareWaveVoltammetry(BaseConfig):
             setattr(self, key, msk[key])
 
 
-@attr.define
+@attrs.define
 class DifferentialPulseVoltammetry(BaseConfig):
     """Create square wave method parameters.
 
@@ -480,7 +480,7 @@ class DifferentialPulseVoltammetry(BaseConfig):
             setattr(self, key, msk[key])
 
 
-@attr.define
+@attrs.define
 class ChronoAmperometry(BaseConfig):
     """Create chrono amperometry method parameters.
 
@@ -564,7 +564,7 @@ class ChronoAmperometry(BaseConfig):
             setattr(self, key, msk[key])
 
 
-@attr.define
+@attrs.define
 class MultiStepAmperometry(BaseConfig):
     """Create multi-step amperometry method parameters.
 
@@ -596,7 +596,7 @@ class MultiStepAmperometry(BaseConfig):
     equilibration_time: float = 0.0
     interval_time: float = 0.1
     n_cycles: float = 1
-    levels: list[ELevel] = attr.field(factory=lambda: [ELevel()])
+    levels: list[ELevel] = attrs.field(factory=lambda: [ELevel()])
 
     record_auxiliary_input: bool = False
     record_cell_potential: bool = False
@@ -658,7 +658,7 @@ class MultiStepAmperometry(BaseConfig):
             setattr(self, key, msk[key])
 
 
-@attr.define
+@attrs.define
 class OpenCircuitPotentiometry(BaseConfig):
     """Create open circuit potentiometry method parameters.
 
@@ -724,7 +724,7 @@ class OpenCircuitPotentiometry(BaseConfig):
             setattr(self, key, msk[key])
 
 
-@attr.define
+@attrs.define
 class ChronoPotentiometry(BaseConfig):
     """Create potentiometry method parameters.
 
@@ -800,7 +800,7 @@ class ChronoPotentiometry(BaseConfig):
             setattr(self, key, msk[key])
 
 
-@attr.define
+@attrs.define
 class ElectrochemicalImpedanceSpectroscopy(BaseConfig):
     """Create potentiometry method parameters.
 
@@ -859,7 +859,7 @@ class ElectrochemicalImpedanceSpectroscopy(BaseConfig):
         self.min_frequency = obj.MinFrequency
 
 
-@attr.define
+@attrs.define
 class GalvanostaticImpedanceSpectroscopy(BaseConfig):
     """Create potentiometry method parameters.
 
@@ -922,7 +922,7 @@ class GalvanostaticImpedanceSpectroscopy(BaseConfig):
         self.min_frequency = obj.MinFrequency
 
 
-@attr.define
+@attrs.define
 class MethodScript(BaseConfig):
     """Create a method script sandbox object.
 
