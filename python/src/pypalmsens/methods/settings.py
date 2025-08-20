@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from dataclasses import dataclass, field
 from typing import Literal, Protocol, runtime_checkable
 
+import attrs
 import PalmSens
 from PalmSens import Method as PSMethod
 from PalmSens import MuxMethod as PSMuxMethod
@@ -23,7 +23,7 @@ class SettingsType(Protocol):
     def _update_params(self, *, obj): ...
 
 
-@dataclass
+@attrs.define
 class CurrentRanges:
     """Set the autoranging current for a given method.
 
@@ -55,7 +55,7 @@ class CurrentRanges:
         self.start = CURRENT_RANGE.from_psobj(obj.Ranging.StartCurrentRange)
 
 
-@dataclass
+@attrs.define
 class PotentialRanges:
     """Set the autoranging potential for a given method.
 
@@ -87,7 +87,7 @@ class PotentialRanges:
         self.start = POTENTIAL_RANGE.from_psobj(obj.RangingPotential.StartPotentialRange)
 
 
-@dataclass
+@attrs.define
 class Pretreatment:
     """Set the pretreatment settings for a given method.
 
@@ -121,7 +121,7 @@ class Pretreatment:
         self.conditioning_time = obj.ConditioningTime
 
 
-@dataclass
+@attrs.define
 class VersusOCP:
     """Set the versus OCP settings for a given method.
 
@@ -160,7 +160,7 @@ class VersusOCP:
         self.stability_criterion = obj.OCPStabilityCriterion
 
 
-@dataclass
+@attrs.define
 class BiPot:
     """Set the bipot settings for a given method.
 
@@ -205,7 +205,7 @@ class BiPot:
         self.current_range_start = CURRENT_RANGE.from_psobj(obj.BipotRanging.StartCurrentRange)
 
 
-@dataclass
+@attrs.define
 class PostMeasurement:
     """Set the post measurement settings for a given method.
 
@@ -236,7 +236,7 @@ class PostMeasurement:
         self.standby_time = obj.StandbyTime
 
 
-@dataclass
+@attrs.define
 class CurrentLimits:
     """Set the limit settings for a given method.
 
@@ -272,7 +272,7 @@ class CurrentLimits:
         self.limit_min = obj.LimitMinValue
 
 
-@dataclass
+@attrs.define
 class PotentialLimits:
     """Set the limit settings for a given method.
 
@@ -306,7 +306,7 @@ class PotentialLimits:
         self.limit_min = obj.LimitMinValue
 
 
-@dataclass
+@attrs.define
 class ChargeLimits:
     """Set the charge limit settings for a given method.
 
@@ -340,7 +340,7 @@ class ChargeLimits:
         self.limit_min = obj.ChargeLimitMin
 
 
-@dataclass
+@attrs.define
 class IrDropCompensation:
     """Set the iR drop compensation settings for a given method.
 
@@ -364,7 +364,7 @@ class IrDropCompensation:
         self.ir_compensation = obj.IRDropCompRes
 
 
-@dataclass
+@attrs.define
 class EquilibrationTriggers:
     """Set the trigger at equilibration settings for a given method.
 
@@ -398,7 +398,7 @@ class EquilibrationTriggers:
         self.d0, self.d1, self.d2, self.d3 = convert_int_to_bools(obj.TriggerValueOnEquil)
 
 
-@dataclass
+@attrs.define
 class MeasurementTriggers:
     """Set the trigger at measurement settings for a given method.
 
@@ -432,7 +432,7 @@ class MeasurementTriggers:
         self.d0, self.d1, self.d2, self.d3 = convert_int_to_bools(obj.TriggerValueOnStart)
 
 
-@dataclass
+@attrs.define
 class Multiplexer:
     """Set the multiplexer settings for a given method.
 
@@ -459,7 +459,7 @@ class Multiplexer:
     """
 
     mode: Literal['none', 'consecutive', 'alternate'] = 'none'
-    channels: list[int] = field(default_factory=list)
+    channels: list[int] = attrs.field(factory=list)
     connect_sense_to_working_electrode: bool = False
     combine_reference_and_counter_electrodes: bool = False
     use_channel_1_reference_and_counter_electrodes: bool = False
@@ -498,7 +498,7 @@ class Multiplexer:
         self.set_unselected_channel_working_electrode = int(obj.MuxSett.UnselWE)
 
 
-@dataclass
+@attrs.define
 class DataProcessing:
     """Set the data processing settings for a given method.
 
@@ -536,7 +536,7 @@ class DataProcessing:
         self.min_height = obj.MinPeakHeight
 
 
-@dataclass
+@attrs.define
 class General:
     """Sets general/other settings for a given method.
 

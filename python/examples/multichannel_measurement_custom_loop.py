@@ -36,9 +36,22 @@ async def run_steps(manager, channel, steps):
 async def main():
     # Create a list of of parameters you want to change
     steps = [
-        {'current': 0.1, 'potential_limits': {'limit_max': 2, 'use_limit_min': False}},
-        {'current': -0.2, 'potential_limits': {'limit_max': -0.5, 'use_limit_max': False}},
-        {'current': 2, 'potential_limits': {'limit_min': 2, 'limit_max': 2}},
+        {
+            'current': 0.1,
+            'potential_limits': pypalmsens.config.PotentialLimits(
+                limit_max=2, use_limit_min=False
+            ),
+        },
+        {
+            'current': -0.2,
+            'potential_limits': pypalmsens.config.PotentialLimits(
+                limit_max=-0.5, use_limit_max=False
+            ),
+        },
+        {
+            'current': 2,
+            'potential_limits': pypalmsens.config.PotentialLimits(limit_min=2, limit_max=2),
+        },
     ]
 
     available_instruments = await pypalmsens.discover_async()
