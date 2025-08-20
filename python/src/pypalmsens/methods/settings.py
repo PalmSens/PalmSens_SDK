@@ -1,9 +1,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Any, Literal, Protocol, runtime_checkable
+from typing import Literal, Protocol, runtime_checkable
 
-import attrs
 import PalmSens
 from PalmSens import Method as PSMethod
 from PalmSens import MuxMethod as PSMuxMethod
@@ -22,18 +21,6 @@ class SettingsType(Protocol):
 
     def update_psmethod(self, *, obj): ...
     def update_params(self, *, obj): ...
-
-
-def make_field(Settings: Any) -> Any:
-    def _converter(obj: SettingsType | dict[str, Any]) -> SettingsType:
-        if isinstance(obj, dict):
-            return Settings(**obj)
-        return obj
-
-    return attrs.field(
-        factory=Settings,
-        converter=_converter,
-    )
 
 
 @dataclass
@@ -469,7 +456,6 @@ class MultiplexerSettings:
         Use channel 1 reference and counter electrodes for all working electrodes. Default is False.
     set_unselected_channel_working_electrode: int
         Set the unselected channel working electrode to 0 = Disconnected / floating, 1 = Ground, 2 = Standby potential. Default is 0.
-
     """
 
     mode: Literal['none', 'consecutive', 'alternate'] = 'none'
@@ -584,3 +570,123 @@ class CommonSettings:
         self.use_hardware_sync = obj.UseHWSync
         self.notes = obj.Notes
         self.power_frequency = obj.PowerFreq
+
+
+def to_AutorangingCurrentSettings(
+    obj: dict | AutorangingCurrentSettings,
+) -> AutorangingCurrentSettings:
+    if isinstance(obj, dict):
+        return AutorangingCurrentSettings(**obj)
+    return obj
+
+
+def to_AutorangingPotentialSettings(
+    obj: dict | AutorangingPotentialSettings,
+) -> AutorangingPotentialSettings:
+    if isinstance(obj, dict):
+        return AutorangingPotentialSettings(**obj)
+    return obj
+
+
+def to_PretreatmentSettings(
+    obj: dict | PretreatmentSettings,
+) -> PretreatmentSettings:
+    if isinstance(obj, dict):
+        return PretreatmentSettings(**obj)
+    return obj
+
+
+def to_VersusOcpSettings(
+    obj: dict | VersusOcpSettings,
+) -> VersusOcpSettings:
+    if isinstance(obj, dict):
+        return VersusOcpSettings(**obj)
+    return obj
+
+
+def to_BipotSettings(
+    obj: dict | BipotSettings,
+) -> BipotSettings:
+    if isinstance(obj, dict):
+        return BipotSettings(**obj)
+    return obj
+
+
+def to_PostMeasurementSettings(
+    obj: dict | PostMeasurementSettings,
+) -> PostMeasurementSettings:
+    if isinstance(obj, dict):
+        return PostMeasurementSettings(**obj)
+    return obj
+
+
+def to_CurrentLimitSettings(
+    obj: dict | CurrentLimitSettings,
+) -> CurrentLimitSettings:
+    if isinstance(obj, dict):
+        return CurrentLimitSettings(**obj)
+    return obj
+
+
+def to_PotentialLimitSettings(
+    obj: dict | PotentialLimitSettings,
+) -> PotentialLimitSettings:
+    if isinstance(obj, dict):
+        return PotentialLimitSettings(**obj)
+    return obj
+
+
+def to_ChargeLimitSettings(
+    obj: dict | ChargeLimitSettings,
+) -> ChargeLimitSettings:
+    if isinstance(obj, dict):
+        return ChargeLimitSettings(**obj)
+    return obj
+
+
+def to_IrDropCompensationSettings(
+    obj: dict | IrDropCompensationSettings,
+) -> IrDropCompensationSettings:
+    if isinstance(obj, dict):
+        return IrDropCompensationSettings(**obj)
+    return obj
+
+
+def to_TriggerAtEquilibrationSettings(
+    obj: dict | TriggerAtEquilibrationSettings,
+) -> TriggerAtEquilibrationSettings:
+    if isinstance(obj, dict):
+        return TriggerAtEquilibrationSettings(**obj)
+    return obj
+
+
+def to_TriggerAtMeasurementSettings(
+    obj: dict | TriggerAtMeasurementSettings,
+) -> TriggerAtMeasurementSettings:
+    if isinstance(obj, dict):
+        return TriggerAtMeasurementSettings(**obj)
+    return obj
+
+
+def to_MultiplexerSettings(
+    obj: dict | MultiplexerSettings,
+) -> MultiplexerSettings:
+    if isinstance(obj, dict):
+        return MultiplexerSettings(**obj)
+    return obj
+
+
+def to_PeakSettings(
+    obj: dict | PeakSettings,
+) -> PeakSettings:
+    if isinstance(obj, dict):
+        return PeakSettings(**obj)
+    return obj
+
+
+def to_CommonSettings(
+    obj: dict | CommonSettings,
+) -> CommonSettings:
+    if isinstance(obj, dict):
+        return CommonSettings(**obj)
+    return obj
