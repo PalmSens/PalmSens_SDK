@@ -217,7 +217,7 @@ class InstrumentManagerAsync:
         await create_future(self.__comm.ClientConnection.Semaphore.WaitAsync())
 
         try:
-            await create_future(self.__comm.SetCurrentRangeAsync(current_range.to_psobj()))
+            await create_future(self.__comm.SetCurrentRangeAsync(current_range._to_psobj()))
             self.__comm.ClientConnection.Semaphore.Release()
         except Exception:
             traceback.print_exc()

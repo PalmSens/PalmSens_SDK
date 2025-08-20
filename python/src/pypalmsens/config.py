@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from .methods._shared import CURRENT_RANGE, POTENTIAL_RANGE, ELevel
 from .methods.settings import (
+    BaseSettings,
     BiPot,
     ChargeLimits,
     CurrentLimits,
@@ -16,7 +17,6 @@ from .methods.settings import (
     PotentialLimits,
     PotentialRanges,
     Pretreatment,
-    SettingsType,
     VersusOCP,
 )
 
@@ -38,6 +38,6 @@ __all__ = [
     'PotentialLimits',
     'PotentialRanges',
     'Pretreatment',
-    'SettingsType',
+    'BaseSettings',
     'VersusOCP',
 ]

@@ -214,7 +214,7 @@ class InstrumentManager:
         self.__comm.ClientConnection.Semaphore.Wait()
 
         try:
-            self.__comm.CurrentRange = current_range.to_psobj()
+            self.__comm.CurrentRange = current_range._to_psobj()
             self.__comm.ClientConnection.Semaphore.Release()
         except Exception:
             traceback.print_exc()

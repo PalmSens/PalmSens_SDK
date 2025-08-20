@@ -16,7 +16,7 @@ from ._shared import (
 
 
 @runtime_checkable
-class SettingsType(Protocol):
+class BaseSettings(Protocol):
     """Protocol to provide generic methods for parameters."""
 
     def _update_psmethod(self, *, obj): ...
@@ -24,7 +24,7 @@ class SettingsType(Protocol):
 
 
 @attrs.define
-class CurrentRanges:
+class CurrentRanges(BaseSettings):
     """Set the autoranging current for a given method.
 
     Attributes
@@ -48,15 +48,18 @@ class CurrentRanges:
         obj.Ranging.MaximumCurrentRange = self.max.to_psobj()
         obj.Ranging.MinimumCurrentRange = self.min.to_psobj()
         obj.Ranging.StartCurrentRange = self.start.to_psobj()
+        obj.Ranging.MaximumCurrentRange = self.max._to_psobj()
+        obj.Ranging.MinimumCurrentRange = self.min._to_psobj()
+        obj.Ranging.StartCurrentRange = self.start._to_psobj()
 
     def _update_params(self, *, obj):
-        self.max = CURRENT_RANGE.from_psobj(obj.Ranging.MaximumCurrentRange)
-        self.min = CURRENT_RANGE.from_psobj(obj.Ranging.MinimumCurrentRange)
-        self.start = CURRENT_RANGE.from_psobj(obj.Ranging.StartCurrentRange)
+        self.max = CURRENT_RANGE._from_psobj(obj.Ranging.MaximumCurrentRange)
+        self.min = CURRENT_RANGE._from_psobj(obj.Ranging.MinimumCurrentRange)
+        self.start = CURRENT_RANGE._from_psobj(obj.Ranging.StartCurrentRange)
 
 
 @attrs.define
-class PotentialRanges:
+class PotentialRanges(BaseSettings):
     """Set the autoranging potential for a given method.
 
     Attributes
@@ -77,18 +80,18 @@ class PotentialRanges:
     start: POTENTIAL_RANGE = POTENTIAL_RANGE.pr_1_V
 
     def _update_psmethod(self, *, obj):
-        obj.RangingPotential.MaximumPotentialRange = self.max.to_psobj()
-        obj.RangingPotential.MinimumPotentialRange = self.min.to_psobj()
-        obj.RangingPotential.StartPotentialRange = self.start.to_psobj()
+        obj.RangingPotential.MaximumPotentialRange = self.max._to_psobj()
+        obj.RangingPotential.MinimumPotentialRange = self.min._to_psobj()
+        obj.RangingPotential.StartPotentialRange = self.start._to_psobj()
 
     def _update_params(self, *, obj):
-        self.max = POTENTIAL_RANGE.from_psobj(obj.RangingPotential.MaximumPotentialRange)
-        self.min = POTENTIAL_RANGE.from_psobj(obj.RangingPotential.MinimumPotentialRange)
-        self.start = POTENTIAL_RANGE.from_psobj(obj.RangingPotential.StartPotentialRange)
+        self.max = POTENTIAL_RANGE._from_psobj(obj.RangingPotential.MaximumPotentialRange)
+        self.min = POTENTIAL_RANGE._from_psobj(obj.RangingPotential.MinimumPotentialRange)
+        self.start = POTENTIAL_RANGE._from_psobj(obj.RangingPotential.StartPotentialRange)
 
 
 @attrs.define
-class Pretreatment:
+class Pretreatment(BaseSettings):
     """Set the pretreatment settings for a given method.
 
     Attributes
@@ -122,7 +125,7 @@ class Pretreatment:
 
 
 @attrs.define
-class VersusOCP:
+class VersusOCP(BaseSettings):
     """Set the versus OCP settings for a given method.
 
     Attributes
@@ -161,7 +164,7 @@ class VersusOCP:
 
 
 @attrs.define
-class BiPot:
+class BiPot(BaseSettings):
     """Set the bipot settings for a given method.
 
     Attributes
@@ -193,20 +196,20 @@ class BiPot:
         bipot_num = self._BIPOT_MODES.index(self.mode)
         obj.BipotModePS = PalmSens.Method.EnumPalmSensBipotMode(bipot_num)
         obj.BiPotPotential = self.potential
-        obj.BipotRanging.MaximumCurrentRange = self.current_range_max.to_psobj()
-        obj.BipotRanging.MinimumCurrentRange = self.current_range_min.to_psobj()
-        obj.BipotRanging.StartCurrentRange = self.current_range_start.to_psobj()
+        obj.BipotRanging.MaximumCurrentRange = self.current_range_max._to_psobj()
+        obj.BipotRanging.MinimumCurrentRange = self.current_range_min._to_psobj()
+        obj.BipotRanging.StartCurrentRange = self.current_range_start._to_psobj()
 
     def _update_params(self, *, obj):
         self.mode = self._BIPOT_MODES[int(obj.BipotModePS)]
         self.potential = obj.BiPotPotential
-        self.current_range_max = CURRENT_RANGE.from_psobj(obj.BipotRanging.MaximumCurrentRange)
-        self.current_range_min = CURRENT_RANGE.from_psobj(obj.BipotRanging.MinimumCurrentRange)
-        self.current_range_start = CURRENT_RANGE.from_psobj(obj.BipotRanging.StartCurrentRange)
+        self.current_range_max = CURRENT_RANGE._from_psobj(obj.BipotRanging.MaximumCurrentRange)
+        self.current_range_min = CURRENT_RANGE._from_psobj(obj.BipotRanging.MinimumCurrentRange)
+        self.current_range_start = CURRENT_RANGE._from_psobj(obj.BipotRanging.StartCurrentRange)
 
 
 @attrs.define
-class PostMeasurement:
+class PostMeasurement(BaseSettings):
     """Set the post measurement settings for a given method.
 
     Attributes
@@ -237,7 +240,7 @@ class PostMeasurement:
 
 
 @attrs.define
-class CurrentLimits:
+class CurrentLimits(BaseSettings):
     """Set the limit settings for a given method.
 
     Attributes
@@ -273,7 +276,7 @@ class CurrentLimits:
 
 
 @attrs.define
-class PotentialLimits:
+class PotentialLimits(BaseSettings):
     """Set the limit settings for a given method.
 
     Attributes
@@ -307,7 +310,7 @@ class PotentialLimits:
 
 
 @attrs.define
-class ChargeLimits:
+class ChargeLimits(BaseSettings):
     """Set the charge limit settings for a given method.
 
     Attributes
@@ -341,7 +344,7 @@ class ChargeLimits:
 
 
 @attrs.define
-class IrDropCompensation:
+class IrDropCompensation(BaseSettings):
     """Set the iR drop compensation settings for a given method.
 
     Attributes
@@ -365,7 +368,7 @@ class IrDropCompensation:
 
 
 @attrs.define
-class EquilibrationTriggers:
+class EquilibrationTriggers(BaseSettings):
     """Set the trigger at equilibration settings for a given method.
 
     Attributes
@@ -399,7 +402,7 @@ class EquilibrationTriggers:
 
 
 @attrs.define
-class MeasurementTriggers:
+class MeasurementTriggers(BaseSettings):
     """Set the trigger at measurement settings for a given method.
 
     Attributes
@@ -433,7 +436,7 @@ class MeasurementTriggers:
 
 
 @attrs.define
-class Multiplexer:
+class Multiplexer(BaseSettings):
     """Set the multiplexer settings for a given method.
 
     Attributes
@@ -499,7 +502,7 @@ class Multiplexer:
 
 
 @attrs.define
-class DataProcessing:
+class DataProcessing(BaseSettings):
     """Set the data processing settings for a given method.
 
     Attributes
@@ -537,7 +540,7 @@ class DataProcessing:
 
 
 @attrs.define
-class General:
+class General(BaseSettings):
     """Sets general/other settings for a given method.
 
     Attributes

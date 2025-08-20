@@ -28,7 +28,6 @@ from .settings import (
     PotentialLimits,
     PotentialRanges,
     Pretreatment,
-    SettingsType,
     VersusOCP,
 )
 
@@ -46,10 +45,13 @@ class BaseConfig(Protocol):
 
         self._update_psmethod(obj=psmethod)
 
-        for attrib in self.__attrs_attrs__:
-            if isinstance(attrib.type, SettingsType):
-                sett = getattr(self, attrib.name)
-                sett._update_psmethod(obj=psmethod)
+        for field in self.__attrs_attrs__:
+            attribute = getattr(self, field.name)
+            try:
+                # Update parameters if attribute has the `update_params` method
+                attribute._update_psmethod(obj=psmethod)
+            except AttributeError:
+                pass
 
         return psmethod
 
@@ -65,10 +67,13 @@ class BaseConfig(Protocol):
 
         new = cls()
 
-        for attrib in new.__attrs_attrs__:
-            if isinstance(attrib.type, SettingsType):
-                sett = getattr(new, attrib.name)
-                sett._update_params(obj=psmethod)
+        for field in new.__attrs_attrs__:
+            attribute = getattr(new, field.name)
+            try:
+                # Update parameters if attribute has the `update_params` method
+                attribute._update_params(obj=psmethod)
+            except AttributeError:
+                pass
 
         return new
 
@@ -674,7 +679,7 @@ class OpenCircuitPotentiometry(BaseConfig):
         """Update method with open circuit potentiometry settings."""
         obj.IntervalTime = self.interval_time
         obj.RunTime = self.run_time
-        obj.AppliedCurrentRange = self.record_we_current_range.to_psobj()
+        obj.AppliedCurrentRange = self.record_we_current_range._to_psobj()
 
         set_extra_value_mask(
             obj=obj,
@@ -685,7 +690,7 @@ class OpenCircuitPotentiometry(BaseConfig):
     def _update_params(self, *, obj):
         self.interval_time = obj.IntervalTime
         self.run_time = obj.RunTime
-        self.record_we_current_range = CURRENT_RANGE.from_psobj(obj.AppliedCurrentRange)
+        self.record_we_current_range = CURRENT_RANGE._from_psobj(obj.AppliedCurrentRange)
 
         msk = get_extra_value_mask(obj)
 
@@ -743,11 +748,11 @@ class ChronoPotentiometry(BaseConfig):
     def _update_psmethod(self, *, obj):
         """Update method with potentiometry settings."""
         obj.Current = self.current
-        obj.AppliedCurrentRange = self.applied_current_range.to_psobj()
+        obj.AppliedCurrentRange = self.applied_current_range._to_psobj()
         obj.IntervalTime = self.interval_time
         obj.RunTime = self.run_time
 
-        obj.AppliedCurrentRange = self.applied_current_range.to_psobj()
+        obj.AppliedCurrentRange = self.applied_current_range._to_psobj()
 
         set_extra_value_mask(
             obj=obj,
@@ -758,7 +763,7 @@ class ChronoPotentiometry(BaseConfig):
 
     def _update_params(self, *, obj):
         self.current = obj.Current
-        self.applied_current_range = CURRENT_RANGE.from_psobj(obj.AppliedCurrentRange)
+        self.applied_current_range = CURRENT_RANGE._from_psobj(obj.AppliedCurrentRange)
         self.interval_time = obj.IntervalTime
         self.run_time = obj.RunTime
 
@@ -876,7 +881,7 @@ class GalvanostaticImpedanceSpectroscopy(BaseConfig):
 
         obj.ScanType = enumScanType.Fixed
         obj.FreqType = enumFrequencyType.Scan
-        obj.AppliedCurrentRange = self.applied_current_range.to_psobj()
+        obj.AppliedCurrentRange = self.applied_current_range._to_psobj()
         obj.EquilibrationTime = self.equilibration_time
         obj.Iac = self.ac_current
         obj.Idc = self.dc_current
@@ -885,7 +890,7 @@ class GalvanostaticImpedanceSpectroscopy(BaseConfig):
         obj.MinFrequency = self.min_frequency
 
     def _update_params(self, *, obj):
-        self.applied_current_range = CURRENT_RANGE.from_psobj(obj.AppliedCurrentRange)
+        self.applied_current_range = CURRENT_RANGE._from_psobj(obj.AppliedCurrentRange)
         self.equilibration_time = obj.EquilibrationTime
         self.ac_current = obj.Iac
         self.dc_current = obj.Idc
