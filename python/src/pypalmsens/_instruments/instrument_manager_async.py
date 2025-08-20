@@ -18,9 +18,9 @@ from PalmSens.Plottables import (
 from System import EventHandler
 from System.Threading.Tasks import Task
 
+from .._methods import CURRENT_RANGE, BaseTechnique
 from ..data import Measurement
 from ..data._shared import ArrayType, _get_values_from_NETArray
-from ..methods import CURRENT_RANGE, BaseConfig
 from ._common import Callback, Instrument, create_future, firmware_warning
 
 WINDOWS = sys.platform == 'win32'
@@ -353,18 +353,17 @@ class InstrumentManagerAsync:
 
         return True, None
 
-    async def measure(self, method: BaseConfig, hardware_sync_initiated_event=None):
+    async def measure(self, parameters: BaseTechnique, hardware_sync_initiated_event=None):
         """Start measurement using given method parameters.
 
         Parameters
         ----------
-        method: BaseConfig
+        method: BaseTechnique
             Method parameters for measurement
         hardware_sync_initiated_event:
             ...
         """
-
-        psmethod = method._to_psmethod()
+        psmethod = parameters._to_psmethod()
         if self.__comm is None:
             print('Not connected to an instrument')
             return None
@@ -554,12 +553,12 @@ class InstrumentManagerAsync:
         #     self.__measuring = False
         #     return None
 
-    def initiate_hardware_sync_follower_channel(self, method: BaseConfig):
+    def initiate_hardware_sync_follower_channel(self, method: BaseTechnique):
         """Initiate hardware sync follower channel.
 
         Parameters
         ----------
-        method : BaseConfig
+        method : BaseTechnique
             Method parameters
         """
         if self.__comm is None:

@@ -33,7 +33,7 @@ from .settings import (
 
 
 @runtime_checkable
-class BaseConfig(Protocol):
+class BaseTechnique(Protocol):
     """Protocol to provide generic methods for parameters."""
 
     __attrs_attrs__: ClassVar[list[attrs.Attribute]] = []
@@ -56,7 +56,7 @@ class BaseConfig(Protocol):
         return psmethod
 
     @staticmethod
-    def _from_psmethod(psmethod: PSMethod) -> BaseConfig:
+    def _from_psmethod(psmethod: PSMethod) -> BaseTechnique:
         """Generate parameters from dotnet method object."""
         id = psmethod.MethodID
 
@@ -85,7 +85,7 @@ class BaseConfig(Protocol):
 
 
 @attrs.define
-class CyclicVoltammetry(BaseConfig):
+class CyclicVoltammetry(BaseTechnique):
     """Create cyclic voltammetry method parameters.
 
     Attributes
@@ -181,7 +181,7 @@ class CyclicVoltammetry(BaseConfig):
 
 
 @attrs.define
-class LinearSweepVoltammetry(BaseConfig):
+class LinearSweepVoltammetry(BaseTechnique):
     """Create linear sweep method parameters.
 
     Attributes
@@ -218,7 +218,7 @@ class LinearSweepVoltammetry(BaseConfig):
     record_we_potential: bool = False
     enable_bipot_current: bool = False
 
-    current_ranges: CurrentRanges = attrs.field(factory=CurrentRanges)
+    current_ranges: CurrentRanges = CurrentRanges()
     pretreatment: Pretreatment = attrs.field(factory=Pretreatment)
     versus_ocp: VersusOCP = attrs.field(factory=VersusOCP)
     bipot: BiPot = attrs.field(factory=BiPot)
@@ -264,7 +264,7 @@ class LinearSweepVoltammetry(BaseConfig):
 
 
 @attrs.define
-class SquareWaveVoltammetry(BaseConfig):
+class SquareWaveVoltammetry(BaseTechnique):
     """Create square wave method parameters.
 
     Attributes
@@ -361,7 +361,7 @@ class SquareWaveVoltammetry(BaseConfig):
 
 
 @attrs.define
-class DifferentialPulseVoltammetry(BaseConfig):
+class DifferentialPulseVoltammetry(BaseTechnique):
     """Create square wave method parameters.
 
     Attributes
@@ -458,7 +458,7 @@ class DifferentialPulseVoltammetry(BaseConfig):
 
 
 @attrs.define
-class ChronoAmperometry(BaseConfig):
+class ChronoAmperometry(BaseTechnique):
     """Create chrono amperometry method parameters.
 
     Attributes
@@ -542,7 +542,7 @@ class ChronoAmperometry(BaseConfig):
 
 
 @attrs.define
-class MultiStepAmperometry(BaseConfig):
+class MultiStepAmperometry(BaseTechnique):
     """Create multi-step amperometry method parameters.
 
     Attributes
@@ -636,7 +636,7 @@ class MultiStepAmperometry(BaseConfig):
 
 
 @attrs.define
-class OpenCircuitPotentiometry(BaseConfig):
+class OpenCircuitPotentiometry(BaseTechnique):
     """Create open circuit potentiometry method parameters.
 
     Attributes
@@ -702,7 +702,7 @@ class OpenCircuitPotentiometry(BaseConfig):
 
 
 @attrs.define
-class ChronoPotentiometry(BaseConfig):
+class ChronoPotentiometry(BaseTechnique):
     """Create potentiometry method parameters.
 
     Attributes
@@ -778,7 +778,7 @@ class ChronoPotentiometry(BaseConfig):
 
 
 @attrs.define
-class ElectrochemicalImpedanceSpectroscopy(BaseConfig):
+class ElectrochemicalImpedanceSpectroscopy(BaseTechnique):
     """Create potentiometry method parameters.
 
     Attributes
@@ -837,7 +837,7 @@ class ElectrochemicalImpedanceSpectroscopy(BaseConfig):
 
 
 @attrs.define
-class GalvanostaticImpedanceSpectroscopy(BaseConfig):
+class GalvanostaticImpedanceSpectroscopy(BaseTechnique):
     """Create potentiometry method parameters.
 
     Attributes
@@ -900,7 +900,7 @@ class GalvanostaticImpedanceSpectroscopy(BaseConfig):
 
 
 @attrs.define
-class MethodScript(BaseConfig):
+class MethodScript(BaseTechnique):
     """Create a method script sandbox object.
 
     Attributes
@@ -927,7 +927,7 @@ endif
         self.script = obj.MethodScript
 
 
-ID_TO_PARAMETER_MAPPING: dict[str, Type[BaseConfig] | None] = {
+ID_TO_PARAMETER_MAPPING: dict[str, Type[BaseTechnique] | None] = {
     'acv': None,
     'ad': ChronoAmperometry,
     'cc': None,

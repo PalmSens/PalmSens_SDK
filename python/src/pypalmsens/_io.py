@@ -10,11 +10,11 @@ from PalmSens.DataFiles import MethodFile, MethodFile2
 from System.IO import StreamReader, StreamWriter
 from System.Text import Encoding
 
-from .data import Measurement
-from .methods import BaseConfig, Method
+from ._methods import BaseTechnique, Method
+from .data._measurement import Measurement
 
 if TYPE_CHECKING:
-    from .methods.method import Method
+    from ._methods.method import Method
 
 
 @contextmanager
@@ -91,7 +91,7 @@ def save_session_file(path: Union[str, Path], measurements: list[Measurement]):
         session.Save(stream.BaseStream, str(path))
 
 
-def load_method_file(path: Union[str, Path], as_method: bool = False) -> BaseConfig | Method:
+def load_method_file(path: Union[str, Path], as_method: bool = False) -> BaseTechnique | Method:
     """Load a method file (.psmethod).
 
     Parameters
@@ -124,7 +124,7 @@ def load_method_file(path: Union[str, Path], as_method: bool = False) -> BaseCon
         return method.to_parameters()
 
 
-def save_method_file(path: Union[str, Path], method: Union[Method, BaseConfig]):
+def save_method_file(path: Union[str, Path], method: Union[Method, BaseTechnique]):
     """Load a method file (.psmethod).
 
     Parameters
@@ -136,7 +136,7 @@ def save_method_file(path: Union[str, Path], method: Union[Method, BaseConfig]):
     """
     from pypalmsens import __sdk_version__
 
-    if isinstance(method, BaseConfig):
+    if isinstance(method, BaseTechnique):
         psmethod = method._to_psmethod()
     elif isinstance(method, Method):
         psmethod = method.psmethod

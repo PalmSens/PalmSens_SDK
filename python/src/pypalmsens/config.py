@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from .methods._shared import CURRENT_RANGE, POTENTIAL_RANGE, ELevel
-from .methods.settings import (
+from ._methods._shared import CURRENT_RANGE, POTENTIAL_RANGE, ELevel
+from ._methods.settings import (
     BaseSettings,
     BiPot,
     ChargeLimits,

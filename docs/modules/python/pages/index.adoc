@@ -31,9 +31,8 @@ The following example shows how to set up and measure a simple chronoamperometry
 [source,python]
 ----
 >>> import pypalmsens
->>> from pypalmsens.methods import ChronoAmperometryParameters
 
->>> method = ChronoAmperometryParameters(
+>>> method = pypalmsens.ChronoAmperometryParameters(
 ...     interval_time=0.01,
 ...     potential=1.0,
 ...     run_time=10.0,
@@ -49,14 +48,13 @@ The following example shows how to discover devices and manually read out the cu
 [source,python]
 ----
 >>> import pypalmsens
->>> from pypalmsens.methods import CURRENT_RANGE
 
 >>> instruments = pypalmsens.discover()
 
 >>> with pypalmsens.connect(device=instruments[0]) as manager:
 ...     manager.set_cell(True)
 ...     manager.set_potential(1)
-...     manager.set_current_range(CURRENT_RANGE.cr_1_mA)
+...     manager.set_current_range(pypalmsens.config.CURRENT_RANGE.cr_1_mA)
 ...
 ...     current = manager.read_current()
 ...     print(f'{current=} µA')

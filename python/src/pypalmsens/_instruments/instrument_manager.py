@@ -18,9 +18,9 @@ from PalmSens.Plottables import (
 )
 from System import EventHandler  # type: ignore
 
+from .._methods import CURRENT_RANGE, BaseTechnique
 from ..data import Measurement
 from ..data._shared import ArrayType, _get_values_from_NETArray
-from ..methods import CURRENT_RANGE, BaseConfig
 from ._common import Callback, Instrument, create_future, firmware_warning
 
 WINDOWS = sys.platform == 'win32'
@@ -347,7 +347,7 @@ class InstrumentManager:
 
         return True, None
 
-    def measure(self, method: BaseConfig):
+    def measure(self, parameters: BaseTechnique):
         """Start measurement using given method parameters.
 
         Parameters
@@ -355,15 +355,14 @@ class InstrumentManager:
         method: BaseConfig
             Method parameters for measurement
         """
-
-        method = method._to_psmethod()
+        psmethod = parameters._to_psmethod()
         if self.__comm is None:
             print('Not connected to an instrument')
             return None
 
         self.__active_measurement_error = None
 
-        is_valid, message = self.validate_method(method)
+        is_valid, message = self.validate_method(psmethod)
         if is_valid is not True:
             print(message)
             return None
@@ -488,7 +487,7 @@ class InstrumentManager:
                 await create_future(self.__comm.ClientConnection.Semaphore.WaitAsync())
 
                 # send and execute the method on the instrument
-                _ = self.__comm.Measure(method)
+                _ = self.__comm.Measure(psmethod)
                 self.__measuring = True
 
                 # release lock on library (required when communicating with instrument)
