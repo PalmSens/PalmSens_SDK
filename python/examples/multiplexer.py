@@ -1,5 +1,5 @@
 import pypalmsens
-from pypalmsens.methods import ChronoAmperometryParameters, SquareWaveParameters
+from pypalmsens.methods import ChronoAmperometry, SquareWaveVoltammetry
 
 
 def new_data_callback(new_data):
@@ -23,7 +23,7 @@ with pypalmsens.connect(available_instruments[0]) as manager:
         manager.set_multiplexer_channel(channel)
 
     # When measuring alternatingly the selection is restricted to the first n channels
-    altnernating_multiplexer_method = ChronoAmperometryParameters(
+    altnernating_multiplexer_method = ChronoAmperometry(
         interval_time=0.5,  # seconds
         potential=1.0,  # volts
         run_time=5.0,  # seconds
@@ -53,7 +53,7 @@ with pypalmsens.connect(available_instruments[0]) as manager:
     else:
         print('failed to start measurement')
 
-    consecutive_multiplexer_method = SquareWaveParameters(
+    consecutive_multiplexer_method = SquareWaveVoltammetry(
         begin_potential=-0.5,  # volts
         end_potential=0.5,  # volts
         step_potential=0.01,  # volts

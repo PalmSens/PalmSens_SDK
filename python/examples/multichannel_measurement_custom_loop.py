@@ -2,7 +2,7 @@ import asyncio
 from dataclasses import replace
 from pypalmsens import instruments
 from pypalmsens import save_session_file
-from pypalmsens.methods import CURRENT_RANGE, POTENTIAL_RANGE, ChronopotentiometryParameters
+from pypalmsens.methods import CURRENT_RANGE, POTENTIAL_RANGE, ChronoPotentiometry
 
 
 def new_data_callback(channel):
@@ -15,7 +15,7 @@ def new_data_callback(channel):
 
 async def run_steps(manager, channel, steps):
     # Create a new method, a separate method is required for each channel
-    method = ChronopotentiometryParameters(
+    method = ChronoPotentiometry(
         potential_range_max=POTENTIAL_RANGE.pr_1_V,  # 1V range
         potential_range_min=POTENTIAL_RANGE.pr_10_mV,  # 10mV range
         potential_range_start=POTENTIAL_RANGE.pr_1_V,  # 1V range

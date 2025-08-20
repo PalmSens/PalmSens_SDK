@@ -1,7 +1,7 @@
 import asyncio
 
 import pypalmsens
-from pypalmsens.methods import ChronoAmperometryParameters
+from pypalmsens.methods import ChronoAmperometry
 
 
 def new_data_callback(new_data):
@@ -21,7 +21,7 @@ async def main():
         print(serial)
 
         # Chronoamperometry measurement using helper class
-        method = ChronoAmperometryParameters(
+        method = ChronoAmperometry(
             interval_time=0.02,
             potential=1.0,
             run_time=2.0,

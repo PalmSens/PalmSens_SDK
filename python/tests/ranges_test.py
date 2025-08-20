@@ -32,7 +32,7 @@ def test_method_current_range():
     crmax = CURRENT_RANGE.cr_1_mA
     crstart = CURRENT_RANGE.cr_100_uA
 
-    method = techniques.CyclicVoltammetryParameters(
+    method = techniques.CyclicVoltammetry(
         current_ranges={
             'min': crmin,
             'max': crmax,
@@ -57,7 +57,7 @@ def test_method_potential_range():
     potmax = POTENTIAL_RANGE.pr_100_mV
     potstart = POTENTIAL_RANGE.pr_10_mV
 
-    method = techniques.ChronopotentiometryParameters(
+    method = techniques.ChronoPotentiometry(
         potential_ranges={
             'min': potmin,
             'max': potmax,

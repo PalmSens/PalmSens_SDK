@@ -20,7 +20,7 @@ from System.Threading.Tasks import Task
 
 from ..data._shared import ArrayType, _get_values_from_NETArray
 from ..data.measurement import Measurement
-from ..methods import CURRENT_RANGE, ParameterType
+from ..methods import CURRENT_RANGE, BaseConfig
 from ._common import Instrument, create_future, firmware_warning
 
 WINDOWS = sys.platform == 'win32'
@@ -293,7 +293,7 @@ class InstrumentManagerAsync:
 
         return True, None
 
-    async def measure(self, parameters: ParameterType, hardware_sync_initiated_event=None):
+    async def measure(self, parameters: BaseConfig, hardware_sync_initiated_event=None):
         method = parameters.to_psmethod()
         if self.__comm is None:
             print('Not connected to an instrument')

@@ -1,7 +1,7 @@
 import asyncio
 
 import pypalmsens
-from pypalmsens.methods import CURRENT_RANGE, POTENTIAL_RANGE, ChronopotentiometryParameters
+from pypalmsens.methods import CURRENT_RANGE, POTENTIAL_RANGE, ChronoPotentiometry
 from pypalmsens.instruments import InstrumentManagerAsync
 
 
@@ -32,7 +32,7 @@ async def main():
     follower_channels = [manager for (channel, manager) in managers.items() if channel != 1]
 
     if all(connected) and 1 in managers:
-        method = ChronopotentiometryParameters(
+        method = ChronoPotentiometry(
             potential_range_max=POTENTIAL_RANGE.pr_1_V,  # 1V range
             potential_range_min=POTENTIAL_RANGE.pr_10_mV,  # 10mV range
             potential_range_start=POTENTIAL_RANGE.pr_1_V,  # 1V range

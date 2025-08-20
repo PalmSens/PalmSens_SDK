@@ -1,4 +1,4 @@
-from pypalmsens.methods import ChronoAmperometryParameters
+from pypalmsens.methods import ChronoAmperometry
 import pypalmsens
 
 
@@ -19,7 +19,7 @@ with pypalmsens.connect(available_instruments[0]) as manager:
     print(serial)
 
     # Chronoamperometry measurement using helper class
-    method = ChronoAmperometryParameters(
+    method = ChronoAmperometry(
         interval_time=0.01,
         potential=1.0,
         run_time=10.0,

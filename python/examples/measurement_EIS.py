@@ -1,5 +1,5 @@
 import pypalmsens
-from pypalmsens.methods import ElectrochemicalImpedanceSpectroscopyParameters
+from pypalmsens.methods import ElectrochemicalImpedanceSpectroscopy
 
 
 def new_data_callback(new_data):
@@ -19,7 +19,7 @@ with pypalmsens.connect(available_instruments[0]) as manager:
     print(serial)
 
     # EIS measurement using helper class
-    method = ElectrochemicalImpedanceSpectroscopyParameters()
+    method = ElectrochemicalImpedanceSpectroscopy()
 
     measurement = manager.measure(method)
 

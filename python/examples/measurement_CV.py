@@ -1,5 +1,5 @@
 import pypalmsens
-from pypalmsens.methods import CyclicVoltammetryParameters, CURRENT_RANGE
+from pypalmsens.methods import CyclicVoltammetry, CURRENT_RANGE
 
 
 def new_data_callback(new_data):
@@ -18,7 +18,7 @@ with pypalmsens.connect(available_instruments[0]) as manager:
     serial = manager.get_instrument_serial()
     print(serial)
 
-    method = CyclicVoltammetryParameters(
+    method = CyclicVoltammetry(
         current_range_max=CURRENT_RANGE.cr_1_A,  # 1A range
         current_range_min=CURRENT_RANGE.cr_1_uA,  # 1µA range
         current_range_start=CURRENT_RANGE.cr_1_mA,  # 1mA range

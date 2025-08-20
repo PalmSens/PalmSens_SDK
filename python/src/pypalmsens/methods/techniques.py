@@ -55,7 +55,7 @@ ChargeLimitField = make_field(ChargeLimitSettings)
 
 
 @runtime_checkable
-class ParameterType(Protocol):
+class BaseConfig(Protocol):
     """Protocol to provide generic methods for parameters."""
 
     __attrs_attrs__: ClassVar[list[attr.Attribute]] = []
@@ -64,7 +64,7 @@ class ParameterType(Protocol):
         return parameters_to_psmethod(self)
 
     @staticmethod
-    def from_psmethod(obj: PSMethod) -> ParameterType:
+    def from_psmethod(obj: PSMethod) -> BaseConfig:
         return psmethod_to_parameters(obj)
 
     @abstractmethod
@@ -88,7 +88,7 @@ def parameters_to_psmethod(params) -> Method:
     return psmethod
 
 
-def psmethod_to_parameters(psmethod: PSMethod) -> ParameterType:
+def psmethod_to_parameters(psmethod: PSMethod) -> BaseConfig:
     """Generate parameters from dotnet method object."""
     id = psmethod.MethodID
 
@@ -108,7 +108,7 @@ def psmethod_to_parameters(psmethod: PSMethod) -> ParameterType:
 
 
 @attr.define
-class CyclicVoltammetryParameters(ParameterType):
+class CyclicVoltammetry(BaseConfig):
     """Create cyclic voltammetry method parameters.
 
     Attributes
@@ -204,7 +204,7 @@ class CyclicVoltammetryParameters(ParameterType):
 
 
 @attr.define
-class LinearSweepParameters(ParameterType):
+class LinearSweepVoltammetry(BaseConfig):
     """Create linear sweep method parameters.
 
     Attributes
@@ -287,7 +287,7 @@ class LinearSweepParameters(ParameterType):
 
 
 @attr.define
-class SquareWaveParameters(ParameterType):
+class SquareWaveVoltammetry(BaseConfig):
     """Create square wave method parameters.
 
     Attributes
@@ -384,7 +384,7 @@ class SquareWaveParameters(ParameterType):
 
 
 @attr.define
-class DifferentialPulseParameters(ParameterType):
+class DifferentialPulseVoltammetry(BaseConfig):
     """Create square wave method parameters.
 
     Attributes
@@ -481,7 +481,7 @@ class DifferentialPulseParameters(ParameterType):
 
 
 @attr.define
-class ChronoAmperometryParameters(ParameterType):
+class ChronoAmperometry(BaseConfig):
     """Create chrono amperometry method parameters.
 
     Attributes
@@ -565,7 +565,7 @@ class ChronoAmperometryParameters(ParameterType):
 
 
 @attr.define
-class MultiStepAmperometryParameters(ParameterType):
+class MultiStepAmperometry(BaseConfig):
     """Create multi-step amperometry method parameters.
 
     Attributes
@@ -659,7 +659,7 @@ class MultiStepAmperometryParameters(ParameterType):
 
 
 @attr.define
-class OpenCircuitPotentiometryParameters(ParameterType):
+class OpenCircuitPotentiometry(BaseConfig):
     """Create open circuit potentiometry method parameters.
 
     Attributes
@@ -725,7 +725,7 @@ class OpenCircuitPotentiometryParameters(ParameterType):
 
 
 @attr.define
-class ChronopotentiometryParameters(ParameterType):
+class ChronoPotentiometry(BaseConfig):
     """Create potentiometry method parameters.
 
     Attributes
@@ -801,7 +801,7 @@ class ChronopotentiometryParameters(ParameterType):
 
 
 @attr.define
-class ElectrochemicalImpedanceSpectroscopyParameters(ParameterType):
+class ElectrochemicalImpedanceSpectroscopy(BaseConfig):
     """Create potentiometry method parameters.
 
     Attributes
@@ -860,7 +860,7 @@ class ElectrochemicalImpedanceSpectroscopyParameters(ParameterType):
 
 
 @attr.define
-class GalvanostaticImpedanceSpectroscopyParameters(ParameterType):
+class GalvanostaticImpedanceSpectroscopy(BaseConfig):
     """Create potentiometry method parameters.
 
     Attributes
@@ -923,7 +923,7 @@ class GalvanostaticImpedanceSpectroscopyParameters(ParameterType):
 
 
 @attr.define
-class MethodScriptParameters(ParameterType):
+class MethodScript(BaseConfig):
     """Create a method script sandbox object.
 
     Attributes
@@ -950,34 +950,34 @@ endif
         self.script = obj.MethodScript
 
 
-ID_TO_PARAMETER_MAPPING: dict[str, Type[ParameterType] | None] = {
+ID_TO_PARAMETER_MAPPING: dict[str, Type[BaseConfig] | None] = {
     'acv': None,
-    'ad': ChronoAmperometryParameters,
+    'ad': ChronoAmperometry,
     'cc': None,
-    'cp': ChronopotentiometryParameters,
+    'cp': ChronoPotentiometry,
     'cpot': None,
-    'cv': CyclicVoltammetryParameters,
-    'dpv': DifferentialPulseParameters,
-    'eis': ElectrochemicalImpedanceSpectroscopyParameters,
+    'cv': CyclicVoltammetry,
+    'dpv': DifferentialPulseVoltammetry,
+    'eis': ElectrochemicalImpedanceSpectroscopy,
     'fam': None,
     'fcv': None,
     'fgis': None,
     'fis': None,
-    'gis': GalvanostaticImpedanceSpectroscopyParameters,
+    'gis': GalvanostaticImpedanceSpectroscopy,
     'gs': None,
     'lp': None,
     'lsp': None,
-    'lsv': LinearSweepParameters,
-    'ma': MultiStepAmperometryParameters,
+    'lsv': LinearSweepVoltammetry,
+    'ma': MultiStepAmperometry,
     'mm': None,
     'mp': None,
     'mpad': None,
-    'ms': MethodScriptParameters,
+    'ms': MethodScript,
     'npv': None,
-    'ocp': OpenCircuitPotentiometryParameters,
+    'ocp': OpenCircuitPotentiometry,
     'pad': None,
     'pot': None,
     'ps': None,
     'scp': None,
-    'swv': SquareWaveParameters,
+    'swv': SquareWaveVoltammetry,
 }

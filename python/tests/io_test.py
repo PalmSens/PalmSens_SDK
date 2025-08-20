@@ -35,7 +35,7 @@ def test_save_load_session(tmpdir, data_dpv):
 
 def test_save_load_method(tmpdir):
     path = tmpdir / 'test.psmethod'
-    cv = techniques.CyclicVoltammetryParameters()
+    cv = techniques.CyclicVoltammetry()
     save_method_file(path=path, method=cv)
 
     method_cv2 = load_method_file(path=path, as_method=True)

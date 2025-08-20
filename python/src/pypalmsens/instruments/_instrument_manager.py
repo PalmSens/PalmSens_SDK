@@ -20,7 +20,7 @@ from System import EventHandler  # type: ignore
 
 from ..data._shared import ArrayType, _get_values_from_NETArray
 from ..data.measurement import Measurement
-from ..methods import CURRENT_RANGE, ParameterType
+from ..methods import CURRENT_RANGE, BaseConfig
 from ._common import Instrument, create_future, firmware_warning
 
 WINDOWS = sys.platform == 'win32'
@@ -288,7 +288,7 @@ class InstrumentManager:
 
         return True, None
 
-    def measure(self, parameters: ParameterType):
+    def measure(self, parameters: BaseConfig):
         method = parameters.to_psmethod()
         if self.__comm is None:
             print('Not connected to an instrument')

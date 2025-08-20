@@ -76,7 +76,7 @@ class TestCV:
         'scanrate': 5,
         'n_scans': 2,
     }
-    pycls = techniques.CyclicVoltammetryParameters
+    pycls = techniques.CyclicVoltammetry
     pscls = Techniques.CyclicVoltammetry
 
     def test_params_round_trip(self):
@@ -124,7 +124,7 @@ class TestLSV:
         'step_potential': 0.1,
         'scanrate': 2.0,
     }
-    pycls = techniques.LinearSweepParameters
+    pycls = techniques.LinearSweepVoltammetry
     pscls = Techniques.LinearSweep
 
     def test_params_round_trip(self):
@@ -167,7 +167,7 @@ class TestSWV:
         'amplitude': 0.05,
         'record_forward_and_reverse_currents': True,
     }
-    pycls = techniques.SquareWaveParameters
+    pycls = techniques.SquareWaveVoltammetry
     pscls = Techniques.SquareWave
 
     def test_params_round_trip(self):
@@ -207,7 +207,7 @@ class TestCP:
         'interval_time': 0.1,
         'run_time': 1.0,
     }
-    pycls = techniques.ChronopotentiometryParameters
+    pycls = techniques.ChronoPotentiometry
     pscls = Techniques.Potentiometry
 
     def test_params_round_trip(self):
@@ -244,7 +244,7 @@ class TestOCP:
         'interval_time': 0.1,
         'run_time': 1.0,
     }
-    pycls = techniques.OpenCircuitPotentiometryParameters
+    pycls = techniques.OpenCircuitPotentiometry
     pscls = Techniques.OpenCircuitPotentiometry
 
     def test_params_round_trip(self):
@@ -281,7 +281,7 @@ class TestCA:
         'interval_time': 0.1,
         'run_time': 1.0,
     }
-    pycls = techniques.ChronoAmperometryParameters
+    pycls = techniques.ChronoAmperometry
     pscls = Techniques.AmperometricDetection
 
     def test_params_round_trip(self):
@@ -315,7 +315,7 @@ class TestDP:
         'pulse_time': 0.1,
         'scan_rate': 0.5,
     }
-    pycls = techniques.DifferentialPulseParameters
+    pycls = techniques.DifferentialPulseVoltammetry
     pscls = Techniques.DifferentialPulse
 
     def test_params_round_trip(self):
@@ -350,7 +350,7 @@ class TestMA:
             ELevel(level=0.3, duration=0.2),
         ],
     }
-    pycls = techniques.MultiStepAmperometryParameters
+    pycls = techniques.MultiStepAmperometry
     pscls = Techniques.MultistepAmperometry
 
     def test_params_round_trip(self):
@@ -386,7 +386,7 @@ class TestEIS:
         'max_frequency': 1e5,
         'min_frequency': 1e3,
     }
-    pycls = techniques.ElectrochemicalImpedanceSpectroscopyParameters
+    pycls = techniques.ElectrochemicalImpedanceSpectroscopy
     pscls = Techniques.ImpedimetricMethod
 
     def test_params_round_trip(self):
@@ -453,7 +453,7 @@ class TestGIS:
         'max_frequency': 1e5,
         'min_frequency': 1e3,
     }
-    pycls = techniques.GalvanostaticImpedanceSpectroscopyParameters
+    pycls = techniques.GalvanostaticImpedanceSpectroscopy
     pscls = Techniques.ImpedimetricGstatMethod
 
     def test_params_round_trip(self):
@@ -530,7 +530,7 @@ class TestMS:
             '\n'  # must end with 2 newlines
         )
     }
-    pycls = techniques.MethodScriptParameters
+    pycls = techniques.MethodScript
     pscls = Techniques.MethodScriptSandbox
 
     def test_params_round_trip(self):
