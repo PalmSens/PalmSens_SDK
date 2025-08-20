@@ -1,8 +1,6 @@
 import asyncio
 
 import pypalmsens
-from pypalmsens.methods import CURRENT_RANGE, POTENTIAL_RANGE, ChronoPotentiometry
-from pypalmsens.instruments import InstrumentManagerAsync
 
 
 def new_data_callback(channel):
@@ -19,7 +17,9 @@ async def main():
 
     # create an instance of the instrumentmanager per channel
     async def connect(instrument, index):
-        managers[index] = InstrumentManagerAsync(instrument, callback=new_data_callback(index))
+        managers[index] = pypalmsens.InstrumentManagerAsync(
+            instrument, callback=new_data_callback(index)
+        )
         success = await managers[index].connect()
         if success:
             print(f'{index + 1}: connected to {instrument.name}')
@@ -32,13 +32,13 @@ async def main():
     follower_channels = [manager for (channel, manager) in managers.items() if channel != 1]
 
     if all(connected) and 1 in managers:
-        method = ChronoPotentiometry(
+        method = pypalmsens.ChronoPotentiometry(
             potential_ranges=pypalmsens.config.PotentialRanges(
-                max=POTENTIAL_RANGE.pr_1_V,  # 1V range
-                min=POTENTIAL_RANGE.pr_10_mV,  # 10mV range
-                start=POTENTIAL_RANGE.pr_1_V,  # 1V range
+                max=pypalmsens.config.POTENTIAL_RANGE.pr_1_V,  # 1V range
+                min=pypalmsens.config.POTENTIAL_RANGE.pr_10_mV,  # 10mV range
+                start=pypalmsens.config.POTENTIAL_RANGE.pr_1_V,  # 1V range
             ),
-            applied_current_range=CURRENT_RANGE.cr_10_uA,  # 10µA range
+            applied_current_range=pypalmsens.config.CURRENT_RANGE.cr_10_uA,  # 10µA range
             current=0.5,  # applied current in range, i.e. 5µA when the 10µA range is set as the applied range
             interval_time=0.05,  # seconds
             run_time=5,  # seconds

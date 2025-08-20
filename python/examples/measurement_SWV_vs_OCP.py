@@ -1,5 +1,4 @@
 import pypalmsens
-from pypalmsens.methods import SquareWaveVoltammetry
 
 
 def new_data_callback(new_data):
@@ -14,7 +13,7 @@ with pypalmsens.connect(available_instruments[0]) as manager:
 
     manager.callback = new_data_callback
 
-    method = SquareWaveVoltammetry(
+    method = pypalmsens.SquareWaveVoltammetry(
         pretreatment=pypalmsens.config.Pretreatment(
             conditioning_potential=2.0,  # V
             conditioning_time=2,  # seconds
