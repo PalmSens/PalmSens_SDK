@@ -31,10 +31,10 @@ def assert_params_round_trip_equal(*, pscls, pycls, kwargs):
     obj = pscls()
 
     params = pycls(**kwargs)
-    params.update_psmethod(obj=obj)
+    params._update_psmethod(obj=obj)
 
     new_params = pycls()
-    new_params.update_params(obj=obj)
+    new_params._update_params(obj=obj)
 
     assert_params_match_kwargs(new_params, kwargs=kwargs)
 

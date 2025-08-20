@@ -137,7 +137,7 @@ def save_method_file(path: Union[str, Path], method: Union[Method, BaseConfig]):
     from pypalmsens import __sdk_version__
 
     if isinstance(method, BaseConfig):
-        psmethod = method.to_psmethod()
+        psmethod = method._to_psmethod()
     elif isinstance(method, Method):
         psmethod = method.psmethod
     else:

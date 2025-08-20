@@ -67,7 +67,7 @@ class Method:
 
     def to_parameters(self) -> BaseConfig:
         """Extract techniques parameters as dataclass."""
-        return techniques.psmethod_to_parameters(psmethod=self.psmethod)
+        return techniques.BaseConfig._from_psmethod(psmethod=self.psmethod)
 
     def to_dict(self) -> dict[str, Any]:
         """Return dictionary with technique parameters."""

@@ -294,7 +294,7 @@ class InstrumentManagerAsync:
         return True, None
 
     async def measure(self, parameters: BaseConfig, hardware_sync_initiated_event=None):
-        method = parameters.to_psmethod()
+        method = parameters._to_psmethod()
         if self.__comm is None:
             print('Not connected to an instrument')
             return None

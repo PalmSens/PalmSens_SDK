@@ -39,7 +39,7 @@ def test_method_current_range():
             'start': crstart,
         }
     )
-    obj = method.to_psmethod()
+    obj = method._to_psmethod()
 
     supported_ranges = obj.Ranging.SupportedCurrentRanges
 
@@ -64,7 +64,7 @@ def test_method_potential_range():
             'start': potstart,
         }
     )
-    obj = method.to_psmethod()
+    obj = method._to_psmethod()
     supported_ranges = obj.RangingPotential.SupportedPotentialRanges
 
     assert potmin.to_psobj() in supported_ranges
