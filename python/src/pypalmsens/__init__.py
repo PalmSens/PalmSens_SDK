@@ -11,23 +11,55 @@ else:
 __version__ = '0.0.1'
 __sdk_version__ = sdk_version
 
-from . import config, data, instruments, methods, models
+from . import config, data, models
 from ._io import load_method_file, load_session_file, save_method_file, save_session_file
-from .instruments._instrument_manager import connect, discover
-from .instruments._instrument_manager_async import connect_async, discover_async
+from .instruments._instrument_manager import (
+    InstrumentManager,
+    connect,
+    discover,
+)
+from .instruments._instrument_manager_async import (
+    InstrumentManagerAsync,
+    connect_async,
+    discover_async,
+)
+from .methods.techniques import (
+    ChronoAmperometry,
+    ChronoPotentiometry,
+    CyclicVoltammetry,
+    DifferentialPulseVoltammetry,
+    ElectrochemicalImpedanceSpectroscopy,
+    GalvanostaticImpedanceSpectroscopy,
+    LinearSweepVoltammetry,
+    MethodScript,
+    MultiStepAmperometry,
+    OpenCircuitPotentiometry,
+    SquareWaveVoltammetry,
+)
 
 __all__ = [
-    'load_session_file',
-    'save_session_file',
-    'load_method_file',
-    'save_method_file',
-    'discover',
-    'connect',
-    'discover_async',
-    'connect_async',
-    'methods',
-    'instruments',
+    'config',
     'data',
     'models',
-    'config',
+    'connect',
+    'connect_async',
+    'discover',
+    'discover_async',
+    'load_method_file',
+    'load_session_file',
+    'save_method_file',
+    'save_session_file',
+    'InstrumentManager',
+    'InstrumentManagerAsync',
+    'ChronoAmperometry',
+    'ChronoPotentiometry',
+    'CyclicVoltammetry',
+    'DifferentialPulseVoltammetry',
+    'ElectrochemicalImpedanceSpectroscopy',
+    'GalvanostaticImpedanceSpectroscopy',
+    'LinearSweepVoltammetry',
+    'MethodScript',
+    'MultiStepAmperometry',
+    'OpenCircuitPotentiometry',
+    'SquareWaveVoltammetry',
 ]
