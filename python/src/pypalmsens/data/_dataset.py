@@ -38,6 +38,15 @@ def _dataset_to_mapping_with_unique_keys(psdataset: PSDataSet, /) -> dict[str, D
 
 
 class DataSet(Mapping):
+    """Python wrapper for .NET DataSet class.
+
+    Parameters
+    ----------
+    psdataset
+        Reference to .NET DataSet object.
+
+    """
+
     def __init__(self, *, psdataset: PSDataSet):
         self.psdataset = psdataset
         self._mapping = _dataset_to_mapping_with_unique_keys(psdataset)

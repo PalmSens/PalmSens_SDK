@@ -35,6 +35,14 @@ class EISValueType(Enum):
 
 
 class EISData:
+    """Python wrapper for .NET EISdata class.
+
+    Parameters
+    ----------
+    pseis
+        Reference to .NET EISdata object.
+    """
+
     def __init__(self, *, pseis):
         self.pseis = pseis
 

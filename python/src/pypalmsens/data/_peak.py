@@ -9,7 +9,13 @@ if TYPE_CHECKING:
 
 
 class Peak:
-    """Python wrapper for dotnet Peak class."""
+    """Python wrapper for .NET Peak class.
+
+    Parameters
+    ----------
+    pspeak
+        Reference to .NET Peak object.
+    """
 
     def __init__(self, *, pspeak: PSPeak):
         self.pspeak = pspeak
@@ -127,8 +133,6 @@ class Peak:
         """Value of the peak in units of the curve.
         This is the value of the peak height relative to the baseline of the peak."""
         return self.pspeak.PeakValue
-
-    peak_height = value  # alias for backward compatibility
 
     @property
     def x(self) -> float:

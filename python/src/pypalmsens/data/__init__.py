@@ -4,8 +4,11 @@ The main entry point for the data is the `Measurement` class.
 These can be loaded from a .pssession file or directly returned
 as a result from an expirement.
 
-Each data class in this module holds a reference to the underlying .NET SDK object,
-usually prefixed `ps...` like `Measurement.psmeasurement`.
+These classes are wrappers for the underlying .NET code.
+Each Python wrapper in this module holds a reference to the underlying .NET SDK object,
+usually prefixed `ps...` like `Measurement.psmeasurement`. These .NET classes are
+instantiated by the measurement or data loading code. These wrappers are intended to
+be used for data processing and exploration and not to be directly instantiated.
 
 The raw data is stored in a `DataSet` under `Measurement.dataset`.
 A _dataset_ in turn consist of a series of `DataArray`'s.

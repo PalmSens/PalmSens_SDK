@@ -9,7 +9,13 @@ if TYPE_CHECKING:
 
 
 class Curve:
-    """Python wrapper for dotnet Curve class."""
+    """Python wrapper for .NET Curve class.
+
+    Parameters
+    ----------
+    pscurve
+        Reference to .NET curve object.
+    """
 
     def __init__(self, *, pscurve):
         self.pscurve = pscurve

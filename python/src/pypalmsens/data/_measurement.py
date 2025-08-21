@@ -14,24 +14,16 @@ from ._peak import Peak
 
 @dataclass(frozen=True)
 class DeviceInfo:
-    """Dataclass for device information.
-
-    Attributes
-    ----------
-    type : str
-        Device type
-    firmware : str
-        Firmware version
-    serial : str
-        Serial number
-    id : int
-        Device ID
-    """
+    """Dataclass for device information."""
 
     type: str
+    """Device type"""
     firmware: str
+    """Firmware version"""
     serial: str
+    """Serial number"""
     id: int
+    """Device ID"""
 
     @classmethod
     def from_psmeasurement(cls, obj: PSMeasurement) -> DeviceInfo:
@@ -46,7 +38,13 @@ class DeviceInfo:
 
 @dataclass
 class Measurement:
-    """Python wrapper for dotnet Measurement class."""
+    """Python wrapper for .NET Measurement class.
+
+    Parameters
+    ----------
+    psmeasurement
+        Reference to .NET measurement object.
+    """
 
     def __init__(self, *, psmeasurement):
         self.psmeasurement = psmeasurement

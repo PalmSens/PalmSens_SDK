@@ -8,6 +8,14 @@ from ._shared import ArrayType
 
 
 class DataArray(Sequence):
+    """Python wrapper for .NET DataArray class.
+
+    Parameters
+    ----------
+    psarray
+        Reference to .NET DataArray object.
+    """
+
     def __init__(self, *, psarray):
         self.psarray = psarray
 
