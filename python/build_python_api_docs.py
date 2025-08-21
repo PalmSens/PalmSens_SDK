@@ -161,14 +161,7 @@ pages = (
     Page(name='data', title='Data', module='pypalmsens.data'),
 )
 
-WORKDIR = Path(__file__).parents[1] / 'docs' / 'modules' / 'python' / 'pages'
-
-
-def line_prepender(filename, line):
-    with open(filename, 'r+') as f:
-        content = f.read()
-        f.seek(0, 0)
-        f.write(line.rstrip('\r\n') + '\n\n' + content)
+WORKDIR = Path(__file__).parents[1] / 'docs' / 'modules' / 'python' / 'partials' / 'api'
 
 
 for page in pages:
@@ -189,8 +182,3 @@ for page in pages:
     print('Generating', outputadoc)
 
     sp.run(f'pandoc {outputmd} -o {outputadoc} -f markdown -t asciidoc'.split())
-
-    # Manually insert document title for asciidoc,
-    # because markdown has no concept of this
-    # https://github.com/jgm/pandoc/issues/5615
-    line_prepender(outputadoc, f'= {page.title}\n')
