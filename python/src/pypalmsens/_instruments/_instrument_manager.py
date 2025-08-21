@@ -137,8 +137,8 @@ class InstrumentManager:
         If specified, call this function on every new set of data points.
         New data points are batched, and contain all points since the last
         time it was called. Each point is a dictionary containing
-        frequency,z_re, z_im for impedimetric techniques and
-        index, x, x_unit and x_type, y, y_unit and y_type for
+        `frequency`, `z_re`, `z_im` for impedimetric techniques and
+        `index`, `x`, `x_unit`, `x_type`, `y`, `y_unit` and `y_type` for
         non-impedimetric techniques.
     """
 
@@ -165,7 +165,8 @@ class InstrumentManager:
         """Return True if an instrument connection exists."""
         return self.__comm is not None
 
-    def connect(self):
+    async def connect(self):
+        """Connect to instrument."""
         if self.__comm is not None:
             print(
                 'An instance of the InstrumentManager can only be connected to one instrument at a time'
@@ -187,7 +188,14 @@ class InstrumentManager:
                 pass
             return 0
 
-    def set_cell(self, cell_on):
+    def set_cell(self, cell_on: bool):
+        """Turn the cell on or off.
+
+        Parameters
+        ----------
+        cell_on : bool
+            If true, turn on the cell
+        """
         if self.__comm is None:
             print('Not connected to an instrument')
             return 0
@@ -204,7 +212,14 @@ class InstrumentManager:
                 # release lock on library (required when communicating with instrument)
                 self.__comm.ClientConnection.Semaphore.Release()
 
-    def set_potential(self, potential):
+    def set_potential(self, potential: float):
+        """Set the potential of the cell.
+
+        Parameters
+        ----------
+        potential : float
+            Potential in V
+        """
         if self.__comm is None:
             print('Not connected to an instrument')
             return 0
@@ -222,6 +237,13 @@ class InstrumentManager:
                 self.__comm.ClientConnection.Semaphore.Release()
 
     def set_current_range(self, current_range: CURRENT_RANGE):
+        """Set the current range for the cell.
+
+        Parameters
+        ----------
+        current_range: CURRENT_RANGE
+            Set the current range, use `pypalmsens.config.CURRENT_RANGE`.
+        """
         if self.__comm is None:
             print('Not connected to an instrument')
             return 0
@@ -238,7 +260,14 @@ class InstrumentManager:
                 # release lock on library (required when communicating with instrument)
                 self.__comm.ClientConnection.Semaphore.Release()
 
-    def read_current(self):
+    def read_current(self) -> float:
+        """Read the current in µA.
+
+        Returns
+        -------
+        float
+            Current in µA."
+        """
         if self.__comm is None:
             raise ConnectionError('Not connected to an instrument')
 
@@ -255,7 +284,14 @@ class InstrumentManager:
                 # release lock on library (required when communicating with instrument)
                 self.__comm.ClientConnection.Semaphore.Release()
 
-    def read_potential(self):
+    def read_potential(self) -> float:
+        """Read the potential in V.
+
+        Returns
+        -------
+        float
+            Potential in V."""
+
         if self.__comm is None:
             raise ConnectionError('Not connected to an instrument')
 
@@ -272,7 +308,14 @@ class InstrumentManager:
                 # release lock on library (required when communicating with instrument)
                 self.__comm.ClientConnection.Semaphore.Release()
 
-    def get_instrument_serial(self):
+    def get_instrument_serial(self) -> str:
+        """Return instrument serial number.
+
+        Returns
+        -------
+        str
+            Instrument serial.
+        """
         if self.__comm is None:
             raise ConnectionError('Not connected to an instrument')
 
@@ -289,12 +332,13 @@ class InstrumentManager:
                 # release lock on library (required when communicating with instrument)
                 self.__comm.ClientConnection.Semaphore.Release()
 
-    def validate_method(self, method):
+    def validate_method(self, psmethod):
+        """Validate method."""
         if self.__comm is None:
             print('Not connected to an instrument')
             return False, None
 
-        errors = method.Validate(self.__comm.Capabilities)
+        errors = psmethod.Validate(self.__comm.Capabilities)
 
         if any(error.IsFatal for error in errors):
             return False, 'Method not compatible:\n' + '\n'.join(
@@ -303,8 +347,16 @@ class InstrumentManager:
 
         return True, None
 
-    def measure(self, parameters: BaseConfig):
-        method = parameters._to_psmethod()
+    def measure(self, method: BaseConfig):
+        """Start measurement using given method parameters.
+
+        Parameters
+        ----------
+        method: BaseConfig
+            Method parameters for measurement
+        """
+
+        method = method._to_psmethod()
         if self.__comm is None:
             print('Not connected to an instrument')
             return None
@@ -485,6 +537,13 @@ class InstrumentManager:
             return None
 
     def wait_digital_trigger(self, wait_for_high):
+        """Wait for digital trigger.
+
+        Parameters
+        ----------
+        wait_for_high: ...
+            ...
+        """
         if self.__comm is None:
             print('Not connected to an instrument')
             return 0
@@ -508,6 +567,7 @@ class InstrumentManager:
                 self.__comm.ClientConnection.Semaphore.Release()
 
     def abort(self):
+        """Abort measurement."""
         if self.__comm is None:
             print('Not connected to an instrument')
             return 0
@@ -525,12 +585,18 @@ class InstrumentManager:
                 # release lock on library (required when communicating with instrument)
                 self.__comm.ClientConnection.Semaphore.Release()
 
-    def initialize_multiplexer(self, mux_model):
-        """Initialize the multiplexer. Returns the number of available multiplexer
-        channels.
+    def initialize_multiplexer(self, mux_model: int) -> int:
+        """Initialize the multiplexer.
 
-        :param mux_model: The model of the multiplexer. 0 = 8 channel, 1 = 16 channel, 2
-            = 32 channel.
+        Parameters
+        ----------
+        mux_model: int
+            The model of the multiplexer. 0 = 8 channel, 1 = 16 channel, 2 = 32 channel.
+
+        Returns
+        -------
+        int
+            Number of available multiplexes channels
         """
         if self.__comm is None:
             print('Not connected to an instrument')
@@ -621,7 +687,14 @@ class InstrumentManager:
                 # release lock on library (required when communicating with instrument)
                 self.__comm.ClientConnection.Semaphore.Release()
 
-    def set_multiplexer_channel(self, channel):
+    def set_multiplexer_channel(self, channel: int):
+        """Sets the multiplexer channel.
+
+        Parameters
+        ----------
+        channel : int
+            Index of the channel to set.
+        """
         if self.__comm is None:
             print('Not connected to an instrument')
             return 0
@@ -639,6 +712,7 @@ class InstrumentManager:
                 self.__comm.ClientConnection.Semaphore.Release()
 
     def disconnect(self):
+        """Disconnect from the instrument."""
         if self.__comm is None:
             return 0
         try:
