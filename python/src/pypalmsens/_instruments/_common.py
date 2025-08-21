@@ -4,10 +4,16 @@ import asyncio
 import warnings
 from dataclasses import dataclass
 from math import floor
-from typing import Any
+from typing import Any, Protocol, Sequence
 
 from PalmSens.Comm import enumDeviceType
 from System import Action
+
+
+class Callback(Protocol):
+    """Type signature for callback"""
+
+    def __call__(self, new_data: Sequence[dict[str, Any]]): ...
 
 
 def create_future(clr_task):

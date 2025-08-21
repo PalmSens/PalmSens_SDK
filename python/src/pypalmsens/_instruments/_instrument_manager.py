@@ -4,7 +4,7 @@ import asyncio
 import sys
 import traceback
 from time import sleep
-from typing import Callable, Optional
+from typing import Optional
 
 import clr
 import PalmSens
@@ -21,7 +21,7 @@ from System import EventHandler  # type: ignore
 from ..data._shared import ArrayType, _get_values_from_NETArray
 from ..data.measurement import Measurement
 from ..methods import CURRENT_RANGE, BaseConfig
-from ._common import Instrument, create_future, firmware_warning
+from ._common import Callback, Instrument, create_future, firmware_warning
 
 WINDOWS = sys.platform == 'win32'
 LINUX = not WINDOWS
@@ -127,7 +127,22 @@ def connect(
 
 
 class InstrumentManager:
-    def __init__(self, instrument: Instrument, *, callback: Optional[Callable] = None):
+    """Instrument manager for PalmSens instruments.
+
+    Parameters
+    ----------
+    instrument: Instrument
+        Instrument to connect to, use `discover()` to find connected instruments.
+    callback: Callback, optional
+        If specified, call this function on every new set of data points.
+        New data points are batched, and contain all points since the last
+        time it was called. Each point is a dictionary containing
+        frequency,z_re, z_im for impedimetric techniques and
+        index, x, x_unit and x_type, y, y_unit and y_type for
+        non-impedimetric techniques.
+    """
+
+    def __init__(self, instrument: Instrument, *, callback: Optional[Callback] = None):
         self.callback = callback
         self.instrument = instrument
         self.__comm = None
