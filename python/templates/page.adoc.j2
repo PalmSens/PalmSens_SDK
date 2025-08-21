@@ -1,0 +1,42 @@
+= Title
+
+== Functions
+
+{%- for function in functions.values() %}
+
+=== {{ function.name }}
+
+{%- for block in function.docstring.parsed %}
+
+{%- if block.kind == 'text' %}
+{{ block.value }}
+{%- endif %}
+
+{%- if block.kind == 'parameters' %}
+
+==== Parameters
+{%- for param in block.value %}
+- {{ param.name }} ({{ param.annotation }}, default: {{ param.default }}) - {{ param.description }}
+{%- endfor %}
+{%- endif %}
+
+{%- if block.kind == 'returns' %}
+
+==== Returns
+{%- for param in block.value %}
+- {{ param.name }} ({{ param.annotation }}) - {{ param.description }}
+{%- endfor %}
+
+{%- endif %}
+
+{%- endfor %}
+
+{%- endfor %}
+
+== Classes
+
+{%- for class in classes.values() %}
+
+- {{ class.name }}: {{ class.docstring.parsed[0].value }}
+
+{%- endfor %}
