@@ -7,7 +7,7 @@ from PalmSens import Techniques
 from pytest import approx
 
 import pypalmsens
-from pypalmsens.data.measurement import Measurement
+from pypalmsens.data import Measurement
 from pypalmsens.methods import techniques
 from pypalmsens.methods._shared import (
     CURRENT_RANGE,

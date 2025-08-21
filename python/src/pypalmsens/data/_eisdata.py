@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from enum import Enum
 
-from .data_array import DataArray
-from .dataset import DataSet
+from ._data_array import DataArray
+from ._dataset import DataSet
 
 
 class EISValueType(Enum):

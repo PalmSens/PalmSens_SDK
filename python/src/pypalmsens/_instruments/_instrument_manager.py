@@ -18,8 +18,8 @@ from PalmSens.Plottables import (
 )
 from System import EventHandler  # type: ignore
 
+from ..data import Measurement
 from ..data._shared import ArrayType, _get_values_from_NETArray
-from ..data.measurement import Measurement
 from ..methods import CURRENT_RANGE, BaseConfig
 from ._common import Callback, Instrument, create_future, firmware_warning
 

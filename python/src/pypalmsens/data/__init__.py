@@ -1,0 +1,38 @@
+"""This module contains classes for representing measurement data.
+
+The main entry point for the data is the `Measurement` class.
+These can be loaded from a .pssession file or directly returned
+as a result from an expirement.
+
+Each data class in this module holds a reference to the underlying .NET SDK object,
+usually prefixed `ps...` like `Measurement.psmeasurement`.
+
+The raw data is stored in a `DataSet` under `Measurement.dataset`.
+A _dataset_ in turn consist of a series of `DataArray`'s.
+These would be analogous to the 'Data' tab in the PSTrace software.
+A _data array_ would be the equivalent of a column, with a title,
+array type, and units.
+
+The `Curve` objects (retrieved via `Measurement.curves`) are interpretations
+of the data, much like the plots in the PSTrace software.
+These can be used for plots or data processing like smoothing the data and peak finding.
+"""
+
+from __future__ import annotations
+
+from ._curve import Curve
+from ._data_array import DataArray
+from ._dataset import DataSet
+from ._eisdata import EISData
+from ._measurement import DeviceInfo, Measurement
+from ._peak import Peak
+
+__all__ = [
+    'Curve',
+    'DataArray',
+    'DataSet',
+    'DeviceInfo',
+    'EISData',
+    'Measurement',
+    'Peak',
+]

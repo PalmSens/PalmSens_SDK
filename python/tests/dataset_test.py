@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import pytest
 
+from pypalmsens.data import DataArray
 from pypalmsens.data._shared import ArrayType
-from pypalmsens.data.data_array import DataArray
 
 
 @pytest.fixture

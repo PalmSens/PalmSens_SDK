@@ -22,7 +22,7 @@ FitResult(cdc='R(RC)', parameters=[564.65, 10077.11, 3.327e-08], chisq=0.00040, 
 
 `CircuitModel` takes a single parameter, the circuit description code (CDC).
 Note that the code must be in all caps. For more information, see
-[this link](https://www.utwente.nl/en/tnw/ims/publications/downloads/CDC_Explained.pdf).
+[this link](https://www.utwente.nl/en/tnw/ims/publications/downloads/cdc-explained.pdf).
 
 `result` is an instance of `FitResult`, a dataclass with fit values, errors, and other
 fitting data. You can pass `result.parameters` back to `CircuitModel.fit` to redo the fit:
@@ -47,7 +47,7 @@ These can be modified, for example:
 >>> result = model.fit(eis_data, parameters=parameters)
 ```
 
-If you have [matplotlib]() installed, you can generate the plots from the result:
+If you have [matplotlib](https://matplotlib.org) installed, you can generate the plots from the result:
 
 ```python
 >>> result.get_bode_phase(eis_data)
@@ -65,8 +65,7 @@ from typing import TYPE_CHECKING, Literal, Optional
 from PalmSens import Fitting as PSFitting
 from System import Array
 
-from .data.curve import Curve
-from .data.eisdata import EISData
+from .data import Curve, EISData
 
 if TYPE_CHECKING:
     from matplotlib import fig
