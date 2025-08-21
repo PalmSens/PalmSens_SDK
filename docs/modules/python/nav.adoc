@@ -6,6 +6,7 @@
 *** xref:io.adoc[]
 *** xref:techniques.adoc[]
 *** xref:instrument.adoc[]
+**** xref:instrument_async.adoc[Async]
 *** xref:config.adoc[]
 **** xref:config_enums.adoc[]
 *** xref:fitting.adoc[]

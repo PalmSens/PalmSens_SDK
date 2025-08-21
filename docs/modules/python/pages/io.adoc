@@ -50,8 +50,8 @@ file
 *Returns:*
 
 * *measurements*
-(link:#list[list][link:#pypalmsens.data.measurement.Measurement[Measurement]])
-– Return list of measurements
+(link:#list[list][link:#pypalmsens.data.Measurement[Measurement]]) –
+Return list of measurements
 
 === save_method_file
 
@@ -83,5 +83,5 @@ Load a session file (.pssession).
 * *path* (link:#pathlib.Path[Path] | link:#str[str]) – Path to save the
 session file
 * *measurements*
-(link:#list[list][link:#pypalmsens.data.measurement.Measurement[Measurement]])
-– List of measurements to save
+(link:#list[list][link:#pypalmsens.data.Measurement[Measurement]]) –
+List of measurements to save

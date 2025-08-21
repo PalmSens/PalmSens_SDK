@@ -103,10 +103,19 @@ pages = (
         extra_config={
             'members': [
                 'connect',
-                'connect_async',
                 'discover',
-                'discover_async',
                 'InstrumentManager',
+            ]
+        },
+    ),
+    Page(
+        name='instrument_async',
+        title='Instrument management (async)',
+        module='pypalmsens',
+        extra_config={
+            'members': [
+                'connect_async',
+                'discover_async',
                 'InstrumentManagerAsync',
             ]
         },

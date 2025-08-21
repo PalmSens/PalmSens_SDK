@@ -1,33 +1,32 @@
-= Instrument management
+= Instrument management (async)
 
 == pypalmsens
 
 *Classes:*
 
-* link:#pypalmsens.InstrumentManager[*InstrumentManager*] – Instrument
-manager for PalmSens instruments.
+* link:#pypalmsens.InstrumentManagerAsync[*InstrumentManagerAsync*] –
+Asynchronous instrument manager for PalmSens instruments.
 
 *Functions:*
 
-* link:#pypalmsens.connect[*connect*] – Connect to instrument and return
-InstrumentManager.
-* link:#pypalmsens.discover[*discover*] – Discover instruments.
+* link:#pypalmsens.connect_async[*connect_async*] – Connect to
+instrument and return InstrumentManagerAsync.
+* link:#pypalmsens.discover_async[*discover_async*] – Discover
+instruments.
 
-=== InstrumentManager
+=== InstrumentManagerAsync
 
 [source,python]
 ----
-InstrumentManager(instrument, *, callback=None)
+InstrumentManagerAsync(instrument, *, callback=None)
 ----
 
-Instrument manager for PalmSens instruments.
+Asynchronous instrument manager for PalmSens instruments.
 
 *Parameters:*
 
-* *instrument*
-(link:#pypalmsens._instruments._common.Instrument[Instrument]) –
-Instrument to connect to, use `+discover()+` to find connected
-instruments.
+* *instrument* – Instrument to connect to, use `+discover()+` to find
+connected instruments.
 * *callback*
 (link:#typing.Optional[Optional][link:#pypalmsens._instruments._common.Callback[Callback]])
 – If specified, call this function on every new set of data points. New
@@ -39,42 +38,45 @@ non-impedimetric techniques.
 
 *Functions:*
 
-* link:#pypalmsens.InstrumentManager.is_connected[*is_connected*] –
+* link:#pypalmsens.InstrumentManagerAsync.is_connected[*is_connected*] –
 Return True if an instrument connection exists.
-* link:#pypalmsens.InstrumentManager.connect[*connect*] – Connect to
-instrument.
-* link:#pypalmsens.InstrumentManager.set_cell[*set_cell*] – Turn the
-cell on or off.
-* link:#pypalmsens.InstrumentManager.set_potential[*set_potential*] –
-Set the potential of the cell.
-* link:#pypalmsens.InstrumentManager.set_current_range[*set_current_range*]
+* link:#pypalmsens.InstrumentManagerAsync.connect[*connect*] – Connect
+to instrument.
+* link:#pypalmsens.InstrumentManagerAsync.set_cell[*set_cell*] – Turn
+the cell on or off.
+* link:#pypalmsens.InstrumentManagerAsync.set_potential[*set_potential*]
+– Set the potential of the cell.
+* link:#pypalmsens.InstrumentManagerAsync.set_current_range[*set_current_range*]
 – Set the current range for the cell.
-* link:#pypalmsens.InstrumentManager.read_current[*read_current*] – Read
-the current in µA.
-* link:#pypalmsens.InstrumentManager.read_potential[*read_potential*] –
-Read the potential in V.
-* link:#pypalmsens.InstrumentManager.get_instrument_serial[*get_instrument_serial*]
+* link:#pypalmsens.InstrumentManagerAsync.read_current[*read_current*] –
+Read the current in µA.
+* link:#pypalmsens.InstrumentManagerAsync.read_potential[*read_potential*]
+– Read the potential in V.
+* link:#pypalmsens.InstrumentManagerAsync.get_instrument_serial[*get_instrument_serial*]
 – Return instrument serial number.
-* link:#pypalmsens.InstrumentManager.validate_method[*validate_method*]
+* link:#pypalmsens.InstrumentManagerAsync.validate_method[*validate_method*]
 – Validate method.
-* link:#pypalmsens.InstrumentManager.measure[*measure*] – Start
+* link:#pypalmsens.InstrumentManagerAsync.measure[*measure*] – Start
 measurement using given method parameters.
-* link:#pypalmsens.InstrumentManager.wait_digital_trigger[*wait_digital_trigger*]
+* link:#pypalmsens.InstrumentManagerAsync.initiate_hardware_sync_follower_channel[*initiate_hardware_sync_follower_channel*]
+– Initiate hardware sync follower channel.
+* link:#pypalmsens.InstrumentManagerAsync.wait_digital_trigger[*wait_digital_trigger*]
 – Wait for digital trigger.
-* link:#pypalmsens.InstrumentManager.abort[*abort*] – Abort measurement.
-* link:#pypalmsens.InstrumentManager.initialize_multiplexer[*initialize_multiplexer*]
+* link:#pypalmsens.InstrumentManagerAsync.abort[*abort*] – Abort
+measurement.
+* link:#pypalmsens.InstrumentManagerAsync.initialize_multiplexer[*initialize_multiplexer*]
 – Initialize the multiplexer.
-* link:#pypalmsens.InstrumentManager.set_mux8r2_settings[*set_mux8r2_settings*]
+* link:#pypalmsens.InstrumentManagerAsync.set_mux8r2_settings[*set_mux8r2_settings*]
 – Set the settings for the Mux8R2 multiplexer.
-* link:#pypalmsens.InstrumentManager.set_multiplexer_channel[*set_multiplexer_channel*]
+* link:#pypalmsens.InstrumentManagerAsync.set_multiplexer_channel[*set_multiplexer_channel*]
 – Sets the multiplexer channel.
-* link:#pypalmsens.InstrumentManager.disconnect[*disconnect*] –
+* link:#pypalmsens.InstrumentManagerAsync.disconnect[*disconnect*] –
 Disconnect from the instrument.
 
 *Attributes:*
 
-* link:#pypalmsens.InstrumentManager.callback[*callback*] –
-* link:#pypalmsens.InstrumentManager.instrument[*instrument*] –
+* link:#pypalmsens.InstrumentManagerAsync.callback[*callback*] –
+* link:#pypalmsens.InstrumentManagerAsync.instrument[*instrument*] –
 
 ==== callback
 
@@ -201,7 +203,7 @@ Validate method.
 
 [source,python]
 ----
-measure(method)
+measure(method, hardware_sync_initiated_event=None)
 ----
 
 Start measurement using given method parameters.
@@ -210,6 +212,21 @@ Start measurement using given method parameters.
 
 * *method* (link:#pypalmsens.methods.BaseConfig[BaseConfig]) – Method
 parameters for measurement
+* *hardware_sync_initiated_event* – …
+
+==== initiate_hardware_sync_follower_channel
+
+[source,python]
+----
+initiate_hardware_sync_follower_channel(method)
+----
+
+Initiate hardware sync follower channel.
+
+*Parameters:*
+
+* *method* (link:#pypalmsens.methods.BaseConfig[BaseConfig]) – Method
+parameters
 
 ==== wait_digital_trigger
 
@@ -295,14 +312,14 @@ disconnect()
 
 Disconnect from the instrument.
 
-=== connect
+=== connect_async
 
 [source,python]
 ----
-connect(instrument=None)
+connect_async(instrument=None)
 ----
 
-Connect to instrument and return InstrumentManager.
+Connect to instrument and return InstrumentManagerAsync.
 
 *Parameters:*
 
@@ -314,15 +331,15 @@ to the first instrument.
 *Returns:*
 
 * *manager*
-(link:#pypalmsens._instruments._instrument_manager.InstrumentManager[InstrumentManager])
-– Return instance of `+InstrumentManager+` connected to the given
+(link:#pypalmsens._instruments._instrument_manager_async.InstrumentManagerAsync[InstrumentManagerAsync])
+– Return instance of `+InstrumentManagerAsync+` connected to the given
 instrument. The connection will be terminated after the context ends.
 
-=== discover
+=== discover_async
 
 [source,python]
 ----
-discover(ftdi=False, usbcdc=True, bluetooth=False, serial=True)
+discover_async(ftdi=False, usbcdc=True, bluetooth=False, serial=True)
 ----
 
 Discover instruments.
@@ -334,4 +351,3 @@ Discover instruments.
 (Windows only)
 * *bluetooth* (link:#bool[bool]) – If True, discover bluetooth devices
 (Windows only)
-* *serial* (link:#bool[bool]) – If True, discover serial devices
