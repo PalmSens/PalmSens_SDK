@@ -28,7 +28,7 @@ config = griffe2md.ConfigDict(
     separate_signature=True,
     show_bases=True,
     show_category_heading=False,  # When grouped by categories, show a heading for each category.
-    show_docstring_attributes=False,
+    show_docstring_attributes=True,
     show_docstring_classes=True,
     show_docstring_description=True,
     show_docstring_examples=True,
@@ -50,7 +50,12 @@ config = griffe2md.ConfigDict(
     show_signature_annotations=False,
     show_submodules=True,
     signature_crossrefs=False,
-    summary=True,
+    summary={
+        'attributes': False,
+        'functions': True,
+        'classes': True,
+        'modules': True,
+    },
 )
 
 
@@ -157,7 +162,12 @@ pages = (
             ]
         },
     ),
-    Page(name='fitting', title='Fitting', module='pypalmsens.fitting'),
+    Page(
+        name='fitting',
+        title='Fitting',
+        module='pypalmsens.fitting',
+        extra_config={'summary': True, 'show_docstring_attributes': False},
+    ),
     Page(name='data', title='Data', module='pypalmsens.data'),
 )
 

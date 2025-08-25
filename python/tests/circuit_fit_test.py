@@ -34,7 +34,7 @@ def test_parameters():
     params[1].min = 12
     params[1].max = 34
 
-    params.update_psmodel_parameters(psmodel)
+    params._update_psmodel_parameters(psmodel)
     psparams = psmodel.InitialParameters
 
     assert psparams[0].Value == 123
