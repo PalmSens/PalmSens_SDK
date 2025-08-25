@@ -49,7 +49,7 @@ config = griffe2md.ConfigDict(
     show_signature=True,
     show_signature_annotations=False,
     show_submodules=True,
-    signature_crossrefs=False,
+    signature_crossrefs=True,
     summary={
         'attributes': False,
         'functions': True,
@@ -78,7 +78,9 @@ pages = (
                 'load_session_file',
                 'save_method_file',
                 'save_session_file',
-            ]
+            ],
+            'summary': True,
+            'show_docstring_attributes': False,
         },
     ),
     Page(
@@ -110,7 +112,9 @@ pages = (
                 'connect',
                 'discover',
                 'InstrumentManager',
-            ]
+            ],
+            'summary': True,
+            'show_docstring_attributes': False,
         },
     ),
     Page(
@@ -122,7 +126,9 @@ pages = (
                 'connect_async',
                 'discover_async',
                 'InstrumentManagerAsync',
-            ]
+            ],
+            'summary': True,
+            'show_docstring_attributes': False,
         },
     ),
     Page(
@@ -148,7 +154,9 @@ pages = (
                 'Multiplexer',
                 'DataProcessing',
                 'General',
-            ]
+            ],
+            'summary': True,
+            'show_docstring_attributes': False,
         },
     ),
     Page(
@@ -159,7 +167,9 @@ pages = (
             'members': [
                 'CURRENT_RANGE',
                 'POTENTIAL_RANGE',
-            ]
+            ],
+            'summary': True,
+            'show_docstring_attributes': False,
         },
     ),
     Page(
@@ -168,7 +178,12 @@ pages = (
         module='pypalmsens.fitting',
         extra_config={'summary': True, 'show_docstring_attributes': False},
     ),
-    Page(name='data', title='Data', module='pypalmsens.data'),
+    Page(
+        name='data',
+        title='Data',
+        module='pypalmsens.data',
+        extra_config={'summary': True, 'show_docstring_attributes': False},
+    ),
 )
 
 ROOT_DIR = Path(__file__).parents[1]

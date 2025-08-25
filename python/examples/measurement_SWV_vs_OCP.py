@@ -33,4 +33,4 @@ with pypalmsens.connect(available_instruments[0]) as manager:
 
     measurement = manager.measure(method)
 
-    print(f'ocp: {measurement.curves[0].pscurve.OCPValue}')
+    print(f'ocp: {measurement.curves[0]._pscurve.OCPValue}')

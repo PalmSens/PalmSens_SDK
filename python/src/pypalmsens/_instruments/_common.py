@@ -82,5 +82,8 @@ class Instrument:
     """Dataclass holding instrument info."""
 
     name: str
+    """Name of the instrument."""
     connection: str
+    """Type of the connection."""
     device: Any
+    """Device connection class."""

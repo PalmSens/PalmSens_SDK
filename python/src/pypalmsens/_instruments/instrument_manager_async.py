@@ -147,7 +147,11 @@ class InstrumentManagerAsync:
 
     def __init__(self, instrument, *, callback: Optional[Callback] = None):
         self.callback = callback
+        """This callback is called on every data point."""
+
         self.instrument = instrument
+        """Instrument to connect to."""
+
         self.__comm = None
         self.__measuring = False
         self.__active_measurement = None

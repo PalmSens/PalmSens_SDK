@@ -144,7 +144,7 @@ class FitResult:
     def get_psmodel(self, data: EISData) -> PSFitting.Models.CircuitModel:
         """Get SDK Circuit model object"""
         psmodel = PSFitting.Models.CircuitModel()
-        psmodel.SetEISdata(data.pseis)
+        psmodel.SetEISdata(data._pseis)
         psmodel.SetCircuit(self.cdc)
         psmodel.SetInitialParameters(self.parameters)
         return psmodel
@@ -367,7 +367,7 @@ class CircuitModel:
         """
         model = PSFitting.Models.CircuitModel()
         model.SetCircuit(self.cdc)
-        model.SetEISdata(data.pseis)
+        model.SetEISdata(data._pseis)
 
         if parameters:
             if isinstance(parameters, Parameters):
@@ -383,7 +383,7 @@ class CircuitModel:
 
         opts = PSFitting.FitOptionsCircuit()
         opts.Model = model
-        opts.RawData = data.pseis
+        opts.RawData = data._pseis
 
         opts.MaxIterations = self.max_iterations
         opts.MinimumDeltaErrorTerm = self.min_delta_error

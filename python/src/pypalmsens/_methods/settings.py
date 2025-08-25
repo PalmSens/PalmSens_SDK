@@ -27,24 +27,22 @@ class CommonSettings(Protocol):
 
 @attrs.define
 class CurrentRanges(CommonSettings):
-    """Set the autoranging current for a given method.
-
-    Attributes
-    ----------
-    max: int
-        Maximum current range (default: 10 mA).
-        Use `CURRENT_RANGE` to define the range.
-    min: int
-        Minimum current range (default: 1 µA).
-        Use `CURRENT_RANGE` to define the range.
-    start: int
-         Start current range (default: 100 µA).
-         Use `CURRENT_RANGE` to define the range.
-    """
+    """Set the autoranging current for a given method."""
 
     max: CURRENT_RANGE = CURRENT_RANGE.cr_10_mA
+    """Maximum current range.
+
+    Use `CURRENT_RANGE` to define the range."""
+
     min: CURRENT_RANGE = CURRENT_RANGE.cr_1_uA
+    """Minimum current range.
+
+    Use `CURRENT_RANGE` to define the range."""
+
     start: CURRENT_RANGE = CURRENT_RANGE.cr_100_uA
+    """Start current range.
+
+    Use `CURRENT_RANGE` to define the range."""
 
     def _update_psmethod(self, *, obj):
         obj.Ranging.MaximumCurrentRange = self.max._to_psobj()
@@ -59,24 +57,22 @@ class CurrentRanges(CommonSettings):
 
 @attrs.define
 class PotentialRanges(CommonSettings):
-    """Set the autoranging potential for a given method.
-
-    Attributes
-    ----------
-    max: int
-        Maximum potential range (default: 1V).
-        Use `POTENTIAL_RANGE` to define the range.
-    min: int
-        Minimum potential range (default: 10mV).
-        Use `POTENTIAL_RANGE` to define the range.
-    start: int
-        Start potential range (default: 1V).
-        Use `POTENTIAL_RANGE` to define the range.
-    """
+    """Set the autoranging potential for a given method."""
 
     max: POTENTIAL_RANGE = POTENTIAL_RANGE.pr_1_V
+    """Maximum potential range.
+
+    Use `POTENTIAL_RANGE` to define the range."""
+
     min: POTENTIAL_RANGE = POTENTIAL_RANGE.pr_1_mV
+    """Minimum potential range.
+
+    Use `POTENTIAL_RANGE` to define the range."""
+
     start: POTENTIAL_RANGE = POTENTIAL_RANGE.pr_1_V
+    """Start potential range.
+
+    Use `POTENTIAL_RANGE` to define the range."""
 
     def _update_psmethod(self, *, obj):
         obj.RangingPotential.MaximumPotentialRange = self.max._to_psobj()
@@ -91,24 +87,19 @@ class PotentialRanges(CommonSettings):
 
 @attrs.define
 class Pretreatment(CommonSettings):
-    """Set the pretreatment settings for a given method.
-
-    Attributes
-    ----------
-    deposition_potential: float
-        Deposition potential in V (default: 0.0)
-    deposition_time: float
-        Deposition time in s (default: 0.0)
-    conditioning_potential: float
-        Conditioning potential in V (default: 0.0)
-    conditioning_time: float
-        Conditioning time in s (default: 0.0)
-    """
+    """Set the pretreatment settings for a given method."""
 
     deposition_potential: float = 0.0
+    """Deposition potential in V"""
+
     deposition_time: float = 0.0
+    """Deposition time in s"""
+
     conditioning_potential: float = 0.0
+    """Conditioning potential in V"""
+
     conditioning_time: float = 0.0
+    """Conditioning time in s"""
 
     def _update_psmethod(self, *, obj):
         obj.DepositionPotential = self.deposition_potential
@@ -125,31 +116,31 @@ class Pretreatment(CommonSettings):
 
 @attrs.define
 class VersusOCP(CommonSettings):
-    """Set the versus OCP settings for a given method.
-
-    Attributes
-    ----------
-    versus_ocp_mode: int
-        Set versus OCP mode.
-            0 = disable versus OCP
-            1 = vertex 1 potential
-            2 = vertex 2 potential
-            3 = vertex 1 & 2 potential
-            4 = begin potential
-            5 = begin & vertex 1 potential
-            6 = begin & vertex 2 potential
-            7 = begin & vertex 1 & 2 potential
-    versus_ocp_max_ocp_time: int
-        Maximum OCP time in s (default: 20.0)
-    versus_ocp_stability_criterion: int = 0
-        Stability criterion in mV/s (default: 0.0)
-            0 = no stability criterion
-            > 0 is stability threshold potential/time (mV/s)
-    """
+    """Set the versus OCP settings for a given method."""
 
     mode: int = 0
-    max_ocp_time: float = 20.0  # Time (s)
+    """Set versus OCP mode.
+
+    Possible values:
+    * 0 = disable versus OCP
+    * 1 = vertex 1 potential
+    * 2 = vertex 2 potential
+    * 3 = vertex 1 & 2 potential
+    * 4 = begin potential
+    * 5 = begin & vertex 1 potential
+    * 6 = begin & vertex 2 potential
+    * 7 = begin & vertex 1 & 2 potential
+    """
+
+    max_ocp_time: float = 20.0
+    """Maximum OCP time in s"""
+
     stability_criterion: int = 0
+    """Stability criterion (potential/time) in mV/s.
+
+    If equal to 0 means no stability criterion.
+    If larger than 0, then the value is taken as the stability threshold.
+    """
 
     def _update_psmethod(self, *, obj):
         obj.OCPmode = self.mode
@@ -164,30 +155,30 @@ class VersusOCP(CommonSettings):
 
 @attrs.define
 class BiPot(CommonSettings):
-    """Set the bipot settings for a given method.
-
-    Attributes
-    ----------
-    mode: str
-        Set the bipotential mode, 'constant' (default) or 'offset'
-    potential: float
-        Set the bipotential in V (default: 0.0)
-    current_range_max: int
-        Maximum bipotential current range (default: 10 mA).
-        Use `CURRENT_RANGE` to define the range.
-    current_range_min: int
-        Minimum bipotential current range (default: 1 µA).
-        Use `CURRENT_RANGE` to define the range.
-    current_range_start: int
-        Start bipotential current range (default: 100 µA).
-        Use `CURRENT_RANGE` to define the range.
-    """
+    """Set the bipot settings for a given method."""
 
     mode: Literal['constant', 'offset'] = 'constant'
-    potential: float = 0.0  # V
+    """Set the bipotential mode.
+
+    Possible values: `constant` or `offset`"""
+
+    potential: float = 0.0
+    """Set the bipotential in V"""
+
     current_range_max: CURRENT_RANGE = CURRENT_RANGE.cr_10_mA
+    """Maximum bipotential current range in mA.
+
+    Use `CURRENT_RANGE` to define the range."""
+
     current_range_min: CURRENT_RANGE = CURRENT_RANGE.cr_1_uA
+    """Minimum bipotential current range.
+
+    Use `CURRENT_RANGE` to define the range."""
+
     current_range_start: CURRENT_RANGE = CURRENT_RANGE.cr_100_uA
+    """Start bipotential current range.
+
+    Use `CURRENT_RANGE` to define the range."""
 
     _BIPOT_MODES = ('constant', 'offset')
 
@@ -209,23 +200,16 @@ class BiPot(CommonSettings):
 
 @attrs.define
 class PostMeasurement(CommonSettings):
-    """Set the post measurement settings for a given method.
-
-    Attributes
-    ----------
-    cell_on_after_measurement: bool
-        Enable/disable cell after measurement (default: False)
-    standby_potential: float
-        Standby potential for use with cell on after measurement.
-        Potential in V (default: 0.0)
-    standby_time: float
-        Standby time for use with cell on after measurement.
-        Time in s (default)
-    """
+    """Set the post measurement settings for a given method."""
 
     cell_on_after_measurement: bool = False
-    standby_potential: float = 0.0  # V
-    standby_time: float = 0.0  # s
+    """Enable/disable cell after measurement."""
+
+    standby_potential: float = 0.0
+    """Standby potential (V) for use with cell on after measurement."""
+
+    standby_time: float = 0.0
+    """Standby time (s) for use with cell on after measurement."""
 
     def _update_psmethod(self, *, obj):
         obj.CellOnAfterMeasurement = self.cell_on_after_measurement
@@ -240,26 +224,23 @@ class PostMeasurement(CommonSettings):
 
 @attrs.define
 class CurrentLimits(CommonSettings):
-    """Set the limit settings for a given method.
-
-    Attributes
-    ----------
-    use_limit_max: bool
-        Use limit current max (default: False).
-        This will reverse the scan instead of aborting measurement
-    limit_max: float
-        Limit current max in µA (default: 0.0)
-    use_limit_min: bool
-        Use limit current min (default: False)
-        This will reverse the scan instead of aborting measurement
-    limit_min: float
-        Limit current min in µA (default: 0.0)
-    """
+    """Set the limit settings for a given method."""
 
     use_limit_max: bool = False
-    limit_max: float = 0.0  # µA
+    """Use limit current max.
+
+    This will reverse the scan instead of aborting measurement."""
+
+    limit_max: float = 0.0
+    """Limit current max in µA."""
+
     use_limit_min: bool = False
-    limit_min: float = 0.0  # µA
+    """Use limit current min.
+
+    This will reverse the scan instead of aborting measurement."""
+
+    limit_min: float = 0.0
+    """Limit current min in µA."""
 
     def _update_psmethod(self, *, obj):
         obj.UseLimitMaxValue = self.use_limit_max
@@ -276,24 +257,19 @@ class CurrentLimits(CommonSettings):
 
 @attrs.define
 class PotentialLimits(CommonSettings):
-    """Set the limit settings for a given method.
-
-    Attributes
-    ----------
-    use_limit_max: bool
-        Use limit potential max (default: False).
-    limit_max: float
-        Limit potential max in V (default: 0.0)
-    use_limit_min: bool
-        Use limit potential min (default: False)
-    limit_min: float
-        Limit potential min in V (default: 0.0)
-    """
+    """Set the limit settings for a given method."""
 
     use_limit_max: bool = False
-    limit_max: float = 0.0  # V
+    """Use limit potential max."""
+
+    limit_max: float = 0.0
+    """Limit potential max in V."""
+
     use_limit_min: bool = False
-    limit_min: float = 0.0  # V
+    """Use limit potential min."""
+
+    limit_min: float = 0.0
+    """Limit potential min in V."""
 
     def _update_psmethod(self, *, obj):
         obj.UseLimitMaxValue = self.use_limit_max
@@ -310,24 +286,19 @@ class PotentialLimits(CommonSettings):
 
 @attrs.define
 class ChargeLimits(CommonSettings):
-    """Set the charge limit settings for a given method.
-
-    Attributes
-    ----------
-    use_limit_max: bool
-        Use limit charge max (default: False).
-    limit_max: float
-        Limit charge max in µC (default: 0.0)
-    use_limit_min: bool
-        Use limit charge min (default: False)
-    limit_min: float
-        Limit charge min in µC (default: 0.0)
-    """
+    """Set the charge limit settings for a given method."""
 
     use_limit_max: bool = False
-    limit_max: float = 0.0  # in µC
+    """Use limit charge max."""
+
+    limit_max: float = 0.0
+    """Limit charge max in µC."""
+
     use_limit_min: bool = False
-    limit_min: float = 0.0  # in µC
+    """Use limit charge min."""
+
+    limit_min: float = 0.0
+    """Limit charge min in µC."""
 
     def _update_psmethod(self, *, obj):
         obj.UseChargeLimitMax = self.use_limit_max
@@ -344,18 +315,12 @@ class ChargeLimits(CommonSettings):
 
 @attrs.define
 class IrDropCompensation(CommonSettings):
-    """Set the iR drop compensation settings for a given method.
-
-    Attributes
-    ----------
-    enable: bool
-        Enable iR compensation
-    ir_compensation: float
-        Set the iR compensation in Ω (default: 0.0)
-    """
+    """Set the iR drop compensation settings for a given method."""
 
     enable: bool = False
-    ir_compensation: float = 0.0  # Ω
+    """Enable iR compensation"""
+    ir_compensation: float = 0.0
+    """Set the iR compensation in Ω"""
 
     def _update_psmethod(self, *, obj):
         obj.UseIRDropComp = self.enable
@@ -368,28 +333,26 @@ class IrDropCompensation(CommonSettings):
 
 @attrs.define
 class EquilibrationTriggers(CommonSettings):
-    """Set the trigger at equilibration settings for a given method.
-
-    Attributes
-    ----------
-    enable: bool
-        If enabled, set one or more digital outputs at the start of
-        the equilibration period (default: False)
-    d0: bool
-        If True, enable trigger at d0 high
-    d1: bool
-        If True, enable trigger at d1 high
-    d2: bool
-        If True, enable trigger at d2 high
-    d3: bool
-        If True, enable trigger at d3 high
-    """
+    """Set the trigger at equilibration settings for a given method."""
 
     enable: bool = False
+    """Enable equilibration triggers.
+
+    If enabled, set one or more digital outputs at the start of
+    the equilibration period.
+    """
+
     d0: bool = False
+    """If True, enable trigger at d0 high."""
+
     d1: bool = False
+    """If True, enable trigger at d1 high."""
+
     d2: bool = False
+    """If True, enable trigger at d2 high."""
+
     d3: bool = False
+    """If True, enable trigger at d3 high."""
 
     def _update_psmethod(self, *, obj):
         obj.UseTriggerOnEquil = self.enable
@@ -402,28 +365,25 @@ class EquilibrationTriggers(CommonSettings):
 
 @attrs.define
 class MeasurementTriggers(CommonSettings):
-    """Set the trigger at measurement settings for a given method.
-
-    Attributes
-    ----------
-    enable: bool
-        If enabled, set one or more digital outputs at the start measurement,
-        end of equilibration period (default: False)
-    d0: bool
-        If True, enable trigger at d0 high
-    d1: bool
-        If True, enable trigger at d1 high
-    d2: bool
-        If True, enable trigger at d2 high
-    d3: bool
-        If True, enable trigger at d3 high
-    """
+    """Set the trigger at measurement settings for a given method."""
 
     enable: bool = False
+    """Enable measurement triggers.
+
+    If enabled, set one or more digital outputs at the start measurement,
+    """
+
     d0: bool = False
+    """If True, enable trigger at d0 high."""
+
     d1: bool = False
+    """If True, enable trigger at d1 high."""
+
     d2: bool = False
+    """If True, enable trigger at d2 high."""
+
     d3: bool = False
+    """If True, enable trigger at d3 high."""
 
     def _update_psmethod(self, *, obj):
         obj.UseTriggerOnStart = self.enable
@@ -436,36 +396,37 @@ class MeasurementTriggers(CommonSettings):
 
 @attrs.define
 class Multiplexer(CommonSettings):
-    """Set the multiplexer settings for a given method.
-
-    Attributes
-    ----------
-    mode: int = -1
-        Set multiplexer mode
-           -1 = No multiplexer (disable)
-            0 = Consecutive
-            1 = Alternate
-    channels: list[bool]
-        Set multiplexer channels as a list of indexes for which channels to enable (max 128).
-        For example, [0,3,7]. In consecutive mode all selections are valid.
-        In alternating mode the first channel must be selected and all other
-        channels should be consequtive i.e. (channel 1, channel 2, channel 3 and so on).
-    connect_sense_to_working_electrode: bool
-        Connect the sense electrode to the working electrode. Default is False.
-    combine_reference_and_counter_electrodes: bool
-        Combine the reference and counter electrodes. Default is False.
-    use_channel_1_reference_and_counter_electrodes: bool
-        Use channel 1 reference and counter electrodes for all working electrodes. Default is False.
-    set_unselected_channel_working_electrode: int
-        Set the unselected channel working electrode to 0 = Disconnected / floating, 1 = Ground, 2 = Standby potential. Default is 0.
-    """
+    """Set the multiplexer settings for a given method."""
 
     mode: Literal['none', 'consecutive', 'alternate'] = 'none'
+    """Set multiplexer mode.
+
+    Possible values:
+    * 'none' = No multiplexer (disable)
+    * 'consecutive
+    * 'alternate
+    """
+
     channels: list[int] = attrs.field(factory=list)
+    """Set multiplexer channels
+
+    This is defined as a list of indexes for which channels to enable (max 128).
+    For example, [0,3,7]. In consecutive mode all selections are valid.
+
+    In alternating mode the first channel must be selected and all other
+    channels should be consecutive i.e. (channel 1, channel 2, channel 3 and so on).
+    """
     connect_sense_to_working_electrode: bool = False
+    """Connect the sense electrode to the working electrode. Default is False."""
+
     combine_reference_and_counter_electrodes: bool = False
+    """Combine the reference and counter electrodes. Default is False."""
+
     use_channel_1_reference_and_counter_electrodes: bool = False
+    """Use channel 1 reference and counter electrodes for all working electrodes. Default is False."""
+
     set_unselected_channel_working_electrode: int = 0
+    """Set the unselected channel working electrode to 0 = Disconnected / floating, 1 = Ground, 2 = Standby potential. Default is 0."""
 
     _MUX_MODES = ('none', 'consecutive', 'alternate')
 
@@ -502,30 +463,29 @@ class Multiplexer(CommonSettings):
 
 @attrs.define
 class DataProcessing(CommonSettings):
-    """Set the data processing settings for a given method.
-
-    Attributes
-    ----------
-    min_height: float
-        Determines the minimum peak height in µA for peak finding.
-        Peaks lower than this value are neglected (default: 0.0 uA).
-    min_width: float
-        The minimum peak width for peak finding,
-        in the unit of the curves X axis (V).
-        Peaks narrower than this value are neglected (default: 0.1 V).
-    smooth_level: int
-        Set the default curve post processing filter (default: 0)
-           -1 = no filter
-            0 = spike rejection
-            1 = spike rejection + Savitsky-golay window 5
-            2 = spike rejection + Savitsky-golay window 9
-            3 = spike rejection + Savitsky-golay window 15
-            4 = spike rejection + Savitsky-golay window 25
-    """
+    """Set the data processing settings for a given method."""
 
     smooth_level: int = 0
-    min_height: float = 0.0  # uA
-    min_width: float = 0.1  # V
+    """Set the default curve post processing filter.
+
+    Possible values:
+    * -1 = no filter
+    *  0 = spike rejection
+    *  1 = spike rejection + Savitsky-golay window 5
+    *  2 = spike rejection + Savitsky-golay window 9
+    *  3 = spike rejection + Savitsky-golay window 15
+    *  4 = spike rejection + Savitsky-golay window 25
+    """
+
+    min_height: float = 0.0
+    """Determines the minimum peak height in µA for peak finding.
+
+    Peaks lower than this value are neglected."""
+    min_width: float = 0.1
+    """The minimum peak width for peak finding.
+
+    The value is in the unit of the curves X axis (V).
+    Peaks narrower than this value are neglected (default: 0.1 V)."""
 
     def _update_psmethod(self, *, obj):
         obj.SmoothLevel = self.smooth_level
@@ -540,26 +500,22 @@ class DataProcessing(CommonSettings):
 
 @attrs.define
 class General(CommonSettings):
-    """Sets general/other settings for a given method.
-
-    Attributes
-    ----------
-    notes : str
-        Add some user notes for use with this technique
-    save_on_internal_storage: bool
-        Save on internal storage (default: False)
-    use_hardware_sync: bool
-        Use hardware synchronization with other channels/instruments (default: False)
-    power_frequency: int
-        Set the DC mains filter in Hz.
-        Adjusts sampling on instrument to account for mains frequency.
-        Set to 50 Hz or 60 Hz depending on your region (default: 50).
-    """
+    """Sets general/other settings for a given method."""
 
     save_on_internal_storage: bool = False
+    """Save on internal storage."""
+
     use_hardware_sync: bool = False
+    """Use hardware synchronization with other channels/instruments."""
+
     notes: str = ''
+    """Add some user notes for use with this technique."""
+
     power_frequency: Literal[50, 60] = 50
+    """Set the DC mains filter in Hz.
+
+    Adjusts sampling on instrument to account for mains frequency.
+    Set to 50 Hz or 60 Hz depending on your region (default: 50)."""
 
     def _update_psmethod(self, *, obj):
         obj.SaveOnDevice = self.save_on_internal_storage

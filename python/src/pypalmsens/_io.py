@@ -81,11 +81,11 @@ def save_session_file(path: Union[str, Path], measurements: list[Measurement]):
         raise ValueError('cannot save null measurement')
 
     session = SessionManager()
-    session.MethodForEditor = measurements[0].psmeasurement.Method
+    session.MethodForEditor = measurements[0]._psmeasurement.Method
     session.MethodForEditor.MethodFilename = str(path.absolute())
 
     for measurement in measurements:
-        session.AddMeasurement(measurement.psmeasurement)
+        session.AddMeasurement(measurement._psmeasurement)
 
     with stream_writer(str(path), False, Encoding.Unicode) as stream:
         session.Save(stream.BaseStream, str(path))

@@ -172,40 +172,36 @@ def get_extra_value_mask(obj) -> dict[str, Any]:
 
 @dataclass
 class ELevel:
-    """Create a multi-step amperometry level method object.
-
-    Attributes
-    ----------
-    level : float
-        Level in V (default: 0.0)
-    duration : float
-        Duration in s (default: 1.0)
-    record : bool
-        Record the current (default: True)
-    use_limit_current_max : bool
-        Use limit current max (default: False)
-    limit_current_max : float
-        Limit current max in µA (default: 0.0)
-    use_limit_current_min : bool
-        Use limit current min (default: False)
-    limit_current_min : float
-        Limit current min in µA (default: 0.0)
-    trigger_at_level : bool
-        Use trigger at level (default: False)
-    trigger_at_level_lines : list
-        Trigger at level lines (default: [False, False, False, False])
-        [d0 high, d1 high, d2 high, d3 high]
-    """
+    """Create a multi-step amperometry level method object."""
 
     level: float = 0.0
+    """Level in V."""
+
     duration: float = 1.0
+    """Duration in s."""
+
     record: bool = True
+    """Record the current."""
+
     use_limit_current_max: bool = False
+    """Use limit current max."""
+
     limit_current_max: float = 0.0
+    """Limit current max in µA."""
+
     use_limit_current_min: bool = False
+    """Use limit current min."""
+
     limit_current_min: float = 0.0
+    """Limit current min in µA."""
+
     trigger_at_level: bool = False
+    """Use trigger at level."""
+
     trigger_at_level_lines: tuple[bool, bool, bool, bool] = (False, False, False, False)
+    """Trigger at level lines.
+
+    Line order : [d0 high, d1 high, d2 high, d3 high]"""
 
     def to_psobj(self):
         obj = Techniques.ELevel()
