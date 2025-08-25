@@ -201,14 +201,15 @@ Validate method.
 
 [source,python]
 ----
-measure(parameters, hardware_sync_initiated_event=None)
+measure(method, hardware_sync_initiated_event=None)
 ----
 
 Start measurement using given method parameters.
 
 *Parameters:*
 
-* *method* – Method parameters for measurement
+* *method* (link:#pypalmsens._methods.BaseTechnique[BaseTechnique]) –
+Method parameters for measurement
 * *hardware++_++sync++_++initiated++_++event* – …
 
 ==== `initiate++_++hardware++_++sync++_++follower++_++channel`

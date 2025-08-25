@@ -216,9 +216,9 @@ class Curve:
 
         Parameters
         ----------
-        from : int, optional
+        start : int, optional
             begin index
-        to : int, optional
+        stop : int, optional
             end index
 
         Returns

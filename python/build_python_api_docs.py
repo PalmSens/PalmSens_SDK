@@ -161,7 +161,8 @@ pages = (
     Page(name='data', title='Data', module='pypalmsens.data'),
 )
 
-WORKDIR = Path(__file__).parents[1] / 'docs' / 'modules' / 'python' / 'partials' / 'api'
+ROOT_DIR = Path(__file__).parents[1]
+WORKDIR = ROOT_DIR / 'docs' / 'modules' / 'python' / 'partials' / 'api'
 
 
 with tempfile.TemporaryDirectory() as temp_dir:
@@ -181,6 +182,6 @@ with tempfile.TemporaryDirectory() as temp_dir:
 
         outputadoc = WORKDIR / f'{page.name}.adoc'
 
-        print('Generating', outputadoc)
+        print('Generating', outputadoc.relative_to(ROOT_DIR))
 
         sp.run(f'pandoc {outputmd} -o {outputadoc} -f markdown -t asciidoc'.split())

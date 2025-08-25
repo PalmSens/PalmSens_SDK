@@ -484,8 +484,8 @@ current = a {plus} b ++*++ x
 
 *Parameters:*
 
-* *from* (link:#int[int]) – begin index
-* *to* (link:#int[int]) – end index
+* *start* (link:#int[int]) – begin index
+* *stop* (link:#int[int]) – end index
 
 *Returns:*
 
@@ -1605,7 +1605,7 @@ Get arrays by data type.
 
 *Parameters:*
 
-* *description* (link:#str[str]) – Description of the array.
+* *array++_++type* (link:#str[str]) – Type of the array.
 
 *Returns:*
 

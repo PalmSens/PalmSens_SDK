@@ -347,15 +347,15 @@ class InstrumentManager:
 
         return True, None
 
-    def measure(self, parameters: BaseTechnique):
+    def measure(self, method: BaseTechnique):
         """Start measurement using given method parameters.
 
         Parameters
         ----------
-        method: BaseConfig
+        method: BaseTechnique
             Method parameters for measurement
         """
-        psmethod = parameters._to_psmethod()
+        psmethod = method._to_psmethod()
         if self.__comm is None:
             print('Not connected to an instrument')
             return None

@@ -117,8 +117,8 @@ class DataSet(Mapping):
 
         Parameters
         ----------
-        description : str
-            Description of the array.
+        array_type : str
+            Type of the array.
 
         Returns
         -------
