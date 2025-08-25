@@ -18,7 +18,7 @@ from ._shared import (
 
 
 @runtime_checkable
-class BaseSettings(Protocol):
+class MethodParameters(Protocol):
     """Protocol to provide generic methods for parameters."""
 
     def _update_psmethod(self, *, obj): ...
@@ -26,7 +26,7 @@ class BaseSettings(Protocol):
 
 
 @attrs.define
-class CurrentRanges(BaseSettings):
+class CurrentRanges(MethodParameters):
     """Set the autoranging current for a given method.
 
     Attributes
@@ -58,7 +58,7 @@ class CurrentRanges(BaseSettings):
 
 
 @attrs.define
-class PotentialRanges(BaseSettings):
+class PotentialRanges(MethodParameters):
     """Set the autoranging potential for a given method.
 
     Attributes
@@ -90,7 +90,7 @@ class PotentialRanges(BaseSettings):
 
 
 @attrs.define
-class Pretreatment(BaseSettings):
+class Pretreatment(MethodParameters):
     """Set the pretreatment settings for a given method.
 
     Attributes
@@ -124,7 +124,7 @@ class Pretreatment(BaseSettings):
 
 
 @attrs.define
-class VersusOCP(BaseSettings):
+class VersusOCP(MethodParameters):
     """Set the versus OCP settings for a given method.
 
     Attributes
@@ -163,7 +163,7 @@ class VersusOCP(BaseSettings):
 
 
 @attrs.define
-class BiPot(BaseSettings):
+class BiPot(MethodParameters):
     """Set the bipot settings for a given method.
 
     Attributes
@@ -208,7 +208,7 @@ class BiPot(BaseSettings):
 
 
 @attrs.define
-class PostMeasurement(BaseSettings):
+class PostMeasurement(MethodParameters):
     """Set the post measurement settings for a given method.
 
     Attributes
@@ -239,7 +239,7 @@ class PostMeasurement(BaseSettings):
 
 
 @attrs.define
-class CurrentLimits(BaseSettings):
+class CurrentLimits(MethodParameters):
     """Set the limit settings for a given method.
 
     Attributes
@@ -275,7 +275,7 @@ class CurrentLimits(BaseSettings):
 
 
 @attrs.define
-class PotentialLimits(BaseSettings):
+class PotentialLimits(MethodParameters):
     """Set the limit settings for a given method.
 
     Attributes
@@ -309,7 +309,7 @@ class PotentialLimits(BaseSettings):
 
 
 @attrs.define
-class ChargeLimits(BaseSettings):
+class ChargeLimits(MethodParameters):
     """Set the charge limit settings for a given method.
 
     Attributes
@@ -343,7 +343,7 @@ class ChargeLimits(BaseSettings):
 
 
 @attrs.define
-class IrDropCompensation(BaseSettings):
+class IrDropCompensation(MethodParameters):
     """Set the iR drop compensation settings for a given method.
 
     Attributes
@@ -367,7 +367,7 @@ class IrDropCompensation(BaseSettings):
 
 
 @attrs.define
-class EquilibrationTriggers(BaseSettings):
+class EquilibrationTriggers(MethodParameters):
     """Set the trigger at equilibration settings for a given method.
 
     Attributes
@@ -401,7 +401,7 @@ class EquilibrationTriggers(BaseSettings):
 
 
 @attrs.define
-class MeasurementTriggers(BaseSettings):
+class MeasurementTriggers(MethodParameters):
     """Set the trigger at measurement settings for a given method.
 
     Attributes
@@ -435,7 +435,7 @@ class MeasurementTriggers(BaseSettings):
 
 
 @attrs.define
-class Multiplexer(BaseSettings):
+class Multiplexer(MethodParameters):
     """Set the multiplexer settings for a given method.
 
     Attributes
@@ -501,7 +501,7 @@ class Multiplexer(BaseSettings):
 
 
 @attrs.define
-class DataProcessing(BaseSettings):
+class DataProcessing(MethodParameters):
     """Set the data processing settings for a given method.
 
     Attributes
@@ -539,7 +539,7 @@ class DataProcessing(BaseSettings):
 
 
 @attrs.define
-class General(BaseSettings):
+class General(MethodParameters):
     """Sets general/other settings for a given method.
 
     Attributes

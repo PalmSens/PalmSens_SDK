@@ -1,8 +1,13 @@
+"""This module contains the public api for classes for method configuration."""
+
 from __future__ import annotations
 
-from ._methods._shared import CURRENT_RANGE, POTENTIAL_RANGE, ELevel
+from ._methods._shared import (
+    CURRENT_RANGE,
+    POTENTIAL_RANGE,
+    ELevel,
+)
 from ._methods.settings import (
-    BaseSettings,
     BiPot,
     ChargeLimits,
     CurrentLimits,
@@ -12,6 +17,7 @@ from ._methods.settings import (
     General,
     IrDropCompensation,
     MeasurementTriggers,
+    MethodParameters,
     Multiplexer,
     PostMeasurement,
     PotentialLimits,
@@ -38,6 +44,6 @@ __all__ = [
     'PotentialLimits',
     'PotentialRanges',
     'Pretreatment',
-    'BaseSettings',
+    'MethodParameters',
     'VersusOCP',
 ]
