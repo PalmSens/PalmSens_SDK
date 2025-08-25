@@ -157,28 +157,30 @@ pages = (
             ]
         },
     ),
-    Page(name='fitting', title='Fitting', module='pypalmsens.models'),
+    Page(name='fitting', title='Fitting', module='pypalmsens.fitting'),
     Page(name='data', title='Data', module='pypalmsens.data'),
 )
 
 WORKDIR = Path(__file__).parents[1] / 'docs' / 'modules' / 'python' / 'partials' / 'api'
 
 
-for page in pages:
-    page_config = config.copy()
-    page_config.update(page.extra_config)
+with tempfile.TemporaryDirectory() as temp_dir:
+    for page in pages:
+        page_config = config.copy()
+        page_config.update(**page.extra_config)
 
-    tmp = tempfile.NamedTemporaryFile()
-    outputmd = tmp.name
+        # outputmd = Path(f'{page.name}.md')
+        outputmd = Path(temp_dir, f'{page.name}.md')
 
-    griffe2md.write_package_docs(
-        package=page.module,
-        config=page_config,
-        output=str(outputmd),
-    )
+        with open(outputmd, 'w', encoding='UTF-8') as f:
+            griffe2md.write_package_docs(
+                package=page.module,
+                config=page_config,
+                output=f,
+            )
 
-    outputadoc = WORKDIR / f'{page.name}.adoc'
+        outputadoc = WORKDIR / f'{page.name}.adoc'
 
-    print('Generating', outputadoc)
+        print('Generating', outputadoc)
 
-    sp.run(f'pandoc {outputmd} -o {outputadoc} -f markdown -t asciidoc'.split())
+        sp.run(f'pandoc {outputmd} -o {outputadoc} -f markdown -t asciidoc'.split())

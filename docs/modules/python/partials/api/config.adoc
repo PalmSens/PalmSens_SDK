@@ -1,9 +1,10 @@
-== pypalmsens.config
+== `pypalmsens.config`
+
+This module contains the public api for classes for method
+configuration.
 
 *Classes:*
 
-* link:#pypalmsens.config.BaseSettings[*BaseSettings*] – Protocol to
-provide generic methods for parameters.
 * link:#pypalmsens.config.CurrentRanges[*CurrentRanges*] – Set the
 autoranging current for a given method.
 * link:#pypalmsens.config.PotentialRanges[*PotentialRanges*] – Set the
@@ -37,219 +38,221 @@ data processing settings for a given method.
 * link:#pypalmsens.config.General[*General*] – Sets general/other
 settings for a given method.
 
-=== BaseSettings
+=== `CurrentRanges`
 
-Bases: link:#typing.Protocol[Protocol]
-
-Protocol to provide generic methods for parameters.
-
-=== CurrentRanges
-
-Bases: link:#pypalmsens.methods.settings.BaseSettings[BaseSettings]
+Bases:
+link:#pypalmsens._methods.settings.MethodParameters[MethodParameters]
 
 Set the autoranging current for a given method.
 
 *Attributes:*
 
 * link:#pypalmsens.config.CurrentRanges.max[*max*]
-(link:#pypalmsens.methods._shared.CURRENT_RANGE[CURRENT_RANGE]) –
+(link:#pypalmsens._methods._shared.CURRENT_RANGE[CURRENT++_++RANGE]) –
 * link:#pypalmsens.config.CurrentRanges.min[*min*]
-(link:#pypalmsens.methods._shared.CURRENT_RANGE[CURRENT_RANGE]) –
+(link:#pypalmsens._methods._shared.CURRENT_RANGE[CURRENT++_++RANGE]) –
 * link:#pypalmsens.config.CurrentRanges.start[*start*]
-(link:#pypalmsens.methods._shared.CURRENT_RANGE[CURRENT_RANGE]) –
+(link:#pypalmsens._methods._shared.CURRENT_RANGE[CURRENT++_++RANGE]) –
 
-==== max
+==== `max`
 
 [source,python]
 ----
 max: CURRENT_RANGE = CURRENT_RANGE.cr_10_mA
 ----
 
-==== min
+==== `min`
 
 [source,python]
 ----
 min: CURRENT_RANGE = CURRENT_RANGE.cr_1_uA
 ----
 
-==== start
+==== `start`
 
 [source,python]
 ----
 start: CURRENT_RANGE = CURRENT_RANGE.cr_100_uA
 ----
 
-=== PotentialRanges
+=== `PotentialRanges`
 
-Bases: link:#pypalmsens.methods.settings.BaseSettings[BaseSettings]
+Bases:
+link:#pypalmsens._methods.settings.MethodParameters[MethodParameters]
 
 Set the autoranging potential for a given method.
 
 *Attributes:*
 
 * link:#pypalmsens.config.PotentialRanges.max[*max*]
-(link:#pypalmsens.methods._shared.POTENTIAL_RANGE[POTENTIAL_RANGE]) –
+(link:#pypalmsens._methods._shared.POTENTIAL_RANGE[POTENTIAL++_++RANGE])
+–
 * link:#pypalmsens.config.PotentialRanges.min[*min*]
-(link:#pypalmsens.methods._shared.POTENTIAL_RANGE[POTENTIAL_RANGE]) –
+(link:#pypalmsens._methods._shared.POTENTIAL_RANGE[POTENTIAL++_++RANGE])
+–
 * link:#pypalmsens.config.PotentialRanges.start[*start*]
-(link:#pypalmsens.methods._shared.POTENTIAL_RANGE[POTENTIAL_RANGE]) –
+(link:#pypalmsens._methods._shared.POTENTIAL_RANGE[POTENTIAL++_++RANGE])
+–
 
-==== max
+==== `max`
 
 [source,python]
 ----
 max: POTENTIAL_RANGE = POTENTIAL_RANGE.pr_1_V
 ----
 
-==== min
+==== `min`
 
 [source,python]
 ----
 min: POTENTIAL_RANGE = POTENTIAL_RANGE.pr_1_mV
 ----
 
-==== start
+==== `start`
 
 [source,python]
 ----
 start: POTENTIAL_RANGE = POTENTIAL_RANGE.pr_1_V
 ----
 
-=== Pretreatment
+=== `Pretreatment`
 
-Bases: link:#pypalmsens.methods.settings.BaseSettings[BaseSettings]
+Bases:
+link:#pypalmsens._methods.settings.MethodParameters[MethodParameters]
 
 Set the pretreatment settings for a given method.
 
 *Attributes:*
 
-* link:#pypalmsens.config.Pretreatment.deposition_potential[*deposition_potential*]
+* link:#pypalmsens.config.Pretreatment.deposition_potential[*deposition++_++potential*]
 (link:#float[float]) –
-* link:#pypalmsens.config.Pretreatment.deposition_time[*deposition_time*]
+* link:#pypalmsens.config.Pretreatment.deposition_time[*deposition++_++time*]
 (link:#float[float]) –
-* link:#pypalmsens.config.Pretreatment.conditioning_potential[*conditioning_potential*]
+* link:#pypalmsens.config.Pretreatment.conditioning_potential[*conditioning++_++potential*]
 (link:#float[float]) –
-* link:#pypalmsens.config.Pretreatment.conditioning_time[*conditioning_time*]
+* link:#pypalmsens.config.Pretreatment.conditioning_time[*conditioning++_++time*]
 (link:#float[float]) –
 
-==== deposition_potential
+==== `deposition++_++potential`
 
 [source,python]
 ----
 deposition_potential: float = 0.0
 ----
 
-==== deposition_time
+==== `deposition++_++time`
 
 [source,python]
 ----
 deposition_time: float = 0.0
 ----
 
-==== conditioning_potential
+==== `conditioning++_++potential`
 
 [source,python]
 ----
 conditioning_potential: float = 0.0
 ----
 
-==== conditioning_time
+==== `conditioning++_++time`
 
 [source,python]
 ----
 conditioning_time: float = 0.0
 ----
 
-=== VersusOCP
+=== `VersusOCP`
 
-Bases: link:#pypalmsens.methods.settings.BaseSettings[BaseSettings]
+Bases:
+link:#pypalmsens._methods.settings.MethodParameters[MethodParameters]
 
 Set the versus OCP settings for a given method.
 
 *Attributes:*
 
 * link:#pypalmsens.config.VersusOCP.mode[*mode*] (link:#int[int]) –
-* link:#pypalmsens.config.VersusOCP.max_ocp_time[*max_ocp_time*]
+* link:#pypalmsens.config.VersusOCP.max_ocp_time[*max++_++ocp++_++time*]
 (link:#float[float]) –
-* link:#pypalmsens.config.VersusOCP.stability_criterion[*stability_criterion*]
+* link:#pypalmsens.config.VersusOCP.stability_criterion[*stability++_++criterion*]
 (link:#int[int]) –
 
-==== mode
+==== `mode`
 
 [source,python]
 ----
 mode: int = 0
 ----
 
-==== max_ocp_time
+==== `max++_++ocp++_++time`
 
 [source,python]
 ----
 max_ocp_time: float = 20.0
 ----
 
-==== stability_criterion
+==== `stability++_++criterion`
 
 [source,python]
 ----
 stability_criterion: int = 0
 ----
 
-=== BiPot
+=== `BiPot`
 
-Bases: link:#pypalmsens.methods.settings.BaseSettings[BaseSettings]
+Bases:
+link:#pypalmsens._methods.settings.MethodParameters[MethodParameters]
 
 Set the bipot settings for a given method.
 
 *Attributes:*
 
 * link:#pypalmsens.config.BiPot.mode[*mode*]
-(link:#typing.Literal[Literal]['`constant`', '`offset`']) –
+(link:#typing.Literal[Literal]++[++'`constant`', '`offset`'++]++) –
 * link:#pypalmsens.config.BiPot.potential[*potential*]
 (link:#float[float]) –
-* link:#pypalmsens.config.BiPot.current_range_max[*current_range_max*]
-(link:#pypalmsens.methods._shared.CURRENT_RANGE[CURRENT_RANGE]) –
-* link:#pypalmsens.config.BiPot.current_range_min[*current_range_min*]
-(link:#pypalmsens.methods._shared.CURRENT_RANGE[CURRENT_RANGE]) –
-* link:#pypalmsens.config.BiPot.current_range_start[*current_range_start*]
-(link:#pypalmsens.methods._shared.CURRENT_RANGE[CURRENT_RANGE]) –
+* link:#pypalmsens.config.BiPot.current_range_max[*current++_++range++_++max*]
+(link:#pypalmsens._methods._shared.CURRENT_RANGE[CURRENT++_++RANGE]) –
+* link:#pypalmsens.config.BiPot.current_range_min[*current++_++range++_++min*]
+(link:#pypalmsens._methods._shared.CURRENT_RANGE[CURRENT++_++RANGE]) –
+* link:#pypalmsens.config.BiPot.current_range_start[*current++_++range++_++start*]
+(link:#pypalmsens._methods._shared.CURRENT_RANGE[CURRENT++_++RANGE]) –
 
-==== mode
+==== `mode`
 
 [source,python]
 ----
 mode: Literal['constant', 'offset'] = 'constant'
 ----
 
-==== potential
+==== `potential`
 
 [source,python]
 ----
 potential: float = 0.0
 ----
 
-==== current_range_max
+==== `current++_++range++_++max`
 
 [source,python]
 ----
 current_range_max: CURRENT_RANGE = CURRENT_RANGE.cr_10_mA
 ----
 
-==== current_range_min
+==== `current++_++range++_++min`
 
 [source,python]
 ----
 current_range_min: CURRENT_RANGE = CURRENT_RANGE.cr_1_uA
 ----
 
-==== current_range_start
+==== `current++_++range++_++start`
 
 [source,python]
 ----
 current_range_start: CURRENT_RANGE = CURRENT_RANGE.cr_100_uA
 ----
 
-=== ELevel
+=== `ELevel`
 
 [source,python]
 ----
@@ -260,9 +263,9 @@ Create a multi-step amperometry level method object.
 
 *Functions:*
 
-* link:#pypalmsens.config.ELevel.to_psobj[*to_psobj*] –
-* link:#pypalmsens.config.ELevel.from_psobj[*from_psobj*] – Construct
-ELevel dataclass from PalmSens.Techniques.ELevel object.
+* link:#pypalmsens.config.ELevel.to_psobj[*to++_++psobj*] –
+* link:#pypalmsens.config.ELevel.from_psobj[*from++_++psobj*] –
+Construct ELevel dataclass from PalmSens.Techniques.ELevel object.
 
 *Attributes:*
 
@@ -270,91 +273,91 @@ ELevel dataclass from PalmSens.Techniques.ELevel object.
 * link:#pypalmsens.config.ELevel.duration[*duration*]
 (link:#float[float]) –
 * link:#pypalmsens.config.ELevel.record[*record*] (link:#bool[bool]) –
-* link:#pypalmsens.config.ELevel.use_limit_current_max[*use_limit_current_max*]
+* link:#pypalmsens.config.ELevel.use_limit_current_max[*use++_++limit++_++current++_++max*]
 (link:#bool[bool]) –
-* link:#pypalmsens.config.ELevel.limit_current_max[*limit_current_max*]
+* link:#pypalmsens.config.ELevel.limit_current_max[*limit++_++current++_++max*]
 (link:#float[float]) –
-* link:#pypalmsens.config.ELevel.use_limit_current_min[*use_limit_current_min*]
+* link:#pypalmsens.config.ELevel.use_limit_current_min[*use++_++limit++_++current++_++min*]
 (link:#bool[bool]) –
-* link:#pypalmsens.config.ELevel.limit_current_min[*limit_current_min*]
+* link:#pypalmsens.config.ELevel.limit_current_min[*limit++_++current++_++min*]
 (link:#float[float]) –
-* link:#pypalmsens.config.ELevel.trigger_at_level[*trigger_at_level*]
+* link:#pypalmsens.config.ELevel.trigger_at_level[*trigger++_++at++_++level*]
 (link:#bool[bool]) –
-* link:#pypalmsens.config.ELevel.trigger_at_level_lines[*trigger_at_level_lines*]
-(link:#tuple[tuple][link:#bool[bool], link:#bool[bool],
-link:#bool[bool], link:#bool[bool]]) –
+* link:#pypalmsens.config.ELevel.trigger_at_level_lines[*trigger++_++at++_++level++_++lines*]
+(link:#tuple[tuple]++[++link:#bool[bool], link:#bool[bool],
+link:#bool[bool], link:#bool[bool]++]++) –
 
-==== level
+==== `level`
 
 [source,python]
 ----
 level: float = 0.0
 ----
 
-==== duration
+==== `duration`
 
 [source,python]
 ----
 duration: float = 1.0
 ----
 
-==== record
+==== `record`
 
 [source,python]
 ----
 record: bool = True
 ----
 
-==== use_limit_current_max
+==== `use++_++limit++_++current++_++max`
 
 [source,python]
 ----
 use_limit_current_max: bool = False
 ----
 
-==== limit_current_max
+==== `limit++_++current++_++max`
 
 [source,python]
 ----
 limit_current_max: float = 0.0
 ----
 
-==== use_limit_current_min
+==== `use++_++limit++_++current++_++min`
 
 [source,python]
 ----
 use_limit_current_min: bool = False
 ----
 
-==== limit_current_min
+==== `limit++_++current++_++min`
 
 [source,python]
 ----
 limit_current_min: float = 0.0
 ----
 
-==== trigger_at_level
+==== `trigger++_++at++_++level`
 
 [source,python]
 ----
 trigger_at_level: bool = False
 ----
 
-==== trigger_at_level_lines
+==== `trigger++_++at++_++level++_++lines`
 
 [source,python]
 ----
 trigger_at_level_lines: tuple[bool, bool, bool, bool] = (False, False, False, False)
 ----
 
-==== to_psobj
+==== `to++_++psobj`
 
 [source,python]
 ----
 to_psobj()
 ----
 
-==== from_psobj
+==== `from++_++psobj`
 
 [source,python]
 ----
@@ -363,180 +366,185 @@ from_psobj(psobj)
 
 Construct ELevel dataclass from PalmSens.Techniques.ELevel object.
 
-=== PostMeasurement
+=== `PostMeasurement`
 
-Bases: link:#pypalmsens.methods.settings.BaseSettings[BaseSettings]
+Bases:
+link:#pypalmsens._methods.settings.MethodParameters[MethodParameters]
 
 Set the post measurement settings for a given method.
 
 *Attributes:*
 
-* link:#pypalmsens.config.PostMeasurement.cell_on_after_measurement[*cell_on_after_measurement*]
+* link:#pypalmsens.config.PostMeasurement.cell_on_after_measurement[*cell++_++on++_++after++_++measurement*]
 (link:#bool[bool]) –
-* link:#pypalmsens.config.PostMeasurement.standby_potential[*standby_potential*]
+* link:#pypalmsens.config.PostMeasurement.standby_potential[*standby++_++potential*]
 (link:#float[float]) –
-* link:#pypalmsens.config.PostMeasurement.standby_time[*standby_time*]
+* link:#pypalmsens.config.PostMeasurement.standby_time[*standby++_++time*]
 (link:#float[float]) –
 
-==== cell_on_after_measurement
+==== `cell++_++on++_++after++_++measurement`
 
 [source,python]
 ----
 cell_on_after_measurement: bool = False
 ----
 
-==== standby_potential
+==== `standby++_++potential`
 
 [source,python]
 ----
 standby_potential: float = 0.0
 ----
 
-==== standby_time
+==== `standby++_++time`
 
 [source,python]
 ----
 standby_time: float = 0.0
 ----
 
-=== CurrentLimits
+=== `CurrentLimits`
 
-Bases: link:#pypalmsens.methods.settings.BaseSettings[BaseSettings]
+Bases:
+link:#pypalmsens._methods.settings.MethodParameters[MethodParameters]
 
 Set the limit settings for a given method.
 
 *Attributes:*
 
-* link:#pypalmsens.config.CurrentLimits.use_limit_max[*use_limit_max*]
+* link:#pypalmsens.config.CurrentLimits.use_limit_max[*use++_++limit++_++max*]
 (link:#bool[bool]) –
-* link:#pypalmsens.config.CurrentLimits.limit_max[*limit_max*]
+* link:#pypalmsens.config.CurrentLimits.limit_max[*limit++_++max*]
 (link:#float[float]) –
-* link:#pypalmsens.config.CurrentLimits.use_limit_min[*use_limit_min*]
+* link:#pypalmsens.config.CurrentLimits.use_limit_min[*use++_++limit++_++min*]
 (link:#bool[bool]) –
-* link:#pypalmsens.config.CurrentLimits.limit_min[*limit_min*]
+* link:#pypalmsens.config.CurrentLimits.limit_min[*limit++_++min*]
 (link:#float[float]) –
 
-==== use_limit_max
+==== `use++_++limit++_++max`
 
 [source,python]
 ----
 use_limit_max: bool = False
 ----
 
-==== limit_max
+==== `limit++_++max`
 
 [source,python]
 ----
 limit_max: float = 0.0
 ----
 
-==== use_limit_min
+==== `use++_++limit++_++min`
 
 [source,python]
 ----
 use_limit_min: bool = False
 ----
 
-==== limit_min
+==== `limit++_++min`
 
 [source,python]
 ----
 limit_min: float = 0.0
 ----
 
-=== PotentialLimits
+=== `PotentialLimits`
 
-Bases: link:#pypalmsens.methods.settings.BaseSettings[BaseSettings]
+Bases:
+link:#pypalmsens._methods.settings.MethodParameters[MethodParameters]
 
 Set the limit settings for a given method.
 
 *Attributes:*
 
-* link:#pypalmsens.config.PotentialLimits.use_limit_max[*use_limit_max*]
+* link:#pypalmsens.config.PotentialLimits.use_limit_max[*use++_++limit++_++max*]
 (link:#bool[bool]) –
-* link:#pypalmsens.config.PotentialLimits.limit_max[*limit_max*]
+* link:#pypalmsens.config.PotentialLimits.limit_max[*limit++_++max*]
 (link:#float[float]) –
-* link:#pypalmsens.config.PotentialLimits.use_limit_min[*use_limit_min*]
+* link:#pypalmsens.config.PotentialLimits.use_limit_min[*use++_++limit++_++min*]
 (link:#bool[bool]) –
-* link:#pypalmsens.config.PotentialLimits.limit_min[*limit_min*]
+* link:#pypalmsens.config.PotentialLimits.limit_min[*limit++_++min*]
 (link:#float[float]) –
 
-==== use_limit_max
+==== `use++_++limit++_++max`
 
 [source,python]
 ----
 use_limit_max: bool = False
 ----
 
-==== limit_max
+==== `limit++_++max`
 
 [source,python]
 ----
 limit_max: float = 0.0
 ----
 
-==== use_limit_min
+==== `use++_++limit++_++min`
 
 [source,python]
 ----
 use_limit_min: bool = False
 ----
 
-==== limit_min
+==== `limit++_++min`
 
 [source,python]
 ----
 limit_min: float = 0.0
 ----
 
-=== ChargeLimits
+=== `ChargeLimits`
 
-Bases: link:#pypalmsens.methods.settings.BaseSettings[BaseSettings]
+Bases:
+link:#pypalmsens._methods.settings.MethodParameters[MethodParameters]
 
 Set the charge limit settings for a given method.
 
 *Attributes:*
 
-* link:#pypalmsens.config.ChargeLimits.use_limit_max[*use_limit_max*]
+* link:#pypalmsens.config.ChargeLimits.use_limit_max[*use++_++limit++_++max*]
 (link:#bool[bool]) –
-* link:#pypalmsens.config.ChargeLimits.limit_max[*limit_max*]
+* link:#pypalmsens.config.ChargeLimits.limit_max[*limit++_++max*]
 (link:#float[float]) –
-* link:#pypalmsens.config.ChargeLimits.use_limit_min[*use_limit_min*]
+* link:#pypalmsens.config.ChargeLimits.use_limit_min[*use++_++limit++_++min*]
 (link:#bool[bool]) –
-* link:#pypalmsens.config.ChargeLimits.limit_min[*limit_min*]
+* link:#pypalmsens.config.ChargeLimits.limit_min[*limit++_++min*]
 (link:#float[float]) –
 
-==== use_limit_max
+==== `use++_++limit++_++max`
 
 [source,python]
 ----
 use_limit_max: bool = False
 ----
 
-==== limit_max
+==== `limit++_++max`
 
 [source,python]
 ----
 limit_max: float = 0.0
 ----
 
-==== use_limit_min
+==== `use++_++limit++_++min`
 
 [source,python]
 ----
 use_limit_min: bool = False
 ----
 
-==== limit_min
+==== `limit++_++min`
 
 [source,python]
 ----
 limit_min: float = 0.0
 ----
 
-=== IrDropCompensation
+=== `IrDropCompensation`
 
-Bases: link:#pypalmsens.methods.settings.BaseSettings[BaseSettings]
+Bases:
+link:#pypalmsens._methods.settings.MethodParameters[MethodParameters]
 
 Set the iR drop compensation settings for a given method.
 
@@ -544,26 +552,27 @@ Set the iR drop compensation settings for a given method.
 
 * link:#pypalmsens.config.IrDropCompensation.enable[*enable*]
 (link:#bool[bool]) –
-* link:#pypalmsens.config.IrDropCompensation.ir_compensation[*ir_compensation*]
+* link:#pypalmsens.config.IrDropCompensation.ir_compensation[*ir++_++compensation*]
 (link:#float[float]) –
 
-==== enable
+==== `enable`
 
 [source,python]
 ----
 enable: bool = False
 ----
 
-==== ir_compensation
+==== `ir++_++compensation`
 
 [source,python]
 ----
 ir_compensation: float = 0.0
 ----
 
-=== EquilibrationTriggers
+=== `EquilibrationTriggers`
 
-Bases: link:#pypalmsens.methods.settings.BaseSettings[BaseSettings]
+Bases:
+link:#pypalmsens._methods.settings.MethodParameters[MethodParameters]
 
 Set the trigger at equilibration settings for a given method.
 
@@ -580,44 +589,45 @@ Set the trigger at equilibration settings for a given method.
 * link:#pypalmsens.config.EquilibrationTriggers.d3[*d3*]
 (link:#bool[bool]) –
 
-==== enable
+==== `enable`
 
 [source,python]
 ----
 enable: bool = False
 ----
 
-==== d0
+==== `d0`
 
 [source,python]
 ----
 d0: bool = False
 ----
 
-==== d1
+==== `d1`
 
 [source,python]
 ----
 d1: bool = False
 ----
 
-==== d2
+==== `d2`
 
 [source,python]
 ----
 d2: bool = False
 ----
 
-==== d3
+==== `d3`
 
 [source,python]
 ----
 d3: bool = False
 ----
 
-=== MeasurementTriggers
+=== `MeasurementTriggers`
 
-Bases: link:#pypalmsens.methods.settings.BaseSettings[BaseSettings]
+Bases:
+link:#pypalmsens._methods.settings.MethodParameters[MethodParameters]
 
 Set the trigger at measurement settings for a given method.
 
@@ -634,179 +644,182 @@ Set the trigger at measurement settings for a given method.
 * link:#pypalmsens.config.MeasurementTriggers.d3[*d3*]
 (link:#bool[bool]) –
 
-==== enable
+==== `enable`
 
 [source,python]
 ----
 enable: bool = False
 ----
 
-==== d0
+==== `d0`
 
 [source,python]
 ----
 d0: bool = False
 ----
 
-==== d1
+==== `d1`
 
 [source,python]
 ----
 d1: bool = False
 ----
 
-==== d2
+==== `d2`
 
 [source,python]
 ----
 d2: bool = False
 ----
 
-==== d3
+==== `d3`
 
 [source,python]
 ----
 d3: bool = False
 ----
 
-=== Multiplexer
+=== `Multiplexer`
 
-Bases: link:#pypalmsens.methods.settings.BaseSettings[BaseSettings]
+Bases:
+link:#pypalmsens._methods.settings.MethodParameters[MethodParameters]
 
 Set the multiplexer settings for a given method.
 
 *Attributes:*
 
 * link:#pypalmsens.config.Multiplexer.mode[*mode*]
-(link:#typing.Literal[Literal]['`none`', '`consecutive`',
-'`alternate`']) –
+(link:#typing.Literal[Literal]++[++'`none`', '`consecutive`',
+'`alternate`'++]++) –
 * link:#pypalmsens.config.Multiplexer.channels[*channels*]
-(link:#list[list][link:#int[int]]) –
-* link:#pypalmsens.config.Multiplexer.connect_sense_to_working_electrode[*connect_sense_to_working_electrode*]
+(link:#list[list]++[++link:#int[int]++]++) –
+* link:#pypalmsens.config.Multiplexer.connect_sense_to_working_electrode[*connect++_++sense++_++to++_++working++_++electrode*]
 (link:#bool[bool]) –
-* link:#pypalmsens.config.Multiplexer.combine_reference_and_counter_electrodes[*combine_reference_and_counter_electrodes*]
+* link:#pypalmsens.config.Multiplexer.combine_reference_and_counter_electrodes[*combine++_++reference++_++and++_++counter++_++electrodes*]
 (link:#bool[bool]) –
-* link:#pypalmsens.config.Multiplexer.use_channel_1_reference_and_counter_electrodes[*use_channel_1_reference_and_counter_electrodes*]
+* link:#pypalmsens.config.Multiplexer.use_channel_1_reference_and_counter_electrodes[*use++_++channel++_++1++_++reference++_++and++_++counter++_++electrodes*]
 (link:#bool[bool]) –
-* link:#pypalmsens.config.Multiplexer.set_unselected_channel_working_electrode[*set_unselected_channel_working_electrode*]
+* link:#pypalmsens.config.Multiplexer.set_unselected_channel_working_electrode[*set++_++unselected++_++channel++_++working++_++electrode*]
 (link:#int[int]) –
 
-==== mode
+==== `mode`
 
 [source,python]
 ----
 mode: Literal['none', 'consecutive', 'alternate'] = 'none'
 ----
 
-==== channels
+==== `channels`
 
 [source,python]
 ----
 channels: list[int] = attrs.field(factory=list)
 ----
 
-==== connect_sense_to_working_electrode
+==== `connect++_++sense++_++to++_++working++_++electrode`
 
 [source,python]
 ----
 connect_sense_to_working_electrode: bool = False
 ----
 
-==== combine_reference_and_counter_electrodes
+==== `combine++_++reference++_++and++_++counter++_++electrodes`
 
 [source,python]
 ----
 combine_reference_and_counter_electrodes: bool = False
 ----
 
-==== use_channel_1_reference_and_counter_electrodes
+==== `use++_++channel++_++1++_++reference++_++and++_++counter++_++electrodes`
 
 [source,python]
 ----
 use_channel_1_reference_and_counter_electrodes: bool = False
 ----
 
-==== set_unselected_channel_working_electrode
+==== `set++_++unselected++_++channel++_++working++_++electrode`
 
 [source,python]
 ----
 set_unselected_channel_working_electrode: int = 0
 ----
 
-=== DataProcessing
+=== `DataProcessing`
 
-Bases: link:#pypalmsens.methods.settings.BaseSettings[BaseSettings]
+Bases:
+link:#pypalmsens._methods.settings.MethodParameters[MethodParameters]
 
 Set the data processing settings for a given method.
 
 *Attributes:*
 
-* link:#pypalmsens.config.DataProcessing.smooth_level[*smooth_level*]
+* link:#pypalmsens.config.DataProcessing.smooth_level[*smooth++_++level*]
 (link:#int[int]) –
-* link:#pypalmsens.config.DataProcessing.min_height[*min_height*]
+* link:#pypalmsens.config.DataProcessing.min_height[*min++_++height*]
 (link:#float[float]) –
-* link:#pypalmsens.config.DataProcessing.min_width[*min_width*]
+* link:#pypalmsens.config.DataProcessing.min_width[*min++_++width*]
 (link:#float[float]) –
 
-==== smooth_level
+==== `smooth++_++level`
 
 [source,python]
 ----
 smooth_level: int = 0
 ----
 
-==== min_height
+==== `min++_++height`
 
 [source,python]
 ----
 min_height: float = 0.0
 ----
 
-==== min_width
+==== `min++_++width`
 
 [source,python]
 ----
 min_width: float = 0.1
 ----
 
-=== General
+=== `General`
 
-Bases: link:#pypalmsens.methods.settings.BaseSettings[BaseSettings]
+Bases:
+link:#pypalmsens._methods.settings.MethodParameters[MethodParameters]
 
 Sets general/other settings for a given method.
 
 *Attributes:*
 
-* link:#pypalmsens.config.General.save_on_internal_storage[*save_on_internal_storage*]
+* link:#pypalmsens.config.General.save_on_internal_storage[*save++_++on++_++internal++_++storage*]
 (link:#bool[bool]) –
-* link:#pypalmsens.config.General.use_hardware_sync[*use_hardware_sync*]
+* link:#pypalmsens.config.General.use_hardware_sync[*use++_++hardware++_++sync*]
 (link:#bool[bool]) –
 * link:#pypalmsens.config.General.notes[*notes*] (link:#str[str]) –
-* link:#pypalmsens.config.General.power_frequency[*power_frequency*]
-(link:#typing.Literal[Literal][50, 60]) –
+* link:#pypalmsens.config.General.power_frequency[*power++_++frequency*]
+(link:#typing.Literal[Literal]++[++50, 60++]++) –
 
-==== save_on_internal_storage
+==== `save++_++on++_++internal++_++storage`
 
 [source,python]
 ----
 save_on_internal_storage: bool = False
 ----
 
-==== use_hardware_sync
+==== `use++_++hardware++_++sync`
 
 [source,python]
 ----
 use_hardware_sync: bool = False
 ----
 
-==== notes
+==== `notes`
 
 [source,python]
 ----
 notes: str = ''
 ----
 
-==== power_frequency
+==== `power++_++frequency`
 
 [source,python]
 ----
