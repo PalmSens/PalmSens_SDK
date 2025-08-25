@@ -73,8 +73,10 @@ Disconnect from the instrument.
 
 *Attributes:*
 
-* link:#pypalmsens.InstrumentManagerAsync.callback[*callback*] –
+* link:#pypalmsens.InstrumentManagerAsync.callback[*callback*] – This
+callback is called on every data point.
 * link:#pypalmsens.InstrumentManagerAsync.instrument[*instrument*] –
+Instrument to connect to.
 
 ==== `callback`
 
@@ -83,12 +85,16 @@ Disconnect from the instrument.
 callback = callback
 ----
 
+This callback is called on every data point.
+
 ==== `instrument`
 
 [source,python]
 ----
 instrument = instrument
 ----
+
+Instrument to connect to.
 
 ==== `is++_++connected`
 

@@ -13,12 +13,12 @@ class.
 class.
 * link:#pypalmsens.data.DeviceInfo[*DeviceInfo*] – Dataclass for device
 information.
-* link:#pypalmsens.data.EISData[*EISData*] – Python wrapper for .NET
-EISdata class.
 * link:#pypalmsens.data.Measurement[*Measurement*] – Python wrapper for
 .NET Measurement class.
 * link:#pypalmsens.data.DataSet[*DataSet*] – Python wrapper for .NET
 DataSet class.
+* link:#pypalmsens.data.EISData[*EISData*] – Python wrapper for .NET
+EISdata class.
 
 === `DataArray`
 
@@ -46,7 +46,6 @@ array to list.
 
 *Attributes:*
 
-* link:#pypalmsens.data.DataArray.psarray[*psarray*] –
 * link:#pypalmsens.data.DataArray.name[*name*] (link:#str[str]) – Name
 of the array.
 * link:#pypalmsens.data.DataArray.type[*type*]
@@ -57,13 +56,6 @@ for array.
 – Quantity for array.
 * link:#pypalmsens.data.DataArray.ocp_value[*ocp++_++value*]
 (link:#float[float]) – OCP Value.
-
-==== `psarray`
-
-[source,python]
-----
-psarray = psarray
-----
 
 ==== `name`
 
@@ -177,7 +169,6 @@ this curve using matplotlib.
 
 *Attributes:*
 
-* link:#pypalmsens.data.Curve.pscurve[*pscurve*] –
 * link:#pypalmsens.data.Curve.max_x[*max++_++x*] (link:#float[float]) –
 Maximum X value found in this curve.
 * link:#pypalmsens.data.Curve.max_y[*max++_++y*] (link:#float[float]) –
@@ -222,13 +213,6 @@ Return peaks stored on object.
 (link:#list[list]++[++link:#float[float]++]++) – Y data for the curve
 * link:#pypalmsens.data.Curve.y_array[*y++_++array*]
 (link:#list[list]++[++link:#float[float]++]++) – Y data for the curve.
-
-==== `pscurve`
-
-[source,python]
-----
-pscurve = pscurve
-----
 
 ==== `max++_++x`
 
@@ -531,7 +515,6 @@ object.
 
 *Attributes:*
 
-* link:#pypalmsens.data.Peak.pspeak[*pspeak*] –
 * link:#pypalmsens.data.Peak.curve[*curve*]
 (link:#pypalmsens._data.curve.Curve[Curve]) – Parent curve associated
 with Peak.
@@ -586,13 +569,6 @@ the curve.
 – Returns the Y of the right side of the peak baseline.
 * link:#pypalmsens.data.Peak.width[*width*] (link:#float[float]) – Full
 width at half-height of the peak.
-
-==== `pspeak`
-
-[source,python]
-----
-pspeak = pspeak
-----
 
 ==== `curve`
 
@@ -821,11 +797,6 @@ DeviceInfo(type, firmware, serial, id)
 
 Dataclass for device information.
 
-*Functions:*
-
-* link:#pypalmsens.data.DeviceInfo.from_psmeasurement[*from++_++psmeasurement*]
-– Construct device dataclass from SDK measurement object.
-
 *Attributes:*
 
 * link:#pypalmsens.data.DeviceInfo.type[*type*] (link:#str[str]) –
@@ -872,254 +843,6 @@ id: int
 
 Device ID
 
-==== `from++_++psmeasurement`
-
-[source,python]
-----
-from_psmeasurement(obj)
-----
-
-Construct device dataclass from SDK measurement object.
-
-=== `EISData`
-
-[source,python]
-----
-EISData(*, pseis)
-----
-
-Python wrapper for .NET EISdata class.
-
-*Parameters:*
-
-* *pseis* – Reference to .NET EISdata object.
-
-*Functions:*
-
-* link:#pypalmsens.data.EISData.get_data_for_frequency[*get++_++data++_++for++_++frequency*]
-– Returns dictionary with data per frequency.
-* link:#pypalmsens.data.EISData.arrays[*arrays*] – Complete list of data
-arrays.
-* link:#pypalmsens.data.EISData.current_range[*current++_++range*] –
-Current ranges for the measurement.
-
-*Attributes:*
-
-* link:#pypalmsens.data.EISData.pseis[*pseis*] –
-* link:#pypalmsens.data.EISData.title[*title*] (link:#str[str]) – Tite
-for EIS data.
-* link:#pypalmsens.data.EISData.frequency_type[*frequency++_++type*]
-(link:#str[str]) – Frequency type.
-* link:#pypalmsens.data.EISData.scan_type[*scan++_++type*]
-(link:#str[str]) – Scan type.
-* link:#pypalmsens.data.EISData.dataset[*dataset*]
-(link:#pypalmsens._data.dataset.DataSet[DataSet]) – Dataset which
-contains multiple arrays of values.
-* link:#pypalmsens.data.EISData.subscans[*subscans*]
-(link:#list[list]++[++link:#pypalmsens._data.eisdata.EISData[EISData]++]++)
-– Get list of subscans.
-* link:#pypalmsens.data.EISData.n_points[*n++_++points*]
-(link:#int[int]) – Number of points (including subscans).
-* link:#pypalmsens.data.EISData.n_frequencies[*n++_++frequencies*]
-(link:#int[int]) – Number of frequencies.
-* link:#pypalmsens.data.EISData.n_subscans[*n++_++subscans*]
-(link:#int[int]) – Number of subscans.
-* link:#pypalmsens.data.EISData.x_unit[*x++_++unit*] (link:#str[str]) –
-Unit for array.
-* link:#pypalmsens.data.EISData.x_quantity[*x++_++quantity*]
-(link:#str[str]) – Quantity for array.
-* link:#pypalmsens.data.EISData.ocp_value[*ocp++_++value*]
-(link:#float[float]) – OCP Value.
-* link:#pypalmsens.data.EISData.has_subscans[*has++_++subscans*]
-(link:#bool[bool]) – Return True if data contains subscans.
-* link:#pypalmsens.data.EISData.mux_channel[*mux++_++channel*]
-(link:#int[int]) – Mux channel.
-* link:#pypalmsens.data.EISData.cdc[*cdc*] (link:#str[str]) – Gets the
-CDC circuit for fitting.
-* link:#pypalmsens.data.EISData.cdc_values[*cdc++_++values*]
-(link:#list[list]++[++link:#float[float]++]++) – Return values for
-circuit description code (CDC).
-
-==== `pseis`
-
-[source,python]
-----
-pseis = pseis
-----
-
-==== `title`
-
-[source,python]
-----
-title: str
-----
-
-Tite for EIS data.
-
-==== `frequency++_++type`
-
-[source,python]
-----
-frequency_type: str
-----
-
-Frequency type.
-
-==== `scan++_++type`
-
-[source,python]
-----
-scan_type: str
-----
-
-Scan type.
-
-==== `dataset`
-
-[source,python]
-----
-dataset: DataSet
-----
-
-Dataset which contains multiple arrays of values.
-
-==== `subscans`
-
-[source,python]
-----
-subscans: list[EISData]
-----
-
-Get list of subscans.
-
-==== `n++_++points`
-
-[source,python]
-----
-n_points: int
-----
-
-Number of points (including subscans).
-
-==== `n++_++frequencies`
-
-[source,python]
-----
-n_frequencies: int
-----
-
-Number of frequencies.
-
-==== `n++_++subscans`
-
-[source,python]
-----
-n_subscans: int
-----
-
-Number of subscans.
-
-==== `x++_++unit`
-
-[source,python]
-----
-x_unit: str
-----
-
-Unit for array.
-
-==== `x++_++quantity`
-
-[source,python]
-----
-x_quantity: str
-----
-
-Quantity for array.
-
-==== `ocp++_++value`
-
-[source,python]
-----
-ocp_value: float
-----
-
-OCP Value.
-
-==== `has++_++subscans`
-
-[source,python]
-----
-has_subscans: bool
-----
-
-Return True if data contains subscans.
-
-==== `mux++_++channel`
-
-[source,python]
-----
-mux_channel: int
-----
-
-Mux channel.
-
-==== `cdc`
-
-[source,python]
-----
-cdc: str
-----
-
-Gets the CDC circuit for fitting.
-
-==== `cdc++_++values`
-
-[source,python]
-----
-cdc_values: list[float]
-----
-
-Return values for circuit description code (CDC).
-
-==== `get++_++data++_++for++_++frequency`
-
-[source,python]
-----
-get_data_for_frequency(frequency)
-----
-
-Returns dictionary with data per frequency.
-
-*Parameters:*
-
-* *frequency* (link:#int[int]) – Index of the frequency to retrieve the
-data for.
-
-*Returns:*
-
-* link:#dict[dict]++[++link:#str[str],
-link:#pypalmsens._data.data_array.DataArray[DataArray]++]++ – Data are
-returned as a dictionary keyed by the data type.
-
-==== `arrays`
-
-[source,python]
-----
-arrays()
-----
-
-Complete list of data arrays.
-
-==== `current++_++range`
-
-[source,python]
-----
-current_range()
-----
-
-Current ranges for the measurement.
-
 === `Measurement`
 
 [source,python]
@@ -1131,11 +854,11 @@ Python wrapper for .NET Measurement class.
 
 *Parameters:*
 
-* *psmeasurement* – Reference to .NET measurement object.
+* *psmeasurement* (link:#PalmSens.Measurement[Measurement]) – Reference
+to .NET measurement object.
 
 *Attributes:*
 
-* link:#pypalmsens.data.Measurement.psmeasurement[*psmeasurement*] –
 * link:#pypalmsens.data.Measurement.title[*title*] (link:#str[str]) –
 Title for the measurement.
 * link:#pypalmsens.data.Measurement.timestamp[*timestamp*]
@@ -1179,13 +902,6 @@ peaks from all curves.
 * link:#pypalmsens.data.Measurement.curves[*curves*]
 (link:#list[list]++[++link:#pypalmsens._data.curve.Curve[Curve]++]++) –
 Get all curves in measurement.
-
-==== `psmeasurement`
-
-[source,python]
-----
-psmeasurement = psmeasurement
-----
 
 ==== `title`
 
@@ -1400,7 +1116,6 @@ Return dataset as pandas dataframe.
 
 *Attributes:*
 
-* link:#pypalmsens.data.DataSet.psdataset[*psdataset*] –
 * link:#pypalmsens.data.DataSet.array_types[*array++_++types*]
 (link:#set[set]++[++link:#pypalmsens._data._shared.ArrayType[ArrayType]++]++)
 – Return unique set of array type (enum) for arrays in dataset.
@@ -1431,13 +1146,6 @@ quantities for arrays in dataset.
 * link:#pypalmsens.data.DataSet.aux_input_arrays[*aux++_++input++_++arrays*]
 (link:#list[list]++[++link:#pypalmsens._data.data_array.DataArray[DataArray]++]++)
 – Return all AuxInput arrays.
-
-==== `psdataset`
-
-[source,python]
-----
-psdataset = psdataset
-----
 
 ==== `array++_++types`
 
@@ -1648,3 +1356,234 @@ to_dataframe()
 ----
 
 Return dataset as pandas dataframe.
+
+=== `EISData`
+
+[source,python]
+----
+EISData(*, pseis)
+----
+
+Python wrapper for .NET EISdata class.
+
+*Parameters:*
+
+* *pseis* – Reference to .NET EISdata object.
+
+*Functions:*
+
+* link:#pypalmsens.data.EISData.get_data_for_frequency[*get++_++data++_++for++_++frequency*]
+– Returns dictionary with data per frequency.
+* link:#pypalmsens.data.EISData.arrays[*arrays*] – Complete list of data
+arrays.
+* link:#pypalmsens.data.EISData.current_range[*current++_++range*] –
+Current ranges for the measurement.
+
+*Attributes:*
+
+* link:#pypalmsens.data.EISData.title[*title*] (link:#str[str]) – Tite
+for EIS data.
+* link:#pypalmsens.data.EISData.frequency_type[*frequency++_++type*]
+(link:#str[str]) – Frequency type.
+* link:#pypalmsens.data.EISData.scan_type[*scan++_++type*]
+(link:#str[str]) – Scan type.
+* link:#pypalmsens.data.EISData.dataset[*dataset*]
+(link:#pypalmsens._data.dataset.DataSet[DataSet]) – Dataset which
+contains multiple arrays of values.
+* link:#pypalmsens.data.EISData.subscans[*subscans*]
+(link:#list[list]++[++link:#pypalmsens._data.eisdata.EISData[EISData]++]++)
+– Get list of subscans.
+* link:#pypalmsens.data.EISData.n_points[*n++_++points*]
+(link:#int[int]) – Number of points (including subscans).
+* link:#pypalmsens.data.EISData.n_frequencies[*n++_++frequencies*]
+(link:#int[int]) – Number of frequencies.
+* link:#pypalmsens.data.EISData.n_subscans[*n++_++subscans*]
+(link:#int[int]) – Number of subscans.
+* link:#pypalmsens.data.EISData.x_unit[*x++_++unit*] (link:#str[str]) –
+Unit for array.
+* link:#pypalmsens.data.EISData.x_quantity[*x++_++quantity*]
+(link:#str[str]) – Quantity for array.
+* link:#pypalmsens.data.EISData.ocp_value[*ocp++_++value*]
+(link:#float[float]) – OCP Value.
+* link:#pypalmsens.data.EISData.has_subscans[*has++_++subscans*]
+(link:#bool[bool]) – Return True if data contains subscans.
+* link:#pypalmsens.data.EISData.mux_channel[*mux++_++channel*]
+(link:#int[int]) – Mux channel.
+* link:#pypalmsens.data.EISData.cdc[*cdc*] (link:#str[str]) – Gets the
+CDC circuit for fitting.
+* link:#pypalmsens.data.EISData.cdc_values[*cdc++_++values*]
+(link:#list[list]++[++link:#float[float]++]++) – Return values for
+circuit description code (CDC).
+
+==== `title`
+
+[source,python]
+----
+title: str
+----
+
+Tite for EIS data.
+
+==== `frequency++_++type`
+
+[source,python]
+----
+frequency_type: str
+----
+
+Frequency type.
+
+==== `scan++_++type`
+
+[source,python]
+----
+scan_type: str
+----
+
+Scan type.
+
+==== `dataset`
+
+[source,python]
+----
+dataset: DataSet
+----
+
+Dataset which contains multiple arrays of values.
+
+==== `subscans`
+
+[source,python]
+----
+subscans: list[EISData]
+----
+
+Get list of subscans.
+
+==== `n++_++points`
+
+[source,python]
+----
+n_points: int
+----
+
+Number of points (including subscans).
+
+==== `n++_++frequencies`
+
+[source,python]
+----
+n_frequencies: int
+----
+
+Number of frequencies.
+
+==== `n++_++subscans`
+
+[source,python]
+----
+n_subscans: int
+----
+
+Number of subscans.
+
+==== `x++_++unit`
+
+[source,python]
+----
+x_unit: str
+----
+
+Unit for array.
+
+==== `x++_++quantity`
+
+[source,python]
+----
+x_quantity: str
+----
+
+Quantity for array.
+
+==== `ocp++_++value`
+
+[source,python]
+----
+ocp_value: float
+----
+
+OCP Value.
+
+==== `has++_++subscans`
+
+[source,python]
+----
+has_subscans: bool
+----
+
+Return True if data contains subscans.
+
+==== `mux++_++channel`
+
+[source,python]
+----
+mux_channel: int
+----
+
+Mux channel.
+
+==== `cdc`
+
+[source,python]
+----
+cdc: str
+----
+
+Gets the CDC circuit for fitting.
+
+==== `cdc++_++values`
+
+[source,python]
+----
+cdc_values: list[float]
+----
+
+Return values for circuit description code (CDC).
+
+==== `get++_++data++_++for++_++frequency`
+
+[source,python]
+----
+get_data_for_frequency(frequency)
+----
+
+Returns dictionary with data per frequency.
+
+*Parameters:*
+
+* *frequency* (link:#int[int]) – Index of the frequency to retrieve the
+data for.
+
+*Returns:*
+
+* link:#dict[dict]++[++link:#str[str],
+link:#pypalmsens._data.data_array.DataArray[DataArray]++]++ – Data are
+returned as a dictionary keyed by the data type.
+
+==== `arrays`
+
+[source,python]
+----
+arrays()
+----
+
+Complete list of data arrays.
+
+==== `current++_++range`
+
+[source,python]
+----
+current_range()
+----
+
+Current ranges for the measurement.

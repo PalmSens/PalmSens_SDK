@@ -28,7 +28,7 @@ config = griffe2md.ConfigDict(
     separate_signature=True,
     show_bases=True,
     show_category_heading=False,  # When grouped by categories, show a heading for each category.
-    show_docstring_attributes=True,
+    show_docstring_attributes=False,
     show_docstring_classes=True,
     show_docstring_description=True,
     show_docstring_examples=True,
@@ -51,7 +51,7 @@ config = griffe2md.ConfigDict(
     show_submodules=True,
     signature_crossrefs=True,
     summary={
-        'attributes': False,
+        'attributes': True,
         'functions': True,
         'classes': True,
         'modules': True,
@@ -78,9 +78,7 @@ pages = (
                 'load_session_file',
                 'save_method_file',
                 'save_session_file',
-            ],
-            'summary': True,
-            'show_docstring_attributes': False,
+            ]
         },
     ),
     Page(
@@ -112,9 +110,7 @@ pages = (
                 'connect',
                 'discover',
                 'InstrumentManager',
-            ],
-            'summary': True,
-            'show_docstring_attributes': False,
+            ]
         },
     ),
     Page(
@@ -126,9 +122,7 @@ pages = (
                 'connect_async',
                 'discover_async',
                 'InstrumentManagerAsync',
-            ],
-            'summary': True,
-            'show_docstring_attributes': False,
+            ]
         },
     ),
     Page(
@@ -154,9 +148,7 @@ pages = (
                 'Multiplexer',
                 'DataProcessing',
                 'General',
-            ],
-            'summary': True,
-            'show_docstring_attributes': False,
+            ]
         },
     ),
     Page(
@@ -167,22 +159,18 @@ pages = (
             'members': [
                 'CURRENT_RANGE',
                 'POTENTIAL_RANGE',
-            ],
-            'summary': True,
-            'show_docstring_attributes': False,
+            ]
         },
     ),
     Page(
         name='fitting',
         title='Fitting',
         module='pypalmsens.fitting',
-        extra_config={'summary': True, 'show_docstring_attributes': False},
     ),
     Page(
         name='data',
         title='Data',
         module='pypalmsens.data',
-        extra_config={'summary': True, 'show_docstring_attributes': False},
     ),
 )
 

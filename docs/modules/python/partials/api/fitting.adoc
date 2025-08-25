@@ -22,24 +22,22 @@ Parameter(symbol, value=None, min=None, max=None, fixed=None)
 
 Set or update Parameter attributes.
 
-*Functions:*
-
-* link:#pypalmsens.fitting.Parameter.from_psparameter[*from++_++psparameter*]
-– Create instance from SDK Parameter object.
-* link:#pypalmsens.fitting.Parameter.update_psparameter[*update++_++psparameter*]
-– Update PalmSens SDK object with values from dataclass.
-
 *Attributes:*
 
 * link:#pypalmsens.fitting.Parameter.symbol[*symbol*] (link:#str[str]) –
+Name of the parameter (not used in minimization).
 * link:#pypalmsens.fitting.Parameter.value[*value*]
-(link:#typing.Optional[Optional]++[++link:#float[float]++]++) –
+(link:#typing.Optional[Optional]++[++link:#float[float]++]++) – Initial
+value of the parameter.
 * link:#pypalmsens.fitting.Parameter.min[*min*]
-(link:#typing.Optional[Optional]++[++link:#float[float]++]++) –
+(link:#typing.Optional[Optional]++[++link:#float[float]++]++) – Minimum
+(lower bound) for the parameter.
 * link:#pypalmsens.fitting.Parameter.max[*max*]
-(link:#typing.Optional[Optional]++[++link:#float[float]++]++) –
+(link:#typing.Optional[Optional]++[++link:#float[float]++]++) – Maximum
+(upper bound) for the parameter.
 * link:#pypalmsens.fitting.Parameter.fixed[*fixed*]
-(link:#typing.Optional[Optional]++[++link:#bool[bool]++]++) –
+(link:#typing.Optional[Optional]++[++link:#bool[bool]++]++) – If True,
+fix the value for this parameter.
 
 ==== `symbol`
 
@@ -48,12 +46,16 @@ Set or update Parameter attributes.
 symbol: str
 ----
 
+Name of the parameter (not used in minimization).
+
 ==== `value`
 
 [source,python]
 ----
 value: Optional[float] = None
 ----
+
+Initial value of the parameter.
 
 ==== `min`
 
@@ -62,12 +64,16 @@ value: Optional[float] = None
 min: Optional[float] = None
 ----
 
+Minimum (lower bound) for the parameter.
+
 ==== `max`
 
 [source,python]
 ----
 max: Optional[float] = None
 ----
+
+Maximum (upper bound) for the parameter.
 
 ==== `fixed`
 
@@ -76,23 +82,7 @@ max: Optional[float] = None
 fixed: Optional[bool] = None
 ----
 
-==== `from++_++psparameter`
-
-[source,python]
-----
-from_psparameter(psparameter)
-----
-
-Create instance from SDK Parameter object.
-
-==== `update++_++psparameter`
-
-[source,python]
-----
-update_psparameter(psparameter)
-----
-
-Update PalmSens SDK object with values from dataclass.
+If True, fix the value for this parameter.
 
 === `Parameters`
 
@@ -110,15 +100,14 @@ parameters. This ensures that the length and type of parameters match
 that of `CircuitModel`. Update the parameters in this class and pass to
 `CircuitModel.fit()`.
 
-*Functions:*
+*Parameters:*
 
-* link:#pypalmsens.fitting.Parameters.update_psmodel_parameters[*update++_++psmodel++_++parameters*]
-– Update the initial parameters in the SDK model with parameters in this
-instance.
+* *cdc* (link:#str[str]) – Genererate fitting parameters for this CDC.
 
 *Attributes:*
 
-* link:#pypalmsens.fitting.Parameters.cdc[*cdc*] –
+* link:#pypalmsens.fitting.Parameters.cdc[*cdc*] – CDC code used to
+generate parameter listing.
 
 ==== `cdc`
 
@@ -127,18 +116,7 @@ instance.
 cdc = cdc
 ----
 
-==== `update++_++psmodel++_++parameters`
-
-[source,python]
-----
-update_psmodel_parameters(psmodel)
-----
-
-Update the initial parameters in the SDK model with parameters in this
-instance.
-
-Note that the length and type of parameters must match that of the SDK
-class.
+CDC code used to generate parameter listing.
 
 === `FitResult`
 
@@ -171,16 +149,19 @@ bode plot.
 *Attributes:*
 
 * link:#pypalmsens.fitting.FitResult.cdc[*cdc*] (link:#str[str]) –
+Circuit model CDC values.
 * link:#pypalmsens.fitting.FitResult.parameters[*parameters*]
-(link:#list[list]++[++link:#float[float]++]++) –
+(link:#list[list]++[++link:#float[float]++]++) – Optimized parameters
+for CDC.
 * link:#pypalmsens.fitting.FitResult.chisq[*chisq*] (link:#float[float])
-–
+– Chi-squared goodness of fit statistic.
 * link:#pypalmsens.fitting.FitResult.exit_code[*exit++_++code*]
-(link:#str[str]) –
+(link:#str[str]) – Exit code for the minimization.
 * link:#pypalmsens.fitting.FitResult.n_iter[*n++_++iter*]
-(link:#int[int]) –
+(link:#int[int]) – Total number of iterations.
 * link:#pypalmsens.fitting.FitResult.error[*error*]
-(link:#list[list]++[++link:#float[float]++]++) –
+(link:#list[list]++[++link:#float[float]++]++) – Error (%) on
+parameters.
 
 ==== `cdc`
 
@@ -189,12 +170,16 @@ bode plot.
 cdc: str
 ----
 
+Circuit model CDC values.
+
 ==== `parameters`
 
 [source,python]
 ----
 parameters: list[float]
 ----
+
+Optimized parameters for CDC.
 
 ==== `chisq`
 
@@ -203,12 +188,16 @@ parameters: list[float]
 chisq: float
 ----
 
+Chi-squared goodness of fit statistic.
+
 ==== `exit++_++code`
 
 [source,python]
 ----
 exit_code: str
 ----
+
+Exit code for the minimization.
 
 ==== `n++_++iter`
 
@@ -217,12 +206,16 @@ exit_code: str
 n_iter: int
 ----
 
+Total number of iterations.
+
 ==== `error`
 
 [source,python]
 ----
 error: list[float]
 ----
+
+Error (%) on parameters.
 
 ==== `from++_++psfitresult`
 
@@ -379,31 +372,36 @@ result = model.fit(eis_data)
 
 * link:#pypalmsens.fitting.CircuitModel.default_parameters[*default++_++parameters*]
 – Get default parameters. Use this to modify parameter values.
-* link:#pypalmsens.fitting.CircuitModel.psfitoptions[*psfitoptions*] –
-Fit circuit model.
 * link:#pypalmsens.fitting.CircuitModel.fit[*fit*] – Fit circuit model.
 
 *Attributes:*
 
 * link:#pypalmsens.fitting.CircuitModel.cdc[*cdc*] (link:#str[str]) –
+Sets the circuit specified in the CDC string.
 * link:#pypalmsens.fitting.CircuitModel.algorithm[*algorithm*]
 (link:#typing.Literal[Literal]++[++'`leastsq`', '`nelder-mead`'++]++) –
+Name of the fitting method to use.
 * link:#pypalmsens.fitting.CircuitModel.max_iterations[*max++_++iterations*]
-(link:#int[int]) –
+(link:#int[int]) – Maximum number of iterations.
 * link:#pypalmsens.fitting.CircuitModel.min_delta_error[*min++_++delta++_++error*]
-(link:#float[float]) –
+(link:#float[float]) – Minimum convergence error.
 * link:#pypalmsens.fitting.CircuitModel.min_delta_step[*min++_++delta++_++step*]
-(link:#float[float]) –
+(link:#float[float]) – Minimum convergence step.
 * link:#pypalmsens.fitting.CircuitModel.min_freq[*min++_++freq*]
-(link:#typing.Optional[Optional]++[++link:#float[float]++]++) –
+(link:#typing.Optional[Optional]++[++link:#float[float]++]++) – Minimum
+fitting frequency in Hz.
 * link:#pypalmsens.fitting.CircuitModel.max_freq[*max++_++freq*]
-(link:#typing.Optional[Optional]++[++link:#float[float]++]++) –
+(link:#typing.Optional[Optional]++[++link:#float[float]++]++) – Maximum
+fitting frequency in Hz.
 * link:#pypalmsens.fitting.CircuitModel.tolerance[*tolerance*]
-(link:#float[float]) –
+(link:#float[float]) – Convergence tolerance. Nelder-Mead only (default
+= 1e-4).
 * link:#pypalmsens.fitting.CircuitModel.lambda_start[*lambda++_++start*]
-(link:#float[float]) –
+(link:#float[float]) – Start lambda value. Levenberg-Marquardt only
+(default = 0.01).
 * link:#pypalmsens.fitting.CircuitModel.lambda_factor[*lambda++_++factor*]
-(link:#float[float]) –
+(link:#float[float]) – Lambda Scaling Factor. Levenberg-Marquardt only
+(default = 10).
 * link:#pypalmsens.fitting.CircuitModel.last_result[*last++_++result*] –
 Store last fit result.
 * link:#pypalmsens.fitting.CircuitModel.last_psfitter[*last++_++psfitter*]
@@ -416,12 +414,21 @@ Store last fit result.
 cdc: str
 ----
 
+Sets the circuit specified in the CDC string.
+
+For more information, see:
+https://www.utwente.nl/en/tnw/ims/publications/downloads/cdc-explained.pdf
+
 ==== `algorithm`
 
 [source,python]
 ----
 algorithm: Literal['leastsq', 'nelder-mead'] = 'leastsq'
 ----
+
+Name of the fitting method to use.
+
+Valid values are: `leastsq` (Levenberg-Marquardt), `nelder-mead`
 
 ==== `max++_++iterations`
 
@@ -430,12 +437,22 @@ algorithm: Literal['leastsq', 'nelder-mead'] = 'leastsq'
 max_iterations: int = 500
 ----
 
+Maximum number of iterations.
+
+Minimization terminates once it reaches this number of steps (default =
+500).
+
 ==== `min++_++delta++_++error`
 
 [source,python]
 ----
 min_delta_error: float = 1e-09
 ----
+
+Minimum convergence error.
+
+Minimization converges if the residual (squared difference) falls below
+this value (default = 1e-9).
 
 ==== `min++_++delta++_++step`
 
@@ -444,12 +461,19 @@ min_delta_error: float = 1e-09
 min_delta_step: float = 1e-12
 ----
 
+Minimum convergence step.
+
+Minimization converges if the difference in parameter values falls below
+this value (default = 1e-12).
+
 ==== `min++_++freq`
 
 [source,python]
 ----
 min_freq: Optional[float] = None
 ----
+
+Minimum fitting frequency in Hz.
 
 ==== `max++_++freq`
 
@@ -458,12 +482,16 @@ min_freq: Optional[float] = None
 max_freq: Optional[float] = None
 ----
 
+Maximum fitting frequency in Hz.
+
 ==== `tolerance`
 
 [source,python]
 ----
 tolerance: float = 0.0001
 ----
+
+Convergence tolerance. Nelder-Mead only (default = 1e-4).
 
 ==== `lambda++_++start`
 
@@ -472,12 +500,16 @@ tolerance: float = 0.0001
 lambda_start: float = 0.01
 ----
 
+Start lambda value. Levenberg-Marquardt only (default = 0.01).
+
 ==== `lambda++_++factor`
 
 [source,python]
 ----
 lambda_factor: float = 10.0
 ----
+
+Lambda Scaling Factor. Levenberg-Marquardt only (default = 10).
 
 ==== `last++_++result`
 
@@ -510,30 +542,6 @@ Get default parameters. Use this to modify parameter values.
 
 * *parameters* (link:#pypalmsens._fitting.Parameters[Parameters]) –
 Default parameters for CDC.
-
-==== `psfitoptions`
-
-[source,python]
-----
-psfitoptions(data, *, parameters=None)
-----
-
-Fit circuit model.
-
-*Parameters:*
-
-* *data* (link:#pypalmsens._data.eisdata.EISData[EISData]) – Input EIS
-data.
-* *parameters*
-(link:#typing.Optional[Optional]++[++link:#collections.abc.Sequence[Sequence]++[++link:#float[float]++]++
-++|++ link:#pypalmsens._fitting.Parameters[Parameters]++]++) – Optional
-initial parameters for fit. Can be passed as `Parameters` object or list
-of values.
-
-*Returns:*
-
-* *opts* (link:#PalmSens.Fitting.FitOptions[FitOptions]) – SDK object
-containing fitting options.
 
 ==== `fit`
 

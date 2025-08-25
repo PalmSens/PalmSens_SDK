@@ -24,7 +24,7 @@ method = pypalmsens.CyclicVoltammetry(
 ----
 
 [NOTE]
-Shared settings
+.Shared settings
 ====
 Many configuration settings are shared between methods, like the current ranges above
 or _versus OCP_ or _trigger_ settings. These are listed in xref:settings.adoc[].
