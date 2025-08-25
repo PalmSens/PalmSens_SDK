@@ -12,12 +12,12 @@ __version__ = '0.0.1'
 __sdk_version__ = sdk_version
 
 from . import config, data, fitting
-from ._instruments._instrument_manager import (
+from ._instruments.instrument_manager import (
     InstrumentManager,
     connect,
     discover,
 )
-from ._instruments._instrument_manager_async import (
+from ._instruments.instrument_manager_async import (
     InstrumentManagerAsync,
     connect_async,
     discover_async,

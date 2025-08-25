@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Optional, Union
 
-from ._peak import Peak
+from .peak import Peak
 
 if TYPE_CHECKING:
     from matplotlib import axes, fig

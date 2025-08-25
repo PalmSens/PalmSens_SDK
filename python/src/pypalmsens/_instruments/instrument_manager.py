@@ -18,9 +18,9 @@ from PalmSens.Plottables import (
 )
 from System import EventHandler  # type: ignore
 
+from .._data._shared import ArrayType, _get_values_from_NETArray
 from .._methods import CURRENT_RANGE, BaseTechnique
 from ..data import Measurement
-from ..data._shared import ArrayType, _get_values_from_NETArray
 from ._common import Callback, Instrument, create_future, firmware_warning
 
 WINDOWS = sys.platform == 'win32'
@@ -165,7 +165,7 @@ class InstrumentManager:
         """Return True if an instrument connection exists."""
         return self.__comm is not None
 
-    async def connect(self):
+    def connect(self):
         """Connect to instrument."""
         if self.__comm is not None:
             print(

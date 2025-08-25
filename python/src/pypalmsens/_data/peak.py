@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from PalmSens.Analysis import Peak as PSPeak
 
-    from ._curve import Curve
+    from .curve import Curve
 
 
 class Peak:
@@ -37,7 +37,7 @@ class Peak:
     @property
     def curve(self) -> Curve:
         """Parent curve associated with Peak."""
-        from ._curve import Curve
+        from .curve import Curve
 
         if not self._curve:
             self._curve = Curve(pscurve=self.pspeak.Curve)

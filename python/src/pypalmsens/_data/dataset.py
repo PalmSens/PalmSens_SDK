@@ -6,8 +6,8 @@ from typing import TYPE_CHECKING, Callable, Generator
 import clr
 from PalmSens.Data import CurrentReading
 
-from ._data_array import DataArray
 from ._shared import ArrayType
+from .data_array import DataArray
 
 if TYPE_CHECKING:
     from PalmSens.Data import DataSet as PSDataSet

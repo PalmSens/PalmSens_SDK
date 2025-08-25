@@ -7,7 +7,8 @@ from typing import TYPE_CHECKING, Literal, Optional
 from PalmSens import Fitting as PSFitting
 from System import Array
 
-from .data import Curve, EISData
+from ._data.curve import Curve
+from ._data.eisdata import EISData
 
 if TYPE_CHECKING:
     from matplotlib import fig

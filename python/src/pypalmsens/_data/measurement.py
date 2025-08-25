@@ -4,12 +4,12 @@ from dataclasses import dataclass
 
 from PalmSens import Measurement as PSMeasurement
 
-from ..methods.method import Method
-from ..models import FitResult
-from ._curve import Curve
-from ._dataset import DataSet
-from ._eisdata import EISData
-from ._peak import Peak
+from .._fitting import FitResult
+from .._methods.method import Method
+from .curve import Curve
+from .dataset import DataSet
+from .eisdata import EISData
+from .peak import Peak
 
 
 @dataclass(frozen=True)

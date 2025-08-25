@@ -18,9 +18,9 @@ from PalmSens.Plottables import (
 from System import EventHandler
 from System.Threading.Tasks import Task
 
+from .._data._shared import ArrayType, _get_values_from_NETArray
 from .._methods import CURRENT_RANGE, BaseTechnique
 from ..data import Measurement
-from ..data._shared import ArrayType, _get_values_from_NETArray
 from ._common import Callback, Instrument, create_future, firmware_warning
 
 WINDOWS = sys.platform == 'win32'

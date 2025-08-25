@@ -10,8 +10,8 @@ from PalmSens.DataFiles import MethodFile, MethodFile2
 from System.IO import StreamReader, StreamWriter
 from System.Text import Encoding
 
+from ._data.measurement import Measurement
 from ._methods import BaseTechnique, Method
-from .data._measurement import Measurement
 
 if TYPE_CHECKING:
     from ._methods.method import Method
