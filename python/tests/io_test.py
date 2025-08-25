@@ -36,7 +36,7 @@ def test_save_load_method(tmpdir):
 
     assert method_cv2.filename == path
 
-    cv2 = method_cv2.to_parameters()
+    cv2 = method_cv2.to_settings()
 
     cv_dict = asdict(cv)
     cv2_dict = asdict(cv2)

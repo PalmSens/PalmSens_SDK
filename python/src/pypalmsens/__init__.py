@@ -11,7 +11,7 @@ else:
 __version__ = '0.0.1'
 __sdk_version__ = sdk_version
 
-from . import config, data, fitting
+from . import data, fitting, settings
 from ._instruments.instrument_manager import (
     InstrumentManager,
     connect,
@@ -38,7 +38,7 @@ from ._methods.techniques import (
 )
 
 __all__ = [
-    'config',
+    'settings',
     'data',
     'fitting',
     'connect',

@@ -208,7 +208,7 @@ Start measurement using given method parameters.
 
 *Parameters:*
 
-* *method* (link:#pypalmsens._methods.BaseTechnique[BaseTechnique]) –
+* *method* (link:#pypalmsens._methods.MethodSettings[MethodSettings]) –
 Method parameters for measurement
 * *hardware++_++sync++_++initiated++_++event* – …
 
@@ -223,8 +223,8 @@ Initiate hardware sync follower channel.
 
 *Parameters:*
 
-* *method* (link:#pypalmsens._methods.BaseTechnique[BaseTechnique]) –
-Method parameters
+* *method* (link:#MethodParameters[MethodParameters]) – Method
+parameters
 
 ==== `wait++_++digital++_++trigger`
 

@@ -121,12 +121,12 @@ pages = (
         },
     ),
     Page(
-        name='config',
-        title='Config',
-        module='pypalmsens.config',
+        name='settings',
+        title='Settings',
+        module='pypalmsens.settings',
         extra_config={
             'members': [
-                'BaseSettings',
+                'CommonSettings',
                 'CurrentRanges',
                 'PotentialRanges',
                 'Pretreatment',
@@ -147,9 +147,9 @@ pages = (
         },
     ),
     Page(
-        name='config_enums',
+        name='settings_enums',
         title='Enums',
-        module='pypalmsens.config',
+        module='pypalmsens.settings',
         extra_config={
             'members': [
                 'CURRENT_RANGE',

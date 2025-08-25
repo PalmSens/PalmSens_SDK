@@ -19,7 +19,7 @@ from PalmSens.Plottables import (
 from System import EventHandler  # type: ignore
 
 from .._data._shared import ArrayType, _get_values_from_NETArray
-from .._methods import CURRENT_RANGE, BaseTechnique
+from .._methods import CURRENT_RANGE, MethodSettings
 from ..data import Measurement
 from ._common import Callback, Instrument, create_future, firmware_warning
 
@@ -242,7 +242,7 @@ class InstrumentManager:
         Parameters
         ----------
         current_range: CURRENT_RANGE
-            Set the current range, use `pypalmsens.config.CURRENT_RANGE`.
+            Set the current range, use `pypalmsens.settings.CURRENT_RANGE`.
         """
         if self.__comm is None:
             print('Not connected to an instrument')
@@ -347,12 +347,12 @@ class InstrumentManager:
 
         return True, None
 
-    def measure(self, method: BaseTechnique):
+    def measure(self, method: MethodSettings):
         """Start measurement using given method parameters.
 
         Parameters
         ----------
-        method: BaseTechnique
+        method: MethodParameters
             Method parameters for measurement
         """
         psmethod = method._to_psmethod()

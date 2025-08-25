@@ -18,7 +18,7 @@ from ._shared import (
 
 
 @runtime_checkable
-class MethodParameters(Protocol):
+class CommonSettings(Protocol):
     """Protocol to provide generic methods for parameters."""
 
     def _update_psmethod(self, *, obj): ...
@@ -26,7 +26,7 @@ class MethodParameters(Protocol):
 
 
 @attrs.define
-class CurrentRanges(MethodParameters):
+class CurrentRanges(CommonSettings):
     """Set the autoranging current for a given method.
 
     Attributes
@@ -58,7 +58,7 @@ class CurrentRanges(MethodParameters):
 
 
 @attrs.define
-class PotentialRanges(MethodParameters):
+class PotentialRanges(CommonSettings):
     """Set the autoranging potential for a given method.
 
     Attributes
@@ -90,7 +90,7 @@ class PotentialRanges(MethodParameters):
 
 
 @attrs.define
-class Pretreatment(MethodParameters):
+class Pretreatment(CommonSettings):
     """Set the pretreatment settings for a given method.
 
     Attributes
@@ -124,7 +124,7 @@ class Pretreatment(MethodParameters):
 
 
 @attrs.define
-class VersusOCP(MethodParameters):
+class VersusOCP(CommonSettings):
     """Set the versus OCP settings for a given method.
 
     Attributes
@@ -163,7 +163,7 @@ class VersusOCP(MethodParameters):
 
 
 @attrs.define
-class BiPot(MethodParameters):
+class BiPot(CommonSettings):
     """Set the bipot settings for a given method.
 
     Attributes
@@ -208,7 +208,7 @@ class BiPot(MethodParameters):
 
 
 @attrs.define
-class PostMeasurement(MethodParameters):
+class PostMeasurement(CommonSettings):
     """Set the post measurement settings for a given method.
 
     Attributes
@@ -239,7 +239,7 @@ class PostMeasurement(MethodParameters):
 
 
 @attrs.define
-class CurrentLimits(MethodParameters):
+class CurrentLimits(CommonSettings):
     """Set the limit settings for a given method.
 
     Attributes
@@ -275,7 +275,7 @@ class CurrentLimits(MethodParameters):
 
 
 @attrs.define
-class PotentialLimits(MethodParameters):
+class PotentialLimits(CommonSettings):
     """Set the limit settings for a given method.
 
     Attributes
@@ -309,7 +309,7 @@ class PotentialLimits(MethodParameters):
 
 
 @attrs.define
-class ChargeLimits(MethodParameters):
+class ChargeLimits(CommonSettings):
     """Set the charge limit settings for a given method.
 
     Attributes
@@ -343,7 +343,7 @@ class ChargeLimits(MethodParameters):
 
 
 @attrs.define
-class IrDropCompensation(MethodParameters):
+class IrDropCompensation(CommonSettings):
     """Set the iR drop compensation settings for a given method.
 
     Attributes
@@ -367,7 +367,7 @@ class IrDropCompensation(MethodParameters):
 
 
 @attrs.define
-class EquilibrationTriggers(MethodParameters):
+class EquilibrationTriggers(CommonSettings):
     """Set the trigger at equilibration settings for a given method.
 
     Attributes
@@ -401,7 +401,7 @@ class EquilibrationTriggers(MethodParameters):
 
 
 @attrs.define
-class MeasurementTriggers(MethodParameters):
+class MeasurementTriggers(CommonSettings):
     """Set the trigger at measurement settings for a given method.
 
     Attributes
@@ -435,7 +435,7 @@ class MeasurementTriggers(MethodParameters):
 
 
 @attrs.define
-class Multiplexer(MethodParameters):
+class Multiplexer(CommonSettings):
     """Set the multiplexer settings for a given method.
 
     Attributes
@@ -501,7 +501,7 @@ class Multiplexer(MethodParameters):
 
 
 @attrs.define
-class DataProcessing(MethodParameters):
+class DataProcessing(CommonSettings):
     """Set the data processing settings for a given method.
 
     Attributes
@@ -539,7 +539,7 @@ class DataProcessing(MethodParameters):
 
 
 @attrs.define
-class General(MethodParameters):
+class General(CommonSettings):
     """Sets general/other settings for a given method.
 
     Attributes

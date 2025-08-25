@@ -10,6 +10,7 @@ from ._methods._shared import (
 from ._methods.settings import (
     BiPot,
     ChargeLimits,
+    CommonSettings,
     CurrentLimits,
     CurrentRanges,
     DataProcessing,
@@ -17,7 +18,6 @@ from ._methods.settings import (
     General,
     IrDropCompensation,
     MeasurementTriggers,
-    MethodParameters,
     Multiplexer,
     PostMeasurement,
     PotentialLimits,
@@ -44,6 +44,6 @@ __all__ = [
     'PotentialLimits',
     'PotentialRanges',
     'Pretreatment',
-    'MethodParameters',
+    'CommonSettings',
     'VersusOCP',
 ]

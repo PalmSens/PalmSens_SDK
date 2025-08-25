@@ -23,6 +23,6 @@ def test_to_dict(method):
     assert dct
 
 
-def test_to_parameters(method):
-    params = method.to_parameters()
+def test_to_settings(method):
+    params = method.to_settings()
     assert isinstance(params, pypalmsens.CyclicVoltammetry)

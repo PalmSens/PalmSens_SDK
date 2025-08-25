@@ -1,6 +1,6 @@
 = Techniques
 
-This page contains a listing of all technique parameters.
+This page contains a listing of all technique settings.
 
 For example to configure a CV experiment:
 
@@ -15,10 +15,10 @@ method = pypalmsens.CyclicVoltammetry(
     step_potential = 0.25,
     scanrate = 5,
     n_scans = 2,
-    current_ranges = pypalmsens.config.CurrentRanges(
-        max = pypalmsens.config.CURRENT_RANGE.cr_1_mA,
-        min = pypalmsens.config.CURRENT_RANGE.cr_100_nA,
-        start = pypalmsens.config.CURRENT_RANGE.cr_100_uA,
+    current_ranges = pypalmsens.settings.CurrentRanges(
+        max = pypalmsens.settings.CURRENT_RANGE.cr_1_mA,
+        min = pypalmsens.settings.CURRENT_RANGE.cr_100_nA,
+        start = pypalmsens.settings.CURRENT_RANGE.cr_100_uA,
     ),
 )
 ----

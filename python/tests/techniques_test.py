@@ -7,12 +7,12 @@ from PalmSens import Techniques
 from pytest import approx
 
 import pypalmsens
-from pypalmsens.config import (
+from pypalmsens.data import Measurement
+from pypalmsens.settings import (
     CURRENT_RANGE,
     POTENTIAL_RANGE,
     ELevel,
 )
-from pypalmsens.data import Measurement
 
 logger = logging.getLogger(__name__)
 
@@ -88,7 +88,7 @@ class TestCV:
     @pytest.mark.instrument
     def test_measurement(self, manager):
         method = self.pycls(
-            current_ranges=pypalmsens.config.CurrentRanges(
+            current_ranges=pypalmsens.settings.CurrentRanges(
                 max=CURRENT_RANGE.cr_1_mA,
                 min=CURRENT_RANGE.cr_100_nA,
                 start=CURRENT_RANGE.cr_100_uA,
@@ -136,7 +136,7 @@ class TestLSV:
     @pytest.mark.instrument
     def test_measurement(self, manager):
         method = self.pycls(
-            current_ranges=pypalmsens.config.CurrentRanges(
+            current_ranges=pypalmsens.settings.CurrentRanges(
                 max=CURRENT_RANGE.cr_1_mA,
                 min=CURRENT_RANGE.cr_100_nA,
                 start=CURRENT_RANGE.cr_100_uA,
@@ -179,7 +179,7 @@ class TestSWV:
     @pytest.mark.instrument
     def test_measurement(self, manager):
         method = self.pycls(
-            current_ranges=pypalmsens.config.CurrentRanges(
+            current_ranges=pypalmsens.settings.CurrentRanges(
                 max=CURRENT_RANGE.cr_1_mA,
                 min=CURRENT_RANGE.cr_100_nA,
                 start=CURRENT_RANGE.cr_100_uA,
@@ -219,7 +219,7 @@ class TestCP:
     @pytest.mark.instrument
     def test_measurement(self, manager):
         method = self.pycls(
-            potential_ranges=pypalmsens.config.PotentialRanges(
+            potential_ranges=pypalmsens.settings.PotentialRanges(
                 max=POTENTIAL_RANGE.pr_1_V,
                 min=POTENTIAL_RANGE.pr_10_mV,
                 start=POTENTIAL_RANGE.pr_1_V,
@@ -256,7 +256,7 @@ class TestOCP:
     @pytest.mark.instrument
     def test_measurement(self, manager):
         method = self.pycls(
-            potential_ranges=pypalmsens.config.PotentialRanges(
+            potential_ranges=pypalmsens.settings.PotentialRanges(
                 max=POTENTIAL_RANGE.pr_1_V,
                 min=POTENTIAL_RANGE.pr_10_mV,
                 start=POTENTIAL_RANGE.pr_1_V,

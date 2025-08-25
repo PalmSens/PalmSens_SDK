@@ -206,7 +206,7 @@ Start measurement using given method parameters.
 
 *Parameters:*
 
-* *method* (link:#pypalmsens._methods.BaseTechnique[BaseTechnique]) –
+* *method* (link:#pypalmsens._methods.MethodSettings[MethodSettings]) –
 Method parameters for measurement
 
 ==== `wait++_++digital++_++trigger`

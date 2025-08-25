@@ -27,7 +27,8 @@ Create square wave method parameters.
 
 === `ChronoAmperometry`
 
-Bases: link:#pypalmsens._methods.techniques.BaseTechnique[BaseTechnique]
+Bases:
+link:#pypalmsens._methods.techniques.MethodSettings[MethodSettings]
 
 Create chrono amperometry method parameters.
 
@@ -228,7 +229,8 @@ general: General = attrs.field(factory=General)
 
 === `ChronoPotentiometry`
 
-Bases: link:#pypalmsens._methods.techniques.BaseTechnique[BaseTechnique]
+Bases:
+link:#pypalmsens._methods.techniques.MethodSettings[MethodSettings]
 
 Create potentiometry method parameters.
 
@@ -382,7 +384,8 @@ general: General = attrs.field(factory=General)
 
 === `CyclicVoltammetry`
 
-Bases: link:#pypalmsens._methods.techniques.BaseTechnique[BaseTechnique]
+Bases:
+link:#pypalmsens._methods.techniques.MethodSettings[MethodSettings]
 
 Create cyclic voltammetry method parameters.
 
@@ -583,7 +586,8 @@ general: General = attrs.field(factory=General)
 
 === `DifferentialPulseVoltammetry`
 
-Bases: link:#pypalmsens._methods.techniques.BaseTechnique[BaseTechnique]
+Bases:
+link:#pypalmsens._methods.techniques.MethodSettings[MethodSettings]
 
 Create square wave method parameters.
 
@@ -793,7 +797,8 @@ general: General = attrs.field(factory=General)
 
 === `ElectrochemicalImpedanceSpectroscopy`
 
-Bases: link:#pypalmsens._methods.techniques.BaseTechnique[BaseTechnique]
+Bases:
+link:#pypalmsens._methods.techniques.MethodSettings[MethodSettings]
 
 Create potentiometry method parameters.
 
@@ -939,7 +944,8 @@ general: General = attrs.field(factory=General)
 
 === `GalvanostaticImpedanceSpectroscopy`
 
-Bases: link:#pypalmsens._methods.techniques.BaseTechnique[BaseTechnique]
+Bases:
+link:#pypalmsens._methods.techniques.MethodSettings[MethodSettings]
 
 Create potentiometry method parameters.
 
@@ -1085,7 +1091,8 @@ general: General = attrs.field(factory=General)
 
 === `LinearSweepVoltammetry`
 
-Bases: link:#pypalmsens._methods.techniques.BaseTechnique[BaseTechnique]
+Bases:
+link:#pypalmsens._methods.techniques.MethodSettings[MethodSettings]
 
 Create linear sweep method parameters.
 
@@ -1277,7 +1284,8 @@ general: General = attrs.field(factory=General)
 
 === `MethodScript`
 
-Bases: link:#pypalmsens._methods.techniques.BaseTechnique[BaseTechnique]
+Bases:
+link:#pypalmsens._methods.techniques.MethodSettings[MethodSettings]
 
 Create a method script sandbox object.
 
@@ -1294,7 +1302,8 @@ script: str = 'e\nwait 100m\nif 1 < 2\n    send_string "Hello world"\nendif\n\n'
 
 === `MultiStepAmperometry`
 
-Bases: link:#pypalmsens._methods.techniques.BaseTechnique[BaseTechnique]
+Bases:
+link:#pypalmsens._methods.techniques.MethodSettings[MethodSettings]
 
 Create multi-step amperometry method parameters.
 
@@ -1458,7 +1467,8 @@ general: General = attrs.field(factory=General)
 
 === `OpenCircuitPotentiometry`
 
-Bases: link:#pypalmsens._methods.techniques.BaseTechnique[BaseTechnique]
+Bases:
+link:#pypalmsens._methods.techniques.MethodSettings[MethodSettings]
 
 Create open circuit potentiometry method parameters.
 
@@ -1594,7 +1604,8 @@ general: General = attrs.field(factory=General)
 
 === `SquareWaveVoltammetry`
 
-Bases: link:#pypalmsens._methods.techniques.BaseTechnique[BaseTechnique]
+Bases:
+link:#pypalmsens._methods.techniques.MethodSettings[MethodSettings]
 
 Create square wave method parameters.
 

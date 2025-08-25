@@ -1,3 +1,0 @@
-= Enums
-
-include::partial$api/config_enums.adoc[]

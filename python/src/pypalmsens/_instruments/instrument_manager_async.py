@@ -19,7 +19,7 @@ from System import EventHandler
 from System.Threading.Tasks import Task
 
 from .._data._shared import ArrayType, _get_values_from_NETArray
-from .._methods import CURRENT_RANGE, BaseTechnique
+from .._methods import CURRENT_RANGE, MethodSettings
 from ..data import Measurement
 from ._common import Callback, Instrument, create_future, firmware_warning
 
@@ -246,7 +246,7 @@ class InstrumentManagerAsync:
         Parameters
         ----------
         current_range: CURRENT_RANGE
-            Set the current range, use `pypalmsens.config.CURRENT_RANGE`.
+            Set the current range, use `pypalmsens.settings.CURRENT_RANGE`.
         """
         if self.__comm is None:
             print('Not connected to an instrument')
@@ -353,12 +353,12 @@ class InstrumentManagerAsync:
 
         return True, None
 
-    async def measure(self, method: BaseTechnique, hardware_sync_initiated_event=None):
+    async def measure(self, method: MethodSettings, hardware_sync_initiated_event=None):
         """Start measurement using given method parameters.
 
         Parameters
         ----------
-        method: BaseTechnique
+        method: MethodParameters
             Method parameters for measurement
         hardware_sync_initiated_event:
             ...
@@ -553,12 +553,12 @@ class InstrumentManagerAsync:
         #     self.__measuring = False
         #     return None
 
-    def initiate_hardware_sync_follower_channel(self, method: BaseTechnique):
+    def initiate_hardware_sync_follower_channel(self, method: MethodSettings):
         """Initiate hardware sync follower channel.
 
         Parameters
         ----------
-        method : BaseTechnique
+        method : MethodParameters
             Method parameters
         """
         if self.__comm is None:
