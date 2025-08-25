@@ -10,7 +10,6 @@ from ._methods._shared import (
 from ._methods.settings import (
     BiPot,
     ChargeLimits,
-    CommonSettings,
     CurrentLimits,
     CurrentRanges,
     DataProcessing,
@@ -44,6 +43,5 @@ __all__ = [
     'PotentialLimits',
     'PotentialRanges',
     'Pretreatment',
-    'CommonSettings',
     'VersusOCP',
 ]
