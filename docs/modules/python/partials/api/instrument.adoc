@@ -145,7 +145,7 @@ Set the current range for the cell.
 
 * *current++_++range*
 (link:#pypalmsens._methods.CURRENT_RANGE[CURRENT++_++RANGE]) – Set the
-current range, use `pypalmsens.config.CURRENT++_++RANGE`.
+current range, use `pypalmsens.settings.CURRENT++_++RANGE`.
 
 ==== `read++_++current`
 
