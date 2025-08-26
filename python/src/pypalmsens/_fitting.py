@@ -393,7 +393,7 @@ class CircuitModel:
             self.min_freq = self.min_freq or 0
             self.max_freq = self.max_freq or 0
 
-            array = data.dataset.freq_arrays[-1]
+            array = data.dataset.freq_arrays()[-1]
             sel = (self.min_freq < val < self.max_freq for val in array)
 
             opts.SelectedDataPoints = Array[bool]((bool(_) for _ in sel))
