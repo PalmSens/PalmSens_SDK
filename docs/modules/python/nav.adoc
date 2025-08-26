@@ -2,6 +2,7 @@
 ** xref:installation.adoc[]
 ** xref:getting_started.adoc[]
 ** xref:examples.adoc[]
+** xref:data.adoc[]
 ** xref:measuring.adoc[]
 ** xref:circuit_fitting.adoc[]
 ** xref:api/index.adoc[]
