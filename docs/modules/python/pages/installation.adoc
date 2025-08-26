@@ -27,7 +27,33 @@ If you do not use them it is recommended to disable scanning for FTDI devices.
 available_instruments = discover_instruments(ftdi=False)
 ----
 
-== (Optional) Create a virtual environment in Visual Studio Code
+== Virtual environments
 
-https://code.visualstudio.com/[VS Code] in combination with the Python, Python Debugger and Pylance extensions offer an easy command to create a virtual environment and load the python dependencies.
+Virtual enviroments are used to create isolated Python installations.
+Tools like https://docs.python.org/3/library/venv.html[venv] or https://docs.conda.io/projects/conda/[conda] help you create and update environment that have different versions of Python and/or packages installed in them. This makes them useful for software development.
+
+This section shows how to set up and activate an environment.
+
+Setting up a virtual environment using https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments/[Python, pip and venv]:
+
+[source,powershell]
+----
+python -m venv .venv
+.venv/Scripts/activate.ps1
+python -m pip install -e .[develop]
+----
+
+Alternatively, setting up a https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html[virtual environment using Conda]:
+
+[source,powershell]
+----
+conda create -n pypalmsens python=3.13
+conda activate pypalmsens
+pip install pypalmsens
+----
+
+=== Visual Studio Code
+
+https://code.visualstudio.com/[VS Code] supports virtual environments. In combination with the Python, Python Debugger and Pylance extensions, VS code makes it easy to create virtual environments and load the python dependencies.
+
 See the https://code.visualstudio.com/docs/python/environments#_creating-environments[VSCode documentation] for how to set this up.
