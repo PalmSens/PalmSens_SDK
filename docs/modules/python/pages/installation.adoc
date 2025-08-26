@@ -24,7 +24,7 @@ If you do not use them it is recommended to disable scanning for FTDI devices.
 +
 [source,python]
 ----
-available_instruments = discover_instruments(ftdi=False)
+available_instruments = pypalmsens.discover(ftdi=False)
 ----
 
 == Virtual environments

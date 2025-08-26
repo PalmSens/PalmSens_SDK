@@ -55,7 +55,7 @@ CDC. These can be modified, for example:
 >>> result = model.fit(eis_data, parameters=parameters)
 ----
 
-== EIS data
+== Re-fit EIS data
 
 If you already fitted your data in PSTrace, you can redo the fit or use the values as a starting parameters:
 
