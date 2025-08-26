@@ -5,8 +5,6 @@ configuration.
 
 *Classes:*
 
-* link:#pypalmsens.settings.CommonSettings[*CommonSettings*] – Protocol
-to provide generic methods for parameters.
 * link:#pypalmsens.settings.CurrentRanges[*CurrentRanges*] – Set the
 autoranging current for a given method.
 * link:#pypalmsens.settings.PotentialRanges[*PotentialRanges*] – Set the
@@ -39,12 +37,6 @@ multiplexer settings for a given method.
 data processing settings for a given method.
 * link:#pypalmsens.settings.General[*General*] – Sets general/other
 settings for a given method.
-
-=== `CommonSettings`
-
-Bases: link:#typing.Protocol[Protocol]
-
-Protocol to provide generic methods for parameters.
 
 === `CurrentRanges`
 
