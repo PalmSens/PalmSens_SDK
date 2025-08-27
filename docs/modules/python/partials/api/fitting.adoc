@@ -91,8 +91,6 @@ If True, fix the value for this parameter.
 Parameters(cdc)
 ----
 
-Bases: link:#collections.abc.Sequence[Sequence]
-
 Tuple-like container class for parameters.
 
 This class is instantiated from the CDC code and contains default
