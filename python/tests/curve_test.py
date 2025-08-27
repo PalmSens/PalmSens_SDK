@@ -60,17 +60,16 @@ def test_find_peaks(curve_dpv):
     assert not curve_dpv.peaks
 
 
-def test_find_peaks_cv(curve_cv):
+def test_find_peaks_semiderivative(curve_cv):
     curve = curve_cv
-    peaks = curve.find_peaks(
-        min_peak_width=0,
+    peaks = curve.find_peaks_semiderivative(
         min_peak_height=0,
     )
 
     assert len(peaks) == 2
 
-    assert [peak.x for peak in peaks] == [0.274806, -0.0173047]
-    assert [peak.y for peak in peaks] == [15.7517, -15.7564]
+    assert [peak.x for peak in peaks] == [0.284884, -0.0223047]
+    assert [peak.y for peak in peaks] == [15.8404, -15.826]
     assert peaks[0].curve_title == curve.title
 
     curve.clear_peaks()
