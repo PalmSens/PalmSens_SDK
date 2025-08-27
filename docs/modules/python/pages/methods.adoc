@@ -67,7 +67,7 @@ This example creates a method for a square-wave voltammetry measurement versus t
 ...)
 ----
 
-Because methods are https://www.attrs.org/[attrs dataclasses], all attributes can be modified:
+Because methods are https://www.attrs.org/[attrs dataclasses], all attributes can be modified afterwards:
 
 [source,python]
 ----
@@ -76,7 +76,7 @@ Because methods are https://www.attrs.org/[attrs dataclasses], all attributes ca
 >>> method.step_potential = 0.02
 ----
 
-It can be serialized to and from a dictionary:
+Dataclasses can be serialized to and from a dictionary:
 
 [source,python]
 ----
@@ -116,6 +116,7 @@ image:ipython_autocomplete.png[Debug console in VSCode]
 
 Many settings are shared between methods.
 For a full listing, see xref:api/method_settings.adoc[].
+
 If you don't specify any arguments, the default values are loaded.
 These are accessible via attributes on the methods.
 

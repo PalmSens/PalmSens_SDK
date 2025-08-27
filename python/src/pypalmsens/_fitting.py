@@ -108,14 +108,14 @@ class FitResult:
     """Circuit model CDC values."""
     parameters: list[float]
     """Optimized parameters for CDC."""
-    chisq: float
-    """Chi-squared goodness of fit statistic."""
-    exit_code: str
-    """Exit code for the minimization."""
-    n_iter: int
-    """Total number of iterations."""
     error: list[float]
     """Error (%) on parameters."""
+    chisq: float
+    """Chi-squared goodness of fit statistic."""
+    n_iter: int
+    """Total number of iterations."""
+    exit_code: str
+    """Exit code for the minimization."""
 
     @classmethod
     def from_psfitresult(cls, result: PSFitting.FitResult, cdc: str):

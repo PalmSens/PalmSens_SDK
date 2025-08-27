@@ -248,6 +248,8 @@ Therefore, arrays can be selected by name...
 ----
 
 Note that for larger datasets these methods can return multiple DataArrays.
+Data from a _Cyclic Voltammetry_ measurement can contain multiple scans and
+can therefore the dataset can contain multiple arrays per array type.
 
 If you have https://pandas.pydata.org/[pandas] installed,
 you can use easily convert the dataset into a
@@ -343,14 +345,111 @@ For more information, see the xref:api/data.adoc#_dataarray[DataArray reference]
 
 We can retrieve EIS data from an EIS measurement.
 
+Note that the EIS measurement can be multichannel, so `.eisdata` returns a list.
+If you don't use a multiplexer, we can pick the first (and only) item from the list.
+
 [source,python]
 ----
 >>> eis_measurement = measurements[2]
 >>> eis_measurement
 Measurement(title=Impedance Spectroscopy [2], timestamp=12-Jul-17 14:48:42, device=PalmSens4)
->>> eis_measurement.eis_data
+>>> eis_measurement.eis_data  # <1>
 [EISData(title=FixedPotential at 71 freqs [2], n_points=71, n_frequencies=71)]
->>> eis_data = eis_measurement.eis_data[0]
+>>> eis_data = eis_measurement.eis_data[0]  # <2>
 ----
+<1> `.eis_data` returns a list
+<2> Pick the first and only item
+
+The EISData object can be queried for metadata:
+
+[source,python]
+----
+>>> eis.title
+'FixedPotential at 71 freqs [2]'
+>>> eis.scan_type
+'Fixed'
+>>> eis.frequency_type
+'Scan'
+>>> eis.n_points
+5
+>>> eis.n_frequencies
+5
+----
+
+If previously fitted a circuit model in PSTrace, we can retrieve the CDC values:
+
+[source,python]
+----
+>>> eis_data.cdc
+'R([RT]Q)'
+>>> eis_data.cdc_values
+[132.146, 11009.9, 3710.55, 3.77887, 0.971414, 6.23791e-07, 0.961612]
+----
+
+And use these to xref:fitting.adoc[fit a circuit model]:
+
+[source,python]
+----
+>>> model = pypalmsens.fitting.CircuitModel(cdc=eis_data.cdc)
+>>> result = model.fit(eis_data, parameters=eis_data.cdc_values)
+>>> result
+FitResult(
+    cdc='R([RT]Q)',
+    parameters=[132.14, 11009.96, 3710.50, 3.78, 0.97, 6.23e-07, 0.96],
+    error=[1.51, 4.60, 37.55, 165.04, 25.81, 7.22, 0.94],
+    chisq=0.0054,
+    n_iter=5,
+    exit_code='MinimumDeltaErrorTerm',
+)
+----
+
+The raw data can be accessed via `.dataset`. This results in a <<DataSet>> object.
+
+[source,python]
+----
+>>> eis_data.dataset
+DataSet(['Current', 'Potential', 'Time', 'Frequency', 'ZRe', 'ZIm', 'Z', 'Phase', 'Iac', 'Unspecified_1', 'Unspecified_2', 'Unspecified_3', 'Unspecified_4', 'YRe', 'YIm', 'Y', 'Cs', 'CsRe', 'CsIm'])
+----
+
+Likewise, we can retrieve all the arrays:
+
+[source,python]
+----
+>>> eis_data.arrays()
+[DataArray(name=Idc, unit=µA, n_points=71),
+ DataArray(name=potential, unit=V, n_points=71),
+ DataArray(name=time, unit=s, n_points=71),
+ ...
+ DataArray(name=Capacitance, unit=F, n_points=71),
+ DataArray(name=Capacitance', unit=F, n_points=71),
+ DataArray(name=Capacitance'', unit=F, n_points=71)]
+----
+
+=== Subscans
+
+If an EIS dataset has subscans, this is shown in the repr:
+
+[source,python]
+----
+>>> eis
+EISData(title=CH 3: E dc scan at 5 freqs, n_points=20, n_frequencies=5, n_subscans=4)
+>>> eis.has_subscans
+True
+>>> eis.n_subscans
+4
+----
+
+Subscans can be accessed via the `.subscans()` method.
+
+[source,python]
+----
+>>> eis.subscans
+[EISData(title=E=0.000 V, n_points=5, n_frequencies=5),
+ EISData(title=E=0.200 V, n_points=5, n_frequencies=5),
+ EISData(title=E=0.400 V, n_points=5, n_frequencies=5),
+ EISData(title=E=0.600 V, n_points=5, n_frequencies=5)]
+----
+
+The subscans are themselves <<EISData>> objects.
 
 For more information, see the xref:api/data.adoc#_eisdata[EISData reference].

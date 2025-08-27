@@ -72,7 +72,7 @@ In PSTrace or PSTrace Express these would be the 'Data' and the 'Plot' tab, resp
 
 The exceptions are (galvanostatic) electrochemical impedance spectroscopy measurements, which contain additional plots.
 
-The measurement and curve classes are defined in the `.curves` attribute, the ral data by the `.dataset` attribute, and the EIS data by the `.eis_data` attribute.
+The measurement and curve classes are defined in the `.curves` attribute, the raw data by the `.dataset` attribute, and the EIS data by the `.eis_data` attribute.
 
 The following example loads a collection of measurements from a session file and saves the first measurement to a different file.
 
@@ -81,7 +81,7 @@ The following example loads a collection of measurements from a session file and
 >>> from pypalmsens import load_session_file
 
 >>> measurements = load_session_file('my_measurement.pssession')
->>>
+
 >>> pypalmsens.save_session_file(
 ...     'my_measurement_copy.pssession',
 ...     [measurements[0]]
