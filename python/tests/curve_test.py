@@ -106,3 +106,11 @@ def test_curve_properties(curve_dpv):
     assert curve_dpv.max_x == max(x_arr)
     assert curve_dpv.min_y == min(y_arr)
     assert curve_dpv.max_y == max(y_arr)
+
+
+def test_curve_copy(curve_dpv):
+    new_curve = curve_dpv.copy()
+    assert curve_dpv is not new_curve
+    assert curve_dpv._pscurve is not new_curve._pscurve
+    assert curve_dpv._pscurve.XAxisDataArray is not new_curve._pscurve.XAxisDataArray
+    assert curve_dpv._pscurve.YAxisDataArray is not new_curve._pscurve.YAxisDataArray
