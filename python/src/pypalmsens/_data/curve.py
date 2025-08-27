@@ -103,6 +103,9 @@ class Curve:
         The peaks are also assigned to the curve, updating `Curve.peaks`.
         Existing peaks are overwritten.
 
+        For more info, see this
+        [Wikipedia page](https://en.wikipedia.org/wiki/Neopolarogram).
+
         Parameters
         ----------
         min_peak_height : float
