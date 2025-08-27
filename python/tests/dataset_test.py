@@ -80,7 +80,7 @@ def test_array_types(dataset):
 def test_array_names(dataset):
     names = dataset.array_names
     assert len(names) == 2
-    assert names == {'time', 'time-scan1channel1'}
+    assert names == {'time', 'scan1channel1'}
 
 
 def test_new_curve(dataset):
