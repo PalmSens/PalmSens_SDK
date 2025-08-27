@@ -21,23 +21,23 @@ def curve_cv(data_cv):
 
 
 def test_curve_smooth(curve_noise):
-    x = curve_noise.x_array
-    y = curve_noise.y_array
+    x = list(curve_noise.x_array)
+    y = list(curve_noise.y_array)
 
     curve_noise.smooth(smooth_level=1)
 
-    assert x == curve_noise.x_array
-    assert y != curve_noise.y_array
+    assert x == list(curve_noise.x_array)
+    assert y != list(curve_noise.y_array)
 
 
 def test_savitsky_golay(curve_noise):
-    x = curve_noise.x_array
-    y = curve_noise.y_array
+    x = list(curve_noise.x_array)
+    y = list(curve_noise.y_array)
 
     curve_noise.savitsky_golay(window_size=2)
 
-    assert x == curve_noise.x_array
-    assert y != curve_noise.y_array
+    assert x == list(curve_noise.x_array)
+    assert y != list(curve_noise.y_array)
 
 
 def test_find_peaks(curve_dpv):

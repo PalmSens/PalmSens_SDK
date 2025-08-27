@@ -57,6 +57,6 @@ def test_array_smooth(array):
 
 def test_array_copy(array):
     new_array = array.copy()
-    assert array == new_array  # data must match
+    assert list(array) == list(new_array)  # data must match
     assert array is not new_array
     assert array._psarray is not new_array._psarray

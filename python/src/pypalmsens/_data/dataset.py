@@ -86,6 +86,8 @@ class DataSet(Mapping):
             Key identifying the x array
         y : str
             Key identifying the y array
+        title : str
+            Set the title. If None, use the $x-$y as title
 
         Returns
         -------
@@ -96,7 +98,7 @@ class DataSet(Mapping):
         yarray = self[y]
 
         if not title:
-            title = f'{xarray.name}-{yarray.name}'
+            title = f'{x}-{y}'
 
         pscurve = PSCurve(xarray._psarray, yarray._psarray, title=title)
 
