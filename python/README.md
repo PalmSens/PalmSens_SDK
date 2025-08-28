@@ -5,7 +5,6 @@
 # PyPalmSens: Python SDK for PalmSens devices
 
 PyPalmSens is a Python library for automating electrochemistry experiments with your PalmSens instruments.
-PyPalmSens is built on top of the xref:ROOT:index.adoc[PalmSens .NET libraries].
 It provides an intuitive Python API, making it straightforward to integrate into your Python workflows.
 
 With PyPalmSens, you can:
@@ -25,7 +24,7 @@ To install:
 pip install pypalmsens
 ```
 
-PyPalmSens requires the .NET runtime to be installed.
+PyPalmSens is built on top of the included [PalmSens .NET libraries](https://palmsens.github.io/PalmSens_SDK/palmsens-sdk/core_dll.html), and therefore requires the .NET runtime to be installed.
 
 For specific installation instructions for your platform, see the
 [documentation](https://palmsens.github.io/PalmSens_SDK/palmsens-sdk/python/index.html).
