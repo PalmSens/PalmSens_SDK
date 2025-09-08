@@ -1,0 +1,53 @@
+= Matlab SDK for PalmSens devices
+
+The PalmSens Matlab SDK is based on PalmSens core version 5.10 which is compatible with:
+
+
+[cols=",",options="header",]
+|===
+|Device | Minimum required firmware version
+|EmStat1 | 3.7
+|EmStat2 | 7.7
+|EmStat3 series | 7.7
+|EmStat4 LR/HR | 1.1
+|EmStatPico | 1.3
+|PalmSens3 | 2.8
+|PalmSens4 | 1.7
+|===
+
+== Whats new
+
+- Added support for EmStat4 LR/HR
+- Added support for GEIS
+- Added support for plotting multiple figures with different units if supported by the measurment (Mixed Mode and Extra Values)
+
+== Examples
+
+The SDK contains the following examples and functions aimed to help you with using PalmSens and Emstat devices in Matlab.
+
+`ConnnectionExample.m`:: Detailed explanation on how to detect and connect to your device.
+`MethodExample.m`:: Detailed explanation on how to load, edit and create new methods (methods are used to specify technique and the settings for a measurment).
+`ImportSessionExample.m`:: Detailed explanation on how to import and view measurements from a `.pssession` file created with PSTrace 5.x or MultiTrace 4.x.
+`MeasurementExample.m`:: Detailed explanation on how to perform a measurement, specified in a method, with a connected PalmSens or Emstat device.
+`EquivalentCircuitFitExample.m`:: An example of equivalent circuit fitting
+`GUIExample.m`:: An example of a Matlab user interface for performing measurements with your device.
+`ManualControlExample.m`:: An example of a Maltab user interface for manual control of your device.
+`MultiChannelMeasurementLoopExample.m`:: An example of connecting to and running measurements on multiple instruments/channels.
+
+== Functions
+
+`LoadPSSDK.m`:: Loads the PalmSens Matlab SDK.
+`LoadMethod.m`:: Loads a method from a *.psmethod file.
+`NewMethod.m`:: Creates a new method.
+`SaveMethod.m`:: Saves a method.
+`LoadSession.m`:: Load (a) measurement(s) from a *.pssession file.
+`GetConnectedDevices.m`:: Returns a list of connected PalmSens and Emstat devices.
+`OpenConnection.m`:: Opens a connection to a device.
+`MultiChannelMeasurementLoopHelper.m`:: Waits for multiple instruments to finish their measurements
+
+== Classes
+
+`Measurement.m`:: Returns data measured by a device as a variable, message in the command window and/or a plot in a figure.
+`MeasurementGUI.m`:: Version of the Measurement.m class that can be used with a Matlab GUIDE user interface.
+`MultiChannelMeasurement.m`:: Used for running when connected to multiple instruments simultaneaously, please refer to the `MultiChannelMeasurementLoopExample`
+`EquivalentCircuitFit.m`:: Handles the equivalent circuit fitting using the PalmSens.Core.Matlab.dll
