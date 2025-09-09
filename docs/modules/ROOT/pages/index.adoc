@@ -8,5 +8,5 @@ SDKs are available for the ecosystems below. See the links for installation inst
 
 - xref:python:index.adoc[]
 - xref:matlab[] (WIP)
+- xref:labview:index.adoc[]
 - xref:dotnet[] (WIP)
-- xref:labview[] (WIP)

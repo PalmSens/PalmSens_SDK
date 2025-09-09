@@ -11,5 +11,5 @@ SDKs are available for the ecosystems below. See the links for installation inst
 
 - [Python](./python) - [documentation](https://palmsens.github.io/PalmSens_SDK/palmsens-sdk/python/)
 - [Matlab](./matlab) (WIP)
-- [Dotnet](./dotnet) (WIP)
-- [Labview](./labview) (WIP)
+- [Python](./labview) - [documentation](https://palmsens.github.io/PalmSens_SDK/palmsens-sdk/labview/)
+- [Labview](./dotnet) (WIP)
