@@ -1,0 +1,22 @@
+= Installation
+
+This page takes you through setting up the SDK for your LabVIEW project.
+
+== Requirements
+
+To discover our instruments and use our SDK libraries our drivers and
+the .NET/C++ runtimes need to be installed. We highly recommend
+installing PSTrace or MultiTrace as this installs all the required
+dependencies.
+
+The following diagram shows the inheritance structure of the Method
+classes:
+
+== Adding the PalmSens folder
+
+To add the SDK to a new or existing LabVIEW project add the PalmSens
+folder. Right click on the My Computer entry in the Project Explorer, go
+to Add and select Folder. Both the Snapshot and Auto-populating options
+will work.
+
+image:image6.png[Adding the PalmSens folder]
