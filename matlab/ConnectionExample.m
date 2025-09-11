@@ -104,7 +104,7 @@ current = comm.Current;
 disp(['Potential = ' num2str(potential) ' V, Current = ' num2str(current) ' A.']);
 
 %Continous readings
-disp([newline 'Continously reading the devices idle current and potential (for 5 seconds):' newline]);
+disp([newline 'Continuously reading the devices idle current and potential (for 5 seconds):' newline]);
 measurement = Measurement(comm); %Instantiate object for measurement.
 measurement.GetIdleData; %Start recording idle data.
 pause(5)%

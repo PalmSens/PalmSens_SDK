@@ -96,7 +96,7 @@ classdef EquivalentCircuitFit
             method = measurement.Method;
             mtype = whos('method');
             if(strcmp(mtype.class, 'PalmSens.Techniques.ImpedimetricMethod'))
-                if(strcmp(char(method.FreqType.ToString()),'Scan') &&  strcmp(char(method.ScanType.ToString()),'FixedPotential'))
+                if(strcmp(char(method.FreqType.ToString()),'Scan') &&  strcmp(char(method.ScanType.ToString()),'Fixed'))
                     eisData = measurement.EISdata.Item(0);
                 else
                     error("Fit only supports EIS scans at a fixed potential")
