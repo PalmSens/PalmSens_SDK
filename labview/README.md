@@ -5,7 +5,7 @@ Connect, control and process data from your PalmSens instrument using Labview.
 
 ![Control your PalmSens device from Labview](../docs/modules/labview/images/measuring_1.png)
 
-Download the latest release https://github.com/palmsens/palmsens_sdk/releases[here].
+Download the latest [release here](https://github.com/palmsens/palmsens_sdk/releases).
 
 See [the installation guidelines](https://palmsens.github.io/PalmSens_SDK/palmsens-sdk/labview/installation.html) for more information.
 
@@ -14,9 +14,9 @@ See [the installation guidelines](https://palmsens.github.io/PalmSens_SDK/palmse
 The PalmSens SDK contains the following .NET libraries and LabVIEW
 classes, controls and Vis in the PalmSens folder:
 
-- Libraries Folder: Contains all the necessary .NET libraries. Labview directly interfaces with the classes and functions defined in these libraries.
+- **Libraries Folder**: Contains all the necessary .NET libraries. Labview directly interfaces with the classes and functions defined in these libraries.
 
-- PalmSens LabVIEW class:
+- **PalmSens LabVIEW class**:
 
     Class that implements the basic features required to use our instruments
     in LabVIEW.
@@ -29,18 +29,16 @@ classes, controls and Vis in the PalmSens folder:
     * `Measure`: Performs a measurement.
     * `AbortMeasurement`: Aborts the current measurement
 
-- `MeasurementResults` and `LiveCurveResults` controls: Type definitions for the in and outputs of the Measure function.
+- **`MeasurementResults` and `LiveCurveResults` controls**: Type definitions for the in and outputs of the `Measure` function.
 
-- Event Callback Vis: VIs used by the Measure function to receive data from .NET events.
+- **Event Callback VIs**: VIs used by the Measure function to receive data from .NET events.
 
 ## Example programs
 
 The following examples are included.
 
-| | |
-|-|-|
-| **Getting started example**: Demonstrates how to use the PalmSens class to run a measurement. | ![Basic example](../docs/modules/labview/images/examples/basic_example.png) |
-| **UI example**: Demonstrates how to use the PalmSens class to run and plot a measurement in real-time and the recommended method to abort, disconnect, or terminate the app during an active measurement. | ![Basic UI example](../docs/modules/labview/images/examples/basic_ui_example.png) |
-| **MethodSCRIPT example**: Demonstrates how to use the PalmSens class to run a MethodSCRIPT™ measurement. | ![MethodSCRIPT example](../docs/modules/labview/images/examples/methodscript_example.png) |
+| ![Basic example](../docs/modules/labview/images/examples/basic_example.png) | ![Basic UI example](../docs/modules/labview/images/examples/basic_ui_example.png) | ![MethodSCRIPT example](../docs/modules/labview/images/examples/methodscript_example.png) |
+| - | - | - |
+| **Getting started example**: Demonstrates how to use the PalmSens class to run a measurement. | **UI example**: Demonstrates how to use the PalmSens class to run and plot a measurement in real-time and the recommended method to abort, disconnect, or terminate the app during an active measurement. | **MethodSCRIPT example**: Demonstrates how to use the PalmSens class to run a MethodSCRIPT™ measurement. |
 
 For more information, see the [documentation](https://palmsens.github.io/PalmSens_SDK/palmsens-sdk/labview/index.html)
