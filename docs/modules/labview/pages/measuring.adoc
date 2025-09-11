@@ -30,7 +30,7 @@ image::getting_started_5.png[Connect a boolean reference]
 
 This section details how to discover all available instruments, connect to an instrument, run measurements on the device and finally how to properly close a connection to a device.
 If you have not done so already follow the steps in chapter 2 to set up the LabVIEW class in your VI.
-For reference the final result of the following steps are available in the xref:example_basic[BasicExample VI].
+For reference the final result of the following steps are available in the xref:index.adoc#example_basic[BasicExample VI].
 
 === Discovering available instruments
 
@@ -45,7 +45,7 @@ For this example, we have added an indicator to show the results.
 |===
 | image::list_instruments_2.png[Connect array]
 | image::list_instruments_3.png[The front panel showing the discovered instruments]
-|===zl
+|===
 
 [[connect_instrument]]
 === Connecting and disconnecting
@@ -203,7 +203,7 @@ A cyclic voltammetry measurement will give you multiple sets of current and pote
 And, a chronopotentiometry / amperometric detection measurement will give you a set of current and time values.
 When extra values are also recorded these will return as additional sets of x and y values and the same applies to multiplexer scan results.
 
-The final diagram and front panel of the xref:example_basic[BasicExample VI].
+The final diagram and front panel of the xref:index.adoc#example_basic[BasicExample VI].
 
 [cols=".^3a,.^1a", frame=none, grid=none]
 |===
@@ -214,7 +214,7 @@ The final diagram and front panel of the xref:example_basic[BasicExample VI].
 [TIP]
 .Blocking behavior of Measure function
 ====
-The menu:[Measure] function will block the VI until the measurement is complete, for more information on this refer to xref:ROOT:api.adoc[] and the xref:example_basicui[BasicUIExample VI]`.
+The menu:[Measure] function will block the VI until the measurement is complete, for more information on this refer to xref:ROOT:api.adoc[] and the xref:index.adoc#example_basicui[BasicUIExample VI]`.
 ====
 
 == MethodSCRIPT™
@@ -243,7 +243,7 @@ That script can then be used in the _MethodScriptSandbox_ technique in the SDK a
 
 image::sandbox_1.png[MethodSCRIPT editor in PSTrace]
 
-The xref:example_methodscript[MethodSCRIPTExample VI] demonstrates how to run this measurement on a compatible instrument, _i.e._ the Sensit, EmStat Pico and EmStat4 series instruments.
+The xref:index.adoc#example_methodscript[MethodSCRIPTExample VI] demonstrates how to run this measurement on a compatible instrument, _i.e._ the Sensit, EmStat Pico and EmStat4 series instruments.
 
 image::sandbox_2.png[Diagram for the MethodSCRIPT example]
 
@@ -301,7 +301,7 @@ If you want to use the loop containing the _Event Structure_ for other things, w
 
 image::live_curve_8.png[Example live curve result loop]
 
-The xref:example_basicui[BasicUIExample VI] uses this _Event Structure_ to update the plot.
+The xref:index.adoc#example_basicui[BasicUIExample VI] uses this _Event Structure_ to update the plot.
 
 image::live_curve_9.png[Visualization and Measure functions in different loops]
 
