@@ -29,16 +29,19 @@ VIs used by the Measure function to receive data from .NET events.
 
 The following examples are included.
 
+[[example_basic]]
 Example – BasicExample::
 Demonstrates how to use the PalmSens class to run a measurement.
 
 image::examples/basic_example.png[BasicExample, width=50%, role=half-view-width]
 
+[[example_methodscript]]
 Example – MethodSCRIPTExample::
 Demonstrates how to use the PalmSens class to run a MethodSCRIPT™ measurement.
 
 image::examples/methodscript_example.png[MethodSCRIPTExample, width=50%, role=half-view-width]
 
+[[example_basicui]]
 Example – BasicUIExample::
 Demonstrates how to use the PalmSens class to run and plot a measurement in real-time and the recommended method to abort, disconnect, or terminate the app during an active measurement.
 
