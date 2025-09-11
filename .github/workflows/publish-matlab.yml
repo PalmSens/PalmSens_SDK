@@ -3,7 +3,7 @@ name: Publish Matlab
 on:
   push:
     tags:
-      - matlab-*
+      - 'matlab-*'
   workflow_dispatch:
 
 jobs:
