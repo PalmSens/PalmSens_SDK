@@ -25,29 +25,6 @@ Type definitions for the in and outputs of the Measure function.
 Event Callback Vis::
 VIs used by the Measure function to receive data from .NET events.
 
-
-[NOTE]
-.Broken dependency error when using the SDK
-====
-When you have downloaded the SDK and extract its contents Windows will
-have blocked the required .NET library .dll files. When you try to
-execute anything in the SDK that uses these libraries you will get an
-error like this.
-
-image:image3.png[Broken dependency error, width=49%]
-
-To prevent this error you will need to manually unblock the PalmSens SDK
-for LabVIEW.zip file before unpacking its contents. To do this go to
-right click on the zip file and select Properties. Then click on the
-Unblock checkbox and click on OK.
-
-image:image4.png[Open Properties from right click menu, width=49%]
-image:image5.png[Unblock dll check, width=49%]
-
-If this does not resolve the issue you may need to do this for each file
-in the PalmSens\Libraries subfolder.
-====
-
 == Example programs
 
 The following examples are included.
