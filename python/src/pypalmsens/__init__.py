@@ -22,6 +22,7 @@ from ._instruments.instrument_manager_async import (
     connect_async,
     discover_async,
 )
+from ._instruments.instrument_pool import InstrumentPoolAsync
 from ._io import load_method_file, load_session_file, save_method_file, save_session_file
 from ._methods.techniques import (
     ChronoAmperometry,
@@ -51,6 +52,7 @@ __all__ = [
     'save_session_file',
     'InstrumentManager',
     'InstrumentManagerAsync',
+    'InstrumentPoolAsync',
     'ChronoAmperometry',
     'ChronoPotentiometry',
     'CyclicVoltammetry',

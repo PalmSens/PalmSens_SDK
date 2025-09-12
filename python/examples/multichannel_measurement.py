@@ -13,7 +13,7 @@ def stream_to_csv_callback(csv_writer):
 
 
 async def main():
-    available_instruments = await pypalmsens.discover_async()
+    available_instruments = await pypalmsens.discover_async(ftdi=True)
     managers = {}
 
     # create an instance of the instrumentmanager per channel
@@ -34,7 +34,7 @@ async def main():
     connected = await asyncio.gather(*tasks)
 
     method = pypalmsens.ChronoAmperometry(
-        interval_time=0.0004,
+        interval_time=0.004,
         potential=1.0,
         run_time=5.0,
     )

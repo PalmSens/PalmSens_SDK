@@ -564,30 +564,37 @@ class InstrumentManagerAsync:
         ----------
         method : MethodParameters
             Method parameters
+
+
+        Returns
+        -------
+        tuple[event, future]
+            Activate the event to start the measurement.
+            The second item is a future that contains the data once the measurement is finished.
         """
         if self.__comm is None:
             print('Not connected to an instrument')
             return 0
 
         hardware_sync_channel_initiated_event = asyncio.Event()
-        meaurement_finished_future = asyncio.Future()
+        measurement_finished_future = asyncio.Future()
 
         async def start_measurement(
-            self, method, hardware_sync_channel_initiated_event, meaurement_finished_future
+            self, method, hardware_sync_channel_initiated_event, measurement_finished_future
         ):
             measurement = await self.measure(
                 method, hardware_sync_initiated_event=hardware_sync_channel_initiated_event
             )
-            meaurement_finished_future.set_result(measurement)
+            measurement_finished_future.set_result(measurement)
 
         asyncio.run_coroutine_threadsafe(
             start_measurement(
-                self, method, hardware_sync_channel_initiated_event, meaurement_finished_future
+                self, method, hardware_sync_channel_initiated_event, measurement_finished_future
             ),
             asyncio.get_running_loop(),
         )
 
-        return hardware_sync_channel_initiated_event.wait(), meaurement_finished_future
+        return hardware_sync_channel_initiated_event.wait(), measurement_finished_future
 
     async def wait_digital_trigger(self, wait_for_high):
         """Wait for digital trigger.
