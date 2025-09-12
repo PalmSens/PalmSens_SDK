@@ -1,0 +1,5 @@
+name: palmsens-sdk
+version: ~
+title: PalmSens SDK
+nav:
+- modules/ROOT/nav.adoc
