@@ -336,6 +336,30 @@ class InstrumentManager:
                 # release lock on library (required when communicating with instrument)
                 self.__comm.ClientConnection.Semaphore.Release()
 
+    async def get_channel_index(self) -> int:
+        """Return instrument channel index.
+
+        Returns
+        -------
+        index : int
+            Channel index, returns -1 if the instrument is part in a multi-channel device.
+        """
+        if self.__comm is None:
+            raise ConnectionError('Not connected to an instrument')
+
+        self.__comm.ClientConnection.Semaphore.Wait()
+
+        try:
+            index = self.__comm.ChannelIndex()
+            self.__comm.ClientConnection.Semaphore.Release()
+            return index
+        except Exception:
+            traceback.print_exc()
+
+            if self.__comm.ClientConnection.Semaphore.CurrentCount == 0:
+                # release lock on library (required when communicating with instrument)
+                self.__comm.ClientConnection.Semaphore.Release()
+
     def validate_method(self, psmethod):
         """Validate method."""
         if self.__comm is None:

@@ -87,7 +87,7 @@ async def discover_async(
                 instrument = Instrument(ble_instrument.ToString(), 'ble', ble_instrument)
                 available_instruments.append(instrument)
             bluetooth_instruments = await create_future(BluetoothDevice.DiscoverDevicesAsync())
-            for bluetooth_instrument in bluetooth_instruments[0]:
+            for bluetooth_instrument in bluetooth_instruments:
                 instrument = Instrument(
                     bluetooth_instrument.ToString(), 'bluetooth', bluetooth_instrument
                 )
@@ -335,6 +335,30 @@ class InstrumentManagerAsync:
             serial = await create_future(self.__comm.GetDeviceSerialAsync())
             self.__comm.ClientConnection.Semaphore.Release()
             return serial.ToString()
+        except Exception:
+            traceback.print_exc()
+
+            if self.__comm.ClientConnection.Semaphore.CurrentCount == 0:
+                # release lock on library (required when communicating with instrument)
+                self.__comm.ClientConnection.Semaphore.Release()
+
+    async def get_channel_index(self) -> int:
+        """Return instrument channel index.
+
+        Returns
+        -------
+        index : int
+            Channel index, returns -1 if the instrument is part in a multi-channel device.
+        """
+        if self.__comm is None:
+            raise Exception('Not connected to an instrument')
+
+        await create_future(self.__comm.ClientConnection.Semaphore.WaitAsync())
+
+        try:
+            index = self.__comm.ChannelIndex
+            self.__comm.ClientConnection.Semaphore.Release()
+            return index
         except Exception:
             traceback.print_exc()
 
