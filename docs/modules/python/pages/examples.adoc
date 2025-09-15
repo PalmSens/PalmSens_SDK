@@ -112,6 +112,7 @@ Shows how to set up and control a multiplexer and run consecutive and alternatin
 include::example$multiplexer.py[]
 ----
 
+[#multichannel_basic]
 == Multichannel
 
 Shows how to connect to a collection of instruments and run a chronoamperometry measurement on all channels simultaneously.
@@ -122,6 +123,7 @@ Shows how to connect to a collection of instruments and run a chronoamperometry 
 include::example$multichannel_measurement.py[]
 ----
 
+[#multichannel_custom_loop]
 == Multichannel custom loop
 
 Shows how to run and set up a sequence of measurements on a collection of channels simultaneously.
@@ -132,6 +134,7 @@ Shows how to run and set up a sequence of measurements on a collection of channe
 include::example$multichannel_measurement_custom_loop.py[]
 ----
 
+[#multichannel_hw_sync]
 == Multichannel HW sync
 
 Shows how to connect to a collection of instruments and run a chronopotentiometry measurement on all channels simultaneously using hardware synchronization.
