@@ -15,10 +15,32 @@ class CustomFunc(Protocol):
 
 
 class InstrumentPoolAsync:
-    def __init__(self, devices: list[Instrument], callback: None | Callable = None):
-        self.managers = [
-            InstrumentManagerAsync(device, callback=callback) for device in devices
-        ]
+    """Manages a set of instrument.
+
+    Parameters
+    ----------
+    devices_or_managers : list[Instrument | InstrumentManagerAsync]
+        List of devices or managers.
+    callback : Callable, optional
+        Optional callable to set on instrument managers
+    """
+
+    def __init__(
+        self,
+        devices_or_managers: list[Instrument],
+        *,
+        callback: None | Callable = None,
+    ):
+        self.managers = []
+        """List of instruments managers in the pool."""
+
+        for item in devices_or_managers:
+            if isinstance(item, Instrument):
+                self.managers.append(InstrumentManagerAsync(item, callback=callback))
+            else:
+                if callback:
+                    item.callback = callback
+                self.managers.append(item)
 
     async def __aenter__(self):
         await self.connect()
@@ -26,6 +48,9 @@ class InstrumentPoolAsync:
 
     async def __aexit__(self, exc_type, exc_value, traceback):
         return await self.disconnect()
+
+    def __iter__(self):
+        yield from self.managers
 
     async def connect(self):
         """Connect all instrument managers in the pool."""
@@ -40,6 +65,36 @@ class InstrumentPoolAsync:
         for manager in self.managers:
             tasks.append(manager.disconnect())
         await asyncio.gather(*tasks)
+
+    def is_connected(self):
+        """Return true if all managers in the pool are connected."""
+        return all(manager.is_connected for manager in self.managers)
+
+    def is_disconnected(self):
+        """Return true if all managers in the pool are disconnected."""
+        return not any(manager.is_connected for manager in self.managers)
+
+    async def remove(self, manager: InstrumentManagerAsync):
+        """Close and remove manager from pool.
+
+        Parameters
+        ----------
+        manager : InstrumentManagerAsync
+            Instance of an instrument manager.
+        """
+        self.managers.remove(manager)
+        await manager.disconnect()
+
+    async def add(self, manager: InstrumentManagerAsync):
+        """Open and add manager to the pool.
+
+        Parameters
+        ----------
+        manager : InstrumentManagerAsync
+            Instance of an instrument manager.
+        """
+        await manager.connect()
+        self.managers.append(manager)
 
     async def measure(self, method: MethodSettings):
         """Concurrently start measurement on all managers in the pool.
@@ -63,9 +118,8 @@ class InstrumentPoolAsync:
             This function gets called with an instance of
             `InstrumentManagerAsync` as the argument.
         **kwargs
-            These keyword arguments are passed on to the submitted functio.
+            These keyword arguments are passed on to the submitted function.
         """
-        print(kwargs)
         tasks = []
         for manager in self.managers:
             tasks.append(func(manager, **kwargs))
