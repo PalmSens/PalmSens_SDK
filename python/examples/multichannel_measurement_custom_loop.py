@@ -3,27 +3,7 @@ from attrs import evolve
 import pypalmsens
 
 
-def new_data_callback(channel):
-    def print_results(new_data):
-        for point in new_data:
-            print(f'channel {channel + 1}: {point}')
-
-    return lambda x: print_results(x)
-
-
-async def run_steps(manager, channel, steps):
-    # Create a new method, a separate method is required for each channel
-    method = pypalmsens.ChronoPotentiometry(
-        potential_range=pypalmsens.settings.PotentialRange(
-            max=pypalmsens.settings.POTENTIAL_RANGE.pr_1_V,  # 1V range
-            min=pypalmsens.settings.POTENTIAL_RANGE.pr_10_mV,  # 10mV range
-            start=pypalmsens.settings.POTENTIAL_RANGE.pr_1_V,  # 1V range
-        ),
-        applied_current_range=pypalmsens.settings.CURRENT_RANGE.cr_10_uA,  # 10µA range
-        current=0.5,  # applied current in range, i.e. 5µA when the 10µA range is set as the applied range
-        interval_time=0.05,  # seconds
-        run_time=5,  # seconds
-    )
+async def custom_loop(manager, *, method, steps):
     measurements = []
 
     for step in steps:
@@ -34,58 +14,33 @@ async def run_steps(manager, channel, steps):
 
 
 async def main():
-    # Create a list of of parameters you want to change
+    method = pypalmsens.ChronoAmperometry(
+        interval_time=0.004,
+        run_time=5.0,
+    )
+
     steps = [
         {
-            'current': 0.1,
-            'potential_limits': pypalmsens.settings.PotentialLimits(
-                limit_max=2, use_limit_min=False
-            ),
+            'potential': 0.4,
         },
         {
-            'current': -0.2,
-            'potential_limits': pypalmsens.settings.PotentialLimits(
-                limit_max=-0.5, use_limit_max=False
-            ),
+            'potential': 0.6,
         },
         {
-            'current': 2,
-            'potential_limits': pypalmsens.settings.PotentialLimits(limit_min=2, limit_max=2),
+            'potential': 1.0,
         },
     ]
 
-    available_instruments = await pypalmsens.discover_async()
-    managers = {}
+    instruments = await pypalmsens.discover_async(ftdi=True)
 
-    # create an instance of the instrumentmanager per channel
-    async def connect(instrument, index):
-        managers[index] = pypalmsens.InstrumentManagerAsync(
-            instrument, callback=new_data_callback(index)
-        )
-        success = await managers[index].connect()
-        if success:
-            print(f'{index + 1}: connected to {instrument.name}')
-        else:
-            print(f'{index + 1}: error while connecting to {instrument.name}')
-        return success
+    print(instruments)
 
-    tasks = [connect(instrument, i) for (i, instrument) in enumerate(available_instruments)]
-    connected = await asyncio.gather(*tasks)
+    async with pypalmsens.InstrumentPoolAsync(instruments) as pool:
+        tasks = await pool.submit(custom_loop, method=method, steps=steps)
+        results = await asyncio.gather(*tasks)
 
-    if all(connected):
-        # start measurements asynchronously
-        tasks = [run_steps(manager, channel, steps) for (channel, manager) in managers.items()]
-        channels = await asyncio.gather(*tasks)  # use gather to await results
-
-        for measurements in channels:
-            pypalmsens.save_session_file('example.pssession', measurements)
-
-        for channel, manager in managers.items():
-            success = manager.disconnect()
-            if success:
-                print(f'channel {channel + 1}: disconnected')
-            else:
-                print(f'channel {channel + 1}: error while disconnecting')
+    for i, measurements in enumerate(results):
+        pypalmsens.save_session_file(f'example-{i}.pssession', measurements)
 
 
 asyncio.run(main())
