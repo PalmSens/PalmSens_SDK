@@ -125,8 +125,21 @@ class InstrumentPoolAsync:
             tasks.append(func(manager, **kwargs))
         return tasks
 
-    async def measure_hw_sync(self, method: MethodSettings, *, main_channel: int = 0):
+    async def measure_hw_sync(
+        self,
+        method: MethodSettings,
+        *,
+        main_channel: None | int = None,
+        main_serial: None | str = None,
+        main_manager: None | InstrumentManagerAsync,
+    ):
         """Concurrently start measurement on all managers in the pool.
+
+        All instruments are prepared and put in a waiting state.
+        The measurements are started via a hardware sync trigger.
+
+        If no main channel/serial/manager is provided, the first manager
+        in the pool is taken as the main hardware sync manager.
 
         Parameters
         ----------
@@ -134,14 +147,36 @@ class InstrumentPoolAsync:
             Method parameters for measurement.
         main_channel : int
             Index of the main channel for hardware sync
+        main_serial : int
+            Serial number of the main channel for hardware sync
+        main_manager : int
+            Instance of the manager to use for hardware sync.
+            Does not have to be part of the pool.
         """
         follower_sync_tasks = []
         tasks = []
 
-        hw_sync_manager = self.managers[main_channel]
+        if main_channel:
+            for manager in self.managers:
+                if manager.get_channel_index() == main_channel:
+                    hw_sync_manager = manager
+                    break
+            else:
+                raise IndexError(f'Unknown channel: {main_channel}')
+        elif main_serial:
+            for manager in self.managers:
+                if await manager.get_instrument_serial() == main_serial:
+                    hw_sync_manager = manager
+                    break
+            else:
+                raise IndexError(f'Unknown serial: {main_serial}')
+        elif main_manager:
+            hw_sync_manager = main_manager
+        else:
+            hw_sync_manager = self.managers[0]
 
-        for i, manager in enumerate(self.managers):
-            if i == main_channel:
+        for manager in self.managers:
+            if manager is hw_sync_manager:
                 continue
 
             initiated, result = manager.initiate_hardware_sync_follower_channel(method)
