@@ -1,17 +1,14 @@
 from __future__ import annotations
 
 import asyncio
-from typing import Any, Callable, Protocol
+from typing import TYPE_CHECKING, Any, Awaitable, Callable
 
 from .._methods import MethodSettings
 from ._common import Instrument
 from .instrument_manager_async import InstrumentManagerAsync
 
-# from typing_extensions import Protocol  # if you're using Python 3.6
-
-
-class CustomFunc(Protocol):
-    def __call__(self, manager: InstrumentManagerAsync, **kwargs: Any): ...
+if TYPE_CHECKING:
+    from .._data.measurement import Measurement
 
 
 class InstrumentPoolAsync:
@@ -52,29 +49,29 @@ class InstrumentPoolAsync:
     def __iter__(self):
         yield from self.managers
 
-    async def connect(self):
+    async def connect(self) -> None:
         """Connect all instrument managers in the pool."""
         tasks = []
         for manager in self.managers:
             tasks.append(manager.connect())
         await asyncio.gather(*tasks)
 
-    async def disconnect(self):
+    async def disconnect(self) -> None:
         """Disconnect all instrument managers in the pool."""
         tasks = []
         for manager in self.managers:
             tasks.append(manager.disconnect())
         await asyncio.gather(*tasks)
 
-    def is_connected(self):
+    def is_connected(self) -> bool:
         """Return true if all managers in the pool are connected."""
         return all(manager.is_connected for manager in self.managers)
 
-    def is_disconnected(self):
+    def is_disconnected(self) -> bool:
         """Return true if all managers in the pool are disconnected."""
         return not any(manager.is_connected for manager in self.managers)
 
-    async def remove(self, manager: InstrumentManagerAsync):
+    async def remove(self, manager: InstrumentManagerAsync) -> None:
         """Close and remove manager from pool.
 
         Parameters
@@ -85,7 +82,7 @@ class InstrumentPoolAsync:
         self.managers.remove(manager)
         await manager.disconnect()
 
-    async def add(self, manager: InstrumentManagerAsync):
+    async def add(self, manager: InstrumentManagerAsync) -> None:
         """Open and add manager to the pool.
 
         Parameters
@@ -96,7 +93,7 @@ class InstrumentPoolAsync:
         await manager.connect()
         self.managers.append(manager)
 
-    async def measure(self, method: MethodSettings):
+    async def measure(self, method: MethodSettings) -> list[Awaitable[Measurement]]:
         """Concurrently start measurement on all managers in the pool.
 
         Parameters
@@ -104,12 +101,12 @@ class InstrumentPoolAsync:
         method : MethodSettings
             Method parameters for measurement.
         """
-        tasks = []
+        tasks: list[Awaitable[Measurement]] = []
         for manager in self.managers:
             tasks.append(manager.measure(method))
         return tasks
 
-    async def submit(self, func: CustomFunc, **kwargs: Any):
+    async def submit(self, func: Callable, **kwargs: Any) -> list[Awaitable[Any]]:
         """Concurrently start measurement on all managers in the pool.
 
         Parameters
@@ -120,7 +117,7 @@ class InstrumentPoolAsync:
         **kwargs
             These keyword arguments are passed on to the submitted function.
         """
-        tasks = []
+        tasks: list[Awaitable[Any]] = []
         for manager in self.managers:
             tasks.append(func(manager, **kwargs))
         return tasks
@@ -132,7 +129,7 @@ class InstrumentPoolAsync:
         main_channel: None | int = None,
         main_serial: None | str = None,
         main_manager: None | InstrumentManagerAsync,
-    ):
+    ) -> list[Awaitable[Measurement]]:
         """Concurrently start measurement on all managers in the pool.
 
         All instruments are prepared and put in a waiting state.
