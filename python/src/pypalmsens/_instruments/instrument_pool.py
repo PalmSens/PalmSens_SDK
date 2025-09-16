@@ -154,19 +154,19 @@ class InstrumentPoolAsync:
                 hw_sync_manager = manager
                 break
         else:
-            raise IndexError(
+            raise ValueError(
                 'Hardware synchronization requires the first channel '
                 'of the multi-channel instrument to be in the pool.'
             )
 
         if len(self.managers) < 2:
-            raise IndexError(
+            raise ValueError(
                 'Hardware synchronization requires at least two channels to be in the pool'
             )
 
         for manager in self.managers:
             if manager.instrument.name != hw_sync_manager.instrument.name:
-                raise IndexError(
+                raise ValueError(
                     'Hardware synchronization is only supported when '
                     'a single multi-channel instrument is selected.'
                 )

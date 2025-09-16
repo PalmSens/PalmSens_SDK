@@ -7,6 +7,7 @@ import pytest_asyncio
 
 import pypalmsens
 from pypalmsens._data.measurement import Measurement
+from pypalmsens._instruments import Instrument
 
 
 @pytest_asyncio.fixture
@@ -79,7 +80,6 @@ async def test_pool_hw_sync(pool):
         begin_potential=0.5,
         step_potential=0.1,
         scanrate=8.0,
-        general=pypalmsens.settings.General(use_hardware_sync=True),
     )
 
     tasks = await pool.measure_hw_sync(method)
@@ -89,8 +89,40 @@ async def test_pool_hw_sync(pool):
     assert all(isinstance(item, Measurement) for item in results)
 
 
+@pytest.mark.parametrize(
+    'devices',
+    [
+        pytest.param(
+            [
+                Instrument(id='testCH002', interface='test', device=None),
+                Instrument(id='testCH003', interface='test', device=None),
+            ],
+            id='missing-channel-1',
+        ),
+        pytest.param(
+            [Instrument(id='testCH001', interface='test', device=None)],
+            id='not-enough-channels',
+        ),
+        pytest.param(
+            [
+                Instrument(id='testCH001', interface='test', device=None),
+                Instrument(id='random', interface='test', device=None),
+            ],
+            id='group-serial-mismatch',
+        ),
+    ],
+)
+@pytest.mark.asyncio
+async def test_pool_hw_sync_fail(devices):
+    method = pypalmsens.LinearSweepVoltammetry()
+
+    pool = pypalmsens.InstrumentPoolAsync(devices)
+    with pytest.raises(ValueError):
+        _ = await pool.measure_hw_sync(method)
+
+
 def test_pool_instrument():
-    device = pypalmsens._instruments.Instrument(name='test', connection='test', device=None)
+    device = pypalmsens._instruments.Instrument(id='test', interface='test', device=None)
     mgr = pypalmsens.InstrumentManagerAsync(device)
     pool = pypalmsens.InstrumentPoolAsync([mgr])
     assert pool.managers

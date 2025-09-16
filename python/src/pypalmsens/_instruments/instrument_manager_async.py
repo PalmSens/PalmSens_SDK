@@ -3,7 +3,7 @@ from __future__ import annotations
 import asyncio
 import sys
 import traceback
-from typing import Optional
+from typing import Awaitable, Optional
 
 import clr
 import PalmSens
@@ -60,40 +60,59 @@ async def discover_async(
     if ftdi:
         ftdi_instruments = await create_future(FTDIDevice.DiscoverDevicesAsync())
         for ftdi_instrument in ftdi_instruments:
-            instrument = Instrument(ftdi_instrument.ToString(), 'ftdi', ftdi_instrument)
-            available_instruments.append(instrument)
-
-    if LINUX:
-        if serial:
-            serial_instruments = await create_future(SerialPortDevice.DiscoverDevicesAsync())
-            for serial_instrument in serial_instruments:
-                instrument = Instrument(
-                    serial_instrument.ToString(), 'serial', serial_instrument
+            available_instruments.append(
+                Instrument(
+                    id=ftdi_instrument.ToString(),
+                    interface='ftdi',
+                    device=ftdi_instrument,
                 )
-                available_instruments.append(instrument)
+            )
 
-    if WINDOWS:
-        if usbcdc:
-            usbcdc_instruments = await create_future(USBCDCDevice.DiscoverDevicesAsync())
-            for usbcdc_instrument in usbcdc_instruments:
-                instrument = Instrument(
-                    usbcdc_instrument.ToString(), 'usbcdc', usbcdc_instrument
+    if LINUX and serial:
+        serial_instruments = await create_future(SerialPortDevice.DiscoverDevicesAsync())
+        for serial_instrument in serial_instruments:
+            available_instruments.append(
+                Instrument(
+                    id=serial_instrument.ToString(),
+                    interface='serial',
+                    device=serial_instrument,
                 )
-                available_instruments.append(instrument)
+            )
 
-        if bluetooth:
-            ble_instruments = await create_future(BLEDevice.DiscoverDevicesAsync())
-            for ble_instrument in ble_instruments:
-                instrument = Instrument(ble_instrument.ToString(), 'ble', ble_instrument)
-                available_instruments.append(instrument)
-            bluetooth_instruments = await create_future(BluetoothDevice.DiscoverDevicesAsync())
-            for bluetooth_instrument in bluetooth_instruments:
-                instrument = Instrument(
-                    bluetooth_instrument.ToString(), 'bluetooth', bluetooth_instrument
+    if WINDOWS and usbcdc:
+        usbcdc_instruments = await create_future(USBCDCDevice.DiscoverDevicesAsync())
+        for usbcdc_instrument in usbcdc_instruments:
+            available_instruments.append(
+                Instrument(
+                    id=usbcdc_instrument.ToString(),
+                    interface='usbcdc',
+                    device=usbcdc_instrument,
                 )
-                available_instruments.append(instrument)
+            )
 
-    available_instruments.sort(key=lambda instrument: instrument.name)
+    if WINDOWS and bluetooth:
+        ble_instruments = await create_future(BLEDevice.DiscoverDevicesAsync())
+        for ble_instrument in ble_instruments:
+            available_instruments.append(
+                Instrument(
+                    id=ble_instrument.ToString(),
+                    interface='ble',
+                    device=ble_instrument,
+                )
+            )
+
+        bluetooth_instruments = await create_future(BluetoothDevice.DiscoverDevicesAsync())
+        for bluetooth_instrument in bluetooth_instruments:
+            available_instruments.append(
+                Instrument(
+                    id=bluetooth_instrument.ToString(),
+                    interface='bluetooth',
+                    device=bluetooth_instrument,
+                )
+            )
+
+    available_instruments.sort(key=lambda instrument: instrument.id)
+
     return available_instruments
 
 
@@ -311,6 +330,30 @@ class InstrumentManagerAsync:
             potential = await create_future(self.__comm.GetPotentialAsync())  # in V
             self.__comm.ClientConnection.Semaphore.Release()
             return potential
+        except Exception:
+            traceback.print_exc()
+
+            if self.__comm.ClientConnection.Semaphore.CurrentCount == 0:
+                # release lock on library (required when communicating with instrument)
+                self.__comm.ClientConnection.Semaphore.Release()
+
+    async def get_instrument_serial(self) -> Awaitable[str]:
+        """Return instrument serial number.
+
+        Returns
+        -------
+        str
+            Instrument serial.
+        """
+        if self.__comm is None:
+            raise Exception('Not connected to an instrument')
+
+        await create_future(self.__comm.ClientConnection.Semaphore.WaitAsync())
+
+        try:
+            serial = await create_future(self.__comm.GetDeviceSerialAsync())
+            self.__comm.ClientConnection.Semaphore.Release()
+            return serial.ToString()
         except Exception:
             traceback.print_exc()
 
