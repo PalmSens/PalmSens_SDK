@@ -3,16 +3,13 @@ import pypalmsens
 import csv
 import functools
 
-from pypalmsens._instruments.instrument_manager_async import InstrumentManagerAsync
-from pypalmsens._methods.techniques import MethodSettings
-
 
 def stream_to_csv_callback(new_data, csv_writer):
     for point in new_data:
         csv_writer.writerow([point['index'], point['x'], point['y']])
 
 
-async def stream_to_csv(manager: InstrumentManagerAsync, *, method: MethodSettings):
+async def stream_to_csv(manager, *, method):
     """Measure with a custom csv writer callback."""
     serial = await manager.get_instrument_serial()
 

@@ -29,7 +29,7 @@ By default, `connect()` connects to the first instrument it discovers. With only
 ----
 >>> available_instruments = pypalmsens.discover()
 >>> available_instruments
-[Instrument(name='EmStat4 HR [1]', connection='usbcdc', device=<PalmSens.Windows.Devices.USBCDCDevice object>)]
+[Instrument(name='EmStat4 HR [1]', interface='usbcdc')]
 
 >>> first_instrument = available_instruments[0]
 
@@ -256,6 +256,6 @@ To use hardware synchronization, use the `measure_hw_sync()` method. See also xr
 [source,python]
 ----
 >>> async with pypalmsens.InstrumentPoolAsync(instruments) as pool:
-...      tasks = await pool.measure_hw_sync(method, main_chanel=1)
+...      tasks = await pool.measure_hw_sync(method)
 ...      results = await asyncio.gather(*tasks)
 ----

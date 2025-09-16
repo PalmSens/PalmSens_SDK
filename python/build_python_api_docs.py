@@ -117,6 +117,7 @@ pages = (
                 'connect_async',
                 'discover_async',
                 'InstrumentManagerAsync',
+                'InstrumentPoolAsync',
             ]
         },
     ),
