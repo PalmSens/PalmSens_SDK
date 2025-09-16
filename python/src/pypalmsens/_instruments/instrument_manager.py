@@ -155,7 +155,9 @@ class InstrumentManager:
         self.__active_measurement_error = None
 
     def __repr__(self):
-        return f'{self.__class__.__name__}({self.instrument.name})'
+        return (
+            f'{self.__class__.__name__}({self.instrument.id}, connected={self.is_connected()})'
+        )
 
     def __enter__(self):
         if not self.is_connected():
@@ -329,30 +331,6 @@ class InstrumentManager:
             serial = self.__comm.DeviceSerial.ToString()
             self.__comm.ClientConnection.Semaphore.Release()
             return serial
-        except Exception:
-            traceback.print_exc()
-
-            if self.__comm.ClientConnection.Semaphore.CurrentCount == 0:
-                # release lock on library (required when communicating with instrument)
-                self.__comm.ClientConnection.Semaphore.Release()
-
-    async def get_channel_index(self) -> int:
-        """Return instrument channel index.
-
-        Returns
-        -------
-        index : int
-            Channel index, returns -1 if the instrument is part in a multi-channel device.
-        """
-        if self.__comm is None:
-            raise ConnectionError('Not connected to an instrument')
-
-        self.__comm.ClientConnection.Semaphore.Wait()
-
-        try:
-            index = self.__comm.ChannelIndex()
-            self.__comm.ClientConnection.Semaphore.Release()
-            return index
         except Exception:
             traceback.print_exc()
 

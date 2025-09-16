@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 import asyncio
-from typing import TYPE_CHECKING, Any, Awaitable, Callable
+import copy
+from typing import TYPE_CHECKING, Any, Awaitable, Callable, Sequence
 
 from .._methods import MethodSettings
 from ._common import Instrument
@@ -24,7 +25,7 @@ class InstrumentPoolAsync:
 
     def __init__(
         self,
-        devices_or_managers: list[Instrument],
+        devices_or_managers: Sequence[Instrument | InstrumentManagerAsync],
         *,
         callback: None | Callable = None,
     ):
@@ -65,11 +66,11 @@ class InstrumentPoolAsync:
 
     def is_connected(self) -> bool:
         """Return true if all managers in the pool are connected."""
-        return all(manager.is_connected for manager in self.managers)
+        return all(manager.is_connected() for manager in self.managers)
 
     def is_disconnected(self) -> bool:
         """Return true if all managers in the pool are disconnected."""
-        return not any(manager.is_connected for manager in self.managers)
+        return not any(manager.is_connected() for manager in self.managers)
 
     async def remove(self, manager: InstrumentManagerAsync) -> None:
         """Close and remove manager from pool.
@@ -125,52 +126,50 @@ class InstrumentPoolAsync:
     async def measure_hw_sync(
         self,
         method: MethodSettings,
-        *,
-        main_channel: None | int = None,
-        main_serial: None | str = None,
-        main_manager: None | InstrumentManagerAsync,
     ) -> list[Awaitable[Measurement]]:
         """Concurrently start measurement on all managers in the pool.
 
         All instruments are prepared and put in a waiting state.
-        The measurements are started via a hardware sync trigger.
+        The measurements are started via a hardware sync trigger on channel 1.
 
-        If no main channel/serial/manager is provided, the first manager
-        in the pool is taken as the main hardware sync manager.
+        For hardware synchronization, the pool must contain:
+        - channels from a single multi-channel instrument only
+        - the first channel of the multi-channel instrument
+        - at least two channels
 
         Parameters
         ----------
         method : MethodSettings
             Method parameters for measurement.
-        main_channel : int
-            Index of the main channel for hardware sync
-        main_serial : int
-            Serial number of the main channel for hardware sync
-        main_manager : int
-            Instance of the manager to use for hardware sync.
-            Does not have to be part of the pool.
         """
+        method = copy.copy(method)
+        assert hasattr(method, 'general')
+        method.general.use_hardware_sync = True
+
         follower_sync_tasks = []
         tasks = []
 
-        if main_channel:
-            for manager in self.managers:
-                if manager.get_channel_index() == main_channel:
-                    hw_sync_manager = manager
-                    break
-            else:
-                raise IndexError(f'Unknown channel: {main_channel}')
-        elif main_serial:
-            for manager in self.managers:
-                if await manager.get_instrument_serial() == main_serial:
-                    hw_sync_manager = manager
-                    break
-            else:
-                raise IndexError(f'Unknown serial: {main_serial}')
-        elif main_manager:
-            hw_sync_manager = main_manager
+        for manager in self.managers:
+            if manager.instrument.channel == 1:
+                hw_sync_manager = manager
+                break
         else:
-            hw_sync_manager = self.managers[0]
+            raise IndexError(
+                'Hardware synchronization requires the first channel '
+                'of the multi-channel instrument to be in the pool.'
+            )
+
+        if len(self.managers) < 2:
+            raise IndexError(
+                'Hardware synchronization requires at least two channels to be in the pool'
+            )
+
+        for manager in self.managers:
+            if manager.instrument.name != hw_sync_manager.instrument.name:
+                raise IndexError(
+                    'Hardware synchronization is only supported when '
+                    'a single multi-channel instrument is selected.'
+                )
 
         for manager in self.managers:
             if manager is hw_sync_manager:
