@@ -141,6 +141,17 @@ class InstrumentPoolAsync:
         for manager in self.managers:
             manager.validate_method(method._to_psmethod())
 
+        if len(self.managers) < 2:
+            raise ValueError(
+                'Hardware synchronization requires two channels or more in the pool'
+            )
+
+        if len(set(manager.instrument.name for manager in self.managers)) > 1:
+            raise ValueError(
+                'Hardware synchronization is only supported when '
+                'a single multi-channel instrument is selected.'
+            )
+
         for manager in self.managers:
             if manager.instrument.channel == 1:
                 hw_sync_manager = manager
@@ -150,18 +161,6 @@ class InstrumentPoolAsync:
                 'Hardware synchronization requires the first channel '
                 'of the multi-channel instrument to be in the pool.'
             )
-
-        if len(self.managers) < 2:
-            raise ValueError(
-                'Hardware synchronization requires at least two channels to be in the pool'
-            )
-
-        for manager in self.managers:
-            if manager.instrument.name != hw_sync_manager.instrument.name:
-                raise ValueError(
-                    'Hardware synchronization is only supported when '
-                    'a single multi-channel instrument is selected.'
-                )
 
         for manager in self.managers:
             if manager is hw_sync_manager:

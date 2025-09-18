@@ -8,8 +8,19 @@ from pypalmsens._data.measurement import Measurement
 from pypalmsens._instruments import Instrument
 
 
+@pytest.fixture
+def pool():
+    instruments = pypalmsens.discover()
+    assert len(instruments) >= 0
+
+    with pypalmsens.InstrumentPool(instruments) as pool:
+        yield pool
+
+    assert pool.is_disconnected() is True
+
+
 @pytest_asyncio.fixture
-async def pool():
+async def apool():
     instruments = await pypalmsens.discover_async()
     assert len(instruments) >= 0
 
@@ -19,9 +30,8 @@ async def pool():
     assert pool.is_disconnected() is True
 
 
-@pytest.mark.asyncio
 @pytest.mark.instrument
-async def test_pool(pool):
+def test_pool(pool):
     assert pool.is_connected() is True
 
     n = len(pool.managers)
@@ -29,18 +39,36 @@ async def test_pool(pool):
     assert pool.managers
     manager = pool.managers[0]
 
-    await pool.remove(manager)
+    pool.remove(manager)
 
     assert manager not in pool.managers
 
-    await pool.add(manager)
+    pool.add(manager)
     assert len(pool.managers) == n
     assert manager in pool.managers
 
 
 @pytest.mark.asyncio
 @pytest.mark.instrument
-async def test_pool_measure(pool):
+async def test_pool_async(apool):
+    assert apool.is_connected() is True
+
+    n = len(apool.managers)
+
+    assert apool.managers
+    manager = apool.managers[0]
+
+    await apool.remove(manager)
+
+    assert manager not in apool.managers
+
+    await apool.add(manager)
+    assert len(apool.managers) == n
+    assert manager in apool.managers
+
+
+@pytest.mark.instrument
+def test_pool_measure(pool):
     method = pypalmsens.LinearSweepVoltammetry(
         end_potential=-0.5,
         begin_potential=0.5,
@@ -48,7 +76,7 @@ async def test_pool_measure(pool):
         scanrate=8.0,
     )
 
-    results = await pool.measure(method)
+    results = pool.measure(method)
 
     assert len(results) == len(pool.managers)
     assert all(isinstance(item, Measurement) for item in results)
@@ -56,21 +84,7 @@ async def test_pool_measure(pool):
 
 @pytest.mark.asyncio
 @pytest.mark.instrument
-async def test_pool_submit(pool):
-    async def my_func(manager, value):
-        assert value == 1
-        serial = await manager.get_instrument_serial()
-        return serial
-
-    results = await pool.submit(my_func, value=1)
-
-    assert len(results) == len(pool.managers)
-    assert all(isinstance(item, str) for item in results)
-
-
-@pytest.mark.asyncio
-@pytest.mark.instrument
-async def test_pool_hw_sync(pool):
+async def test_pool_measure_async(apool):
     method = pypalmsens.LinearSweepVoltammetry(
         end_potential=-0.5,
         begin_potential=0.5,
@@ -78,9 +92,40 @@ async def test_pool_hw_sync(pool):
         scanrate=8.0,
     )
 
-    results = await pool.measure_hw_sync(method)
+    results = await apool.measure(method)
 
-    assert len(results) == len(pool.managers)
+    assert len(results) == len(apool.managers)
+    assert all(isinstance(item, Measurement) for item in results)
+
+
+@pytest.mark.asyncio
+@pytest.mark.instrument
+async def test_pool_submit_async(apool):
+    async def my_func(manager, value):
+        assert value == 1
+        serial = await manager.get_instrument_serial()
+        return serial
+
+    results = await apool.submit(my_func, value=1)
+
+    assert len(results) == len(apool.managers)
+    assert all(isinstance(item, str) for item in results)
+
+
+@pytest.mark.asyncio
+@pytest.mark.instrument
+async def test_pool_hw_sync_async(apool):
+    method = pypalmsens.LinearSweepVoltammetry(
+        end_potential=-0.5,
+        begin_potential=0.5,
+        step_potential=0.1,
+        scanrate=8.0,
+    )
+    method.general.use_hardware_sync = True
+
+    results = await apool.measure(method)
+
+    assert len(results) == len(apool.managers)
     assert all(isinstance(item, Measurement) for item in results)
 
 
