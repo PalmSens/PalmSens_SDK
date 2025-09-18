@@ -14,8 +14,7 @@ async def main():
     print(instruments)
 
     async with pypalmsens.InstrumentPoolAsync(instruments) as pool:
-        tasks = await pool.measure_hw_sync(method)
-        results = await asyncio.gather(*tasks)
+        results = await pool.measure_hw_sync(method)
 
     print(results)
 

@@ -105,6 +105,7 @@ pages = (
                 'connect',
                 'discover',
                 'InstrumentManager',
+                'InstrumentPool',
             ]
         },
     ),

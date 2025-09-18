@@ -1,48 +1,23 @@
-import asyncio
 import pypalmsens
-import csv
-import functools
 
 
-def stream_to_csv_callback(new_data, csv_writer):
+def new_data_callback(new_data):
     for point in new_data:
-        csv_writer.writerow([point['index'], point['x'], point['y']])
+        print(point)
 
 
-async def stream_to_csv(manager, *, method):
-    """Measure with a custom csv writer callback."""
-    serial = await manager.get_instrument_serial()
+method = pypalmsens.ChronoAmperometry(
+    interval_time=0.004,
+    potential=1.0,
+    run_time=5.0,
+)
 
-    with open(f'{serial}.csv', 'w', newline='') as csv_file:
-        csv_writer = csv.writer(csv_file, delimiter=' ')
+instruments = pypalmsens.discover()
 
-        callback = functools.partial(stream_to_csv_callback, csv_writer=csv_writer)
-        manager.callback = callback
+print(instruments)
 
-        measurement = await manager.measure(method)
+# run multichannel experiment with callback
+with pypalmsens.InstrumentPool(instruments, callback=new_data_callback) as pool:
+    results = pool.measure(method=method)
 
-    print(f'Wrote data to {csv_file.name}')
-
-    return measurement
-
-
-async def main():
-    method = pypalmsens.ChronoAmperometry(
-        interval_time=0.004,
-        potential=1.0,
-        run_time=5.0,
-    )
-
-    instruments = await pypalmsens.discover_async(ftdi=True)
-
-    print(instruments)
-
-    # run multichannel experiment with csv writer
-    async with pypalmsens.InstrumentPoolAsync(instruments) as pool:
-        tasks = await pool.submit(stream_to_csv, method=method)
-        results = await asyncio.gather(*tasks)
-
-    print(results)
-
-
-asyncio.run(main())
+print(results)
