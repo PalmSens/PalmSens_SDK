@@ -94,7 +94,7 @@ class InstrumentPoolAsync:
         await manager.connect()
         self.managers.append(manager)
 
-    async def measure(self, method: MethodSettings) -> list[Awaitable[Measurement]]:
+    async def measure(self, method: MethodSettings) -> list[Measurement]:
         """Concurrently start measurement on all managers in the pool.
 
         Parameters
@@ -105,9 +105,11 @@ class InstrumentPoolAsync:
         tasks: list[Awaitable[Measurement]] = []
         for manager in self.managers:
             tasks.append(manager.measure(method))
-        return tasks
 
-    async def submit(self, func: Callable, **kwargs: Any) -> list[Awaitable[Any]]:
+        results = await asyncio.gather(*tasks)
+        return results
+
+    async def submit(self, func: Callable, **kwargs: Any) -> list[Any]:
         """Concurrently start measurement on all managers in the pool.
 
         Parameters
@@ -121,12 +123,14 @@ class InstrumentPoolAsync:
         tasks: list[Awaitable[Any]] = []
         for manager in self.managers:
             tasks.append(func(manager, **kwargs))
-        return tasks
+
+        results = await asyncio.gather(*tasks)
+        return results
 
     async def measure_hw_sync(
         self,
         method: MethodSettings,
-    ) -> list[Awaitable[Measurement]]:
+    ) -> list[Measurement]:
         """Concurrently start measurement on all managers in the pool.
 
         All instruments are prepared and put in a waiting state.
@@ -183,4 +187,5 @@ class InstrumentPoolAsync:
 
         tasks.append(hw_sync_manager.measure(method))
 
-        return tasks
+        results = await asyncio.gather(*tasks)
+        return results
