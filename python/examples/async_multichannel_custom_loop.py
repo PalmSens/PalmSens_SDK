@@ -38,6 +38,8 @@ async def main():
     async with pypalmsens.InstrumentPoolAsync(instruments) as pool:
         results = await pool.submit(custom_loop, method=method, steps=steps)
 
+    print(results)
+
     for i, measurements in enumerate(results):
         pypalmsens.save_session_file(f'example-{i}.pssession', measurements)
 

@@ -251,11 +251,21 @@ For example to run two methods in sequence:
 
 See xref:examples.adoc#multichannel_basic[] and xref:examples.adoc#multichannel_custom_loop[] for a practical example of setting a custom function.
 
-To use hardware synchronization, use the `measure_hw_sync()` method. See also xref:examples.adoc#multichannel_hw_sync[].
+To use hardware synchronization, use the same `measure` method. See also xref:examples.adoc#multichannel_hw_sync[].
+Make sure the method has the `general.use_hardware_sync` flag set.
+
+In addition, the pool must contain:
+- channels from a single multi-channel instrument only
+- the first channel of the multi-channel instrument
+- at least two channels
+
+All instruments are prepared and put in a waiting state.
+The measurements are started via a hardware sync trigger on channel 1.
 
 [source,python]
 ----
+>>> method.general.use_hardware_sync = True
+
 >>> async with pypalmsens.InstrumentPoolAsync(instruments) as pool:
-...      tasks = await pool.measure_hw_sync(method)
-...      results = await asyncio.gather(*tasks)
+...      results = await pool.measure_hw_sync(method)
 ----

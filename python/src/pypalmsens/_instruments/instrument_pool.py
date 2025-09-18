@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import asyncio
-import copy
 from typing import TYPE_CHECKING, Any, Awaitable, Callable, Sequence
 
 from .._methods import MethodSettings
@@ -97,61 +96,47 @@ class InstrumentPoolAsync:
     async def measure(self, method: MethodSettings) -> list[Measurement]:
         """Concurrently start measurement on all managers in the pool.
 
+        For hardware synchronization, set `use_hardware_sync` on the method.
+        In addition, the pool must contain:
+        - channels from a single multi-channel instrument only
+        - the first channel of the multi-channel instrument
+        - at least two channels
+
+        All instruments are prepared and put in a waiting state.
+        The measurements are started via a hardware sync trigger on channel 1.
+
         Parameters
         ----------
         method : MethodSettings
             Method parameters for measurement.
         """
         tasks: list[Awaitable[Measurement]] = []
-        for manager in self.managers:
-            tasks.append(manager.measure(method))
+
+        if hasattr(method, 'general') and method.general.use_hardware_sync:
+            tasks = await self._measure_hw_sync(method)
+        else:
+            for manager in self.managers:
+                tasks.append(manager.measure(method))
 
         results = await asyncio.gather(*tasks)
         return results
 
-    async def submit(self, func: Callable, **kwargs: Any) -> list[Any]:
-        """Concurrently start measurement on all managers in the pool.
-
-        Parameters
-        ----------
-        func : Callable
-            This function gets called with an instance of
-            `InstrumentManagerAsync` as the argument.
-        **kwargs
-            These keyword arguments are passed on to the submitted function.
-        """
-        tasks: list[Awaitable[Any]] = []
-        for manager in self.managers:
-            tasks.append(func(manager, **kwargs))
-
-        results = await asyncio.gather(*tasks)
-        return results
-
-    async def measure_hw_sync(
+    async def _measure_hw_sync(
         self,
         method: MethodSettings,
-    ) -> list[Measurement]:
+    ) -> list[Awaitable[Measurement]]:
         """Concurrently start measurement on all managers in the pool.
-
-        All instruments are prepared and put in a waiting state.
-        The measurements are started via a hardware sync trigger on channel 1.
-
-        For hardware synchronization, the pool must contain:
-        - channels from a single multi-channel instrument only
-        - the first channel of the multi-channel instrument
-        - at least two channels
 
         Parameters
         ----------
         method : MethodSettings
             Method parameters for measurement.
         """
-        method = copy.copy(method)
-        assert hasattr(method, 'general')
-        method.general.use_hardware_sync = True
-
         follower_sync_tasks = []
         tasks = []
+
+        for manager in self.managers:
+            manager.validate_method(method._to_psmethod())
 
         for manager in self.managers:
             if manager.instrument.channel == 1:
@@ -179,13 +164,29 @@ class InstrumentPoolAsync:
             if manager is hw_sync_manager:
                 continue
 
-            initiated, result = manager.initiate_hardware_sync_follower_channel(method)
-            follower_sync_tasks.append(initiated)
-            tasks.append(result)
+            sync_task, measure_task = manager.initiate_hardware_sync_follower_channel(method)
+            follower_sync_tasks.append(sync_task)
+            tasks.append(measure_task)
 
         await asyncio.gather(*follower_sync_tasks)
 
         tasks.append(hw_sync_manager.measure(method))
+        return tasks
+
+    async def submit(self, func: Callable, **kwargs: Any) -> list[Any]:
+        """Concurrently start measurement on all managers in the pool.
+
+        Parameters
+        ----------
+        func : Callable
+            This function gets called with an instance of
+            `InstrumentManagerAsync` as the argument.
+        **kwargs
+            These keyword arguments are passed on to the submitted function.
+        """
+        tasks: list[Awaitable[Any]] = []
+        for manager in self.managers:
+            tasks.append(func(manager, **kwargs))
 
         results = await asyncio.gather(*tasks)
         return results

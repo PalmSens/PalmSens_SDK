@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-import asyncio
-
 import pytest
 import pytest_asyncio
 
@@ -50,8 +48,7 @@ async def test_pool_measure(pool):
         scanrate=8.0,
     )
 
-    tasks = await pool.measure(method)
-    results = await asyncio.gather(*tasks)
+    results = await pool.measure(method)
 
     assert len(results) == len(pool.managers)
     assert all(isinstance(item, Measurement) for item in results)
@@ -65,8 +62,7 @@ async def test_pool_submit(pool):
         serial = await manager.get_instrument_serial()
         return serial
 
-    tasks = await pool.submit(my_func, value=1)
-    results = await asyncio.gather(*tasks)
+    results = await pool.submit(my_func, value=1)
 
     assert len(results) == len(pool.managers)
     assert all(isinstance(item, str) for item in results)
@@ -82,8 +78,7 @@ async def test_pool_hw_sync(pool):
         scanrate=8.0,
     )
 
-    tasks = await pool.measure_hw_sync(method)
-    results = await asyncio.gather(*tasks)
+    results = await pool.measure_hw_sync(method)
 
     assert len(results) == len(pool.managers)
     assert all(isinstance(item, Measurement) for item in results)
@@ -115,10 +110,11 @@ async def test_pool_hw_sync(pool):
 @pytest.mark.asyncio
 async def test_pool_hw_sync_fail(devices):
     method = pypalmsens.LinearSweepVoltammetry()
+    method.general.use_hardware_sync = True
 
     pool = pypalmsens.InstrumentPoolAsync(devices)
     with pytest.raises(ValueError):
-        _ = await pool.measure_hw_sync(method)
+        _ = await pool.measure(method)
 
 
 def test_pool_instrument():

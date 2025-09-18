@@ -105,10 +105,10 @@ class Instrument:
             self.name = self.id[:idx]
 
     def __repr__(self):
-        args = ', '.join(
+        args = ''.join(
             (
-                f'name={self.name!r}',
-                f'channel={self.channel}' if self.channel > 0 else '',
+                f'name={self.name!r}, ',
+                f'channel={self.channel}, ' if self.channel > 0 else '',
                 f'interface={self.interface!r}',
             )
         )
