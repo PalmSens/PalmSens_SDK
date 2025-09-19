@@ -61,7 +61,7 @@ image::examples/basic_ui_example.png[BasicUIExample, width=50%, role=half-view-w
 
 [[example_exportcsv]]
 Example - BasicExampleExportCSV::
-Demonstrates how to export data to CSV.
+Demonstrates how to set up a method with a callback to export to CSV.
 
 image::examples/exportcsv_example.png[BasicExampleExportCSV, width=50%, role=half-view-width]
 
@@ -69,7 +69,7 @@ image::examples/exportcsv_example.png[BasicExampleExportCSV, width=50%, role=hal
 Example - BasicExampleOCP::
 Demonstrates how to set up a vs OCP measurement.
 
-image::examples/ocb_example.png[BasicExampleOCP, width=50%, role=half-view-width]
+image::examples/ocp_example.png[BasicExampleOCP, width=50%, role=half-view-width]
 
 [[example_multichannel]]
 Example - MultiChannelExample::
