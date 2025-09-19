@@ -59,6 +59,30 @@ Demonstrates how to use the PalmSens class to run and plot a measurement in real
 
 image::examples/basic_ui_example.png[BasicUIExample, width=50%, role=half-view-width]
 
+[[example_exportcsv]]
+Example - BasicExampleExportCSV::
+Demonstrates how to export data to CSV.
+
+image::examples/exportcsv_example.png[BasicExampleExportCSV, width=50%, role=half-view-width]
+
+[[example_ocp]]
+Example - BasicExampleOCP::
+Demonstrates how to set up a vs OCP measurement.
+
+image::examples/ocb_example.png[BasicExampleOCP, width=50%, role=half-view-width]
+
+[[example_multichannel]]
+Example - MultiChannelExample::
+Demonstrates how to set up a multichannel experiment.
+
+image::examples/multichannel_example.png[MultiChannelExample, width=50%, role=half-view-width]
+
+[[example_hwsync]]
+Example - MultiChannelMES4HWSyncExample::
+Demonstrates how to set up a multichannel experiment with hardware sync on a MultiEmStat 4.
+
+image::examples/multichannel_mes4_example.png[MultiChannelMES4HWSyncExample, width=50%, role=half-view-width]
+
 == Compatible devices and firmware
 
 [cols="1,1",options="header",]
