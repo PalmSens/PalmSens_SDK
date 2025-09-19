@@ -42,44 +42,51 @@ VIs used by the Measure function to receive data from .NET events.
 The following examples are included.
 
 [[example_basic]]
-Example – BasicExample::
-Demonstrates how to use the PalmSens class to run a measurement.
+=== Getting started
+
+`BasicExample.vi` demonstrates how to use the PalmSens class to run a measurement.
 
 image::examples/basic_example.png[BasicExample, width=50%, role=half-view-width]
 
 [[example_methodscript]]
-Example – MethodSCRIPTExample::
-Demonstrates how to use the PalmSens class to run a MethodSCRIPT™ measurement.
+=== MethodSCRIPT
+
+`MethodSCRIPTExample.vi` demonstrates how to use the PalmSens class to run a MethodSCRIPT™ measurement.
 
 image::examples/methodscript_example.png[MethodSCRIPTExample, width=50%, role=half-view-width]
 
 [[example_basicui]]
-Example – BasicUIExample::
-Demonstrates how to use the PalmSens class to run and plot a measurement in real-time and the recommended method to abort, disconnect, or terminate the app during an active measurement.
+=== Interactive UI
+
+`BasicUIExample.vi` demonstrates how to use the PalmSens class to run and plot a measurement in real-time and the recommended method to abort, disconnect, or terminate the app during an active measurement.
 
 image::examples/basic_ui_example.png[BasicUIExample, width=50%, role=half-view-width]
 
 [[example_exportcsv]]
-Example - BasicExampleExportCSV::
-Demonstrates how to set up a method with a callback to export to CSV.
+=== Export to CSV
+
+`BasicExampleExportCSV.vi` demonstrates how to set up a method with a callback to export to CSV.
 
 image::examples/exportcsv_example.png[BasicExampleExportCSV, width=50%, role=half-view-width]
 
 [[example_ocp]]
-Example - BasicExampleOCP::
-Demonstrates how to set up a vs OCP measurement.
+=== OCP
+
+`BasicExampleOCP.vi` demonstrates how to set up a vs OCP measurement.
 
 image::examples/ocp_example.png[BasicExampleOCP, width=50%, role=half-view-width]
 
 [[example_multichannel]]
-Example - MultiChannelExample::
-Demonstrates how to set up a multichannel experiment.
+=== Multichannel
+
+`MultiChannelExample.vi` demonstrates how to set up a multichannel experiment.
 
 image::examples/multichannel_example.png[MultiChannelExample, width=50%, role=half-view-width]
 
 [[example_hwsync]]
-Example - MultiChannelMES4HWSyncExample::
-Demonstrates how to set up a multichannel experiment with hardware sync on a MultiEmStat 4.
+=== Multichannel with hardware sync
+
+`MultiChannelMES4HWSyncExample.vi` demonstrates how to set up a multichannel experiment with hardware sync on a MultiEmStat 4.
 
 image::examples/multichannel_mes4_example.png[MultiChannelMES4HWSyncExample, width=50%, role=half-view-width]
 
