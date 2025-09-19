@@ -178,18 +178,26 @@ class ELevel:
     record: bool = True
     """Record the current."""
 
-    limit_current_max: float | None = 0.0
+    limit_current_max: float | None = None
     """Limit current max in µA. Set to None to disable."""
 
-    limit_current_min: float | None = 0.0
+    limit_current_min: float | None = None
     """Limit current min in µA. Set to None to disable."""
 
-    trigger_lines: Sequence[Literal[0, 1, 2, 3]] = field(default_factory=tuple)
+    trigger_lines: Sequence[Literal[0, 1, 2, 3]] = field(default_factory=list)
     """Trigger at level lines.
 
     Set digital output lines at start of measurement, end of equilibration.
     Accepted values: 0 for d0, 1 for d1, 2 for d2, 3 for d3.
     """
+
+    @property
+    def use_limits(self) -> bool:
+        """Return True if instance sets current limits."""
+        use_limit_current_min = self.limit_current_min is not None
+        use_limit_current_max = self.limit_current_max is not None
+
+        return use_limit_current_min or use_limit_current_max
 
     def to_psobj(self):
         obj = PalmSens.Techniques.ELevel()
@@ -205,9 +213,9 @@ class ELevel:
 
         obj.UseTriggerOnStart = bool(self.trigger_lines)
 
-        trigger_at_level_lines = [(val in self.trigger_lines) for val in (0, 1, 2, 3)]
+        trigger_bools = [(val in self.trigger_lines) for val in (0, 1, 2, 3)]
 
-        obj.TriggerValueOnStart = convert_bools_to_int(trigger_at_level_lines)
+        obj.TriggerValueOnStart = convert_bools_to_int(trigger_bools)
 
         return obj
 
