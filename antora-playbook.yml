@@ -18,6 +18,8 @@ content:
       branches: HEAD
       # tags: ['labview-*']
       start_path: labview/docs
+urls:
+  latest_version_segment: latest
 ui:
   bundle:
     url: https://gitlab.com/antora/antora-ui-default/-/jobs/artifacts/HEAD/raw/build/ui-bundle.zip?job=bundle-stable
