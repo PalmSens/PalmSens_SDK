@@ -5,24 +5,19 @@ content:
   sources:
     - url: .
       branches: HEAD
-      start_path: docs
-      start_paths:
-        - docs/start
+      start_path: docs/start
     - url: .
       branches: HEAD
       # tags: ['python-*']
-      start_paths:
-        - python/docs
+      start_path: python/docs
     - url: .
       branches: HEAD
       # tags: ['matlab-*']
-      start_paths:
-        - docs/matlab
+      start_path: matlab/docs
     - url: .
       branches: HEAD
       # tags: ['labview-*']
-      start_paths:
-        - docs/labview
+      start_path: labview/docs
 ui:
   bundle:
     url: https://gitlab.com/antora/antora-ui-default/-/jobs/artifacts/HEAD/raw/build/ui-bundle.zip?job=bundle-stable
