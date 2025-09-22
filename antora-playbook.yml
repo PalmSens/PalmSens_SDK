@@ -1,6 +1,6 @@
 site:
   title: PalmSens SDK docs
-  start_page: palmsens-sdk::index.adoc
+  start_page: start::index.adoc
 content:
   sources:
     - url: .
