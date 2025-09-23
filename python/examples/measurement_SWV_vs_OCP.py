@@ -1,4 +1,4 @@
-import pypalmsens
+import pypalmsens as ps
 
 
 def new_data_callback(new_data):
@@ -6,19 +6,18 @@ def new_data_callback(new_data):
         print(point)
 
 
-available_instruments = pypalmsens.discover()
+instruments = ps.discover()
+print(instruments)
 
-with pypalmsens.connect(available_instruments[0]) as manager:
-    print('connection established')
-
+with ps.connect(instruments[0]) as manager:
     manager.callback = new_data_callback
 
-    method = pypalmsens.SquareWaveVoltammetry(
-        pretreatment=pypalmsens.settings.Pretreatment(
+    method = ps.SquareWaveVoltammetry(
+        pretreatment=ps.settings.Pretreatment(
             conditioning_potential=2.0,  # V
             conditioning_time=2,  # seconds
         ),
-        versus_ocp=pypalmsens.settings.VersusOCP(
+        versus_ocp=ps.settings.VersusOCP(
             mode=3,  # versus begin and end potential
             max_ocp_time=1,  # seconds
         ),
@@ -26,11 +25,10 @@ with pypalmsens.connect(available_instruments[0]) as manager:
         end_potential=0.5,  # V
         step_potential=0.01,  # V
         amplitude=0.08,  # V
-        frequency=10,  # Hz
+        frequency=50,  # Hz
     )
-
-    method.frequency = 50
 
     measurement = manager.measure(method)
 
-    print(f'ocp: {measurement.curves[0]._pscurve.OCPValue}')
+print(measurement)
+print(f'ocp: {measurement.ocp_value}')

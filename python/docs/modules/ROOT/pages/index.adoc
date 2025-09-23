@@ -1,0 +1,116 @@
+= PyPalmSens: Python SDK for PalmSens devices
+
+PyPalmSens is a Python library for automating electrochemistry experiments with your PalmSens instruments.
+It provides an intuitive Python API, making it straightforward to integrate into your Python workflows.
+
+With PyPalmSens, you can:
+
+- Connect to one or more instruments/channels
+- Automate electrochemistry measurements
+- Access and process measured data
+- Analyze and manipulate data
+- Perform peak detection
+- Do Equivalent Circuit Fitting on impedance data
+- Take manual control of the cell
+- Read and write method and data files
+
+To install:
+
+[,console]
+----
+pip install pypalmsens
+----
+
+PyPalmSens is built on top of the xref:start:ROOT:core_dll.adoc[PalmSens .NET libraries],
+and therefore requires the .NET runtime to be installed.
+For specific installation instructions for your platform, see xref:installation.adoc[]
+
+== Getting started
+
+The following example shows how to set up and measure a simple chronoamperometry experiment:
+
+[,python]
+----
+>>> import pypalmsens as ps
+
+>>> method = ps.ChronoAmperometry(
+...     interval_time=0.01,
+...     potential=1.0,
+...     run_time=10.0,
+... )
+
+>>> with ps.connect() as manager:  # <1>
+...     measurement = manager.measure(method)
+----
+<1> `connect()` tries to connect to the first instrument it finds
+
+[TIP]
+====
+We shorten the imported name from `pypalmsens` to `ps`. This is a widely adopted convention for better readability of code.
+====
+
+The following example shows how to discover devices and manually read out the current.
+
+[,python]
+----
+>>> import pypalmsens as ps
+
+>>> instruments = ps.discover()
+
+>>> with ps.connect(device=instruments[0]) as manager:
+...     manager.set_cell(True)
+...     manager.set_potential(1)
+...     manager.set_current_range(ps.settings.CURRENT_RANGE.cr_1_mA)
+...
+...     current = manager.read_current()
+...     print(f'{current=} µA')
+...
+...     manager.set_cell(False)
+current=92.8065 µA
+----
+
+Analyze a previous measurement with https://pandas.pydata.org/[pandas]:
+
+[,python]
+----
+>>> import pandas as pd
+>>> import pypalmsens as ps
+
+>>> measurements = ps.load_session_file('Demo CV DPV EIS IS-C electrode.pssession')
+
+>>> frames = []
+>>> frame_names = []
+
+>>> for measurement in measurements:
+...     frames.append(measurement.dataset.to_dataframe())  # <1>
+...     frame_names.append(measurement.title)
+
+>>> df = pd.concat(frames, keys=frame_names)
+>>> print(df)
+----
+<1> Extract all arrays from the dataset into a https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html[pandas dataframe].
+
+== Compatible devices and firmware
+
+The following devices and firmwares are supported:
+
+[cols=",",options="header",]
+|===
+|Device |Minimum required firmware version
+|EmStat |3.7
+|EmStat2 |7.7
+|EmStat3 |7.7
+|EmStat3{plus} |7.7
+|EmStat4 |1.3
+|EmStat4T |1.4
+|EmStat Go |7.7
+|EmStat Pico |1.5
+|Sensit Smart |1.5
+|Sensit BT |1.5
+|Sensit Wearable |1.5
+|MultiEmStat3 |7.7
+|MultiEmStat4 |1.3
+|PalmSens3 |2.8
+|PalmSens4 |1.7
+|MultiPalmSens4 |1.7
+|===
