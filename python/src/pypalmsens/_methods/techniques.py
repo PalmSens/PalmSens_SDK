@@ -1231,6 +1231,89 @@ class ChronoPotentiometry(
 
 
 @attrs.define
+class LinearSweepPotentiometry(
+    MethodSettings,
+    CurrentRangeMixin,
+    PotentialRangeMixin,
+    PretreatmentMixin,
+    PostMeasurementMixin,
+    PotentialLimitsMixin,
+    MeasurementTriggersMixin,
+    DelayTriggersMixin,
+    DataProcessingMixin,
+    MultiplexerMixin,
+    GeneralMixin,
+):
+    """Create linear sweep potentiometry method parameters."""
+
+    _id = 'lsp'
+
+    applied_current_range: CURRENT_RANGE = CURRENT_RANGE.cr_100_uA
+    """Applied current range.
+
+    Use `CURRENT_RANGE` to define the range."""
+
+    current_begin: float = -1.0
+    """Current applied at beginning of measurement.
+
+    This value is multiplied by the defined current range."""
+
+    current_end: float = 1.0
+    """Current applied at end of measurement.
+
+    This value is multiplied by the defined current range."""
+
+    current_step: float = 0.01
+    """Current step.
+
+    This value is multiplied by the defined current range."""
+
+    scan_rate: float = 1.0
+    """The applied scan rate.
+
+    This value is multiplied by the defined current range."""
+
+    record_auxiliary_input: bool = False
+    """Record auxiliary input."""
+
+    record_we_current: bool = False
+    """Record working electrode current."""
+
+    def _update_psmethod(self, *, obj):
+        """Update method with potentiometry settings."""
+        obj.AppliedCurrentRange = self.applied_current_range._to_psobj()
+
+        obj.BeginCurrent = self.current_begin
+        obj.EndCurrent = self.current_end
+        obj.StepCurrent = self.current_step
+        obj.ScanrateG = self.scan_rate
+
+        obj.AppliedCurrentRange = self.applied_current_range._to_psobj()
+
+        set_extra_value_mask(
+            obj=obj,
+            record_auxiliary_input=self.record_auxiliary_input,
+            record_we_current=self.record_we_current,
+        )
+
+    def _update_params(self, *, obj):
+        self.applied_current_range = CURRENT_RANGE._from_psobj(obj.AppliedCurrentRange)
+
+        self.current_begin = obj.BeginCurrent
+        self.current_end = obj.EndCurrent
+        self.current_step = obj.StepCurrent
+        self.scan_rate = obj.ScanrateG
+
+        msk = get_extra_value_mask(obj)
+
+        for key in (
+            'record_auxiliary_input',
+            'record_we_current',
+        ):
+            setattr(self, key, msk[key])
+
+
+@attrs.define
 class ElectrochemicalImpedanceSpectroscopy(
     MethodSettings,
     CurrentRangeMixin,

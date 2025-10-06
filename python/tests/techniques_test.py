@@ -342,6 +342,44 @@ class TestCP:
         assert dataset.array_quantities == {'Current', 'Potential', 'Time', 'Charge'}
 
 
+class TestLSP:
+    kwargs = {
+        'applied_current_range': CURRENT_RANGE.cr_100_uA,
+        'current_step': 0.1,
+        'scan_rate': 8.0,
+    }
+    pycls = pypalmsens.LinearSweepPotentiometry
+    pscls = Techniques.LinearSweepPotentiometry
+
+    def test_params_round_trip(self):
+        assert_params_round_trip_equal(
+            pscls=self.pscls,
+            pycls=self.pycls,
+            kwargs=self.kwargs,
+        )
+
+    @pytest.mark.instrument
+    def test_measurement(self, manager):
+        method = self.pycls(
+            potential_range=pypalmsens.settings.PotentialRange(
+                max=POTENTIAL_RANGE.pr_1_V,
+                min=POTENTIAL_RANGE.pr_10_mV,
+                start=POTENTIAL_RANGE.pr_1_V,
+            ),
+            **self.kwargs,
+        )
+        measurement = manager.measure(method)
+
+        assert measurement
+        assert isinstance(measurement, Measurement)
+
+        dataset = measurement.dataset
+        assert len(dataset) == 4
+
+        assert dataset.array_names == {'potential', 'current', 'time', 'charge'}
+        assert dataset.array_quantities == {'Current', 'Potential', 'Time', 'Charge'}
+
+
 class TestOCP:
     kwargs = {
         'interval_time': 0.1,
