@@ -116,6 +116,61 @@ class TestCV:
         assert dataset.array_quantities == {'Charge', 'Current', 'Potential', 'Time'}
 
 
+class TestFCV:
+    kwargs = {
+        'begin_potential': -1,
+        'vertex1_potential': -1,
+        'vertex2_potential': 1,
+        'step_potential': 0.25,
+        'scanrate': 500,
+        'n_scans': 3,
+        'n_avg_scans': 2,
+        'n_equil_scans': 2,
+    }
+    pycls = pypalmsens.FastCyclicVoltammetry
+    pscls = Techniques.FastCyclicVoltammetry
+
+    def test_params_round_trip(self):
+        assert_params_round_trip_equal(
+            pscls=self.pscls,
+            pycls=self.pycls,
+            kwargs=self.kwargs,
+        )
+
+    # @pytest.mark.xfail(raises=AssertionError, reason='FCV only returns 1 scan with nScans>1')
+    @pytest.mark.instrument
+    def test_measurement(self, manager):
+        method = self.pycls(
+            current_range=CURRENT_RANGE.cr_10_uA,
+            **self.kwargs,
+        )
+        measurement = manager.measure(method)
+
+        assert measurement
+        assert isinstance(measurement, Measurement)
+        assert measurement.method.psmethod.nScans == 3
+        assert measurement.method.psmethod.nAvgScans == 2
+        assert measurement.method.psmethod.nEqScans == 2
+
+        dataset = measurement.dataset
+
+        assert len(dataset) == 10
+        assert list(dataset.keys()) == [
+            'Time',
+            'Potential_1',
+            'Current_1',
+            'Charge_1',
+            'Potential_2',
+            'Current_2',
+            'Charge_2',
+            'Potential_3',
+            'Current_3',
+            'Charge_3',
+        ]
+        assert dataset.array_names == {'scan1', 'scan2', 'scan3', 'time'}
+        assert dataset.array_quantities == {'Charge', 'Current', 'Potential', 'Time'}
+
+
 class TestLSV:
     kwargs = {
         'begin_potential': -1.0,

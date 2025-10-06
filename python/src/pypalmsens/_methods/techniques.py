@@ -4,6 +4,7 @@ from abc import abstractmethod
 from typing import ClassVar, Protocol, Type, runtime_checkable
 
 import attrs
+from PalmSens import FixedCurrentRange as PSFixedCurrentRange
 from PalmSens import Method as PSMethod
 from PalmSens.Techniques.Impedance import enumFrequencyType, enumScanType
 
@@ -225,7 +226,7 @@ class CyclicVoltammetry(
     scanrate: float = 1.0
     """Scan rate in V/s"""
 
-    n_scans: float = 1
+    n_scans: int = 1
     """Number of scans"""
 
     enable_bipot_current: bool = False
@@ -280,6 +281,78 @@ class CyclicVoltammetry(
             'enable_bipot_current',
         ):
             setattr(self, key, msk[key])
+
+
+@attrs.define
+class FastCyclicVoltammetry(
+    MethodSettings,
+    # CurrentRangeMixin,
+    PretreatmentMixin,
+    VersusOCPMixin,
+    PostMeasurementMixin,
+    IrDropCompensationMixin,
+    DataProcessingMixin,
+    GeneralMixin,
+):
+    """Create fast cyclic voltammetry method parameters."""
+
+    _id = 'fcv'
+
+    """Fixed current range."""
+    current_range: CURRENT_RANGE = CURRENT_RANGE.cr_1_uA
+
+    equilibration_time: float = 0.0
+    """Equilibration time in s"""
+
+    begin_potential: float = -0.5
+    """Begin potential in V"""
+
+    vertex1_potential: float = 0.5
+    """Vertex 1 potential in V"""
+
+    vertex2_potential: float = -0.5
+    """Vertex 2 potential in V"""
+
+    step_potential: float = 0.01
+    """Step potential in V"""
+
+    scanrate: float = 500.0
+    """Scan rate in V/s"""
+
+    n_scans: int = 1
+    """Number of scans"""
+
+    n_avg_scans: int = 1
+    """Number of scans to be averaged."""
+
+    n_equil_scans: int = 1
+    """Number of equilibration scans."""
+
+    def _update_psmethod(self, *, obj):
+        """Update method with cyclic voltammetry settings."""
+
+        obj.Ranging = PSFixedCurrentRange(self.current_range._to_psobj())
+        obj.EquilibrationTime = self.equilibration_time
+        obj.BeginPotential = self.begin_potential
+        obj.Vtx1Potential = self.vertex1_potential
+        obj.Vtx2Potential = self.vertex2_potential
+        obj.StepPotential = self.step_potential
+        obj.Scanrate = self.scanrate
+        obj.nScans = self.n_scans
+        obj.nAvgScans = self.n_avg_scans
+        obj.nEqScans = self.n_equil_scans
+
+    def _update_params(self, *, obj):
+        self.current_range = CURRENT_RANGE._from_psobj(obj.Ranging.StartCurrentRange)
+        self.equilibration_time = obj.EquilibrationTime
+        self.begin_potential = obj.BeginPotential
+        self.vertex1_potential = obj.Vtx1Potential
+        self.vertex2_potential = obj.Vtx2Potential
+        self.step_potential = obj.StepPotential
+        self.scanrate = obj.Scanrate
+        self.n_scans = obj.nScans
+        self.n_avg_scans = obj.nAvgScans
+        self.n_equil_scans = obj.nEqScans
 
 
 @attrs.define
