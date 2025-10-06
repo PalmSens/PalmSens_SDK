@@ -26,6 +26,7 @@ from ._instruments.instrument_pool import InstrumentPool
 from ._instruments.instrument_pool_async import InstrumentPoolAsync
 from ._io import load_method_file, load_session_file, save_method_file, save_session_file
 from ._methods.techniques import (
+    ACVoltammetry,
     ChronoAmperometry,
     ChronoPotentiometry,
     CyclicVoltammetry,
@@ -64,6 +65,7 @@ __all__ = [
     'ElectrochemicalImpedanceSpectroscopy',
     'GalvanostaticImpedanceSpectroscopy',
     'LinearSweepVoltammetry',
+    'ACVoltammetry',
     'MethodScript',
     'MultiStepAmperometry',
     'OpenCircuitPotentiometry',

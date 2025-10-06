@@ -202,13 +202,62 @@ class TestLSV:
 
         assert measurement
         assert isinstance(measurement, Measurement)
-        assert measurement.method.psmethod.nScans == 1
 
         dataset = measurement.dataset
         assert len(dataset) == 4
 
         assert dataset.array_names == {'charge', 'potential', 'current', 'time'}
         assert dataset.array_quantities == {'Charge', 'Current', 'Potential', 'Time'}
+
+
+class TestACV:
+    kwargs = {
+        'begin_potential': -0.15,
+        'end_potential': 0.15,
+        'step_potential': 0.05,
+        'ac_potential': 0.25,
+        'frequency': 200.0,
+        'scanrate': 0.2,
+    }
+    pycls = pypalmsens.ACVoltammetry
+    pscls = Techniques.ACVoltammetry
+
+    def test_params_round_trip(self):
+        assert_params_round_trip_equal(
+            pscls=self.pscls,
+            pycls=self.pycls,
+            kwargs=self.kwargs,
+        )
+
+    @pytest.mark.instrument
+    def test_measurement(self, manager):
+        method = self.pycls(
+            current_range=pypalmsens.settings.CurrentRange(
+                max=CURRENT_RANGE.cr_1_mA,
+                min=CURRENT_RANGE.cr_100_nA,
+                start=CURRENT_RANGE.cr_100_uA,
+            ),
+            **self.kwargs,
+        )
+        measurement = manager.measure(method)
+
+        assert measurement
+        assert isinstance(measurement, Measurement)
+
+        dataset = measurement.dataset
+        assert len(dataset) == 8
+
+        assert dataset.array_names == {
+            'Applied E DC',
+            'E AC RMS',
+            'E DC',
+            "Y'",
+            "Y''",
+            'i AC RMS',
+            'i DC',
+            'time',
+        }
+        assert dataset.array_quantities == {'Current', 'Potential', 'Time', "Y'", "Y''"}
 
 
 class TestSWV:

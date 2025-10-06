@@ -356,6 +356,76 @@ class FastCyclicVoltammetry(
 
 
 @attrs.define
+class ACVoltammetry(
+    MethodSettings,
+    CurrentRangeMixin,
+    PretreatmentMixin,
+    VersusOCPMixin,
+    PostMeasurementMixin,
+    EquilibrationTriggersMixin,
+    MeasurementTriggersMixin,
+    DataProcessingMixin,
+    GeneralMixin,
+):
+    """Create AC Voltammetry method parameters."""
+
+    _id = 'acv'
+
+    equilibration_time: float = 0.0
+    """Equilibration time in s."""
+
+    begin_potential: float = -0.5
+    """Begin potential in V."""
+
+    end_potential: float = 0.5
+    """End potential in V."""
+
+    step_potential: float = 0.1
+    """Step potential in V."""
+
+    ac_potential: float = 0.01
+    """Sine wave amplitude in V as rms value."""
+
+    frequency: float = 100.0
+    """AC frequency in HZ."""
+
+    scanrate: float = 1.0
+    """Scan rate in V/s."""
+
+    record_dc_current: bool = False
+    """Measure the DC current seperately."""
+
+    def _update_psmethod(self, *, obj):
+        """Update method with linear sweep settings."""
+        obj.EquilibrationTime = self.equilibration_time
+        obj.BeginPotential = self.begin_potential
+        obj.EndPotential = self.end_potential
+        obj.StepPotential = self.step_potential
+        obj.Frequency = self.frequency
+        obj.SineWaveAmplitude = self.ac_potential
+        obj.Scanrate = self.scanrate
+
+        set_extra_value_mask(
+            obj=obj,
+            record_dc_current=self.record_dc_current,
+        )
+
+    def _update_params(self, *, obj):
+        self.equilibration_time = obj.EquilibrationTime
+        self.begin_potential = obj.BeginPotential
+        self.end_potential = obj.EndPotential
+        self.step_potential = obj.StepPotential
+        self.ac_potential = obj.SineWaveAmplitude
+        self.frequency = obj.Frequency
+        self.scanrate = obj.Scanrate
+
+        msk = get_extra_value_mask(obj)
+
+        for key in ('record_dc_current',):
+            setattr(self, key, msk[key])
+
+
+@attrs.define
 class LinearSweepVoltammetry(
     MethodSettings,
     CurrentRangeMixin,
