@@ -1,9 +1,10 @@
 from __future__ import annotations
 
 from abc import abstractmethod
-from typing import ClassVar, Protocol, Type, runtime_checkable
+from typing import ClassVar, Literal, Protocol, Type, runtime_checkable
 
 import attrs
+import PalmSens.Techniques as PSTechniques
 from PalmSens import FixedCurrentRange as PSFixedCurrentRange
 from PalmSens import Method as PSMethod
 from PalmSens.Techniques.Impedance import enumFrequencyType, enumScanType
@@ -21,6 +22,7 @@ from .settings import (
     CurrentLimits,
     CurrentRange,
     DataProcessing,
+    DelayTriggers,
     EquilibrationTriggers,
     General,
     IrDropCompensation,
@@ -170,6 +172,12 @@ class EquilibrationTriggersMixin:
 class MeasurementTriggersMixin:
     measurement_triggers: MeasurementTriggers = attrs.field(factory=MeasurementTriggers)
     """Set the trigger at measurement settings."""
+
+
+@attrs.define(slots=False)
+class DelayTriggersMixin:
+    delay_triggers: DelayTriggers = attrs.field(factory=DelayTriggers)
+    """Set the delayed trigger at measurement settings."""
 
 
 @attrs.define(slots=False)
@@ -1011,6 +1019,76 @@ class MultiStepAmperometry(
             'enable_bipot_current',
         ):
             setattr(self, key, msk[key])
+
+
+@attrs.define
+class PulsedAmperometricDetection(
+    MethodSettings,
+    CurrentRangeMixin,
+    PretreatmentMixin,
+    VersusOCPMixin,
+    BiPotMixin,
+    PostMeasurementMixin,
+    EquilibrationTriggersMixin,
+    MeasurementTriggersMixin,
+    DelayTriggersMixin,
+    DataProcessingMixin,
+    MultiplexerMixin,
+    GeneralMixin,
+):
+    """Create pulsed amperometric detection method parameters."""
+
+    _id = 'pad'
+
+    equilibration_time: float = 0.0
+    """Equilibration time in s."""
+
+    potential: float = 0.5
+    """Potential in V."""
+
+    pulse_potential: float = 0.05
+    """Pulse potential in V."""
+
+    pulse_time: float = 0.01
+    """Pulse time in s."""
+
+    mode: Literal['dc', 'pulse', 'differential'] = 'dc'
+    """Measurement mode.
+
+    - dc: Measurement is performed at potential (E dc)
+    - pulse: measurement is performed at pulse potential (E pulse)
+    - differential: measurement is (pulse - dc)
+    """
+
+    interval_time: float = 0.1
+    """Interval time in s."""
+
+    run_time: float = 10.0
+    """Run time in s."""
+
+    _MODES = ('dc', 'pulse', 'differential')
+
+    def _update_psmethod(self, *, obj):
+        """Update method with chrono amperometry settings."""
+        obj.EquilibrationTime = self.equilibration_time
+        obj.IntervalTime = self.interval_time
+        obj.PulseTime = self.pulse_time
+        obj.PulsePotential = self.pulse_potential
+        obj.Potential = self.potential
+        obj.RunTime = self.run_time
+
+        mode = self._MODES.index(self.mode) + 1
+        obj.tMode = PSTechniques.PulsedAmpDetection.enumMode(mode)
+
+    def _update_params(self, *, obj):
+        self.equilibration_time = obj.EquilibrationTime
+        self.interval_time = obj.IntervalTime
+        self.potential = obj.Potential
+        self.pulse_potential = obj.PulsePotential
+        self.pulse_time = obj.PulseTime
+        self.run_time = obj.RunTime
+
+        self.mode = self._MODES[int(obj.tMode) - 1]
 
 
 @attrs.define

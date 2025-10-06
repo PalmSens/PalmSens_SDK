@@ -473,6 +473,40 @@ class TestDP:
         assert dataset.array_quantities == {'Potential', 'Time', 'Current'}
 
 
+class TestPAD:
+    kwargs = {
+        'potential': 0.5,
+        'pulse_potential': 1.0,
+        'pulse_time': 0.1,
+        'mode': 'pulse',
+        'run_time': 1.0,
+        'interval_time': 0.2,
+    }
+    pycls = pypalmsens.PulsedAmperometricDetection
+    pscls = Techniques.PulsedAmpDetection
+
+    def test_params_round_trip(self):
+        assert_params_round_trip_equal(
+            pscls=self.pscls,
+            pycls=self.pycls,
+            kwargs=self.kwargs,
+        )
+
+    @pytest.mark.instrument
+    def test_measurement(self, manager):
+        method = self.pycls(**self.kwargs)
+        measurement = manager.measure(method)
+
+        assert measurement
+        assert isinstance(measurement, Measurement)
+
+        dataset = measurement.dataset
+        assert len(dataset) == 3
+
+        assert dataset.array_names == {'potential', 'time', 'current'}
+        assert dataset.array_quantities == {'Potential', 'Time', 'Current'}
+
+
 class TestNPV:
     kwargs = {
         'begin_potential': -0.4,
