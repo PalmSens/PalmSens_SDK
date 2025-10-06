@@ -443,6 +443,39 @@ class TestDP:
         assert dataset.array_quantities == {'Potential', 'Time', 'Current'}
 
 
+class TestNPV:
+    kwargs = {
+        'begin_potential': -0.4,
+        'end_potential': 0.4,
+        'step_potential': 0.15,
+        'pulse_time': 0.1,
+        'scan_rate': 0.5,
+    }
+    pycls = pypalmsens.NormalPulseVoltammetry
+    pscls = Techniques.NormalPulse
+
+    def test_params_round_trip(self):
+        assert_params_round_trip_equal(
+            pscls=self.pscls,
+            pycls=self.pycls,
+            kwargs=self.kwargs,
+        )
+
+    @pytest.mark.instrument
+    def test_measurement(self, manager):
+        method = self.pycls(**self.kwargs)
+        measurement = manager.measure(method)
+
+        assert measurement
+        assert isinstance(measurement, Measurement)
+
+        dataset = measurement.dataset
+        assert len(dataset) == 3
+
+        assert dataset.array_names == {'potential', 'time', 'current'}
+        assert dataset.array_quantities == {'Potential', 'Time', 'Current'}
+
+
 class TestMA:
     kwargs = {
         'equilibration_time': 0.0,

@@ -699,6 +699,95 @@ class DifferentialPulseVoltammetry(
 
 
 @attrs.define
+class NormalPulseVoltammetry(
+    MethodSettings,
+    CurrentRangeMixin,
+    PretreatmentMixin,
+    VersusOCPMixin,
+    BiPotMixin,
+    PostMeasurementMixin,
+    IrDropCompensationMixin,
+    EquilibrationTriggersMixin,
+    MeasurementTriggersMixin,
+    DataProcessingMixin,
+    MultiplexerMixin,
+    GeneralMixin,
+):
+    """Create square wave method parameters."""
+
+    _id = 'npv'
+
+    equilibration_time: float = 0.0
+    """Equilibration time in s."""
+
+    begin_potential: float = -0.5
+    """Begin potential in V."""
+
+    end_potential: float = 0.5
+    """End potential in V."""
+
+    step_potential: float = 0.1
+    """Step potential in V."""
+
+    pulse_time: float = 0.01
+    """Pulse time in s."""
+
+    scan_rate: float = 1.0
+    """Scan rate (potential/time) in V/s."""
+
+    enable_bipot_current: bool = False
+    """Enable bipot current."""
+
+    record_auxiliary_input: bool = False
+    """Record auxiliary input."""
+
+    record_cell_potential: bool = False
+    """Record cell potential.
+
+    Counter electrode vs ground."""
+
+    record_we_potential: bool = False
+    """Record applied working electrode potential.
+
+    Reference electrode vs ground."""
+
+    def _update_psmethod(self, *, obj):
+        """Update method with linear sweep settings."""
+        obj.EquilibrationTime = self.equilibration_time
+        obj.BeginPotential = self.begin_potential
+        obj.EndPotential = self.end_potential
+        obj.StepPotential = self.step_potential
+        obj.PulseTime = self.pulse_time
+        obj.Scanrate = self.scan_rate
+
+        set_extra_value_mask(
+            obj=obj,
+            record_auxiliary_input=self.record_auxiliary_input,
+            record_cell_potential=self.record_cell_potential,
+            record_we_potential=self.record_we_potential,
+            enable_bipot_current=self.enable_bipot_current,
+        )
+
+    def _update_params(self, *, obj):
+        self.equilibration_time = obj.EquilibrationTime
+        self.begin_potential = obj.BeginPotential
+        self.end_potential = obj.EndPotential
+        self.step_potential = obj.StepPotential
+        self.pulse_time = obj.PulseTime
+        self.scan_rate = obj.Scanrate
+
+        msk = get_extra_value_mask(obj)
+
+        for key in (
+            'record_auxiliary_input',
+            'record_cell_potential',
+            'record_we_potential',
+            'enable_bipot_current',
+        ):
+            setattr(self, key, msk[key])
+
+
+@attrs.define
 class ChronoAmperometry(
     MethodSettings,
     CurrentRangeMixin,

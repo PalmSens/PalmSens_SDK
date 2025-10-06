@@ -37,6 +37,7 @@ from ._methods.techniques import (
     LinearSweepVoltammetry,
     MethodScript,
     MultiStepAmperometry,
+    NormalPulseVoltammetry,
     OpenCircuitPotentiometry,
     SquareWaveVoltammetry,
 )
@@ -60,6 +61,7 @@ __all__ = [
     'ChronoAmperometry',
     'ChronoPotentiometry',
     'CyclicVoltammetry',
+    'NormalPulseVoltammetry',
     'FastCyclicVoltammetry',
     'DifferentialPulseVoltammetry',
     'ElectrochemicalImpedanceSpectroscopy',
