@@ -409,6 +409,36 @@ class TestCA:
         assert dataset.array_quantities == {'Potential', 'Time', 'Charge', 'Current'}
 
 
+class TestFA:
+    kwargs = {
+        'interval_time': 0.1,
+        'run_time': 1.0,
+    }
+    pycls = pypalmsens.FastAmperometry
+    pscls = Techniques.FastAmperometry
+
+    def test_params_round_trip(self):
+        assert_params_round_trip_equal(
+            pscls=self.pscls,
+            pycls=self.pycls,
+            kwargs=self.kwargs,
+        )
+
+    @pytest.mark.instrument
+    def test_measurement(self, manager):
+        method = self.pycls(**self.kwargs)
+        measurement = manager.measure(method)
+
+        assert measurement
+        assert isinstance(measurement, Measurement)
+
+        dataset = measurement.dataset
+        assert len(dataset) == 4
+
+        assert dataset.array_names == {'potential', 'time', 'charge', 'current'}
+        assert dataset.array_quantities == {'Potential', 'Time', 'Charge', 'Current'}
+
+
 class TestDP:
     kwargs = {
         'begin_potential': -0.4,

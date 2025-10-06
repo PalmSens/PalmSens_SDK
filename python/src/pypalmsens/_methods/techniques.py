@@ -286,7 +286,6 @@ class CyclicVoltammetry(
 @attrs.define
 class FastCyclicVoltammetry(
     MethodSettings,
-    # CurrentRangeMixin,
     PretreatmentMixin,
     VersusOCPMixin,
     PostMeasurementMixin,
@@ -298,8 +297,8 @@ class FastCyclicVoltammetry(
 
     _id = 'fcv'
 
-    """Fixed current range."""
     current_range: CURRENT_RANGE = CURRENT_RANGE.cr_1_uA
+    """Fixed current range."""
 
     equilibration_time: float = 0.0
     """Equilibration time in s"""
@@ -619,7 +618,7 @@ class DifferentialPulseVoltammetry(
     MultiplexerMixin,
     GeneralMixin,
 ):
-    """Create square wave method parameters."""
+    """Create differential pulse voltammetry method parameters."""
 
     _id = 'dpv'
 
@@ -713,7 +712,7 @@ class NormalPulseVoltammetry(
     MultiplexerMixin,
     GeneralMixin,
 ):
-    """Create square wave method parameters."""
+    """Create normal pulse voltammetry method parameters."""
 
     _id = 'npv'
 
@@ -866,6 +865,62 @@ class ChronoAmperometry(
             'enable_bipot_current',
         ):
             setattr(self, key, msk[key])
+
+
+@attrs.define
+class FastAmperometry(
+    MethodSettings,
+    PretreatmentMixin,
+    VersusOCPMixin,
+    BiPotMixin,
+    PostMeasurementMixin,
+    CurrentLimitsMixin,
+    ChargeLimitsMixin,
+    IrDropCompensationMixin,
+    EquilibrationTriggersMixin,
+    MeasurementTriggersMixin,
+    DataProcessingMixin,
+    MultiplexerMixin,
+    GeneralMixin,
+):
+    """Create fast amperometry method parameters."""
+
+    _id = 'fam'
+
+    current_range: CURRENT_RANGE = CURRENT_RANGE.cr_100_nA
+    """Fixed current range."""
+
+    equilibration_time: float = 0.0
+    """Equilibration time in s."""
+
+    equilibration_potential: float = 1.0
+    """Equilibration potential in V."""
+
+    interval_time: float = 0.1
+    """Interval time in s."""
+
+    potential: float = 0.5
+    """Potential in V."""
+
+    run_time: float = 1.0
+    """Run time in s."""
+
+    def _update_psmethod(self, *, obj):
+        """Update method with chrono amperometry settings."""
+        obj.Ranging = PSFixedCurrentRange(self.current_range._to_psobj())
+        obj.EquilibrationTime = self.equilibration_time
+        obj.EqPotentialFA = self.equilibration_potential
+        obj.IntervalTime = self.interval_time
+        obj.Potential = self.potential
+        obj.RunTime = self.run_time
+
+    def _update_params(self, *, obj):
+        self.current_range = CURRENT_RANGE._from_psobj(obj.Ranging.StartCurrentRange)
+        self.equilibration_time = obj.EquilibrationTime
+        self.equilibration_potential = obj.EqPotentialFA
+        self.interval_time = obj.IntervalTime
+        self.potential = obj.Potential
+        self.run_time = obj.RunTime
 
 
 @attrs.define
