@@ -6,6 +6,7 @@ from ._methods._shared import (
     CURRENT_RANGE,
     POTENTIAL_RANGE,
     ELevel,
+    ILevel,
 )
 from ._methods.settings import (
     BiPot,
@@ -35,6 +36,7 @@ __all__ = [
     'DataProcessing',
     'DelayTriggers',
     'ELevel',
+    'ILevel',
     'EquilibrationTriggers',
     'General',
     'IrDropCompensation',

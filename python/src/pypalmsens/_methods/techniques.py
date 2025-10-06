@@ -13,6 +13,7 @@ from ._shared import (
     CURRENT_RANGE,
     POTENTIAL_RANGE,
     ELevel,
+    ILevel,
     get_extra_value_mask,
     set_extra_value_mask,
 )
@@ -1303,6 +1304,86 @@ class LinearSweepPotentiometry(
         self.current_end = obj.EndCurrent
         self.current_step = obj.StepCurrent
         self.scan_rate = obj.ScanrateG
+
+        msk = get_extra_value_mask(obj)
+
+        for key in (
+            'record_auxiliary_input',
+            'record_we_current',
+        ):
+            setattr(self, key, msk[key])
+
+
+@attrs.define
+class MultiStepPotentiometry(
+    MethodSettings,
+    CurrentRangeMixin,
+    PotentialRangeMixin,
+    PretreatmentMixin,
+    PostMeasurementMixin,
+    PotentialLimitsMixin,
+    DataProcessingMixin,
+    MultiplexerMixin,
+    GeneralMixin,
+):
+    """Create multi-step potentiometry method parameters."""
+
+    _id = 'mp'
+
+    applied_current_range: CURRENT_RANGE = CURRENT_RANGE.cr_1_uA
+    """Applied current range.
+
+    Use `CURRENT_RANGE` to define the range."""
+
+    interval_time: float = 0.1
+    """Interval time in s."""
+
+    n_cycles: float = 1
+    """Number of cycles."""
+
+    levels: list[ILevel] = attrs.field(factory=lambda: [ILevel()])
+    """List of levels.
+
+    Use `ILevel()` to create levels.
+    """
+
+    record_auxiliary_input: bool = False
+    """Record auxiliary input."""
+
+    record_we_current: bool = False
+    """Record applied working electrode potential.
+
+    Reference electrode vs ground."""
+
+    def _update_psmethod(self, *, obj):
+        """Update method with multistep potentiometry settings."""
+        obj.AppliedCurrentRange = self.applied_current_range._to_psobj()
+        obj.IntervalTime = self.interval_time
+        obj.nCycles = self.n_cycles
+        obj.Levels.Clear()
+
+        if not self.levels:
+            raise ValueError('At least one level must be specified.')
+
+        for level in self.levels:
+            obj.Levels.Add(level.to_psobj())
+
+        obj.UseSelectiveRecord = any(level.record for level in self.levels)
+        obj.UseLimits = any(level.use_limits for level in self.levels)
+
+        set_extra_value_mask(
+            obj=obj,
+            record_auxiliary_input=self.record_auxiliary_input,
+            record_we_current=self.record_we_current,
+        )
+
+    def _update_params(self, *, obj):
+        self.applied_current_range = CURRENT_RANGE._from_psobj(obj.AppliedCurrentRange)
+
+        self.interval_time = obj.IntervalTime
+        self.n_cycles = obj.nCycles
+
+        self.levels = [ILevel.from_psobj(pslevel) for pslevel in obj.Levels]
 
         msk = get_extra_value_mask(obj)
 

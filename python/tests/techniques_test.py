@@ -12,6 +12,7 @@ from pypalmsens.settings import (
     CURRENT_RANGE,
     POTENTIAL_RANGE,
     ELevel,
+    ILevel,
 )
 
 logger = logging.getLogger(__name__)
@@ -590,6 +591,45 @@ class TestMA:
     }
     pycls = pypalmsens.MultiStepAmperometry
     pscls = Techniques.MultistepAmperometry
+
+    def test_params_round_trip(self):
+        assert_params_round_trip_equal(
+            pscls=self.pscls,
+            pycls=self.pycls,
+            kwargs=self.kwargs,
+        )
+
+    @pytest.mark.instrument
+    def test_measurement(self, manager):
+        method = self.pycls(**self.kwargs)
+        measurement = manager.measure(method)
+
+        assert measurement
+        assert isinstance(measurement, Measurement)
+
+        dataset = measurement.dataset
+        assert len(dataset) == 4
+
+        assert dataset.array_names == {
+            'potential',
+            'time',
+            'current',
+            'charge',
+        }
+        assert dataset.array_quantities == {'Charge', 'Potential', 'Time', 'Current'}
+
+
+class TestMP:
+    kwargs = {
+        'interval_time': 0.01,
+        'n_cycles': 2,
+        'levels': [
+            ILevel(level=0.5, duration=0.1),
+            ILevel(level=0.3, duration=0.2),
+        ],
+    }
+    pycls = pypalmsens.MultiStepPotentiometry
+    pscls = Techniques.MultistepPotentiometry
 
     def test_params_round_trip(self):
         assert_params_round_trip_equal(
