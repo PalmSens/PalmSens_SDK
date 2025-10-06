@@ -327,6 +327,31 @@ def test_TriggerAtMeasurementSettings():
     assert asdict(new_params) == kwargs
 
 
+def test_TriggerAtDelaySettings():
+    obj = Techniques.PulsedAmpDetection()
+
+    kwargs = {
+        'enable': True,
+        'delay': 0.123,
+        'd0': True,
+        'd1': True,
+        'd2': False,
+        'd3': True,
+    }
+
+    params = pypalmsens.settings.DelayTriggers(**kwargs)
+    params._update_psmethod(obj=obj)
+
+    assert obj.UseDelayOnStart is True
+    assert obj.DelayValueOnStart == 11
+    assert obj.TriggerDelayPeriod == 0.123
+
+    new_params = pypalmsens.settings.DelayTriggers()
+    new_params._update_params(obj=obj)
+
+    assert asdict(new_params) == kwargs
+
+
 def test_MultiplexerSettings():
     obj = Techniques.CyclicVoltammetry()
 
