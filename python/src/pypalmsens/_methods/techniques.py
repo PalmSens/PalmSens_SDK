@@ -1595,6 +1595,58 @@ class ElectrochemicalImpedanceSpectroscopy(
 
 
 @attrs.define
+class FastImpedanceSpectroscopy(
+    MethodSettings,
+    CurrentRangeMixin,
+    PotentialRangeMixin,
+    PretreatmentMixin,
+    VersusOCPMixin,
+    PostMeasurementMixin,
+    MeasurementTriggersMixin,
+    EquilibrationTriggersMixin,
+    GeneralMixin,
+):
+    """Create fast impedance spectroscopy method parameters."""
+
+    _id = 'fis'
+
+    equilibration_time: float = 0.0
+    """Equilibration time in s."""
+
+    interval_time: float = 0.1
+    """Interval time in s."""
+
+    run_time: float = 10.0
+    """Run time in s."""
+
+    dc_potential: float = 0.0
+    """Potential applied during measurement in V."""
+
+    ac_potential: float = 0.01
+    """Potential amplitude in V (rms)."""
+
+    frequency: float = 50000.0
+    """Frequency in Hz."""
+
+    def _update_psmethod(self, *, obj):
+        """Update method with potentiometry settings."""
+        obj.Eac = self.ac_potential
+        obj.EquilibrationTime = self.equilibration_time
+        obj.FixedFrequency = self.frequency
+        obj.IntervalTime = self.interval_time
+        obj.Potential = self.dc_potential
+        obj.RunTime = self.run_time
+
+    def _update_params(self, *, obj):
+        self.ac_potential = obj.Eac
+        self.equilibration_time = obj.EquilibrationTime
+        self.frequency = obj.FixedFrequency
+        self.interval_time = obj.IntervalTime
+        self.dc_potential = obj.Potential
+        self.run_time = obj.RunTime
+
+
+@attrs.define
 class GalvanostaticImpedanceSpectroscopy(
     MethodSettings,
     CurrentRangeMixin,

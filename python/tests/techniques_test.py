@@ -4,7 +4,7 @@ import logging
 
 import pytest
 import System
-from PalmSens import Techniques
+from PalmSens import Method as PSMethod
 from pytest import approx
 
 import pypalmsens
@@ -28,8 +28,8 @@ def assert_params_match_kwargs(params, *, kwargs):
             assert ret == exp, f'{key}: expected {exp}, got {ret}'
 
 
-def assert_params_round_trip_equal(*, pscls, pycls, kwargs):
-    obj = pscls()
+def assert_params_round_trip_equal(*, pycls, kwargs):
+    obj = PSMethod.FromMethodID(pycls._id)
 
     params = pycls(**kwargs)
     params._update_psmethod(obj=obj)
@@ -78,11 +78,9 @@ class TestCV:
         'n_scans': 2,
     }
     pycls = pypalmsens.CyclicVoltammetry
-    pscls = Techniques.CyclicVoltammetry
 
     def test_params_round_trip(self):
         assert_params_round_trip_equal(
-            pscls=self.pscls,
             pycls=self.pycls,
             kwargs=self.kwargs,
         )
@@ -130,11 +128,9 @@ class TestFCV:
         'n_equil_scans': 2,
     }
     pycls = pypalmsens.FastCyclicVoltammetry
-    pscls = Techniques.FastCyclicVoltammetry
 
     def test_params_round_trip(self):
         assert_params_round_trip_equal(
-            pscls=self.pscls,
             pycls=self.pycls,
             kwargs=self.kwargs,
         )
@@ -181,11 +177,9 @@ class TestLSV:
         'scanrate': 2.0,
     }
     pycls = pypalmsens.LinearSweepVoltammetry
-    pscls = Techniques.LinearSweep
 
     def test_params_round_trip(self):
         assert_params_round_trip_equal(
-            pscls=self.pscls,
             pycls=self.pycls,
             kwargs=self.kwargs,
         )
@@ -222,11 +216,9 @@ class TestACV:
         'scanrate': 0.2,
     }
     pycls = pypalmsens.ACVoltammetry
-    pscls = Techniques.ACVoltammetry
 
     def test_params_round_trip(self):
         assert_params_round_trip_equal(
-            pscls=self.pscls,
             pycls=self.pycls,
             kwargs=self.kwargs,
         )
@@ -273,11 +265,9 @@ class TestSWV:
         'record_forward_and_reverse_currents': True,
     }
     pycls = pypalmsens.SquareWaveVoltammetry
-    pscls = Techniques.SquareWave
 
     def test_params_round_trip(self):
         assert_params_round_trip_equal(
-            pscls=self.pscls,
             pycls=self.pycls,
             kwargs=self.kwargs,
         )
@@ -313,11 +303,9 @@ class TestCP:
         'run_time': 1.0,
     }
     pycls = pypalmsens.ChronoPotentiometry
-    pscls = Techniques.Potentiometry
 
     def test_params_round_trip(self):
         assert_params_round_trip_equal(
-            pscls=self.pscls,
             pycls=self.pycls,
             kwargs=self.kwargs,
         )
@@ -351,11 +339,9 @@ class TestSCP:
         'measurement_time': 0.2,
     }
     pycls = pypalmsens.StrippingChronoPotentiometry
-    pscls = Techniques.ChronoPotStripping
 
     def test_params_round_trip(self):
         assert_params_round_trip_equal(
-            pscls=self.pscls,
             pycls=self.pycls,
             kwargs=self.kwargs,
         )
@@ -393,11 +379,9 @@ class TestLSP:
         'scan_rate': 8.0,
     }
     pycls = pypalmsens.LinearSweepPotentiometry
-    pscls = Techniques.LinearSweepPotentiometry
 
     def test_params_round_trip(self):
         assert_params_round_trip_equal(
-            pscls=self.pscls,
             pycls=self.pycls,
             kwargs=self.kwargs,
         )
@@ -430,11 +414,9 @@ class TestOCP:
         'run_time': 1.0,
     }
     pycls = pypalmsens.OpenCircuitPotentiometry
-    pscls = Techniques.OpenCircuitPotentiometry
 
     def test_params_round_trip(self):
         assert_params_round_trip_equal(
-            pscls=self.pscls,
             pycls=self.pycls,
             kwargs=self.kwargs,
         )
@@ -467,11 +449,9 @@ class TestCA:
         'run_time': 1.0,
     }
     pycls = pypalmsens.ChronoAmperometry
-    pscls = Techniques.AmperometricDetection
 
     def test_params_round_trip(self):
         assert_params_round_trip_equal(
-            pscls=self.pscls,
             pycls=self.pycls,
             kwargs=self.kwargs,
         )
@@ -497,11 +477,9 @@ class TestFA:
         'run_time': 1.0,
     }
     pycls = pypalmsens.FastAmperometry
-    pscls = Techniques.FastAmperometry
 
     def test_params_round_trip(self):
         assert_params_round_trip_equal(
-            pscls=self.pscls,
             pycls=self.pycls,
             kwargs=self.kwargs,
         )
@@ -531,11 +509,9 @@ class TestDP:
         'scan_rate': 0.5,
     }
     pycls = pypalmsens.DifferentialPulseVoltammetry
-    pscls = Techniques.DifferentialPulse
 
     def test_params_round_trip(self):
         assert_params_round_trip_equal(
-            pscls=self.pscls,
             pycls=self.pycls,
             kwargs=self.kwargs,
         )
@@ -565,11 +541,9 @@ class TestPAD:
         'interval_time': 0.2,
     }
     pycls = pypalmsens.PulsedAmperometricDetection
-    pscls = Techniques.PulsedAmpDetection
 
     def test_params_round_trip(self):
         assert_params_round_trip_equal(
-            pscls=self.pscls,
             pycls=self.pycls,
             kwargs=self.kwargs,
         )
@@ -598,11 +572,9 @@ class TestNPV:
         'scan_rate': 0.5,
     }
     pycls = pypalmsens.NormalPulseVoltammetry
-    pscls = Techniques.NormalPulse
 
     def test_params_round_trip(self):
         assert_params_round_trip_equal(
-            pscls=self.pscls,
             pycls=self.pycls,
             kwargs=self.kwargs,
         )
@@ -633,11 +605,9 @@ class TestMA:
         ],
     }
     pycls = pypalmsens.MultiStepAmperometry
-    pscls = Techniques.MultistepAmperometry
 
     def test_params_round_trip(self):
         assert_params_round_trip_equal(
-            pscls=self.pscls,
             pycls=self.pycls,
             kwargs=self.kwargs,
         )
@@ -672,11 +642,9 @@ class TestMP:
         ],
     }
     pycls = pypalmsens.MultiStepPotentiometry
-    pscls = Techniques.MultistepPotentiometry
 
     def test_params_round_trip(self):
         assert_params_round_trip_equal(
-            pscls=self.pscls,
             pycls=self.pycls,
             kwargs=self.kwargs,
         )
@@ -709,11 +677,9 @@ class TestCC:
         'step2_run_time': 0.2,
     }
     pycls = pypalmsens.ChronoCoulometry
-    pscls = Techniques.Chronocoulometry
 
     def test_params_round_trip(self):
         assert_params_round_trip_equal(
-            pscls=self.pscls,
             pycls=self.pycls,
             kwargs=self.kwargs,
         )
@@ -745,11 +711,71 @@ class TestEIS:
         'min_frequency': 1e3,
     }
     pycls = pypalmsens.ElectrochemicalImpedanceSpectroscopy
-    pscls = Techniques.ImpedimetricMethod
 
     def test_params_round_trip(self):
         assert_params_round_trip_equal(
-            pscls=self.pscls,
+            pycls=self.pycls,
+            kwargs=self.kwargs,
+        )
+
+    @pytest.mark.instrument
+    def test_measurement(self, manager):
+        method = self.pycls(**self.kwargs)
+        measurement = manager.measure(method)
+
+        assert measurement
+        assert isinstance(measurement, Measurement)
+
+        dataset = measurement.dataset
+        assert len(dataset) == 18
+
+        assert dataset.array_names == {
+            "Capacitance'",
+            "Capacitance''",
+            'Capacitance',
+            'Eac',
+            'Frequency',
+            'Iac',
+            'Idc',
+            'Phase',
+            'Y',
+            'YIm',
+            'YRe',
+            'Z',
+            'ZIm',
+            'ZRe',
+            'mEdc',
+            'miDC',
+            'potential',
+            'time',
+        }
+        assert dataset.array_quantities == {
+            "-C''",
+            '-Phase',
+            "-Z''",
+            'C',
+            "C'",
+            'Current',
+            'Frequency',
+            'Potential',
+            'Time',
+            'Y',
+            "Y'",
+            "Y''",
+            'Z',
+            "Z'",
+        }
+
+
+class TestFIS:
+    kwargs = {
+        'frequency': 40000,
+        'run_time': 0.5,
+    }
+    pycls = pypalmsens.FastImpedanceSpectroscopy
+
+    def test_params_round_trip(self):
+        assert_params_round_trip_equal(
             pycls=self.pycls,
             kwargs=self.kwargs,
         )
@@ -812,11 +838,9 @@ class TestGIS:
         'min_frequency': 1e3,
     }
     pycls = pypalmsens.GalvanostaticImpedanceSpectroscopy
-    pscls = Techniques.ImpedimetricGstatMethod
 
     def test_params_round_trip(self):
         assert_params_round_trip_equal(
-            pscls=self.pscls,
             pycls=self.pycls,
             kwargs=self.kwargs,
         )
@@ -889,11 +913,9 @@ class TestMS:
         )
     }
     pycls = pypalmsens.MethodScript
-    pscls = Techniques.MethodScriptSandbox
 
     def test_params_round_trip(self):
         assert_params_round_trip_equal(
-            pscls=self.pscls,
             pycls=self.pycls,
             kwargs=self.kwargs,
         )
