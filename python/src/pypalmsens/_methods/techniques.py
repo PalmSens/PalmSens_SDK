@@ -1709,6 +1709,61 @@ class GalvanostaticImpedanceSpectroscopy(
 
 
 @attrs.define
+class FastGalvanostaticImpedanceSpectroscopy(
+    MethodSettings,
+    CurrentRangeMixin,
+    PotentialRangeMixin,
+    PretreatmentMixin,
+    PostMeasurementMixin,
+    GeneralMixin,
+):
+    """Create fast galvanostatic impededance spectroscopy method parameters."""
+
+    _id = 'fgis'
+
+    applied_current_range: CURRENT_RANGE = CURRENT_RANGE.cr_100_uA
+    """Applied current range.
+
+    Use `CURRENT_RANGE` to define the range."""
+
+    run_time: float = 10.0
+    """Run time in s."""
+
+    interval_time: float = 0.1
+    """Interval time in s."""
+
+    ac_current: float = 0.01
+    """AC current in applied current range RMS.
+
+    This value is multiplied by the applied current range."""
+
+    dc_current: float = 0.0
+    """DC current in applied current range.
+
+    This value is multiplied by the applied current range."""
+
+    frequency: float = 50000.0
+    """Frequency in Hz."""
+
+    def _update_psmethod(self, *, obj):
+        """Update method with potentiometry settings."""
+        obj.AppliedCurrentRange = self.applied_current_range._to_psobj()
+        obj.Iac = self.ac_current
+        obj.Idc = self.dc_current
+        obj.FixedFrequency = self.frequency
+        obj.RunTime = self.run_time
+        obj.IntervalTime = self.interval_time
+
+    def _update_params(self, *, obj):
+        self.applied_current_range = CURRENT_RANGE._from_psobj(obj.AppliedCurrentRange)
+        self.ac_current = obj.Iac
+        self.dc_current = obj.Idc
+        self.frequency = obj.FixedFrequency
+        self.run_time = obj.RunTime
+        self.interval_time = obj.IntervalTime
+
+
+@attrs.define
 class MethodScript(MethodSettings):
     """Create a method script sandbox object."""
 

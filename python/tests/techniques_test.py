@@ -894,6 +894,68 @@ class TestGIS:
         }
 
 
+class TestFGIS:
+    kwargs = {
+        'applied_current_range': CURRENT_RANGE.cr_10_uA,
+        'run_time': 0.3,
+    }
+    pycls = pypalmsens.FastGalvanostaticImpedanceSpectroscopy
+
+    def test_params_round_trip(self):
+        assert_params_round_trip_equal(
+            pycls=self.pycls,
+            kwargs=self.kwargs,
+        )
+
+    @pytest.mark.instrument
+    def test_measurement(self, manager):
+        method = self.pycls(**self.kwargs)
+        measurement = manager.measure(method)
+
+        assert measurement
+        assert isinstance(measurement, Measurement)
+
+        dataset = measurement.dataset
+        assert len(dataset) == 18
+
+        assert dataset.array_names == {
+            "Capacitance'",
+            "Capacitance''",
+            'Capacitance',
+            'Eac',
+            'Frequency',
+            'Iac',
+            'Idc',
+            'Phase',
+            'Y',
+            'YIm',
+            'YRe',
+            'Z',
+            'ZIm',
+            'ZRe',
+            'mEdc',
+            'miDC',
+            'potential',
+            'time',
+        }
+        assert dataset.array_quantities == {
+            "-C''",
+            '-Phase',
+            "-Z''",
+            'C',
+            "C'",
+            'Current',
+            'Frequency',
+            'Potential',
+            'Time',
+            'Y',
+            "Y'",
+            "Y''",
+            'Z',
+            "Z'",
+        }
+
+
 class TestMS:
     kwargs = {
         'script': (
