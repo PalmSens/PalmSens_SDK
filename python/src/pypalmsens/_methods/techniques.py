@@ -1232,6 +1232,60 @@ class ChronoPotentiometry(
 
 
 @attrs.define
+class StrippingChronoPotentiometry(
+    MethodSettings,
+    CurrentRangeMixin,
+    PotentialRangeMixin,
+    PretreatmentMixin,
+    PostMeasurementMixin,
+    DataProcessingMixin,
+    GeneralMixin,
+):
+    """Create stripping potentiometry method parameters.
+
+    If the stripping current is set to 0, then chemical stripping is performed,
+    otherwise it is chemical constant current stripping.
+    The applicable range is +- 0.001 microampere to +- 2 milliampere.
+    """
+
+    _id = 'scp'
+
+    current: float = 0.0
+    """The stripping current to apply in the given current range.
+
+    Note that this value acts as a multiplier in the applied current range.
+
+    So if 10 uA is the applied current range and 1.5 is given as current value,
+    the applied current will be 15 uA."""
+
+    applied_current_range: CURRENT_RANGE = CURRENT_RANGE.cr_100_uA
+    """Applied current range.
+
+    Use `CURRENT_RANGE` to define the range."""
+
+    end_potential: float = 0.0
+    """Potential in V where measurement ends."""
+
+    measurement_time: float = 1.0
+    """Measurement time in s (default: 1.0)"""
+
+    def _update_psmethod(self, *, obj):
+        """Update method with stripping chrono potentiometry settings."""
+        obj.Current = self.current
+        obj.AppliedCurrentRange = self.applied_current_range._to_psobj()
+        obj.MeasurementTime = self.measurement_time
+        obj.EndPotential = self.end_potential
+
+        obj.AppliedCurrentRange = self.applied_current_range._to_psobj()
+
+    def _update_params(self, *, obj):
+        self.current = obj.Current
+        self.applied_current_range = CURRENT_RANGE._from_psobj(obj.AppliedCurrentRange)
+        self.measurement_time = obj.MeasurementTime
+        self.end_potential = obj.EndPotential
+
+
+@attrs.define
 class LinearSweepPotentiometry(
     MethodSettings,
     CurrentRangeMixin,

@@ -3,6 +3,7 @@ from __future__ import annotations
 import logging
 
 import pytest
+import System
 from PalmSens import Techniques
 from pytest import approx
 
@@ -138,7 +139,7 @@ class TestFCV:
             kwargs=self.kwargs,
         )
 
-    # @pytest.mark.xfail(raises=AssertionError, reason='FCV only returns 1 scan with nScans>1')
+    @pytest.mark.xfail(raises=AssertionError, reason='FCV only returns 1 scan with nScans>1')
     @pytest.mark.instrument
     def test_measurement(self, manager):
         method = self.pycls(
@@ -321,6 +322,48 @@ class TestCP:
             kwargs=self.kwargs,
         )
 
+    @pytest.mark.instrument
+    def test_measurement(self, manager):
+        method = self.pycls(
+            potential_range=pypalmsens.settings.PotentialRange(
+                max=POTENTIAL_RANGE.pr_1_V,
+                min=POTENTIAL_RANGE.pr_10_mV,
+                start=POTENTIAL_RANGE.pr_1_V,
+            ),
+            **self.kwargs,
+        )
+        measurement = manager.measure(method)
+
+        assert measurement
+        assert isinstance(measurement, Measurement)
+
+        dataset = measurement.dataset
+        assert len(dataset) == 4
+
+        assert dataset.array_names == {'potential', 'current', 'time', 'charge'}
+        assert dataset.array_quantities == {'Current', 'Potential', 'Time', 'Charge'}
+
+
+class TestSCP:
+    kwargs = {
+        'current': 0.1,
+        'applied_current_range': CURRENT_RANGE.cr_100_uA,
+        'measurement_time': 0.2,
+    }
+    pycls = pypalmsens.StrippingChronoPotentiometry
+    pscls = Techniques.ChronoPotStripping
+
+    def test_params_round_trip(self):
+        assert_params_round_trip_equal(
+            pscls=self.pscls,
+            pycls=self.pycls,
+            kwargs=self.kwargs,
+        )
+
+    @pytest.mark.xfail(
+        raises=System.NotImplementedException,
+        reason='Not all devices support SCP.',
+    )
     @pytest.mark.instrument
     def test_measurement(self, manager):
         method = self.pycls(

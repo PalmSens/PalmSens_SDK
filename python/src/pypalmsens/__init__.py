@@ -44,6 +44,7 @@ from ._methods.techniques import (
     OpenCircuitPotentiometry,
     PulsedAmperometricDetection,
     SquareWaveVoltammetry,
+    StrippingChronoPotentiometry,
 )
 
 __all__ = [
@@ -69,6 +70,7 @@ __all__ = [
     'CyclicVoltammetry',
     'LinearSweepPotentiometry',
     'MultiStepPotentiometry',
+    'StrippingChronoPotentiometry',
     'DifferentialPulseVoltammetry',
     'ElectrochemicalImpedanceSpectroscopy',
     'FastCyclicVoltammetry',
