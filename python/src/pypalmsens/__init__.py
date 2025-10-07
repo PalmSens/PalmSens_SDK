@@ -28,6 +28,7 @@ from ._io import load_method_file, load_session_file, save_method_file, save_ses
 from ._methods.techniques import (
     ACVoltammetry,
     ChronoAmperometry,
+    ChronoCoulometry,
     ChronoPotentiometry,
     CyclicVoltammetry,
     DifferentialPulseVoltammetry,
@@ -76,6 +77,7 @@ __all__ = [
     'FastCyclicVoltammetry',
     'GalvanostaticImpedanceSpectroscopy',
     'LinearSweepVoltammetry',
+    'ChronoCoulometry',
     'MethodScript',
     'MultiStepAmperometry',
     'NormalPulseVoltammetry',

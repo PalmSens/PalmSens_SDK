@@ -1449,6 +1449,97 @@ class MultiStepPotentiometry(
 
 
 @attrs.define
+class ChronoCoulometry(
+    MethodSettings,
+    CurrentRangeMixin,
+    PretreatmentMixin,
+    PostMeasurementMixin,
+    CurrentLimitsMixin,
+    ChargeLimitsMixin,
+    DataProcessingMixin,
+    GeneralMixin,
+):
+    """Create linear sweep method parameters."""
+
+    _id = 'cc'
+
+    equilibration_time: float = 0.0
+    """Equilibration time in s."""
+
+    interval_time: float = 0.1
+    """Interval time in s."""
+
+    step1_potential: float = 0.5
+    """Potential applied during first step in V."""
+
+    step1_run_time: float = 5.0
+    """Run time for the first step."""
+
+    step2_potential: float = 0.5
+    """Potential applied during second step in V."""
+
+    step2_run_time: float = 5.0
+    """Run time for the second step."""
+
+    bandwidth: None | float = None
+    """Override bandwidth on MethodSCRIPT devices if set."""
+
+    record_auxiliary_input: bool = False
+    """Record auxiliary input."""
+
+    record_cell_potential: bool = False
+    """Record cell potential.
+
+    Counter electrode vs ground."""
+
+    record_we_potential: bool = False
+    """Record applied working electrode potential.
+
+    Reference electrode vs ground."""
+
+    def _update_psmethod(self, *, obj):
+        """Update method with linear sweep settings."""
+        obj.EquilibrationTime = self.equilibration_time
+        obj.IntervalTime = self.interval_time
+
+        obj.EFirstStep = self.step1_potential
+        obj.ESecondStep = self.step2_potential
+        obj.TFirstStep = self.step1_run_time
+        obj.TSecondStep = self.step2_run_time
+
+        if self.bandwidth is not None:
+            obj.OverrideBandwidth = True
+            obj.Bandwidth = self.bandwidth
+
+        set_extra_value_mask(
+            obj=obj,
+            record_auxiliary_input=self.record_auxiliary_input,
+            record_cell_potential=self.record_cell_potential,
+            record_we_potential=self.record_we_potential,
+        )
+
+    def _update_params(self, *, obj):
+        self.equilibration_time = obj.EquilibrationTime
+        self.interval_time = obj.IntervalTime
+        self.step1_potential = obj.EFirstStep
+        self.step2_potential = obj.ESecondStep
+        self.step1_run_time = obj.TFirstStep
+        self.step2_run_time = obj.TSecondStep
+
+        if obj.OverrideBandwidth:
+            self.bandwidth = obj.Bandwidth
+
+        msk = get_extra_value_mask(obj)
+
+        for key in (
+            'record_auxiliary_input',
+            'record_cell_potential',
+            'record_we_potential',
+        ):
+            setattr(self, key, msk[key])
+
+
+@attrs.define
 class ElectrochemicalImpedanceSpectroscopy(
     MethodSettings,
     CurrentRangeMixin,
