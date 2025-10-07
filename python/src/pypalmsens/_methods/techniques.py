@@ -255,7 +255,7 @@ class CyclicVoltammetry(
     Reference electrode vs ground."""
 
     def _update_psmethod(self, *, obj):
-        """Update method with cyclic voltammetry settings."""
+        """Update method with fast cyclic voltammetry settings."""
         obj.EquilibrationTime = self.equilibration_time
         obj.BeginPotential = self.begin_potential
         obj.Vtx1Potential = self.vertex1_potential
@@ -337,7 +337,7 @@ class FastCyclicVoltammetry(
     """Number of equilibration scans."""
 
     def _update_psmethod(self, *, obj):
-        """Update method with cyclic voltammetry settings."""
+        """Update method with fast cyclic voltammetry settings."""
 
         obj.Ranging = PSFixedCurrentRange(self.current_range._to_psobj())
         obj.EquilibrationTime = self.equilibration_time
@@ -400,7 +400,7 @@ class ACVoltammetry(
     scanrate: float = 1.0
     """Scan rate in V/s."""
 
-    record_dc_current: bool = False
+    measure_dc_current: bool = False
     """Measure the DC current seperately."""
 
     def _update_psmethod(self, *, obj):
@@ -411,12 +411,8 @@ class ACVoltammetry(
         obj.StepPotential = self.step_potential
         obj.Frequency = self.frequency
         obj.SineWaveAmplitude = self.ac_potential
+        obj.MeasureDCcurrent = self.measure_dc_current
         obj.Scanrate = self.scanrate
-
-        set_extra_value_mask(
-            obj=obj,
-            record_dc_current=self.record_dc_current,
-        )
 
     def _update_params(self, *, obj):
         self.equilibration_time = obj.EquilibrationTime
@@ -426,11 +422,7 @@ class ACVoltammetry(
         self.ac_potential = obj.SineWaveAmplitude
         self.frequency = obj.Frequency
         self.scanrate = obj.Scanrate
-
-        msk = get_extra_value_mask(obj)
-
-        for key in ('record_dc_current',):
-            setattr(self, key, msk[key])
+        self.measure_dc_current = obj.MeasureDCcurrent
 
 
 @attrs.define
@@ -575,7 +567,7 @@ class SquareWaveVoltammetry(
     """Record forward and reverse currents"""
 
     def _update_psmethod(self, *, obj):
-        """Update method with linear sweep settings."""
+        """Update method with square wave voltammetry settings."""
         obj.EquilibrationTime = self.equilibration_time
         obj.BeginPotential = self.begin_potential
         obj.EndPotential = self.end_potential
@@ -760,7 +752,7 @@ class NormalPulseVoltammetry(
     Reference electrode vs ground."""
 
     def _update_psmethod(self, *, obj):
-        """Update method with linear sweep settings."""
+        """Update method with normal pulse voltammetry settings."""
         obj.EquilibrationTime = self.equilibration_time
         obj.BeginPotential = self.begin_potential
         obj.EndPotential = self.end_potential
@@ -915,7 +907,7 @@ class FastAmperometry(
     """Run time in s."""
 
     def _update_psmethod(self, *, obj):
-        """Update method with chrono amperometry settings."""
+        """Update method with fast amperometry settings."""
         obj.Ranging = PSFixedCurrentRange(self.current_range._to_psobj())
         obj.EquilibrationTime = self.equilibration_time
         obj.EqPotentialFA = self.equilibration_potential
@@ -981,7 +973,7 @@ class MultiStepAmperometry(
     Reference electrode vs ground."""
 
     def _update_psmethod(self, *, obj):
-        """Update method with chrono amperometry settings."""
+        """Update method with multistep amperometry settings."""
         obj.EquilibrationTime = self.equilibration_time
         obj.IntervalTime = self.interval_time
         obj.nCycles = self.n_cycles
@@ -1070,7 +1062,7 @@ class PulsedAmperometricDetection(
     _MODES = ('dc', 'pulse', 'differential')
 
     def _update_psmethod(self, *, obj):
-        """Update method with chrono amperometry settings."""
+        """Update method with pulsed amperometric detection settings."""
         obj.EquilibrationTime = self.equilibration_time
         obj.IntervalTime = self.interval_time
         obj.PulseTime = self.pulse_time
@@ -1200,7 +1192,7 @@ class ChronoPotentiometry(
     """Record working electrode current."""
 
     def _update_psmethod(self, *, obj):
-        """Update method with potentiometry settings."""
+        """Update method with chronopotentiometry settings."""
         obj.Current = self.current
         obj.AppliedCurrentRange = self.applied_current_range._to_psobj()
         obj.IntervalTime = self.interval_time
@@ -1335,7 +1327,7 @@ class LinearSweepPotentiometry(
     """Record working electrode current."""
 
     def _update_psmethod(self, *, obj):
-        """Update method with potentiometry settings."""
+        """Update method with lineas sweep potentiometry settings."""
         obj.AppliedCurrentRange = self.applied_current_range._to_psobj()
 
         obj.BeginCurrent = self.current_begin
@@ -1498,7 +1490,7 @@ class ChronoCoulometry(
     Reference electrode vs ground."""
 
     def _update_psmethod(self, *, obj):
-        """Update method with linear sweep settings."""
+        """Update method with chrono coulometry settings."""
         obj.EquilibrationTime = self.equilibration_time
         obj.IntervalTime = self.interval_time
 
@@ -1575,7 +1567,7 @@ class ElectrochemicalImpedanceSpectroscopy(
     """Minimum frequency in Hz."""
 
     def _update_psmethod(self, *, obj):
-        """Update method with potentiometry settings."""
+        """Update method with electrochemical impedance spectroscopy settings."""
         obj.ScanType = enumScanType.Fixed
         obj.FreqType = enumFrequencyType.Scan
         obj.EquilibrationTime = self.equilibration_time
@@ -1629,7 +1621,7 @@ class FastImpedanceSpectroscopy(
     """Frequency in Hz."""
 
     def _update_psmethod(self, *, obj):
-        """Update method with potentiometry settings."""
+        """Update method with fas impedance spectroscopy settings."""
         obj.Eac = self.ac_potential
         obj.EquilibrationTime = self.equilibration_time
         obj.FixedFrequency = self.frequency
@@ -1686,7 +1678,7 @@ class GalvanostaticImpedanceSpectroscopy(
     """Minimum frequency in Hz."""
 
     def _update_psmethod(self, *, obj):
-        """Update method with potentiometry settings."""
+        """Update method with galvanic impedance spectroscopy settings."""
 
         obj.ScanType = enumScanType.Fixed
         obj.FreqType = enumFrequencyType.Scan
@@ -1746,7 +1738,7 @@ class FastGalvanostaticImpedanceSpectroscopy(
     """Frequency in Hz."""
 
     def _update_psmethod(self, *, obj):
-        """Update method with potentiometry settings."""
+        """Update method with fast galvanic impedance spectroscopy settings."""
         obj.AppliedCurrentRange = self.applied_current_range._to_psobj()
         obj.Iac = self.ac_current
         obj.Idc = self.dc_current
@@ -1790,33 +1782,33 @@ endif
 
 
 ID_TO_PARAMETER_MAPPING: dict[str, Type[MethodSettings] | None] = {
-    'acv': None,
+    'acv': ACVoltammetry,
     'ad': ChronoAmperometry,
-    'cc': None,
-    'cp': ChronoPotentiometry,
-    'cpot': None,
+    'cc': ChronoCoulometry,
+    'cp': None,  # CyclicPolarization
+    'cpot': None,  # CorrosionPotential
     'cv': CyclicVoltammetry,
     'dpv': DifferentialPulseVoltammetry,
     'eis': ElectrochemicalImpedanceSpectroscopy,
-    'fam': None,
-    'fcv': None,
-    'fgis': None,
-    'fis': None,
+    'fam': FastAmperometry,
+    'fcv': FastCyclicVoltammetry,
+    'fgis': FastGalvanostaticImpedanceSpectroscopy,
+    'fis': FastImpedanceSpectroscopy,
     'gis': GalvanostaticImpedanceSpectroscopy,
-    'gs': None,
-    'lp': None,
-    'lsp': None,
+    'gs': None,  # Galvanostatic
+    'lp': None,  # LinearPolarization
+    'lsp': LinearSweepPotentiometry,
     'lsv': LinearSweepVoltammetry,
     'ma': MultiStepAmperometry,
-    'mm': None,
-    'mp': None,
-    'mpad': None,
+    'mm': None,  # MixedMode
+    'mp': MultiStepPotentiometry,
+    'mpad': None,  # MultiplePulseAmperometry
     'ms': MethodScript,
-    'npv': None,
+    'npv': NormalPulseVoltammetry,
     'ocp': OpenCircuitPotentiometry,
-    'pad': None,
-    'pot': None,
-    'ps': None,
-    'scp': None,
+    'pad': PulsedAmperometricDetection,
+    'pot': ChronoPotentiometry,
+    'ps': None,  # Potentiostatic
+    'scp': StrippingChronoPotentiometry,
     'swv': SquareWaveVoltammetry,
 }
