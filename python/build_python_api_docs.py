@@ -82,17 +82,27 @@ pages = (
         module='pypalmsens',
         extra_config={
             'members': [
+                'ACVoltammetry',
                 'ChronoAmperometry',
+                'ChronoCoulometry',
                 'ChronoPotentiometry',
                 'CyclicVoltammetry',
                 'DifferentialPulseVoltammetry',
                 'ElectrochemicalImpedanceSpectroscopy',
+                'FastCyclicVoltammetry',
+                'FastGalvanostaticImpedanceSpectroscopy',
+                'FastImpedanceSpectroscopy',
                 'GalvanostaticImpedanceSpectroscopy',
+                'LinearSweepPotentiometry',
                 'LinearSweepVoltammetry',
                 'MethodScript',
                 'MultiStepAmperometry',
+                'MultiStepPotentiometry',
+                'NormalPulseVoltammetry',
                 'OpenCircuitPotentiometry',
+                'PulsedAmperometricDetection',
                 'SquareWaveVoltammetry',
+                'StrippingChronoPotentiometry',
             ]
         },
     ),
@@ -170,8 +180,8 @@ pages = (
     ),
 )
 
-ROOT_DIR = Path(__file__).parents[1]
-WORKDIR = ROOT_DIR / 'docs' / 'modules' / 'python' / 'partials' / 'api'
+ROOT_DIR = Path(__file__).parent
+WORKDIR = ROOT_DIR / 'docs' / 'modules' / 'ROOT' / 'partials' / 'api'
 
 
 with tempfile.TemporaryDirectory() as temp_dir:
