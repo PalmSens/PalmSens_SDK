@@ -5,6 +5,8 @@ from typing import ClassVar, Protocol, runtime_checkable
 import attrs
 from PalmSens.Techniques import MixedMode as PSMixedMode
 
+from pypalmsens._shared import single_to_double
+
 from ._shared import (
     CURRENT_RANGE,
 )
@@ -64,8 +66,8 @@ class ConstantE(StageProtocol, CurrentLimitsMixin):
         self._update_attributes(obj=obj)
 
     def _update_stage(self, *, obj):
-        self.potential = obj.Potential
-        self.run_time = obj.RunTime
+        self.potential = single_to_double(obj.Potential)
+        self.run_time = single_to_double(obj.RunTime)
 
         self._update_stage_params(obj=obj)
 
@@ -93,16 +95,16 @@ class ConstantI(StageProtocol, PotentialLimitsMixin):
     """Run time in s."""
 
     def _update_psobj(self, *, obj):
-        obj.Current = self.current
         obj.AppliedCurrentRange = self.applied_current_range._to_psobj()
+        obj.Current = self.current
         obj.RunTime = self.run_time
 
         self._update_attributes(obj=obj)
 
     def _update_stage(self, *, obj):
-        self.current = obj.Current
         self.applied_current_range = CURRENT_RANGE._from_psobj(obj.AppliedCurrentRange)
-        self.run_time = obj.RunTime
+        self.current = single_to_double(obj.Current)
+        self.run_time = single_to_double(obj.RunTime)
 
         self._update_stage_params(obj=obj)
 
@@ -134,10 +136,10 @@ class SweepE(StageProtocol, CurrentLimitsMixin):
         self._update_attributes(obj=obj)
 
     def _update_stage(self, *, obj):
-        self.begin_potential = obj.BeginPotential
-        self.end_potential = obj.EndPotential
-        self.step_potential = obj.StepPotential
-        self.scanrate = obj.Scanrate
+        self.begin_potential = single_to_double(obj.BeginPotential)
+        self.end_potential = single_to_double(obj.EndPotential)
+        self.step_potential = single_to_double(obj.StepPotential)
+        self.scanrate = single_to_double(obj.Scanrate)
 
         self._update_stage_params(obj=obj)
 
@@ -157,7 +159,7 @@ class OpenCircuit(StageProtocol, PotentialLimitsMixin):
         self._update_attributes(obj=obj)
 
     def _update_stage(self, *, obj):
-        self.run_time = obj.RunTime
+        self.run_time = single_to_double(obj.RunTime)
 
         self._update_stage_params(obj=obj)
 
@@ -204,14 +206,14 @@ class Impedance(StageProtocol):
         self._update_attributes(obj=obj)
 
     def _update_stage(self, *, obj):
-        self.dc_potential = obj.Potential
-        self.ac_potential = obj.Eac
+        self.dc_potential = single_to_double(obj.Potential)
+        self.ac_potential = single_to_double(obj.Eac)
 
-        self.run_time = obj.RunTime
-        self.frequency = obj.FixedFrequency
+        self.run_time = single_to_double(obj.RunTime)
+        self.frequency = single_to_double(obj.FixedFrequency)
 
-        self.min_sampling_time = obj.SamplingTime
-        self.max_equilibration_time = obj.MaxEqTime
+        self.min_sampling_time = single_to_double(obj.SamplingTime)
+        self.max_equilibration_time = single_to_double(obj.MaxEqTime)
 
         self._update_stage_params(obj=obj)
 
@@ -253,7 +255,7 @@ class MixedMode(
 
     def _update_params(self, *, obj):
         self.cycles = obj.nCycles
-        self.interval_time = obj.IntervalTime
+        self.interval_time = single_to_double(obj.IntervalTime)
 
         for psstage in obj.Stages:
             match psstage.StageType:

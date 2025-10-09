@@ -9,7 +9,6 @@ def new_data_callback(new_data):
 instruments = ps.discover()
 print(instruments)
 
-
 method = ps.mixed_mode.MixedMode(
     current_range=ps.settings.CurrentRange(
         max=ps.settings.CURRENT_RANGE.cr_1_A,  # 1 A range
