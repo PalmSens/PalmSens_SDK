@@ -175,8 +175,8 @@ pages = (
     ),
 )
 
-ROOT_DIR = Path(__file__).parents[1]
-WORKDIR = ROOT_DIR / 'docs' / 'modules' / 'python' / 'partials' / 'api'
+ROOT_DIR = Path(__file__).parent
+WORKDIR = ROOT_DIR / 'docs' / 'modules' / 'ROOT' / 'partials' / 'api'
 
 
 with tempfile.TemporaryDirectory() as temp_dir:
