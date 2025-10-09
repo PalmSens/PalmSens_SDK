@@ -8,10 +8,10 @@ if sys.platform == 'win32':
 else:
     from ._lib.mono import sdk_version
 
-__version__ = '1.1.0'
+__version__ = '1.1.1'
 __sdk_version__ = sdk_version
 
-from . import data, fitting, settings
+from . import data, fitting, mixed_mode, settings
 from ._instruments.instrument_manager import (
     InstrumentManager,
     connect,
@@ -54,6 +54,7 @@ __all__ = [
     'settings',
     'data',
     'fitting',
+    'mixed_mode',
     'connect',
     'connect_async',
     'discover',

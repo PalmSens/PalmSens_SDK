@@ -7,14 +7,7 @@ import System
 from PalmSens import Method as PSMethod
 from pytest import approx
 
-import pypalmsens
-from pypalmsens.data import Measurement
-from pypalmsens.settings import (
-    CURRENT_RANGE,
-    POTENTIAL_RANGE,
-    ELevel,
-    ILevel,
-)
+import pypalmsens as ps
 
 logger = logging.getLogger(__name__)
 
@@ -42,7 +35,7 @@ def assert_params_round_trip_equal(*, pycls, kwargs):
 
 @pytest.fixture(scope='module')
 def manager():
-    with pypalmsens.connect() as mgr:
+    with ps.connect() as mgr:
         logger.warning('Connected to %s' % mgr.instrument.id)
         yield mgr
 
@@ -77,7 +70,7 @@ class TestCV:
         'scanrate': 5,
         'n_scans': 2,
     }
-    pycls = pypalmsens.CyclicVoltammetry
+    pycls = ps.CyclicVoltammetry
 
     def test_params_round_trip(self):
         assert_params_round_trip_equal(
@@ -88,17 +81,17 @@ class TestCV:
     @pytest.mark.instrument
     def test_measurement(self, manager):
         method = self.pycls(
-            current_range=pypalmsens.settings.CurrentRange(
-                max=CURRENT_RANGE.cr_1_mA,
-                min=CURRENT_RANGE.cr_100_nA,
-                start=CURRENT_RANGE.cr_100_uA,
+            current_range=ps.settings.CurrentRange(
+                max=ps.settings.CURRENT_RANGE.cr_1_mA,
+                min=ps.settings.CURRENT_RANGE.cr_100_nA,
+                start=ps.settings.CURRENT_RANGE.cr_100_uA,
             ),
             **self.kwargs,
         )
         measurement = manager.measure(method)
 
         assert measurement
-        assert isinstance(measurement, Measurement)
+        assert isinstance(measurement, ps.data.Measurement)
         assert measurement.method.psmethod.nScans == 2
 
         dataset = measurement.dataset
@@ -127,7 +120,7 @@ class TestFCV:
         'n_avg_scans': 2,
         'n_equil_scans': 2,
     }
-    pycls = pypalmsens.FastCyclicVoltammetry
+    pycls = ps.FastCyclicVoltammetry
 
     def test_params_round_trip(self):
         assert_params_round_trip_equal(
@@ -139,13 +132,13 @@ class TestFCV:
     @pytest.mark.instrument
     def test_measurement(self, manager):
         method = self.pycls(
-            current_range=CURRENT_RANGE.cr_10_uA,
+            current_range=ps.settings.CURRENT_RANGE.cr_10_uA,
             **self.kwargs,
         )
         measurement = manager.measure(method)
 
         assert measurement
-        assert isinstance(measurement, Measurement)
+        assert isinstance(measurement, ps.data.Measurement)
         assert measurement.method.psmethod.nScans == 3
         assert measurement.method.psmethod.nAvgScans == 2
         assert measurement.method.psmethod.nEqScans == 2
@@ -176,7 +169,7 @@ class TestLSV:
         'step_potential': 0.1,
         'scanrate': 2.0,
     }
-    pycls = pypalmsens.LinearSweepVoltammetry
+    pycls = ps.LinearSweepVoltammetry
 
     def test_params_round_trip(self):
         assert_params_round_trip_equal(
@@ -187,17 +180,17 @@ class TestLSV:
     @pytest.mark.instrument
     def test_measurement(self, manager):
         method = self.pycls(
-            current_range=pypalmsens.settings.CurrentRange(
-                max=CURRENT_RANGE.cr_1_mA,
-                min=CURRENT_RANGE.cr_100_nA,
-                start=CURRENT_RANGE.cr_100_uA,
+            current_range=ps.settings.CurrentRange(
+                max=ps.settings.CURRENT_RANGE.cr_1_mA,
+                min=ps.settings.CURRENT_RANGE.cr_100_nA,
+                start=ps.settings.CURRENT_RANGE.cr_100_uA,
             ),
             **self.kwargs,
         )
         measurement = manager.measure(method)
 
         assert measurement
-        assert isinstance(measurement, Measurement)
+        assert isinstance(measurement, ps.data.Measurement)
 
         dataset = measurement.dataset
         assert len(dataset) == 4
@@ -215,7 +208,7 @@ class TestACV:
         'frequency': 200.0,
         'scanrate': 0.2,
     }
-    pycls = pypalmsens.ACVoltammetry
+    pycls = ps.ACVoltammetry
 
     def test_params_round_trip(self):
         assert_params_round_trip_equal(
@@ -226,17 +219,17 @@ class TestACV:
     @pytest.mark.instrument
     def test_measurement(self, manager):
         method = self.pycls(
-            current_range=pypalmsens.settings.CurrentRange(
-                max=CURRENT_RANGE.cr_1_mA,
-                min=CURRENT_RANGE.cr_100_nA,
-                start=CURRENT_RANGE.cr_100_uA,
+            current_range=ps.settings.CurrentRange(
+                max=ps.settings.CURRENT_RANGE.cr_1_mA,
+                min=ps.settings.CURRENT_RANGE.cr_100_nA,
+                start=ps.settings.CURRENT_RANGE.cr_100_uA,
             ),
             **self.kwargs,
         )
         measurement = manager.measure(method)
 
         assert measurement
-        assert isinstance(measurement, Measurement)
+        assert isinstance(measurement, ps.data.Measurement)
 
         dataset = measurement.dataset
         assert len(dataset) == 8
@@ -264,7 +257,7 @@ class TestSWV:
         'amplitude': 0.05,
         'record_forward_and_reverse_currents': True,
     }
-    pycls = pypalmsens.SquareWaveVoltammetry
+    pycls = ps.SquareWaveVoltammetry
 
     def test_params_round_trip(self):
         assert_params_round_trip_equal(
@@ -275,17 +268,17 @@ class TestSWV:
     @pytest.mark.instrument
     def test_measurement(self, manager):
         method = self.pycls(
-            current_range=pypalmsens.settings.CurrentRange(
-                max=CURRENT_RANGE.cr_1_mA,
-                min=CURRENT_RANGE.cr_100_nA,
-                start=CURRENT_RANGE.cr_100_uA,
+            current_range=ps.settings.CurrentRange(
+                max=ps.settings.CURRENT_RANGE.cr_1_mA,
+                min=ps.settings.CURRENT_RANGE.cr_100_nA,
+                start=ps.settings.CURRENT_RANGE.cr_100_uA,
             ),
             **self.kwargs,
         )
         measurement = manager.measure(method)
 
         assert measurement
-        assert isinstance(measurement, Measurement)
+        assert isinstance(measurement, ps.data.Measurement)
         assert measurement.method.psmethod.nScans == 1
 
         dataset = measurement.dataset
@@ -298,11 +291,11 @@ class TestSWV:
 class TestCP:
     kwargs = {
         'current': 0.0,
-        'applied_current_range': CURRENT_RANGE.cr_100_uA,
+        'applied_current_range': ps.settings.CURRENT_RANGE.cr_100_uA,
         'interval_time': 0.1,
         'run_time': 1.0,
     }
-    pycls = pypalmsens.ChronoPotentiometry
+    pycls = ps.ChronoPotentiometry
 
     def test_params_round_trip(self):
         assert_params_round_trip_equal(
@@ -313,17 +306,17 @@ class TestCP:
     @pytest.mark.instrument
     def test_measurement(self, manager):
         method = self.pycls(
-            potential_range=pypalmsens.settings.PotentialRange(
-                max=POTENTIAL_RANGE.pr_1_V,
-                min=POTENTIAL_RANGE.pr_10_mV,
-                start=POTENTIAL_RANGE.pr_1_V,
+            potential_range=ps.settings.PotentialRange(
+                max=ps.settings.POTENTIAL_RANGE.pr_1_V,
+                min=ps.settings.POTENTIAL_RANGE.pr_10_mV,
+                start=ps.settings.POTENTIAL_RANGE.pr_1_V,
             ),
             **self.kwargs,
         )
         measurement = manager.measure(method)
 
         assert measurement
-        assert isinstance(measurement, Measurement)
+        assert isinstance(measurement, ps.data.Measurement)
 
         dataset = measurement.dataset
         assert len(dataset) == 4
@@ -335,10 +328,10 @@ class TestCP:
 class TestSCP:
     kwargs = {
         'current': 0.1,
-        'applied_current_range': CURRENT_RANGE.cr_100_uA,
+        'applied_current_range': ps.settings.CURRENT_RANGE.cr_100_uA,
         'measurement_time': 0.2,
     }
-    pycls = pypalmsens.StrippingChronoPotentiometry
+    pycls = ps.StrippingChronoPotentiometry
 
     def test_params_round_trip(self):
         assert_params_round_trip_equal(
@@ -353,17 +346,17 @@ class TestSCP:
     @pytest.mark.instrument
     def test_measurement(self, manager):
         method = self.pycls(
-            potential_range=pypalmsens.settings.PotentialRange(
-                max=POTENTIAL_RANGE.pr_1_V,
-                min=POTENTIAL_RANGE.pr_10_mV,
-                start=POTENTIAL_RANGE.pr_1_V,
+            potential_range=ps.settings.PotentialRange(
+                max=ps.settings.POTENTIAL_RANGE.pr_1_V,
+                min=ps.settings.POTENTIAL_RANGE.pr_10_mV,
+                start=ps.settings.POTENTIAL_RANGE.pr_1_V,
             ),
             **self.kwargs,
         )
         measurement = manager.measure(method)
 
         assert measurement
-        assert isinstance(measurement, Measurement)
+        assert isinstance(measurement, ps.data.Measurement)
 
         dataset = measurement.dataset
         assert len(dataset) == 4
@@ -374,11 +367,11 @@ class TestSCP:
 
 class TestLSP:
     kwargs = {
-        'applied_current_range': CURRENT_RANGE.cr_100_uA,
+        'applied_current_range': ps.settings.CURRENT_RANGE.cr_100_uA,
         'current_step': 0.1,
         'scan_rate': 8.0,
     }
-    pycls = pypalmsens.LinearSweepPotentiometry
+    pycls = ps.LinearSweepPotentiometry
 
     def test_params_round_trip(self):
         assert_params_round_trip_equal(
@@ -389,17 +382,17 @@ class TestLSP:
     @pytest.mark.instrument
     def test_measurement(self, manager):
         method = self.pycls(
-            potential_range=pypalmsens.settings.PotentialRange(
-                max=POTENTIAL_RANGE.pr_1_V,
-                min=POTENTIAL_RANGE.pr_10_mV,
-                start=POTENTIAL_RANGE.pr_1_V,
+            potential_range=ps.settings.PotentialRange(
+                max=ps.settings.POTENTIAL_RANGE.pr_1_V,
+                min=ps.settings.POTENTIAL_RANGE.pr_10_mV,
+                start=ps.settings.POTENTIAL_RANGE.pr_1_V,
             ),
             **self.kwargs,
         )
         measurement = manager.measure(method)
 
         assert measurement
-        assert isinstance(measurement, Measurement)
+        assert isinstance(measurement, ps.data.Measurement)
 
         dataset = measurement.dataset
         assert len(dataset) == 4
@@ -413,7 +406,7 @@ class TestOCP:
         'interval_time': 0.1,
         'run_time': 1.0,
     }
-    pycls = pypalmsens.OpenCircuitPotentiometry
+    pycls = ps.OpenCircuitPotentiometry
 
     def test_params_round_trip(self):
         assert_params_round_trip_equal(
@@ -424,17 +417,17 @@ class TestOCP:
     @pytest.mark.instrument
     def test_measurement(self, manager):
         method = self.pycls(
-            potential_range=pypalmsens.settings.PotentialRange(
-                max=POTENTIAL_RANGE.pr_1_V,
-                min=POTENTIAL_RANGE.pr_10_mV,
-                start=POTENTIAL_RANGE.pr_1_V,
+            potential_range=ps.settings.PotentialRange(
+                max=ps.settings.POTENTIAL_RANGE.pr_1_V,
+                min=ps.settings.POTENTIAL_RANGE.pr_10_mV,
+                start=ps.settings.POTENTIAL_RANGE.pr_1_V,
             ),
             **self.kwargs,
         )
         measurement = manager.measure(method)
 
         assert measurement
-        assert isinstance(measurement, Measurement)
+        assert isinstance(measurement, ps.data.Measurement)
 
         dataset = measurement.dataset
         assert len(dataset) == 2
@@ -448,7 +441,7 @@ class TestCA:
         'interval_time': 0.1,
         'run_time': 1.0,
     }
-    pycls = pypalmsens.ChronoAmperometry
+    pycls = ps.ChronoAmperometry
 
     def test_params_round_trip(self):
         assert_params_round_trip_equal(
@@ -462,7 +455,7 @@ class TestCA:
         measurement = manager.measure(method)
 
         assert measurement
-        assert isinstance(measurement, Measurement)
+        assert isinstance(measurement, ps.data.Measurement)
 
         dataset = measurement.dataset
         assert len(dataset) == 4
@@ -476,7 +469,7 @@ class TestFA:
         'interval_time': 0.1,
         'run_time': 1.0,
     }
-    pycls = pypalmsens.FastAmperometry
+    pycls = ps.FastAmperometry
 
     def test_params_round_trip(self):
         assert_params_round_trip_equal(
@@ -490,7 +483,7 @@ class TestFA:
         measurement = manager.measure(method)
 
         assert measurement
-        assert isinstance(measurement, Measurement)
+        assert isinstance(measurement, ps.data.Measurement)
 
         dataset = measurement.dataset
         assert len(dataset) == 4
@@ -508,7 +501,7 @@ class TestDP:
         'pulse_time': 0.1,
         'scan_rate': 0.5,
     }
-    pycls = pypalmsens.DifferentialPulseVoltammetry
+    pycls = ps.DifferentialPulseVoltammetry
 
     def test_params_round_trip(self):
         assert_params_round_trip_equal(
@@ -522,7 +515,7 @@ class TestDP:
         measurement = manager.measure(method)
 
         assert measurement
-        assert isinstance(measurement, Measurement)
+        assert isinstance(measurement, ps.data.Measurement)
 
         dataset = measurement.dataset
         assert len(dataset) == 3
@@ -540,7 +533,7 @@ class TestPAD:
         'run_time': 1.0,
         'interval_time': 0.2,
     }
-    pycls = pypalmsens.PulsedAmperometricDetection
+    pycls = ps.PulsedAmperometricDetection
 
     def test_params_round_trip(self):
         assert_params_round_trip_equal(
@@ -554,7 +547,7 @@ class TestPAD:
         measurement = manager.measure(method)
 
         assert measurement
-        assert isinstance(measurement, Measurement)
+        assert isinstance(measurement, ps.data.Measurement)
 
         dataset = measurement.dataset
         assert len(dataset) == 3
@@ -571,7 +564,7 @@ class TestNPV:
         'pulse_time': 0.1,
         'scan_rate': 0.5,
     }
-    pycls = pypalmsens.NormalPulseVoltammetry
+    pycls = ps.NormalPulseVoltammetry
 
     def test_params_round_trip(self):
         assert_params_round_trip_equal(
@@ -585,7 +578,7 @@ class TestNPV:
         measurement = manager.measure(method)
 
         assert measurement
-        assert isinstance(measurement, Measurement)
+        assert isinstance(measurement, ps.data.Measurement)
 
         dataset = measurement.dataset
         assert len(dataset) == 3
@@ -600,11 +593,11 @@ class TestMA:
         'interval_time': 0.01,
         'n_cycles': 2,
         'levels': [
-            ELevel(level=0.5, duration=0.1),
-            ELevel(level=0.3, duration=0.2),
+            ps.settings.ELevel(level=0.5, duration=0.1),
+            ps.settings.ELevel(level=0.3, duration=0.2),
         ],
     }
-    pycls = pypalmsens.MultiStepAmperometry
+    pycls = ps.MultiStepAmperometry
 
     def test_params_round_trip(self):
         assert_params_round_trip_equal(
@@ -618,7 +611,7 @@ class TestMA:
         measurement = manager.measure(method)
 
         assert measurement
-        assert isinstance(measurement, Measurement)
+        assert isinstance(measurement, ps.data.Measurement)
 
         dataset = measurement.dataset
         assert len(dataset) == 4
@@ -637,11 +630,11 @@ class TestMP:
         'interval_time': 0.01,
         'n_cycles': 2,
         'levels': [
-            ILevel(level=0.5, duration=0.1),
-            ILevel(level=0.3, duration=0.2),
+            ps.settings.ILevel(level=0.5, duration=0.1),
+            ps.settings.ILevel(level=0.3, duration=0.2),
         ],
     }
-    pycls = pypalmsens.MultiStepPotentiometry
+    pycls = ps.MultiStepPotentiometry
 
     def test_params_round_trip(self):
         assert_params_round_trip_equal(
@@ -655,7 +648,7 @@ class TestMP:
         measurement = manager.measure(method)
 
         assert measurement
-        assert isinstance(measurement, Measurement)
+        assert isinstance(measurement, ps.data.Measurement)
 
         dataset = measurement.dataset
         assert len(dataset) == 4
@@ -676,7 +669,7 @@ class TestCC:
         'step1_run_time': 0.1,
         'step2_run_time': 0.2,
     }
-    pycls = pypalmsens.ChronoCoulometry
+    pycls = ps.ChronoCoulometry
 
     def test_params_round_trip(self):
         assert_params_round_trip_equal(
@@ -690,7 +683,7 @@ class TestCC:
         measurement = manager.measure(method)
 
         assert measurement
-        assert isinstance(measurement, Measurement)
+        assert isinstance(measurement, ps.data.Measurement)
 
         dataset = measurement.dataset
         assert len(dataset) == 4
@@ -710,7 +703,7 @@ class TestEIS:
         'max_frequency': 1e5,
         'min_frequency': 1e3,
     }
-    pycls = pypalmsens.ElectrochemicalImpedanceSpectroscopy
+    pycls = ps.ElectrochemicalImpedanceSpectroscopy
 
     def test_params_round_trip(self):
         assert_params_round_trip_equal(
@@ -724,7 +717,7 @@ class TestEIS:
         measurement = manager.measure(method)
 
         assert measurement
-        assert isinstance(measurement, Measurement)
+        assert isinstance(measurement, ps.data.Measurement)
 
         dataset = measurement.dataset
         assert len(dataset) == 18
@@ -772,7 +765,7 @@ class TestFIS:
         'frequency': 40000,
         'run_time': 0.5,
     }
-    pycls = pypalmsens.FastImpedanceSpectroscopy
+    pycls = ps.FastImpedanceSpectroscopy
 
     def test_params_round_trip(self):
         assert_params_round_trip_equal(
@@ -786,7 +779,7 @@ class TestFIS:
         measurement = manager.measure(method)
 
         assert measurement
-        assert isinstance(measurement, Measurement)
+        assert isinstance(measurement, ps.data.Measurement)
 
         dataset = measurement.dataset
         assert len(dataset) == 18
@@ -831,13 +824,13 @@ class TestFIS:
 
 class TestGIS:
     kwargs = {
-        'applied_current_range': CURRENT_RANGE.cr_10_uA,
+        'applied_current_range': ps.settings.CURRENT_RANGE.cr_10_uA,
         'equilibration_time': 0.0,
         'n_frequencies': 7,
         'max_frequency': 1e5,
         'min_frequency': 1e3,
     }
-    pycls = pypalmsens.GalvanostaticImpedanceSpectroscopy
+    pycls = ps.GalvanostaticImpedanceSpectroscopy
 
     def test_params_round_trip(self):
         assert_params_round_trip_equal(
@@ -851,7 +844,7 @@ class TestGIS:
         measurement = manager.measure(method)
 
         assert measurement
-        assert isinstance(measurement, Measurement)
+        assert isinstance(measurement, ps.data.Measurement)
 
         dataset = measurement.dataset
         assert len(dataset) == 18
@@ -896,10 +889,10 @@ class TestGIS:
 
 class TestFGIS:
     kwargs = {
-        'applied_current_range': CURRENT_RANGE.cr_10_uA,
+        'applied_current_range': ps.settings.CURRENT_RANGE.cr_10_uA,
         'run_time': 0.3,
     }
-    pycls = pypalmsens.FastGalvanostaticImpedanceSpectroscopy
+    pycls = ps.FastGalvanostaticImpedanceSpectroscopy
 
     def test_params_round_trip(self):
         assert_params_round_trip_equal(
@@ -913,7 +906,7 @@ class TestFGIS:
         measurement = manager.measure(method)
 
         assert measurement
-        assert isinstance(measurement, Measurement)
+        assert isinstance(measurement, ps.data.Measurement)
 
         dataset = measurement.dataset
         assert len(dataset) == 18
@@ -974,7 +967,7 @@ class TestMS:
             '\n'  # must end with 2 newlines
         )
     }
-    pycls = pypalmsens.MethodScript
+    pycls = ps.MethodScript
 
     def test_params_round_trip(self):
         assert_params_round_trip_equal(
@@ -988,10 +981,108 @@ class TestMS:
         measurement = manager.measure(method)
 
         assert measurement
-        assert isinstance(measurement, Measurement)
+        assert isinstance(measurement, ps.data.Measurement)
 
         dataset = measurement.dataset
         assert len(dataset) == 2
 
         assert dataset.array_names == {'AppliedPotential1_1', 'Current1_1'}
         assert dataset.array_quantities == {'Current', 'Potential'}
+
+
+class TestMM:
+    kwargs = {
+        'cycles': 2,
+        'interval_time': 0.02,
+        'stages': [
+            ps.mixed_mode.ConstantE(
+                run_time=0.1,
+                potential=0.5,
+            ),
+            ps.mixed_mode.ConstantI(
+                run_time=0.1,
+                current=1.0,
+                applied_current_range=ps.settings.CURRENT_RANGE.cr_100_nA,
+            ),
+            ps.mixed_mode.SweepE(
+                begin_potential=-0.5,
+                end_potential=0.5,
+                step_potential=0.25,
+                scanrate=20.0,
+            ),
+            ps.mixed_mode.OpenCircuit(
+                run_time=0.1,
+            ),
+            ps.mixed_mode.Impedance(
+                frequency=50000,
+                ac_potential=0.01,
+                dc_potential=0.0,
+                run_time=0.1,
+                min_sampling_time=0.0,
+            ),
+        ],
+    }
+    pycls = ps.mixed_mode.MixedMode
+
+    def test_params_round_trip(self):
+        assert_params_round_trip_equal(
+            pycls=self.pycls,
+            kwargs=self.kwargs,
+        )
+
+    @pytest.mark.instrument
+    def test_measurement(self, manager):
+        method = self.pycls(**self.kwargs)
+        measurement = manager.measure(method)
+
+        assert measurement
+        assert isinstance(measurement, ps.data.Measurement)
+
+        dataset = measurement.dataset
+
+        assert len(dataset) == 4
+
+        assert dataset.array_names == {'charge', 'current', 'potential', 'time'}
+        assert dataset.array_quantities == {'Charge', 'Current', 'Potential', 'Time'}
+
+        eis = measurement.eis_data
+        assert len(eis) == 2
+
+        eis_dataset = eis[0].dataset
+
+        assert eis_dataset.array_names == {
+            'Capacitance',
+            "Capacitance'",
+            "Capacitance''",
+            'Eac',
+            'Frequency',
+            'Iac',
+            'Idc',
+            'Phase',
+            'Y',
+            'YIm',
+            'YRe',
+            'Z',
+            'ZIm',
+            'ZRe',
+            'mEdc',
+            'miDC',
+            'potential',
+            'time',
+        }
+        assert eis_dataset.array_quantities == {
+            "-C''",
+            '-Phase',
+            "-Z''",
+            'C',
+            "C'",
+            'Current',
+            'Frequency',
+            'Potential',
+            'Time',
+            'Y',
+            "Y'",
+            "Y''",
+            'Z',
+            "Z'",
+        }
