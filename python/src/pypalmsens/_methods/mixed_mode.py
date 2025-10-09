@@ -46,7 +46,7 @@ class StageProtocol(Protocol):
 
 
 @attrs.define(slots=False)
-class StageConstantE(StageProtocol, CurrentLimitsMixin):
+class ConstantE(StageProtocol, CurrentLimitsMixin):
     """Amperometric detection stage."""
 
     _type = PSMixedMode.EnumMixedModeStageType.ConstantE
@@ -71,7 +71,7 @@ class StageConstantE(StageProtocol, CurrentLimitsMixin):
 
 
 @attrs.define(slots=False)
-class StageConstantI(StageProtocol, PotentialLimitsMixin):
+class ConstantI(StageProtocol, PotentialLimitsMixin):
     """Potentiometry stage."""
 
     _type = PSMixedMode.EnumMixedModeStageType.ConstantI
@@ -108,7 +108,7 @@ class StageConstantI(StageProtocol, PotentialLimitsMixin):
 
 
 @attrs.define(slots=False)
-class StageSweepE(StageProtocol, CurrentLimitsMixin):
+class SweepE(StageProtocol, CurrentLimitsMixin):
     """Linear sweep detection stage."""
 
     _type = PSMixedMode.EnumMixedModeStageType.SweepE
@@ -143,7 +143,7 @@ class StageSweepE(StageProtocol, CurrentLimitsMixin):
 
 
 @attrs.define(slots=False)
-class StageOpenCircuit(StageProtocol, PotentialLimitsMixin):
+class OpenCircuit(StageProtocol, PotentialLimitsMixin):
     """Ocp stage."""
 
     _type = PSMixedMode.EnumMixedModeStageType.OpenCircuit
@@ -163,7 +163,7 @@ class StageOpenCircuit(StageProtocol, PotentialLimitsMixin):
 
 
 @attrs.define(slots=False)
-class StageImpedance(StageProtocol):
+class Impedance(StageProtocol):
     """Electostatic impedance stage."""
 
     _type = PSMixedMode.EnumMixedModeStageType.Impedance
@@ -216,7 +216,7 @@ class StageImpedance(StageProtocol):
         self._update_stage_params(obj=obj)
 
 
-TStage = StageConstantE | StageConstantI | StageSweepE | StageOpenCircuit | StageImpedance
+TStage = ConstantE | ConstantI | SweepE | OpenCircuit | Impedance
 
 
 @attrs.define
@@ -257,16 +257,16 @@ class MixedMode(
 
         for psstage in obj.Stages:
             match psstage.StageType:
-                case StageConstantE._type:
-                    Stage = StageConstantE
-                case StageConstantI._type:
-                    Stage = StageConstantI
-                case StageSweepE._type:
-                    Stage = StageSweepE
-                case StageOpenCircuit._type:
-                    Stage = StageOpenCircuit
-                case StageImpedance._type:
-                    Stage = StageImpedance
+                case ConstantE._type:
+                    Stage = ConstantE
+                case ConstantI._type:
+                    Stage = ConstantI
+                case SweepE._type:
+                    Stage = SweepE
+                case OpenCircuit._type:
+                    Stage = OpenCircuit
+                case Impedance._type:
+                    Stage = Impedance
                 case _:
                     raise ValueError(f'No such stage {psstage.StageType}')
 

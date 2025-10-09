@@ -159,6 +159,11 @@ pages = (
         },
     ),
     Page(
+        name='mixed_mode',
+        title='Mixed Mode',
+        module='pypalmsens.mixed_mode',
+    ),
+    Page(
         name='fitting',
         title='Fitting',
         module='pypalmsens.fitting',
