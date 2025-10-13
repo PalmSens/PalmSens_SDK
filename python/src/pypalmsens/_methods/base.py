@@ -8,6 +8,14 @@ from PalmSens import Method as PSMethod
 
 
 @runtime_checkable
+class BaseSettings(Protocol):
+    """Protocol to provide generic methods for parameters."""
+
+    def _update_psmethod(self, psmethod: PSMethod, /): ...
+    def _update_params(self, psmethod: PSMethod, /): ...
+
+
+@runtime_checkable
 class BaseTechnique(Protocol):
     """Protocol to provide base methods for method classes."""
 
@@ -23,17 +31,17 @@ class BaseTechnique(Protocol):
         """Convert parameters to dotnet method."""
         psmethod = PSMethod.FromMethodID(self._id)
 
-        self._update_psmethod(psmethod=psmethod)
-        self._update_psmethod_nested(psmethod=psmethod)
+        self._update_psmethod(psmethod)
+        self._update_psmethod_nested(psmethod)
         return psmethod
 
-    def _update_psmethod_nested(self, *, psmethod):
+    def _update_psmethod_nested(self, psmethod: PSMethod, /):
         """Convert and set field parameters on dotnet method."""
         for field in self.__attrs_attrs__:
             attribute = getattr(self, field.name)
             try:
                 # Update parameters if attribute has the `update_params` method
-                attribute._update_psmethod(psmethod=psmethod)
+                attribute._update_psmethod(psmethod)
             except AttributeError:
                 pass
 
@@ -46,25 +54,25 @@ class BaseTechnique(Protocol):
         return new()
 
     @classmethod
-    def _from_psmethod(cls, psmethod: PSMethod) -> BaseTechnique:
+    def _from_psmethod(cls, psmethod: PSMethod, /) -> BaseTechnique:
         """Generate parameters from dotnet method object."""
         new = cls.from_method_id(psmethod.MethodID)
-        new._update_params(psmethod=psmethod)
-        new._update_params_nested(psmethod=psmethod)
+        new._update_params(psmethod)
+        new._update_params_nested(psmethod)
         return new
 
-    def _update_params_nested(self, *, psmethod):
+    def _update_params_nested(self, psmethod: PSMethod, /):
         """Retrieve and convert dotnet method for nested field parameters."""
         for field in self.__attrs_attrs__:
             attribute = getattr(self, field.name)
             try:
                 # Update parameters if attribute has the `update_params` method
-                attribute._update_params(psmethod=psmethod)
+                attribute._update_params(psmethod)
             except AttributeError:
                 pass
 
     @abstractmethod
-    def _update_psmethod(self, *, psmethod: PSMethod) -> None: ...
+    def _update_psmethod(self, psmethod: PSMethod, /) -> None: ...
 
     @abstractmethod
-    def _update_params(self, *, psmethod: PSMethod) -> None: ...
+    def _update_params(self, psmethod: PSMethod, /) -> None: ...

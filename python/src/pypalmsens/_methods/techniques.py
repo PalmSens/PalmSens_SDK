@@ -5,6 +5,7 @@ from typing import Literal
 import attrs
 import PalmSens.Techniques as PSTechniques
 from PalmSens import FixedCurrentRange as PSFixedCurrentRange
+from PalmSens import Method as PSMethod
 from PalmSens.Techniques.Impedance import enumFrequencyType, enumScanType
 
 from . import mixins
@@ -73,7 +74,7 @@ class CyclicVoltammetry(
 
     Reference electrode vs ground."""
 
-    def _update_psmethod(self, *, psmethod):
+    def _update_psmethod(self, psmethod: PSMethod, /):
         """Update method with fast cyclic voltammetry settings."""
         psmethod.EquilibrationTime = self.equilibration_time
         psmethod.BeginPotential = self.begin_potential
@@ -91,7 +92,7 @@ class CyclicVoltammetry(
             enable_bipot_current=self.enable_bipot_current,
         )
 
-    def _update_params(self, *, psmethod):
+    def _update_params(self, psmethod: PSMethod, /):
         self.equilibration_time = psmethod.EquilibrationTime
         self.begin_potential = psmethod.BeginPotential
         self.vertex1_potential = psmethod.Vtx1Potential
@@ -155,7 +156,7 @@ class FastCyclicVoltammetry(
     n_equil_scans: int = 1
     """Number of equilibration scans."""
 
-    def _update_psmethod(self, *, psmethod):
+    def _update_psmethod(self, psmethod: PSMethod, /):
         """Update method with fast cyclic voltammetry settings."""
 
         psmethod.Ranging = PSFixedCurrentRange(self.current_range._to_psobj())
@@ -169,7 +170,7 @@ class FastCyclicVoltammetry(
         psmethod.nAvgScans = self.n_avg_scans
         psmethod.nEqScans = self.n_equil_scans
 
-    def _update_params(self, *, psmethod):
+    def _update_params(self, psmethod: PSMethod, /):
         self.current_range = CURRENT_RANGE._from_psobj(psmethod.Ranging.StartCurrentRange)
         self.equilibration_time = psmethod.EquilibrationTime
         self.begin_potential = psmethod.BeginPotential
@@ -222,7 +223,7 @@ class ACVoltammetry(
     measure_dc_current: bool = False
     """Measure the DC current seperately."""
 
-    def _update_psmethod(self, *, psmethod):
+    def _update_psmethod(self, psmethod: PSMethod, /):
         """Update method with linear sweep settings."""
         psmethod.EquilibrationTime = self.equilibration_time
         psmethod.BeginPotential = self.begin_potential
@@ -233,7 +234,7 @@ class ACVoltammetry(
         psmethod.MeasureDCcurrent = self.measure_dc_current
         psmethod.Scanrate = self.scanrate
 
-    def _update_params(self, *, psmethod):
+    def _update_params(self, psmethod: PSMethod, /):
         self.equilibration_time = psmethod.EquilibrationTime
         self.begin_potential = psmethod.BeginPotential
         self.end_potential = psmethod.EndPotential
@@ -295,7 +296,7 @@ class LinearSweepVoltammetry(
 
     Reference electrode vs ground."""
 
-    def _update_psmethod(self, *, psmethod):
+    def _update_psmethod(self, psmethod: PSMethod, /):
         """Update method with linear sweep settings."""
         psmethod.EquilibrationTime = self.equilibration_time
         psmethod.BeginPotential = self.begin_potential
@@ -311,7 +312,7 @@ class LinearSweepVoltammetry(
             enable_bipot_current=self.enable_bipot_current,
         )
 
-    def _update_params(self, *, psmethod):
+    def _update_params(self, psmethod: PSMethod, /):
         self.equilibration_time = psmethod.EquilibrationTime
         self.begin_potential = psmethod.BeginPotential
         self.end_potential = psmethod.EndPotential
@@ -385,7 +386,7 @@ class SquareWaveVoltammetry(
     record_forward_and_reverse_currents: bool = False
     """Record forward and reverse currents"""
 
-    def _update_psmethod(self, *, psmethod):
+    def _update_psmethod(self, psmethod: PSMethod, /):
         """Update method with square wave voltammetry settings."""
         psmethod.EquilibrationTime = self.equilibration_time
         psmethod.BeginPotential = self.begin_potential
@@ -403,7 +404,7 @@ class SquareWaveVoltammetry(
             record_forward_and_reverse_currents=self.record_forward_and_reverse_currents,
         )
 
-    def _update_params(self, *, psmethod):
+    def _update_params(self, psmethod: PSMethod, /):
         self.equilibration_time = psmethod.EquilibrationTime
         self.begin_potential = psmethod.BeginPotential
         self.end_potential = psmethod.EndPotential
@@ -479,7 +480,7 @@ class DifferentialPulseVoltammetry(
 
     Reference electrode vs ground."""
 
-    def _update_psmethod(self, *, psmethod):
+    def _update_psmethod(self, psmethod: PSMethod, /):
         """Update method with linear sweep settings."""
         psmethod.EquilibrationTime = self.equilibration_time
         psmethod.BeginPotential = self.begin_potential
@@ -497,7 +498,7 @@ class DifferentialPulseVoltammetry(
             enable_bipot_current=self.enable_bipot_current,
         )
 
-    def _update_params(self, *, psmethod):
+    def _update_params(self, psmethod: PSMethod, /):
         self.equilibration_time = psmethod.EquilibrationTime
         self.begin_potential = psmethod.BeginPotential
         self.end_potential = psmethod.EndPotential
@@ -570,7 +571,7 @@ class NormalPulseVoltammetry(
 
     Reference electrode vs ground."""
 
-    def _update_psmethod(self, *, psmethod):
+    def _update_psmethod(self, psmethod: PSMethod, /):
         """Update method with normal pulse voltammetry settings."""
         psmethod.EquilibrationTime = self.equilibration_time
         psmethod.BeginPotential = self.begin_potential
@@ -587,7 +588,7 @@ class NormalPulseVoltammetry(
             enable_bipot_current=self.enable_bipot_current,
         )
 
-    def _update_params(self, *, psmethod):
+    def _update_params(self, psmethod: PSMethod, /):
         self.equilibration_time = psmethod.EquilibrationTime
         self.begin_potential = psmethod.BeginPotential
         self.end_potential = psmethod.EndPotential
@@ -655,7 +656,7 @@ class ChronoAmperometry(
 
     Reference electrode vs ground."""
 
-    def _update_psmethod(self, *, psmethod):
+    def _update_psmethod(self, psmethod: PSMethod, /):
         """Update method with chrono amperometry settings."""
         psmethod.EquilibrationTime = self.equilibration_time
         psmethod.IntervalTime = self.interval_time
@@ -670,7 +671,7 @@ class ChronoAmperometry(
             enable_bipot_current=self.enable_bipot_current,
         )
 
-    def _update_params(self, *, psmethod):
+    def _update_params(self, psmethod: PSMethod, /):
         self.equilibration_time = psmethod.EquilibrationTime
         self.interval_time = psmethod.IntervalTime
         self.potential = psmethod.Potential
@@ -725,7 +726,7 @@ class FastAmperometry(
     run_time: float = 1.0
     """Run time in s."""
 
-    def _update_psmethod(self, *, psmethod):
+    def _update_psmethod(self, psmethod: PSMethod, /):
         """Update method with fast amperometry settings."""
         psmethod.Ranging = PSFixedCurrentRange(self.current_range._to_psobj())
         psmethod.EquilibrationTime = self.equilibration_time
@@ -734,7 +735,7 @@ class FastAmperometry(
         psmethod.Potential = self.potential
         psmethod.RunTime = self.run_time
 
-    def _update_params(self, *, psmethod):
+    def _update_params(self, psmethod: PSMethod, /):
         self.current_range = CURRENT_RANGE._from_psobj(psmethod.Ranging.StartCurrentRange)
         self.equilibration_time = psmethod.EquilibrationTime
         self.equilibration_potential = psmethod.EqPotentialFA
@@ -791,7 +792,7 @@ class MultiStepAmperometry(
 
     Reference electrode vs ground."""
 
-    def _update_psmethod(self, *, psmethod):
+    def _update_psmethod(self, psmethod: PSMethod, /):
         """Update method with multistep amperometry settings."""
         psmethod.EquilibrationTime = self.equilibration_time
         psmethod.IntervalTime = self.interval_time
@@ -815,7 +816,7 @@ class MultiStepAmperometry(
             enable_bipot_current=self.enable_bipot_current,
         )
 
-    def _update_params(self, *, psmethod):
+    def _update_params(self, psmethod: PSMethod, /):
         self.equilibration_time = psmethod.EquilibrationTime
         self.interval_time = psmethod.IntervalTime
         self.n_cycles = psmethod.nCycles
@@ -851,6 +852,8 @@ class PulsedAmperometricDetection(
     """Create pulsed amperometric detection method parameters."""
 
     _id = 'pad'
+    _mode_t = Literal['dc', 'pulse', 'differential']
+    _MODES: tuple[_mode_t, ...] = ('dc', 'pulse', 'differential')
 
     equilibration_time: float = 0.0
     """Equilibration time in s."""
@@ -864,7 +867,7 @@ class PulsedAmperometricDetection(
     pulse_time: float = 0.01
     """Pulse time in s."""
 
-    mode: Literal['dc', 'pulse', 'differential'] = 'dc'
+    mode: _mode_t = 'dc'
     """Measurement mode.
 
     - dc: Measurement is performed at potential (E dc)
@@ -878,9 +881,7 @@ class PulsedAmperometricDetection(
     run_time: float = 10.0
     """Run time in s."""
 
-    _MODES = ('dc', 'pulse', 'differential')
-
-    def _update_psmethod(self, *, psmethod):
+    def _update_psmethod(self, psmethod: PSMethod, /):
         """Update method with pulsed amperometric detection settings."""
         psmethod.EquilibrationTime = self.equilibration_time
         psmethod.IntervalTime = self.interval_time
@@ -892,7 +893,7 @@ class PulsedAmperometricDetection(
         mode = self._MODES.index(self.mode) + 1
         psmethod.tMode = PSTechniques.PulsedAmpDetection.enumMode(mode)
 
-    def _update_params(self, *, psmethod):
+    def _update_params(self, psmethod: PSMethod, /):
         self.equilibration_time = psmethod.EquilibrationTime
         self.interval_time = psmethod.IntervalTime
         self.potential = psmethod.Potential
@@ -937,7 +938,7 @@ class OpenCircuitPotentiometry(
 
     Use `CURRENT_RANGE` to define the range."""
 
-    def _update_psmethod(self, *, psmethod):
+    def _update_psmethod(self, psmethod: PSMethod, /):
         """Update method with open circuit potentiometry settings."""
         psmethod.IntervalTime = self.interval_time
         psmethod.RunTime = self.run_time
@@ -949,7 +950,7 @@ class OpenCircuitPotentiometry(
             record_we_current=self.record_we_current,
         )
 
-    def _update_params(self, *, psmethod):
+    def _update_params(self, psmethod: PSMethod, /):
         self.interval_time = psmethod.IntervalTime
         self.run_time = psmethod.RunTime
         self.record_we_current_range = CURRENT_RANGE._from_psobj(psmethod.AppliedCurrentRange)
@@ -1010,7 +1011,7 @@ class ChronoPotentiometry(
     record_we_current: bool = False
     """Record working electrode current."""
 
-    def _update_psmethod(self, *, psmethod):
+    def _update_psmethod(self, psmethod: PSMethod, /):
         """Update method with chronopotentiometry settings."""
         psmethod.Current = self.current
         psmethod.AppliedCurrentRange = self.applied_current_range._to_psobj()
@@ -1026,7 +1027,7 @@ class ChronoPotentiometry(
             record_we_current=self.record_we_current,
         )
 
-    def _update_params(self, *, psmethod):
+    def _update_params(self, psmethod: PSMethod, /):
         self.current = psmethod.Current
         self.applied_current_range = CURRENT_RANGE._from_psobj(psmethod.AppliedCurrentRange)
         self.interval_time = psmethod.IntervalTime
@@ -1080,7 +1081,7 @@ class StrippingChronoPotentiometry(
     measurement_time: float = 1.0
     """Measurement time in s (default: 1.0)"""
 
-    def _update_psmethod(self, *, psmethod):
+    def _update_psmethod(self, psmethod: PSMethod, /):
         """Update method with stripping chrono potentiometry settings."""
         psmethod.Current = self.current
         psmethod.AppliedCurrentRange = self.applied_current_range._to_psobj()
@@ -1089,7 +1090,7 @@ class StrippingChronoPotentiometry(
 
         psmethod.AppliedCurrentRange = self.applied_current_range._to_psobj()
 
-    def _update_params(self, *, psmethod):
+    def _update_params(self, psmethod: PSMethod, /):
         self.current = psmethod.Current
         self.applied_current_range = CURRENT_RANGE._from_psobj(psmethod.AppliedCurrentRange)
         self.measurement_time = psmethod.MeasurementTime
@@ -1145,7 +1146,7 @@ class LinearSweepPotentiometry(
     record_we_current: bool = False
     """Record working electrode current."""
 
-    def _update_psmethod(self, *, psmethod):
+    def _update_psmethod(self, psmethod: PSMethod, /):
         """Update method with lineas sweep potentiometry settings."""
         psmethod.AppliedCurrentRange = self.applied_current_range._to_psobj()
 
@@ -1162,7 +1163,7 @@ class LinearSweepPotentiometry(
             record_we_current=self.record_we_current,
         )
 
-    def _update_params(self, *, psmethod):
+    def _update_params(self, psmethod: PSMethod, /):
         self.applied_current_range = CURRENT_RANGE._from_psobj(psmethod.AppliedCurrentRange)
 
         self.current_begin = psmethod.BeginCurrent
@@ -1220,7 +1221,7 @@ class MultiStepPotentiometry(
 
     Reference electrode vs ground."""
 
-    def _update_psmethod(self, *, psmethod):
+    def _update_psmethod(self, psmethod: PSMethod, /):
         """Update method with multistep potentiometry settings."""
         psmethod.AppliedCurrentRange = self.applied_current_range._to_psobj()
         psmethod.IntervalTime = self.interval_time
@@ -1242,7 +1243,7 @@ class MultiStepPotentiometry(
             record_we_current=self.record_we_current,
         )
 
-    def _update_params(self, *, psmethod):
+    def _update_params(self, psmethod: PSMethod, /):
         self.applied_current_range = CURRENT_RANGE._from_psobj(psmethod.AppliedCurrentRange)
 
         self.interval_time = psmethod.IntervalTime
@@ -1308,7 +1309,7 @@ class ChronoCoulometry(
 
     Reference electrode vs ground."""
 
-    def _update_psmethod(self, *, psmethod):
+    def _update_psmethod(self, psmethod: PSMethod, /):
         """Update method with chrono coulometry settings."""
         psmethod.EquilibrationTime = self.equilibration_time
         psmethod.IntervalTime = self.interval_time
@@ -1329,7 +1330,7 @@ class ChronoCoulometry(
             record_we_potential=self.record_we_potential,
         )
 
-    def _update_params(self, *, psmethod):
+    def _update_params(self, psmethod: PSMethod, /):
         self.equilibration_time = psmethod.EquilibrationTime
         self.interval_time = psmethod.IntervalTime
         self.step1_potential = psmethod.EFirstStep
@@ -1385,7 +1386,7 @@ class ElectrochemicalImpedanceSpectroscopy(
     min_frequency: float = 1e3
     """Minimum frequency in Hz."""
 
-    def _update_psmethod(self, *, psmethod):
+    def _update_psmethod(self, psmethod: PSMethod, /):
         """Update method with electrochemical impedance spectroscopy settings."""
         psmethod.ScanType = enumScanType.Fixed
         psmethod.FreqType = enumFrequencyType.Scan
@@ -1396,7 +1397,7 @@ class ElectrochemicalImpedanceSpectroscopy(
         psmethod.MaxFrequency = self.max_frequency
         psmethod.MinFrequency = self.min_frequency
 
-    def _update_params(self, *, psmethod):
+    def _update_params(self, psmethod: PSMethod, /):
         self.equilibration_time = psmethod.EquilibrationTime
         self.dc_potential = psmethod.Potential
         self.ac_potential = psmethod.Eac
@@ -1439,7 +1440,7 @@ class FastImpedanceSpectroscopy(
     frequency: float = 50000.0
     """Frequency in Hz."""
 
-    def _update_psmethod(self, *, psmethod):
+    def _update_psmethod(self, psmethod: PSMethod, /):
         """Update method with fas impedance spectroscopy settings."""
         psmethod.Eac = self.ac_potential
         psmethod.EquilibrationTime = self.equilibration_time
@@ -1448,7 +1449,7 @@ class FastImpedanceSpectroscopy(
         psmethod.Potential = self.dc_potential
         psmethod.RunTime = self.run_time
 
-    def _update_params(self, *, psmethod):
+    def _update_params(self, psmethod: PSMethod, /):
         self.ac_potential = psmethod.Eac
         self.equilibration_time = psmethod.EquilibrationTime
         self.frequency = psmethod.FixedFrequency
@@ -1496,7 +1497,7 @@ class GalvanostaticImpedanceSpectroscopy(
     min_frequency: float = 1e3
     """Minimum frequency in Hz."""
 
-    def _update_psmethod(self, *, psmethod):
+    def _update_psmethod(self, psmethod: PSMethod, /):
         """Update method with galvanic impedance spectroscopy settings."""
 
         psmethod.ScanType = enumScanType.Fixed
@@ -1509,7 +1510,7 @@ class GalvanostaticImpedanceSpectroscopy(
         psmethod.MaxFrequency = self.max_frequency
         psmethod.MinFrequency = self.min_frequency
 
-    def _update_params(self, *, psmethod):
+    def _update_params(self, psmethod: PSMethod, /):
         self.applied_current_range = CURRENT_RANGE._from_psobj(psmethod.AppliedCurrentRange)
         self.equilibration_time = psmethod.EquilibrationTime
         self.ac_current = psmethod.Iac
@@ -1556,7 +1557,7 @@ class FastGalvanostaticImpedanceSpectroscopy(
     frequency: float = 50000.0
     """Frequency in Hz."""
 
-    def _update_psmethod(self, *, psmethod):
+    def _update_psmethod(self, psmethod: PSMethod, /):
         """Update method with fast galvanic impedance spectroscopy settings."""
         psmethod.AppliedCurrentRange = self.applied_current_range._to_psobj()
         psmethod.Iac = self.ac_current
@@ -1565,7 +1566,7 @@ class FastGalvanostaticImpedanceSpectroscopy(
         psmethod.RunTime = self.run_time
         psmethod.IntervalTime = self.interval_time
 
-    def _update_params(self, *, psmethod):
+    def _update_params(self, psmethod: PSMethod, /):
         self.applied_current_range = CURRENT_RANGE._from_psobj(psmethod.AppliedCurrentRange)
         self.ac_current = psmethod.Iac
         self.dc_current = psmethod.Idc
@@ -1592,9 +1593,9 @@ endif
     For more info on MethodSCRIPT, see:
         https://www.palmsens.com/methodscript/ for more information."""
 
-    def _update_psmethod(self, *, psmethod):
+    def _update_psmethod(self, psmethod: PSMethod, /):
         """Update method with MethodScript."""
         psmethod.MethodScript = self.script
 
-    def _update_params(self, *, psmethod):
+    def _update_params(self, psmethod: PSMethod, /):
         self.script = psmethod.MethodScript
