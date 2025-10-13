@@ -4,7 +4,6 @@ import logging
 
 import pytest
 import System
-from PalmSens import Method as PSMethod
 from pytest import approx
 
 import pypalmsens as ps
@@ -22,13 +21,13 @@ def assert_params_match_kwargs(params, *, kwargs):
 
 
 def assert_params_round_trip_equal(*, pycls, kwargs):
-    obj = PSMethod.FromMethodID(pycls._id)
-
     params = pycls(**kwargs)
-    params._update_psmethod(obj=obj)
 
-    new_params = pycls()
-    new_params._update_params(obj=obj)
+    fn = f'{pycls._id}.psmethod'
+
+    ps.save_method_file(fn, params)
+
+    new_params = ps.load_method_file(fn)
 
     assert_params_match_kwargs(new_params, kwargs=kwargs)
 
