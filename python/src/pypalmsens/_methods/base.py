@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from abc import abstractmethod
-from typing import ClassVar, Protocol, Type, runtime_checkable
+from typing import Any, ClassVar, Protocol, Type, runtime_checkable
 
 import attrs
 from PalmSens import Method as PSMethod
@@ -29,6 +29,10 @@ class BaseTechnique(Protocol):
     def __init_subclass__(cls, **kwargs) -> None:
         super().__init_subclass__(**kwargs)
         cls._registry[cls._id] = cls
+
+    def to_dict(self) -> dict[str, Any]:
+        """Return the technique instance as a new key/value dictionary mapping."""
+        return attrs.asdict(self, filter=lambda a, _: not a.name.startswith('_'))
 
     @classmethod
     def from_method_id(cls, id: str) -> BaseTechnique:
