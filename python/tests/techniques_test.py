@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import logging
+import tempfile
+from pathlib import Path
 
 import pytest
 import System
@@ -23,11 +25,10 @@ def assert_params_match_kwargs(params, *, kwargs):
 def assert_params_round_trip_equal(*, pycls, kwargs):
     params = pycls(**kwargs)
 
-    fn = f'{pycls._id}.psmethod'
-
-    ps.save_method_file(fn, params)
-
-    new_params = ps.load_method_file(fn)
+    with tempfile.TemporaryDirectory() as tmp:
+        path = Path(tmp, f'{pycls._id}.psmethod')
+        ps.save_method_file(path, params)
+        new_params = ps.load_method_file(path)
 
     assert_params_match_kwargs(new_params, kwargs=kwargs)
 
