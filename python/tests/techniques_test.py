@@ -6,20 +6,11 @@ from pathlib import Path
 
 import pytest
 import System
-from pytest import approx
+from helpers import assert_params_match_kwargs
 
 import pypalmsens as ps
 
 logger = logging.getLogger(__name__)
-
-
-def assert_params_match_kwargs(params, *, kwargs):
-    for key, exp in kwargs.items():
-        ret = getattr(params, key)
-        if isinstance(exp, float):
-            assert ret == approx(exp)
-        else:
-            assert ret == exp
 
 
 def assert_params_round_trip_equal(*, pycls, kwargs):

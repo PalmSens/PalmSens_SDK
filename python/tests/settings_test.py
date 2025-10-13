@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from attrs import asdict
+from helpers import assert_params_match_kwargs
 from PalmSens import Techniques
 
 import pypalmsens as ps
@@ -70,7 +70,7 @@ def test_AutorangingCurrentSettings():
     new_params = ps.settings.CurrentRange()
     new_params._update_params(obj)
 
-    assert asdict(new_params) == kwargs
+    assert_params_match_kwargs(new_params, kwargs=kwargs)
 
 
 def test_AutorangingPotentialSettings():
@@ -92,7 +92,7 @@ def test_AutorangingPotentialSettings():
     new_params = ps.settings.PotentialRange()
     new_params._update_params(obj)
 
-    assert asdict(new_params) == kwargs
+    assert_params_match_kwargs(new_params, kwargs=kwargs)
 
 
 def test_PretreatmentSettings():
@@ -116,7 +116,7 @@ def test_PretreatmentSettings():
     new_params = ps.settings.Pretreatment()
     new_params._update_params(obj)
 
-    assert asdict(new_params) == kwargs
+    assert_params_match_kwargs(new_params, kwargs=kwargs)
 
 
 def test_VersusOcpSettings():
@@ -138,7 +138,7 @@ def test_VersusOcpSettings():
     new_params = ps.settings.VersusOCP()
     new_params._update_params(obj)
 
-    assert asdict(new_params) == kwargs
+    assert_params_match_kwargs(new_params, kwargs=kwargs)
 
 
 def test_BipotSettings():
@@ -164,7 +164,7 @@ def test_BipotSettings():
     new_params = ps.settings.BiPot()
     new_params._update_params(obj)
 
-    assert asdict(new_params) == kwargs
+    assert_params_match_kwargs(new_params, kwargs=kwargs)
 
 
 def test_PostMeasurementSettings():
@@ -186,7 +186,7 @@ def test_PostMeasurementSettings():
     new_params = ps.settings.PostMeasurement()
     new_params._update_params(obj)
 
-    assert asdict(new_params) == kwargs
+    assert_params_match_kwargs(new_params, kwargs=kwargs)
 
 
 def test_CurrentLimitSettings():
@@ -208,7 +208,7 @@ def test_CurrentLimitSettings():
     new_params = ps.settings.CurrentLimits()
     new_params._update_params(obj)
 
-    assert asdict(new_params) == kwargs
+    assert_params_match_kwargs(new_params, kwargs=kwargs)
 
 
 def test_PotentialLimitSettings():
@@ -230,7 +230,7 @@ def test_PotentialLimitSettings():
     new_params = ps.settings.PotentialLimits()
     new_params._update_params(obj)
 
-    assert asdict(new_params) == kwargs
+    assert_params_match_kwargs(new_params, kwargs=kwargs)
 
 
 def test_ChargeLimitSettings():
@@ -252,7 +252,7 @@ def test_ChargeLimitSettings():
     new_params = ps.settings.ChargeLimits()
     new_params._update_params(obj)
 
-    assert asdict(new_params) == kwargs
+    assert_params_match_kwargs(new_params, kwargs=kwargs)
 
 
 def test_IrDropCompensationSettings():
@@ -271,7 +271,7 @@ def test_IrDropCompensationSettings():
     new_params = ps.settings.IrDropCompensation()
     new_params._update_params(obj)
 
-    assert asdict(new_params) == kwargs
+    assert_params_match_kwargs(new_params, kwargs=kwargs)
 
 
 def test_TriggerAtEquilibrationSettings():
@@ -293,7 +293,7 @@ def test_TriggerAtEquilibrationSettings():
     new_params = ps.settings.EquilibrationTriggers()
     new_params._update_params(obj)
 
-    assert asdict(new_params) == kwargs
+    assert_params_match_kwargs(new_params, kwargs=kwargs)
 
 
 def test_TriggerAtMeasurementSettings():
@@ -315,7 +315,7 @@ def test_TriggerAtMeasurementSettings():
     new_params = ps.settings.MeasurementTriggers()
     new_params._update_params(obj)
 
-    assert asdict(new_params) == kwargs
+    assert_params_match_kwargs(new_params, kwargs=kwargs)
 
 
 def test_TriggerAtDelaySettings():
@@ -339,7 +339,7 @@ def test_TriggerAtDelaySettings():
     new_params = ps.settings.DelayTriggers()
     new_params._update_params(obj)
 
-    assert asdict(new_params) == kwargs
+    assert_params_match_kwargs(new_params, kwargs=kwargs)
 
 
 def test_MultiplexerSettings():
@@ -369,7 +369,7 @@ def test_MultiplexerSettings():
     new_params = ps.settings.Multiplexer()
     new_params._update_params(obj)
 
-    assert asdict(new_params) == kwargs
+    assert_params_match_kwargs(new_params, kwargs=kwargs)
 
 
 def test_PeakSettings():
@@ -391,7 +391,7 @@ def test_PeakSettings():
     new_params = ps.settings.DataProcessing()
     new_params._update_params(obj)
 
-    assert asdict(new_params) == kwargs
+    assert_params_match_kwargs(new_params, kwargs=kwargs)
 
 
 def test_CommonSettings():
@@ -415,4 +415,4 @@ def test_CommonSettings():
     new_params = ps.settings.General()
     new_params._update_params(obj)
 
-    assert asdict(new_params) == kwargs
+    assert_params_match_kwargs(new_params, kwargs=kwargs)
