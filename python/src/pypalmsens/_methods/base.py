@@ -33,7 +33,7 @@ class BaseTechnique(Protocol):
             attribute = getattr(self, field.name)
             try:
                 # Update parameters if attribute has the `update_params` method
-                attribute._update_psmethod(obj=psmethod)
+                attribute._update_psmethod(psmethod=psmethod)
             except AttributeError:
                 pass
 
@@ -59,7 +59,7 @@ class BaseTechnique(Protocol):
             attribute = getattr(self, field.name)
             try:
                 # Update parameters if attribute has the `update_params` method
-                attribute._update_params(obj=psmethod)
+                attribute._update_params(psmethod=psmethod)
             except AttributeError:
                 pass
 
