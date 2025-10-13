@@ -17,9 +17,9 @@ def assert_params_match_kwargs(params, *, kwargs):
     for key, exp in kwargs.items():
         ret = getattr(params, key)
         if isinstance(exp, float):
-            assert ret == approx(exp), f'{key}: expected {exp}, got {ret}'
+            assert ret == approx(exp)
         else:
-            assert ret == exp, f'{key}: expected {exp}, got {ret}'
+            assert ret == exp
 
 
 def assert_params_round_trip_equal(*, pycls, kwargs):
@@ -998,11 +998,13 @@ class TestMM:
             ps.mixed_mode.ConstantE(
                 run_time=0.1,
                 potential=0.5,
+                current_limits=ps.settings.CurrentLimits(min=1, max=10.0),
             ),
             ps.mixed_mode.ConstantI(
                 run_time=0.1,
                 current=1.0,
                 applied_current_range=ps.settings.CURRENT_RANGE.cr_100_nA,
+                potential_limits=ps.settings.PotentialLimits(min=-1, max=1),
             ),
             ps.mixed_mode.SweepE(
                 begin_potential=-0.5,

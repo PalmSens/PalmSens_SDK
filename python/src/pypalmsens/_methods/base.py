@@ -11,7 +11,10 @@ from PalmSens import Method as PSMethod
 class BaseSettings(Protocol):
     """Protocol to provide generic methods for parameters."""
 
+    @abstractmethod
     def _update_psmethod(self, psmethod: PSMethod, /): ...
+
+    @abstractmethod
     def _update_params(self, psmethod: PSMethod, /): ...
 
 
@@ -27,26 +30,6 @@ class BaseTechnique(Protocol):
         super().__init_subclass__(**kwargs)
         cls._registry[cls._id] = cls
 
-    def _to_psmethod(self) -> PSMethod:
-        """Convert parameters to dotnet method."""
-        psmethod = PSMethod.FromMethodID(self._id)
-
-        self._update_psmethod(psmethod)
-        self._update_psmethod_nested(psmethod)
-        return psmethod
-
-    def _update_psmethod_nested(self, psmethod: PSMethod, /):
-        """Convert and set field parameters on dotnet method."""
-        for field in self.__attrs_attrs__:
-            attribute = getattr(self, field.name)
-            try:
-                # Update parameters if attribute has the `update_params` method
-                attribute._update_psmethod(psmethod)
-            except AttributeError:
-                pass
-
-        return psmethod
-
     @classmethod
     def from_method_id(cls, id: str) -> BaseTechnique:
         """Create new instance of appropriate technique from method ID."""
@@ -61,7 +44,10 @@ class BaseTechnique(Protocol):
         new._update_params_nested(psmethod)
         return new
 
-    def _update_params_nested(self, psmethod: PSMethod, /):
+    @abstractmethod
+    def _update_params(self, psmethod: PSMethod, /) -> None: ...
+
+    def _update_params_nested(self, psmethod: PSMethod, /) -> None:
         """Retrieve and convert dotnet method for nested field parameters."""
         for field in self.__attrs_attrs__:
             attribute = getattr(self, field.name)
@@ -71,8 +57,23 @@ class BaseTechnique(Protocol):
             except AttributeError:
                 pass
 
+    def _to_psmethod(self) -> PSMethod:
+        """Convert parameters to dotnet method."""
+        psmethod = PSMethod.FromMethodID(self._id)
+
+        self._update_psmethod(psmethod)
+        self._update_psmethod_nested(psmethod)
+        return psmethod
+
     @abstractmethod
     def _update_psmethod(self, psmethod: PSMethod, /) -> None: ...
 
-    @abstractmethod
-    def _update_params(self, psmethod: PSMethod, /) -> None: ...
+    def _update_psmethod_nested(self, psmethod: PSMethod, /) -> None:
+        """Convert and set field parameters on dotnet method."""
+        for field in self.__attrs_attrs__:
+            attribute = getattr(self, field.name)
+            try:
+                # Update parameters if attribute has the `update_params` method
+                attribute._update_psmethod(psmethod)
+            except AttributeError:
+                pass

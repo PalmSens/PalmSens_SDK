@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from abc import abstractmethod
 from typing import ClassVar, Protocol, Type, runtime_checkable
 
 import attrs
@@ -16,21 +17,36 @@ from .base import BaseTechnique
 
 
 @runtime_checkable
-class StageProtocol(Protocol):
+class BaseStage(Protocol):
     """Protocol to provide base methods for stage classes."""
 
     __attrs_attrs__: ClassVar[list[attrs.Attribute]] = []
+    _type: int
+    _registry: dict[int, Type[BaseStage]] = {}
 
-    def _update_attributes(self, psstage, /):
-        for field in self.__attrs_attrs__:
-            attribute = getattr(self, field.name)
-            try:
-                # Update parameters if attribute has the `update_params` method
-                attribute._update_psmethod(psstage)
-            except AttributeError:
-                pass
+    def __init_subclass__(cls, **kwargs) -> None:
+        super().__init_subclass__(**kwargs)
+        cls._registry[cls._type] = cls
 
-    def _update_stage_params(self, psstage, /):
+    @classmethod
+    def from_stage_type(cls, id: int) -> BaseStage:
+        """Create new instance of appropriate stage from its type."""
+        new = cls._registry[id]
+        return new()
+
+    @classmethod
+    def _from_psstage(cls, psstage: PSMethod, /) -> BaseStage:
+        """Generate parameters from dotnet method object."""
+        new = cls.from_stage_type(psstage.StageType)
+        new._update_params(psstage)
+        new._update_params_nested(psstage)
+        return new
+
+    @abstractmethod
+    def _update_params(self, psstage: PSMethod, /) -> None: ...
+
+    def _update_params_nested(self, psstage, /) -> None:
+        """Retrieve and convert dotnet method for nested field parameters."""
         for field in self.__attrs_attrs__:
             attribute = getattr(self, field.name)
             try:
@@ -39,9 +55,29 @@ class StageProtocol(Protocol):
             except AttributeError:
                 pass
 
+    def _update_psmethod(self, psmethod, /) -> PSMethod:
+        """Add stage to dotnet method, and update paramaters on dotnet stage."""
+        psstage = psmethod.AddStage(self._type)
+        self._update_psstage(psstage)
+        self._update_psstage_nested(psstage)
+        return psstage
+
+    @abstractmethod
+    def _update_psstage(self, psstage: PSMethod, /) -> None: ...
+
+    def _update_psstage_nested(self, psstage, /) -> None:
+        """Convert and set field parameters on dotnet method."""
+        for field in self.__attrs_attrs__:
+            attribute = getattr(self, field.name)
+            try:
+                # Update parameters if attribute has the `update_params` method
+                attribute._update_psmethod(psstage)
+            except AttributeError:
+                pass
+
 
 @attrs.define(slots=False)
-class ConstantE(StageProtocol, mixins.CurrentLimitsMixin):
+class ConstantE(BaseStage, mixins.CurrentLimitsMixin):
     """Amperometric detection stage."""
 
     _type = PSMixedMode.EnumMixedModeStageType.ConstantE
@@ -56,17 +92,13 @@ class ConstantE(StageProtocol, mixins.CurrentLimitsMixin):
         psstage.Potential = self.potential
         psstage.RunTime = self.run_time
 
-        self._update_attributes(psstage)
-
-    def _update_stage(self, psstage, /):
+    def _update_params(self, psstage, /):
         self.potential = single_to_double(psstage.Potential)
         self.run_time = single_to_double(psstage.RunTime)
 
-        self._update_stage_params(psstage)
-
 
 @attrs.define(slots=False)
-class ConstantI(StageProtocol, mixins.PotentialLimitsMixin):
+class ConstantI(BaseStage, mixins.PotentialLimitsMixin):
     """Potentiometry stage."""
 
     _type = PSMixedMode.EnumMixedModeStageType.ConstantI
@@ -92,18 +124,14 @@ class ConstantI(StageProtocol, mixins.PotentialLimitsMixin):
         psstage.Current = self.current
         psstage.RunTime = self.run_time
 
-        self._update_attributes(psstage)
-
-    def _update_stage(self, psstage, /):
+    def _update_params(self, psstage, /):
         self.applied_current_range = CURRENT_RANGE._from_psobj(psstage.AppliedCurrentRange)
         self.current = single_to_double(psstage.Current)
         self.run_time = single_to_double(psstage.RunTime)
 
-        self._update_stage_params(psstage)
-
 
 @attrs.define(slots=False)
-class SweepE(StageProtocol, mixins.CurrentLimitsMixin):
+class SweepE(BaseStage, mixins.CurrentLimitsMixin):
     """Linear sweep detection stage."""
 
     _type = PSMixedMode.EnumMixedModeStageType.SweepE
@@ -126,19 +154,15 @@ class SweepE(StageProtocol, mixins.CurrentLimitsMixin):
         psstage.StepPotential = self.step_potential
         psstage.Scanrate = self.scanrate
 
-        self._update_attributes(psstage)
-
-    def _update_stage(self, psstage, /):
+    def _update_params(self, psstage, /):
         self.begin_potential = single_to_double(psstage.BeginPotential)
         self.end_potential = single_to_double(psstage.EndPotential)
         self.step_potential = single_to_double(psstage.StepPotential)
         self.scanrate = single_to_double(psstage.Scanrate)
 
-        self._update_stage_params(psstage)
-
 
 @attrs.define(slots=False)
-class OpenCircuit(StageProtocol, mixins.PotentialLimitsMixin):
+class OpenCircuit(BaseStage, mixins.PotentialLimitsMixin):
     """Ocp stage."""
 
     _type = PSMixedMode.EnumMixedModeStageType.OpenCircuit
@@ -149,16 +173,12 @@ class OpenCircuit(StageProtocol, mixins.PotentialLimitsMixin):
     def _update_psstage(self, psstage, /):
         psstage.RunTime = self.run_time
 
-        self._update_attributes(psstage)
-
-    def _update_stage(self, psstage, /):
+    def _update_params(self, psstage, /):
         self.run_time = single_to_double(psstage.RunTime)
-
-        self._update_stage_params(psstage)
 
 
 @attrs.define(slots=False)
-class Impedance(StageProtocol):
+class Impedance(BaseStage):
     """Electostatic impedance stage."""
 
     _type = PSMixedMode.EnumMixedModeStageType.Impedance
@@ -196,9 +216,7 @@ class Impedance(StageProtocol):
         psstage.SamplingTime = self.min_sampling_time
         psstage.MaxEqTime = self.max_equilibration_time
 
-        self._update_attributes(psstage)
-
-    def _update_stage(self, psstage, /):
+    def _update_params(self, psstage, /):
         self.dc_potential = single_to_double(psstage.Potential)
         self.ac_potential = single_to_double(psstage.Eac)
 
@@ -207,11 +225,6 @@ class Impedance(StageProtocol):
 
         self.min_sampling_time = single_to_double(psstage.SamplingTime)
         self.max_equilibration_time = single_to_double(psstage.MaxEqTime)
-
-        self._update_stage_params(psstage)
-
-
-TStage = ConstantE | ConstantI | SweepE | OpenCircuit | Impedance
 
 
 @attrs.define
@@ -233,7 +246,7 @@ class MixedMode(
     cycles: int = 1
     """Number of times to go through all stages."""
 
-    stages: list[TStage] = attrs.field(factory=list)
+    stages: list[BaseStage] = attrs.field(factory=list)
     """List of stages to run through."""
 
     def _update_psmethod(self, psmethod: PSMethod, /):
@@ -242,32 +255,13 @@ class MixedMode(
         psmethod.IntervalTime = self.interval_time
 
         for stage in self.stages:
-            psstage = psmethod.AddStage(stage._type)
-
-            stage._update_psstage(psstage)
+            stage._update_psmethod(psmethod)
 
     def _update_params(self, psmethod: PSMethod, /):
         self.cycles = psmethod.nCycles
         self.interval_time = single_to_double(psmethod.IntervalTime)
 
-        Stage: Type[StageProtocol]
-
         for psstage in psmethod.Stages:
-            match psstage.StageType:
-                case ConstantE._type:
-                    Stage = ConstantE
-                case ConstantI._type:
-                    Stage = ConstantI
-                case SweepE._type:
-                    Stage = SweepE
-                case OpenCircuit._type:
-                    Stage = OpenCircuit
-                case Impedance._type:
-                    Stage = Impedance
-                case _:
-                    raise ValueError(f'No such stage {psstage.StageType}')
-
-            stage = Stage()
-            stage._update_stage(psstage)
+            stage = BaseStage._from_psstage(psstage)
 
             self.stages.append(stage)
