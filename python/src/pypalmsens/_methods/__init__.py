@@ -1,13 +1,13 @@
 from __future__ import annotations
 
 from ._shared import CURRENT_RANGE, POTENTIAL_RANGE
+from .base import BaseTechnique
 from .method import Method
 from .settings import CommonSettings
-from .techniques import MethodSettings
 
 __all__ = [
     'Method',
-    'MethodSettings',
+    'BaseTechnique',
     'CommonSettings',
     'CURRENT_RANGE',
     'POTENTIAL_RANGE',

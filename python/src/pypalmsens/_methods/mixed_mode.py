@@ -7,19 +7,11 @@ from PalmSens.Techniques import MixedMode as PSMixedMode
 
 from pypalmsens._shared import single_to_double
 
+from . import mixins
 from ._shared import (
     CURRENT_RANGE,
 )
-from .techniques import (
-    CurrentLimitsMixin,
-    CurrentRangeMixin,
-    DataProcessingMixin,
-    GeneralMixin,
-    MethodSettings,
-    PostMeasurementMixin,
-    PotentialLimitsMixin,
-    PretreatmentMixin,
-)
+from .base import BaseTechnique
 
 
 @runtime_checkable
@@ -48,7 +40,7 @@ class StageProtocol(Protocol):
 
 
 @attrs.define(slots=False)
-class ConstantE(StageProtocol, CurrentLimitsMixin):
+class ConstantE(StageProtocol, mixins.CurrentLimitsMixin):
     """Amperometric detection stage."""
 
     _type = PSMixedMode.EnumMixedModeStageType.ConstantE
@@ -73,7 +65,7 @@ class ConstantE(StageProtocol, CurrentLimitsMixin):
 
 
 @attrs.define(slots=False)
-class ConstantI(StageProtocol, PotentialLimitsMixin):
+class ConstantI(StageProtocol, mixins.PotentialLimitsMixin):
     """Potentiometry stage."""
 
     _type = PSMixedMode.EnumMixedModeStageType.ConstantI
@@ -110,7 +102,7 @@ class ConstantI(StageProtocol, PotentialLimitsMixin):
 
 
 @attrs.define(slots=False)
-class SweepE(StageProtocol, CurrentLimitsMixin):
+class SweepE(StageProtocol, mixins.CurrentLimitsMixin):
     """Linear sweep detection stage."""
 
     _type = PSMixedMode.EnumMixedModeStageType.SweepE
@@ -145,7 +137,7 @@ class SweepE(StageProtocol, CurrentLimitsMixin):
 
 
 @attrs.define(slots=False)
-class OpenCircuit(StageProtocol, PotentialLimitsMixin):
+class OpenCircuit(StageProtocol, mixins.PotentialLimitsMixin):
     """Ocp stage."""
 
     _type = PSMixedMode.EnumMixedModeStageType.OpenCircuit
@@ -223,12 +215,12 @@ TStage = ConstantE | ConstantI | SweepE | OpenCircuit | Impedance
 
 @attrs.define
 class MixedMode(
-    MethodSettings,
-    CurrentRangeMixin,
-    PretreatmentMixin,
-    PostMeasurementMixin,
-    DataProcessingMixin,
-    GeneralMixin,
+    BaseTechnique,
+    mixins.CurrentRangeMixin,
+    mixins.PretreatmentMixin,
+    mixins.PostMeasurementMixin,
+    mixins.DataProcessingMixin,
+    mixins.GeneralMixin,
 ):
     """Create mixed mode method parameters."""
 
