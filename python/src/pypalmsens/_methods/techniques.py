@@ -73,34 +73,34 @@ class CyclicVoltammetry(
 
     Reference electrode vs ground."""
 
-    def _update_psmethod(self, *, obj):
+    def _update_psmethod(self, *, psmethod):
         """Update method with fast cyclic voltammetry settings."""
-        obj.EquilibrationTime = self.equilibration_time
-        obj.BeginPotential = self.begin_potential
-        obj.Vtx1Potential = self.vertex1_potential
-        obj.Vtx2Potential = self.vertex2_potential
-        obj.StepPotential = self.step_potential
-        obj.Scanrate = self.scanrate
-        obj.nScans = self.n_scans
+        psmethod.EquilibrationTime = self.equilibration_time
+        psmethod.BeginPotential = self.begin_potential
+        psmethod.Vtx1Potential = self.vertex1_potential
+        psmethod.Vtx2Potential = self.vertex2_potential
+        psmethod.StepPotential = self.step_potential
+        psmethod.Scanrate = self.scanrate
+        psmethod.nScans = self.n_scans
 
         set_extra_value_mask(
-            obj=obj,
+            obj=psmethod,
             record_auxiliary_input=self.record_auxiliary_input,
             record_cell_potential=self.record_cell_potential,
             record_we_potential=self.record_we_potential,
             enable_bipot_current=self.enable_bipot_current,
         )
 
-    def _update_params(self, *, obj):
-        self.equilibration_time = obj.EquilibrationTime
-        self.begin_potential = obj.BeginPotential
-        self.vertex1_potential = obj.Vtx1Potential
-        self.vertex2_potential = obj.Vtx2Potential
-        self.step_potential = obj.StepPotential
-        self.scanrate = obj.Scanrate
-        self.n_scans = obj.nScans
+    def _update_params(self, *, psmethod):
+        self.equilibration_time = psmethod.EquilibrationTime
+        self.begin_potential = psmethod.BeginPotential
+        self.vertex1_potential = psmethod.Vtx1Potential
+        self.vertex2_potential = psmethod.Vtx2Potential
+        self.step_potential = psmethod.StepPotential
+        self.scanrate = psmethod.Scanrate
+        self.n_scans = psmethod.nScans
 
-        msk = get_extra_value_mask(obj)
+        msk = get_extra_value_mask(psmethod)
 
         for key in (
             'record_auxiliary_input',
@@ -155,31 +155,31 @@ class FastCyclicVoltammetry(
     n_equil_scans: int = 1
     """Number of equilibration scans."""
 
-    def _update_psmethod(self, *, obj):
+    def _update_psmethod(self, *, psmethod):
         """Update method with fast cyclic voltammetry settings."""
 
-        obj.Ranging = PSFixedCurrentRange(self.current_range._to_psobj())
-        obj.EquilibrationTime = self.equilibration_time
-        obj.BeginPotential = self.begin_potential
-        obj.Vtx1Potential = self.vertex1_potential
-        obj.Vtx2Potential = self.vertex2_potential
-        obj.StepPotential = self.step_potential
-        obj.Scanrate = self.scanrate
-        obj.nScans = self.n_scans
-        obj.nAvgScans = self.n_avg_scans
-        obj.nEqScans = self.n_equil_scans
+        psmethod.Ranging = PSFixedCurrentRange(self.current_range._to_psobj())
+        psmethod.EquilibrationTime = self.equilibration_time
+        psmethod.BeginPotential = self.begin_potential
+        psmethod.Vtx1Potential = self.vertex1_potential
+        psmethod.Vtx2Potential = self.vertex2_potential
+        psmethod.StepPotential = self.step_potential
+        psmethod.Scanrate = self.scanrate
+        psmethod.nScans = self.n_scans
+        psmethod.nAvgScans = self.n_avg_scans
+        psmethod.nEqScans = self.n_equil_scans
 
-    def _update_params(self, *, obj):
-        self.current_range = CURRENT_RANGE._from_psobj(obj.Ranging.StartCurrentRange)
-        self.equilibration_time = obj.EquilibrationTime
-        self.begin_potential = obj.BeginPotential
-        self.vertex1_potential = obj.Vtx1Potential
-        self.vertex2_potential = obj.Vtx2Potential
-        self.step_potential = obj.StepPotential
-        self.scanrate = obj.Scanrate
-        self.n_scans = obj.nScans
-        self.n_avg_scans = obj.nAvgScans
-        self.n_equil_scans = obj.nEqScans
+    def _update_params(self, *, psmethod):
+        self.current_range = CURRENT_RANGE._from_psobj(psmethod.Ranging.StartCurrentRange)
+        self.equilibration_time = psmethod.EquilibrationTime
+        self.begin_potential = psmethod.BeginPotential
+        self.vertex1_potential = psmethod.Vtx1Potential
+        self.vertex2_potential = psmethod.Vtx2Potential
+        self.step_potential = psmethod.StepPotential
+        self.scanrate = psmethod.Scanrate
+        self.n_scans = psmethod.nScans
+        self.n_avg_scans = psmethod.nAvgScans
+        self.n_equil_scans = psmethod.nEqScans
 
 
 @attrs.define
@@ -222,26 +222,26 @@ class ACVoltammetry(
     measure_dc_current: bool = False
     """Measure the DC current seperately."""
 
-    def _update_psmethod(self, *, obj):
+    def _update_psmethod(self, *, psmethod):
         """Update method with linear sweep settings."""
-        obj.EquilibrationTime = self.equilibration_time
-        obj.BeginPotential = self.begin_potential
-        obj.EndPotential = self.end_potential
-        obj.StepPotential = self.step_potential
-        obj.Frequency = self.frequency
-        obj.SineWaveAmplitude = self.ac_potential
-        obj.MeasureDCcurrent = self.measure_dc_current
-        obj.Scanrate = self.scanrate
+        psmethod.EquilibrationTime = self.equilibration_time
+        psmethod.BeginPotential = self.begin_potential
+        psmethod.EndPotential = self.end_potential
+        psmethod.StepPotential = self.step_potential
+        psmethod.Frequency = self.frequency
+        psmethod.SineWaveAmplitude = self.ac_potential
+        psmethod.MeasureDCcurrent = self.measure_dc_current
+        psmethod.Scanrate = self.scanrate
 
-    def _update_params(self, *, obj):
-        self.equilibration_time = obj.EquilibrationTime
-        self.begin_potential = obj.BeginPotential
-        self.end_potential = obj.EndPotential
-        self.step_potential = obj.StepPotential
-        self.ac_potential = obj.SineWaveAmplitude
-        self.frequency = obj.Frequency
-        self.scanrate = obj.Scanrate
-        self.measure_dc_current = obj.MeasureDCcurrent
+    def _update_params(self, *, psmethod):
+        self.equilibration_time = psmethod.EquilibrationTime
+        self.begin_potential = psmethod.BeginPotential
+        self.end_potential = psmethod.EndPotential
+        self.step_potential = psmethod.StepPotential
+        self.ac_potential = psmethod.SineWaveAmplitude
+        self.frequency = psmethod.Frequency
+        self.scanrate = psmethod.Scanrate
+        self.measure_dc_current = psmethod.MeasureDCcurrent
 
 
 @attrs.define
@@ -295,30 +295,30 @@ class LinearSweepVoltammetry(
 
     Reference electrode vs ground."""
 
-    def _update_psmethod(self, *, obj):
+    def _update_psmethod(self, *, psmethod):
         """Update method with linear sweep settings."""
-        obj.EquilibrationTime = self.equilibration_time
-        obj.BeginPotential = self.begin_potential
-        obj.EndPotential = self.end_potential
-        obj.StepPotential = self.step_potential
-        obj.Scanrate = self.scanrate
+        psmethod.EquilibrationTime = self.equilibration_time
+        psmethod.BeginPotential = self.begin_potential
+        psmethod.EndPotential = self.end_potential
+        psmethod.StepPotential = self.step_potential
+        psmethod.Scanrate = self.scanrate
 
         set_extra_value_mask(
-            obj=obj,
+            obj=psmethod,
             record_auxiliary_input=self.record_auxiliary_input,
             record_cell_potential=self.record_cell_potential,
             record_we_potential=self.record_we_potential,
             enable_bipot_current=self.enable_bipot_current,
         )
 
-    def _update_params(self, *, obj):
-        self.equilibration_time = obj.EquilibrationTime
-        self.begin_potential = obj.BeginPotential
-        self.end_potential = obj.EndPotential
-        self.step_potential = obj.StepPotential
-        self.scanrate = obj.Scanrate
+    def _update_params(self, *, psmethod):
+        self.equilibration_time = psmethod.EquilibrationTime
+        self.begin_potential = psmethod.BeginPotential
+        self.end_potential = psmethod.EndPotential
+        self.step_potential = psmethod.StepPotential
+        self.scanrate = psmethod.Scanrate
 
-        msk = get_extra_value_mask(obj)
+        msk = get_extra_value_mask(psmethod)
 
         for key in (
             'record_auxiliary_input',
@@ -385,17 +385,17 @@ class SquareWaveVoltammetry(
     record_forward_and_reverse_currents: bool = False
     """Record forward and reverse currents"""
 
-    def _update_psmethod(self, *, obj):
+    def _update_psmethod(self, *, psmethod):
         """Update method with square wave voltammetry settings."""
-        obj.EquilibrationTime = self.equilibration_time
-        obj.BeginPotential = self.begin_potential
-        obj.EndPotential = self.end_potential
-        obj.StepPotential = self.step_potential
-        obj.Frequency = self.frequency
-        obj.PulseAmplitude = self.amplitude
+        psmethod.EquilibrationTime = self.equilibration_time
+        psmethod.BeginPotential = self.begin_potential
+        psmethod.EndPotential = self.end_potential
+        psmethod.StepPotential = self.step_potential
+        psmethod.Frequency = self.frequency
+        psmethod.PulseAmplitude = self.amplitude
 
         set_extra_value_mask(
-            obj=obj,
+            obj=psmethod,
             record_auxiliary_input=self.record_auxiliary_input,
             record_cell_potential=self.record_cell_potential,
             record_we_potential=self.record_we_potential,
@@ -403,15 +403,15 @@ class SquareWaveVoltammetry(
             record_forward_and_reverse_currents=self.record_forward_and_reverse_currents,
         )
 
-    def _update_params(self, *, obj):
-        self.equilibration_time = obj.EquilibrationTime
-        self.begin_potential = obj.BeginPotential
-        self.end_potential = obj.EndPotential
-        self.step_potential = obj.StepPotential
-        self.frequency = obj.Frequency
-        self.amplitude = obj.PulseAmplitude
+    def _update_params(self, *, psmethod):
+        self.equilibration_time = psmethod.EquilibrationTime
+        self.begin_potential = psmethod.BeginPotential
+        self.end_potential = psmethod.EndPotential
+        self.step_potential = psmethod.StepPotential
+        self.frequency = psmethod.Frequency
+        self.amplitude = psmethod.PulseAmplitude
 
-        msk = get_extra_value_mask(obj)
+        msk = get_extra_value_mask(psmethod)
 
         for key in (
             'record_auxiliary_input',
@@ -479,34 +479,34 @@ class DifferentialPulseVoltammetry(
 
     Reference electrode vs ground."""
 
-    def _update_psmethod(self, *, obj):
+    def _update_psmethod(self, *, psmethod):
         """Update method with linear sweep settings."""
-        obj.EquilibrationTime = self.equilibration_time
-        obj.BeginPotential = self.begin_potential
-        obj.EndPotential = self.end_potential
-        obj.StepPotential = self.step_potential
-        obj.PulsePotential = self.pulse_potential
-        obj.PulseTime = self.pulse_time
-        obj.Scanrate = self.scan_rate
+        psmethod.EquilibrationTime = self.equilibration_time
+        psmethod.BeginPotential = self.begin_potential
+        psmethod.EndPotential = self.end_potential
+        psmethod.StepPotential = self.step_potential
+        psmethod.PulsePotential = self.pulse_potential
+        psmethod.PulseTime = self.pulse_time
+        psmethod.Scanrate = self.scan_rate
 
         set_extra_value_mask(
-            obj=obj,
+            obj=psmethod,
             record_auxiliary_input=self.record_auxiliary_input,
             record_cell_potential=self.record_cell_potential,
             record_we_potential=self.record_we_potential,
             enable_bipot_current=self.enable_bipot_current,
         )
 
-    def _update_params(self, *, obj):
-        self.equilibration_time = obj.EquilibrationTime
-        self.begin_potential = obj.BeginPotential
-        self.end_potential = obj.EndPotential
-        self.step_potential = obj.StepPotential
-        self.pulse_potential = obj.PulsePotential
-        self.pulse_time = obj.PulseTime
-        self.scan_rate = obj.Scanrate
+    def _update_params(self, *, psmethod):
+        self.equilibration_time = psmethod.EquilibrationTime
+        self.begin_potential = psmethod.BeginPotential
+        self.end_potential = psmethod.EndPotential
+        self.step_potential = psmethod.StepPotential
+        self.pulse_potential = psmethod.PulsePotential
+        self.pulse_time = psmethod.PulseTime
+        self.scan_rate = psmethod.Scanrate
 
-        msk = get_extra_value_mask(obj)
+        msk = get_extra_value_mask(psmethod)
 
         for key in (
             'record_auxiliary_input',
@@ -570,32 +570,32 @@ class NormalPulseVoltammetry(
 
     Reference electrode vs ground."""
 
-    def _update_psmethod(self, *, obj):
+    def _update_psmethod(self, *, psmethod):
         """Update method with normal pulse voltammetry settings."""
-        obj.EquilibrationTime = self.equilibration_time
-        obj.BeginPotential = self.begin_potential
-        obj.EndPotential = self.end_potential
-        obj.StepPotential = self.step_potential
-        obj.PulseTime = self.pulse_time
-        obj.Scanrate = self.scan_rate
+        psmethod.EquilibrationTime = self.equilibration_time
+        psmethod.BeginPotential = self.begin_potential
+        psmethod.EndPotential = self.end_potential
+        psmethod.StepPotential = self.step_potential
+        psmethod.PulseTime = self.pulse_time
+        psmethod.Scanrate = self.scan_rate
 
         set_extra_value_mask(
-            obj=obj,
+            obj=psmethod,
             record_auxiliary_input=self.record_auxiliary_input,
             record_cell_potential=self.record_cell_potential,
             record_we_potential=self.record_we_potential,
             enable_bipot_current=self.enable_bipot_current,
         )
 
-    def _update_params(self, *, obj):
-        self.equilibration_time = obj.EquilibrationTime
-        self.begin_potential = obj.BeginPotential
-        self.end_potential = obj.EndPotential
-        self.step_potential = obj.StepPotential
-        self.pulse_time = obj.PulseTime
-        self.scan_rate = obj.Scanrate
+    def _update_params(self, *, psmethod):
+        self.equilibration_time = psmethod.EquilibrationTime
+        self.begin_potential = psmethod.BeginPotential
+        self.end_potential = psmethod.EndPotential
+        self.step_potential = psmethod.StepPotential
+        self.pulse_time = psmethod.PulseTime
+        self.scan_rate = psmethod.Scanrate
 
-        msk = get_extra_value_mask(obj)
+        msk = get_extra_value_mask(psmethod)
 
         for key in (
             'record_auxiliary_input',
@@ -655,28 +655,28 @@ class ChronoAmperometry(
 
     Reference electrode vs ground."""
 
-    def _update_psmethod(self, *, obj):
+    def _update_psmethod(self, *, psmethod):
         """Update method with chrono amperometry settings."""
-        obj.EquilibrationTime = self.equilibration_time
-        obj.IntervalTime = self.interval_time
-        obj.Potential = self.potential
-        obj.RunTime = self.run_time
+        psmethod.EquilibrationTime = self.equilibration_time
+        psmethod.IntervalTime = self.interval_time
+        psmethod.Potential = self.potential
+        psmethod.RunTime = self.run_time
 
         set_extra_value_mask(
-            obj=obj,
+            obj=psmethod,
             record_auxiliary_input=self.record_auxiliary_input,
             record_cell_potential=self.record_cell_potential,
             record_we_potential=self.record_we_potential,
             enable_bipot_current=self.enable_bipot_current,
         )
 
-    def _update_params(self, *, obj):
-        self.equilibration_time = obj.EquilibrationTime
-        self.interval_time = obj.IntervalTime
-        self.potential = obj.Potential
-        self.run_time = obj.RunTime
+    def _update_params(self, *, psmethod):
+        self.equilibration_time = psmethod.EquilibrationTime
+        self.interval_time = psmethod.IntervalTime
+        self.potential = psmethod.Potential
+        self.run_time = psmethod.RunTime
 
-        msk = get_extra_value_mask(obj)
+        msk = get_extra_value_mask(psmethod)
 
         for key in (
             'record_auxiliary_input',
@@ -725,22 +725,22 @@ class FastAmperometry(
     run_time: float = 1.0
     """Run time in s."""
 
-    def _update_psmethod(self, *, obj):
+    def _update_psmethod(self, *, psmethod):
         """Update method with fast amperometry settings."""
-        obj.Ranging = PSFixedCurrentRange(self.current_range._to_psobj())
-        obj.EquilibrationTime = self.equilibration_time
-        obj.EqPotentialFA = self.equilibration_potential
-        obj.IntervalTime = self.interval_time
-        obj.Potential = self.potential
-        obj.RunTime = self.run_time
+        psmethod.Ranging = PSFixedCurrentRange(self.current_range._to_psobj())
+        psmethod.EquilibrationTime = self.equilibration_time
+        psmethod.EqPotentialFA = self.equilibration_potential
+        psmethod.IntervalTime = self.interval_time
+        psmethod.Potential = self.potential
+        psmethod.RunTime = self.run_time
 
-    def _update_params(self, *, obj):
-        self.current_range = CURRENT_RANGE._from_psobj(obj.Ranging.StartCurrentRange)
-        self.equilibration_time = obj.EquilibrationTime
-        self.equilibration_potential = obj.EqPotentialFA
-        self.interval_time = obj.IntervalTime
-        self.potential = obj.Potential
-        self.run_time = obj.RunTime
+    def _update_params(self, *, psmethod):
+        self.current_range = CURRENT_RANGE._from_psobj(psmethod.Ranging.StartCurrentRange)
+        self.equilibration_time = psmethod.EquilibrationTime
+        self.equilibration_potential = psmethod.EqPotentialFA
+        self.interval_time = psmethod.IntervalTime
+        self.potential = psmethod.Potential
+        self.run_time = psmethod.RunTime
 
 
 @attrs.define
@@ -791,38 +791,38 @@ class MultiStepAmperometry(
 
     Reference electrode vs ground."""
 
-    def _update_psmethod(self, *, obj):
+    def _update_psmethod(self, *, psmethod):
         """Update method with multistep amperometry settings."""
-        obj.EquilibrationTime = self.equilibration_time
-        obj.IntervalTime = self.interval_time
-        obj.nCycles = self.n_cycles
-        obj.Levels.Clear()
+        psmethod.EquilibrationTime = self.equilibration_time
+        psmethod.IntervalTime = self.interval_time
+        psmethod.nCycles = self.n_cycles
+        psmethod.Levels.Clear()
 
         if not self.levels:
             raise ValueError('At least one level must be specified.')
 
         for level in self.levels:
-            obj.Levels.Add(level.to_psobj())
+            psmethod.Levels.Add(level.to_psobj())
 
-        obj.UseSelectiveRecord = any(level.record for level in self.levels)
-        obj.UseLimits = any(level.use_limits for level in self.levels)
+        psmethod.UseSelectiveRecord = any(level.record for level in self.levels)
+        psmethod.UseLimits = any(level.use_limits for level in self.levels)
 
         set_extra_value_mask(
-            obj=obj,
+            obj=psmethod,
             record_auxiliary_input=self.record_auxiliary_input,
             record_cell_potential=self.record_cell_potential,
             record_we_potential=self.record_we_potential,
             enable_bipot_current=self.enable_bipot_current,
         )
 
-    def _update_params(self, *, obj):
-        self.equilibration_time = obj.EquilibrationTime
-        self.interval_time = obj.IntervalTime
-        self.n_cycles = obj.nCycles
+    def _update_params(self, *, psmethod):
+        self.equilibration_time = psmethod.EquilibrationTime
+        self.interval_time = psmethod.IntervalTime
+        self.n_cycles = psmethod.nCycles
 
-        self.levels = [ELevel.from_psobj(pslevel) for pslevel in obj.Levels]
+        self.levels = [ELevel.from_psobj(pslevel) for pslevel in psmethod.Levels]
 
-        msk = get_extra_value_mask(obj)
+        msk = get_extra_value_mask(psmethod)
 
         for key in (
             'record_auxiliary_input',
@@ -880,27 +880,27 @@ class PulsedAmperometricDetection(
 
     _MODES = ('dc', 'pulse', 'differential')
 
-    def _update_psmethod(self, *, obj):
+    def _update_psmethod(self, *, psmethod):
         """Update method with pulsed amperometric detection settings."""
-        obj.EquilibrationTime = self.equilibration_time
-        obj.IntervalTime = self.interval_time
-        obj.PulseTime = self.pulse_time
-        obj.PulsePotentialAD = self.pulse_potential
-        obj.Potential = self.potential
-        obj.RunTime = self.run_time
+        psmethod.EquilibrationTime = self.equilibration_time
+        psmethod.IntervalTime = self.interval_time
+        psmethod.PulseTime = self.pulse_time
+        psmethod.PulsePotentialAD = self.pulse_potential
+        psmethod.Potential = self.potential
+        psmethod.RunTime = self.run_time
 
         mode = self._MODES.index(self.mode) + 1
-        obj.tMode = PSTechniques.PulsedAmpDetection.enumMode(mode)
+        psmethod.tMode = PSTechniques.PulsedAmpDetection.enumMode(mode)
 
-    def _update_params(self, *, obj):
-        self.equilibration_time = obj.EquilibrationTime
-        self.interval_time = obj.IntervalTime
-        self.potential = obj.Potential
-        self.pulse_potential = obj.PulsePotentialAD
-        self.pulse_time = obj.PulseTime
-        self.run_time = obj.RunTime
+    def _update_params(self, *, psmethod):
+        self.equilibration_time = psmethod.EquilibrationTime
+        self.interval_time = psmethod.IntervalTime
+        self.potential = psmethod.Potential
+        self.pulse_potential = psmethod.PulsePotentialAD
+        self.pulse_time = psmethod.PulseTime
+        self.run_time = psmethod.RunTime
 
-        self.mode = self._MODES[int(obj.tMode) - 1]
+        self.mode = self._MODES[int(psmethod.tMode) - 1]
 
 
 @attrs.define
@@ -937,24 +937,24 @@ class OpenCircuitPotentiometry(
 
     Use `CURRENT_RANGE` to define the range."""
 
-    def _update_psmethod(self, *, obj):
+    def _update_psmethod(self, *, psmethod):
         """Update method with open circuit potentiometry settings."""
-        obj.IntervalTime = self.interval_time
-        obj.RunTime = self.run_time
-        obj.AppliedCurrentRange = self.record_we_current_range._to_psobj()
+        psmethod.IntervalTime = self.interval_time
+        psmethod.RunTime = self.run_time
+        psmethod.AppliedCurrentRange = self.record_we_current_range._to_psobj()
 
         set_extra_value_mask(
-            obj=obj,
+            obj=psmethod,
             record_auxiliary_input=self.record_auxiliary_input,
             record_we_current=self.record_we_current,
         )
 
-    def _update_params(self, *, obj):
-        self.interval_time = obj.IntervalTime
-        self.run_time = obj.RunTime
-        self.record_we_current_range = CURRENT_RANGE._from_psobj(obj.AppliedCurrentRange)
+    def _update_params(self, *, psmethod):
+        self.interval_time = psmethod.IntervalTime
+        self.run_time = psmethod.RunTime
+        self.record_we_current_range = CURRENT_RANGE._from_psobj(psmethod.AppliedCurrentRange)
 
-        msk = get_extra_value_mask(obj)
+        msk = get_extra_value_mask(psmethod)
 
         for key in (
             'record_auxiliary_input',
@@ -1010,29 +1010,29 @@ class ChronoPotentiometry(
     record_we_current: bool = False
     """Record working electrode current."""
 
-    def _update_psmethod(self, *, obj):
+    def _update_psmethod(self, *, psmethod):
         """Update method with chronopotentiometry settings."""
-        obj.Current = self.current
-        obj.AppliedCurrentRange = self.applied_current_range._to_psobj()
-        obj.IntervalTime = self.interval_time
-        obj.RunTime = self.run_time
+        psmethod.Current = self.current
+        psmethod.AppliedCurrentRange = self.applied_current_range._to_psobj()
+        psmethod.IntervalTime = self.interval_time
+        psmethod.RunTime = self.run_time
 
-        obj.AppliedCurrentRange = self.applied_current_range._to_psobj()
+        psmethod.AppliedCurrentRange = self.applied_current_range._to_psobj()
 
         set_extra_value_mask(
-            obj=obj,
+            obj=psmethod,
             record_auxiliary_input=self.record_auxiliary_input,
             record_cell_potential=self.record_cell_potential,
             record_we_current=self.record_we_current,
         )
 
-    def _update_params(self, *, obj):
-        self.current = obj.Current
-        self.applied_current_range = CURRENT_RANGE._from_psobj(obj.AppliedCurrentRange)
-        self.interval_time = obj.IntervalTime
-        self.run_time = obj.RunTime
+    def _update_params(self, *, psmethod):
+        self.current = psmethod.Current
+        self.applied_current_range = CURRENT_RANGE._from_psobj(psmethod.AppliedCurrentRange)
+        self.interval_time = psmethod.IntervalTime
+        self.run_time = psmethod.RunTime
 
-        msk = get_extra_value_mask(obj)
+        msk = get_extra_value_mask(psmethod)
 
         for key in (
             'record_auxiliary_input',
@@ -1080,20 +1080,20 @@ class StrippingChronoPotentiometry(
     measurement_time: float = 1.0
     """Measurement time in s (default: 1.0)"""
 
-    def _update_psmethod(self, *, obj):
+    def _update_psmethod(self, *, psmethod):
         """Update method with stripping chrono potentiometry settings."""
-        obj.Current = self.current
-        obj.AppliedCurrentRange = self.applied_current_range._to_psobj()
-        obj.MeasurementTime = self.measurement_time
-        obj.EndPotential = self.end_potential
+        psmethod.Current = self.current
+        psmethod.AppliedCurrentRange = self.applied_current_range._to_psobj()
+        psmethod.MeasurementTime = self.measurement_time
+        psmethod.EndPotential = self.end_potential
 
-        obj.AppliedCurrentRange = self.applied_current_range._to_psobj()
+        psmethod.AppliedCurrentRange = self.applied_current_range._to_psobj()
 
-    def _update_params(self, *, obj):
-        self.current = obj.Current
-        self.applied_current_range = CURRENT_RANGE._from_psobj(obj.AppliedCurrentRange)
-        self.measurement_time = obj.MeasurementTime
-        self.end_potential = obj.EndPotential
+    def _update_params(self, *, psmethod):
+        self.current = psmethod.Current
+        self.applied_current_range = CURRENT_RANGE._from_psobj(psmethod.AppliedCurrentRange)
+        self.measurement_time = psmethod.MeasurementTime
+        self.end_potential = psmethod.EndPotential
 
 
 @attrs.define
@@ -1145,32 +1145,32 @@ class LinearSweepPotentiometry(
     record_we_current: bool = False
     """Record working electrode current."""
 
-    def _update_psmethod(self, *, obj):
+    def _update_psmethod(self, *, psmethod):
         """Update method with lineas sweep potentiometry settings."""
-        obj.AppliedCurrentRange = self.applied_current_range._to_psobj()
+        psmethod.AppliedCurrentRange = self.applied_current_range._to_psobj()
 
-        obj.BeginCurrent = self.current_begin
-        obj.EndCurrent = self.current_end
-        obj.StepCurrent = self.current_step
-        obj.ScanrateG = self.scan_rate
+        psmethod.BeginCurrent = self.current_begin
+        psmethod.EndCurrent = self.current_end
+        psmethod.StepCurrent = self.current_step
+        psmethod.ScanrateG = self.scan_rate
 
-        obj.AppliedCurrentRange = self.applied_current_range._to_psobj()
+        psmethod.AppliedCurrentRange = self.applied_current_range._to_psobj()
 
         set_extra_value_mask(
-            obj=obj,
+            obj=psmethod,
             record_auxiliary_input=self.record_auxiliary_input,
             record_we_current=self.record_we_current,
         )
 
-    def _update_params(self, *, obj):
-        self.applied_current_range = CURRENT_RANGE._from_psobj(obj.AppliedCurrentRange)
+    def _update_params(self, *, psmethod):
+        self.applied_current_range = CURRENT_RANGE._from_psobj(psmethod.AppliedCurrentRange)
 
-        self.current_begin = obj.BeginCurrent
-        self.current_end = obj.EndCurrent
-        self.current_step = obj.StepCurrent
-        self.scan_rate = obj.ScanrateG
+        self.current_begin = psmethod.BeginCurrent
+        self.current_end = psmethod.EndCurrent
+        self.current_step = psmethod.StepCurrent
+        self.scan_rate = psmethod.ScanrateG
 
-        msk = get_extra_value_mask(obj)
+        msk = get_extra_value_mask(psmethod)
 
         for key in (
             'record_auxiliary_input',
@@ -1220,37 +1220,37 @@ class MultiStepPotentiometry(
 
     Reference electrode vs ground."""
 
-    def _update_psmethod(self, *, obj):
+    def _update_psmethod(self, *, psmethod):
         """Update method with multistep potentiometry settings."""
-        obj.AppliedCurrentRange = self.applied_current_range._to_psobj()
-        obj.IntervalTime = self.interval_time
-        obj.nCycles = self.n_cycles
-        obj.Levels.Clear()
+        psmethod.AppliedCurrentRange = self.applied_current_range._to_psobj()
+        psmethod.IntervalTime = self.interval_time
+        psmethod.nCycles = self.n_cycles
+        psmethod.Levels.Clear()
 
         if not self.levels:
             raise ValueError('At least one level must be specified.')
 
         for level in self.levels:
-            obj.Levels.Add(level.to_psobj())
+            psmethod.Levels.Add(level.to_psobj())
 
-        obj.UseSelectiveRecord = any(level.record for level in self.levels)
-        obj.UseLimits = any(level.use_limits for level in self.levels)
+        psmethod.UseSelectiveRecord = any(level.record for level in self.levels)
+        psmethod.UseLimits = any(level.use_limits for level in self.levels)
 
         set_extra_value_mask(
-            obj=obj,
+            obj=psmethod,
             record_auxiliary_input=self.record_auxiliary_input,
             record_we_current=self.record_we_current,
         )
 
-    def _update_params(self, *, obj):
-        self.applied_current_range = CURRENT_RANGE._from_psobj(obj.AppliedCurrentRange)
+    def _update_params(self, *, psmethod):
+        self.applied_current_range = CURRENT_RANGE._from_psobj(psmethod.AppliedCurrentRange)
 
-        self.interval_time = obj.IntervalTime
-        self.n_cycles = obj.nCycles
+        self.interval_time = psmethod.IntervalTime
+        self.n_cycles = psmethod.nCycles
 
-        self.levels = [ILevel.from_psobj(pslevel) for pslevel in obj.Levels]
+        self.levels = [ILevel.from_psobj(pslevel) for pslevel in psmethod.Levels]
 
-        msk = get_extra_value_mask(obj)
+        msk = get_extra_value_mask(psmethod)
 
         for key in (
             'record_auxiliary_input',
@@ -1308,39 +1308,39 @@ class ChronoCoulometry(
 
     Reference electrode vs ground."""
 
-    def _update_psmethod(self, *, obj):
+    def _update_psmethod(self, *, psmethod):
         """Update method with chrono coulometry settings."""
-        obj.EquilibrationTime = self.equilibration_time
-        obj.IntervalTime = self.interval_time
+        psmethod.EquilibrationTime = self.equilibration_time
+        psmethod.IntervalTime = self.interval_time
 
-        obj.EFirstStep = self.step1_potential
-        obj.ESecondStep = self.step2_potential
-        obj.TFirstStep = self.step1_run_time
-        obj.TSecondStep = self.step2_run_time
+        psmethod.EFirstStep = self.step1_potential
+        psmethod.ESecondStep = self.step2_potential
+        psmethod.TFirstStep = self.step1_run_time
+        psmethod.TSecondStep = self.step2_run_time
 
         if self.bandwidth is not None:
-            obj.OverrideBandwidth = True
-            obj.Bandwidth = self.bandwidth
+            psmethod.OverrideBandwidth = True
+            psmethod.Bandwidth = self.bandwidth
 
         set_extra_value_mask(
-            obj=obj,
+            obj=psmethod,
             record_auxiliary_input=self.record_auxiliary_input,
             record_cell_potential=self.record_cell_potential,
             record_we_potential=self.record_we_potential,
         )
 
-    def _update_params(self, *, obj):
-        self.equilibration_time = obj.EquilibrationTime
-        self.interval_time = obj.IntervalTime
-        self.step1_potential = obj.EFirstStep
-        self.step2_potential = obj.ESecondStep
-        self.step1_run_time = obj.TFirstStep
-        self.step2_run_time = obj.TSecondStep
+    def _update_params(self, *, psmethod):
+        self.equilibration_time = psmethod.EquilibrationTime
+        self.interval_time = psmethod.IntervalTime
+        self.step1_potential = psmethod.EFirstStep
+        self.step2_potential = psmethod.ESecondStep
+        self.step1_run_time = psmethod.TFirstStep
+        self.step2_run_time = psmethod.TSecondStep
 
-        if obj.OverrideBandwidth:
-            self.bandwidth = obj.Bandwidth
+        if psmethod.OverrideBandwidth:
+            self.bandwidth = psmethod.Bandwidth
 
-        msk = get_extra_value_mask(obj)
+        msk = get_extra_value_mask(psmethod)
 
         for key in (
             'record_auxiliary_input',
@@ -1385,24 +1385,24 @@ class ElectrochemicalImpedanceSpectroscopy(
     min_frequency: float = 1e3
     """Minimum frequency in Hz."""
 
-    def _update_psmethod(self, *, obj):
+    def _update_psmethod(self, *, psmethod):
         """Update method with electrochemical impedance spectroscopy settings."""
-        obj.ScanType = enumScanType.Fixed
-        obj.FreqType = enumFrequencyType.Scan
-        obj.EquilibrationTime = self.equilibration_time
-        obj.Potential = self.dc_potential
-        obj.Eac = self.ac_potential
-        obj.nFrequencies = self.n_frequencies
-        obj.MaxFrequency = self.max_frequency
-        obj.MinFrequency = self.min_frequency
+        psmethod.ScanType = enumScanType.Fixed
+        psmethod.FreqType = enumFrequencyType.Scan
+        psmethod.EquilibrationTime = self.equilibration_time
+        psmethod.Potential = self.dc_potential
+        psmethod.Eac = self.ac_potential
+        psmethod.nFrequencies = self.n_frequencies
+        psmethod.MaxFrequency = self.max_frequency
+        psmethod.MinFrequency = self.min_frequency
 
-    def _update_params(self, *, obj):
-        self.equilibration_time = obj.EquilibrationTime
-        self.dc_potential = obj.Potential
-        self.ac_potential = obj.Eac
-        self.n_frequencies = obj.nFrequencies
-        self.max_frequency = obj.MaxFrequency
-        self.min_frequency = obj.MinFrequency
+    def _update_params(self, *, psmethod):
+        self.equilibration_time = psmethod.EquilibrationTime
+        self.dc_potential = psmethod.Potential
+        self.ac_potential = psmethod.Eac
+        self.n_frequencies = psmethod.nFrequencies
+        self.max_frequency = psmethod.MaxFrequency
+        self.min_frequency = psmethod.MinFrequency
 
 
 @attrs.define
@@ -1439,22 +1439,22 @@ class FastImpedanceSpectroscopy(
     frequency: float = 50000.0
     """Frequency in Hz."""
 
-    def _update_psmethod(self, *, obj):
+    def _update_psmethod(self, *, psmethod):
         """Update method with fas impedance spectroscopy settings."""
-        obj.Eac = self.ac_potential
-        obj.EquilibrationTime = self.equilibration_time
-        obj.FixedFrequency = self.frequency
-        obj.IntervalTime = self.interval_time
-        obj.Potential = self.dc_potential
-        obj.RunTime = self.run_time
+        psmethod.Eac = self.ac_potential
+        psmethod.EquilibrationTime = self.equilibration_time
+        psmethod.FixedFrequency = self.frequency
+        psmethod.IntervalTime = self.interval_time
+        psmethod.Potential = self.dc_potential
+        psmethod.RunTime = self.run_time
 
-    def _update_params(self, *, obj):
-        self.ac_potential = obj.Eac
-        self.equilibration_time = obj.EquilibrationTime
-        self.frequency = obj.FixedFrequency
-        self.interval_time = obj.IntervalTime
-        self.dc_potential = obj.Potential
-        self.run_time = obj.RunTime
+    def _update_params(self, *, psmethod):
+        self.ac_potential = psmethod.Eac
+        self.equilibration_time = psmethod.EquilibrationTime
+        self.frequency = psmethod.FixedFrequency
+        self.interval_time = psmethod.IntervalTime
+        self.dc_potential = psmethod.Potential
+        self.run_time = psmethod.RunTime
 
 
 @attrs.define
@@ -1496,27 +1496,27 @@ class GalvanostaticImpedanceSpectroscopy(
     min_frequency: float = 1e3
     """Minimum frequency in Hz."""
 
-    def _update_psmethod(self, *, obj):
+    def _update_psmethod(self, *, psmethod):
         """Update method with galvanic impedance spectroscopy settings."""
 
-        obj.ScanType = enumScanType.Fixed
-        obj.FreqType = enumFrequencyType.Scan
-        obj.AppliedCurrentRange = self.applied_current_range._to_psobj()
-        obj.EquilibrationTime = self.equilibration_time
-        obj.Iac = self.ac_current
-        obj.Idc = self.dc_current
-        obj.nFrequencies = self.n_frequencies
-        obj.MaxFrequency = self.max_frequency
-        obj.MinFrequency = self.min_frequency
+        psmethod.ScanType = enumScanType.Fixed
+        psmethod.FreqType = enumFrequencyType.Scan
+        psmethod.AppliedCurrentRange = self.applied_current_range._to_psobj()
+        psmethod.EquilibrationTime = self.equilibration_time
+        psmethod.Iac = self.ac_current
+        psmethod.Idc = self.dc_current
+        psmethod.nFrequencies = self.n_frequencies
+        psmethod.MaxFrequency = self.max_frequency
+        psmethod.MinFrequency = self.min_frequency
 
-    def _update_params(self, *, obj):
-        self.applied_current_range = CURRENT_RANGE._from_psobj(obj.AppliedCurrentRange)
-        self.equilibration_time = obj.EquilibrationTime
-        self.ac_current = obj.Iac
-        self.dc_current = obj.Idc
-        self.n_frequencies = obj.nFrequencies
-        self.max_frequency = obj.MaxFrequency
-        self.min_frequency = obj.MinFrequency
+    def _update_params(self, *, psmethod):
+        self.applied_current_range = CURRENT_RANGE._from_psobj(psmethod.AppliedCurrentRange)
+        self.equilibration_time = psmethod.EquilibrationTime
+        self.ac_current = psmethod.Iac
+        self.dc_current = psmethod.Idc
+        self.n_frequencies = psmethod.nFrequencies
+        self.max_frequency = psmethod.MaxFrequency
+        self.min_frequency = psmethod.MinFrequency
 
 
 @attrs.define
@@ -1556,22 +1556,22 @@ class FastGalvanostaticImpedanceSpectroscopy(
     frequency: float = 50000.0
     """Frequency in Hz."""
 
-    def _update_psmethod(self, *, obj):
+    def _update_psmethod(self, *, psmethod):
         """Update method with fast galvanic impedance spectroscopy settings."""
-        obj.AppliedCurrentRange = self.applied_current_range._to_psobj()
-        obj.Iac = self.ac_current
-        obj.Idc = self.dc_current
-        obj.FixedFrequency = self.frequency
-        obj.RunTime = self.run_time
-        obj.IntervalTime = self.interval_time
+        psmethod.AppliedCurrentRange = self.applied_current_range._to_psobj()
+        psmethod.Iac = self.ac_current
+        psmethod.Idc = self.dc_current
+        psmethod.FixedFrequency = self.frequency
+        psmethod.RunTime = self.run_time
+        psmethod.IntervalTime = self.interval_time
 
-    def _update_params(self, *, obj):
-        self.applied_current_range = CURRENT_RANGE._from_psobj(obj.AppliedCurrentRange)
-        self.ac_current = obj.Iac
-        self.dc_current = obj.Idc
-        self.frequency = obj.FixedFrequency
-        self.run_time = obj.RunTime
-        self.interval_time = obj.IntervalTime
+    def _update_params(self, *, psmethod):
+        self.applied_current_range = CURRENT_RANGE._from_psobj(psmethod.AppliedCurrentRange)
+        self.ac_current = psmethod.Iac
+        self.dc_current = psmethod.Idc
+        self.frequency = psmethod.FixedFrequency
+        self.run_time = psmethod.RunTime
+        self.interval_time = psmethod.IntervalTime
 
 
 @attrs.define
@@ -1592,9 +1592,9 @@ endif
     For more info on MethodSCRIPT, see:
         https://www.palmsens.com/methodscript/ for more information."""
 
-    def _update_psmethod(self, *, obj):
+    def _update_psmethod(self, *, psmethod):
         """Update method with MethodScript."""
-        obj.MethodScript = self.script
+        psmethod.MethodScript = self.script
 
-    def _update_params(self, *, obj):
-        self.script = obj.MethodScript
+    def _update_params(self, *, psmethod):
+        self.script = psmethod.MethodScript

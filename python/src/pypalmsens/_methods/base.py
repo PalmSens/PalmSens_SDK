@@ -23,8 +23,12 @@ class BaseTechnique(Protocol):
         """Convert parameters to dotnet method."""
         psmethod = PSMethod.FromMethodID(self._id)
 
-        self._update_psmethod(obj=psmethod)
+        self._update_psmethod(psmethod=psmethod)
+        self._update_psmethod_nested(psmethod=psmethod)
+        return psmethod
 
+    def _update_psmethod_nested(self, *, psmethod):
+        """Convert and set field parameters on dotnet method."""
         for field in self.__attrs_attrs__:
             attribute = getattr(self, field.name)
             try:
@@ -35,36 +39,32 @@ class BaseTechnique(Protocol):
 
         return psmethod
 
-    @staticmethod
-    def _from_psmethod(psmethod: PSMethod) -> BaseTechnique:
+    @classmethod
+    def from_method_id(cls, id: str) -> BaseTechnique:
+        """Create new instance of appropriate technique from method ID."""
+        new = cls._registry[id]
+        return new()
+
+    @classmethod
+    def _from_psmethod(cls, psmethod: PSMethod) -> BaseTechnique:
         """Generate parameters from dotnet method object."""
-        id = psmethod.MethodID
+        new = cls.from_method_id(psmethod.MethodID)
+        new._update_params(psmethod=psmethod)
+        new._update_params_nested(psmethod=psmethod)
+        return new
 
-        # cls = ID_TO_PARAMETER_MAPPING[id]
-        cls = BaseTechnique._registry[id]
-
-        if cls is None:
-            raise NotImplementedError(f'Mapping of {id} parameters is not implemented yet')
-
-        new: BaseTechnique = cls()
-
-        new._update_params(obj=psmethod)
-
-        # new._update_own_params(obj=psmethod)
-        # new._update_field_params(obj=psmethod)
-
-        for field in new.__attrs_attrs__:
-            attribute = getattr(new, field.name)
+    def _update_params_nested(self, *, psmethod):
+        """Retrieve and convert dotnet method for nested field parameters."""
+        for field in self.__attrs_attrs__:
+            attribute = getattr(self, field.name)
             try:
                 # Update parameters if attribute has the `update_params` method
                 attribute._update_params(obj=psmethod)
             except AttributeError:
                 pass
 
-        return new
+    @abstractmethod
+    def _update_psmethod(self, *, psmethod: PSMethod) -> None: ...
 
     @abstractmethod
-    def _update_psmethod(self, *, obj: PSMethod) -> None: ...
-
-    @abstractmethod
-    def _update_params(self, *, obj: PSMethod) -> None: ...
+    def _update_params(self, *, psmethod: PSMethod) -> None: ...

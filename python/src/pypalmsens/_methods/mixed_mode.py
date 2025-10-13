@@ -235,21 +235,21 @@ class MixedMode(
     stages: list[TStage] = attrs.field(factory=list)
     """List of stages to run through."""
 
-    def _update_psmethod(self, *, obj):
+    def _update_psmethod(self, *, psmethod):
         """Update method with mixed mode settings."""
-        obj.nCycles = self.cycles
-        obj.IntervalTime = self.interval_time
+        psmethod.nCycles = self.cycles
+        psmethod.IntervalTime = self.interval_time
 
         for stage in self.stages:
-            psstage = obj.AddStage(stage._type)
+            psstage = psmethod.AddStage(stage._type)
 
             stage._update_psobj(obj=psstage)
 
-    def _update_params(self, *, obj):
-        self.cycles = obj.nCycles
-        self.interval_time = single_to_double(obj.IntervalTime)
+    def _update_params(self, *, psmethod):
+        self.cycles = psmethod.nCycles
+        self.interval_time = single_to_double(psmethod.IntervalTime)
 
-        for psstage in obj.Stages:
+        for psstage in psmethod.Stages:
             match psstage.StageType:
                 case ConstantE._type:
                     Stage = ConstantE
