@@ -21,6 +21,7 @@ def assert_params_round_trip_equal(*, pycls, kwargs):
         ps.save_method_file(path, params)
         new_params = ps.load_method_file(path)
 
+    assert new_params == params
     assert_params_match_kwargs(new_params, kwargs=kwargs)
 
 
