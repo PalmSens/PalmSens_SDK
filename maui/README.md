@@ -1,4 +1,8 @@
-# MAUI PalmSens SDK
+# .NET MAUI SDK for PalmSens devices
+
+**The .NET MAUI SDK is under active development and not ready for actual use.**
+
+For more information, see the [documentation](https://sdk.palmsens.com/maui/latest/index.html).
 
 ## Making a new app
 
