@@ -128,7 +128,7 @@ class VersusOCP(BaseSettings):
     max_ocp_time: float = 20.0
     """Maximum OCP time in s"""
 
-    stability_criterion: int = 0
+    stability_criterion: float = 0.0
     """Stability criterion (potential/time) in mV/s.
 
     If equal to 0 means no stability criterion.

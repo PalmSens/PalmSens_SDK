@@ -841,7 +841,6 @@ class PulsedAmperometricDetection(
     BaseTechnique,
     mixins.CurrentRangeMixin,
     mixins.PretreatmentMixin,
-    mixins.VersusOCPMixin,
     mixins.BiPotMixin,
     mixins.PostMeasurementMixin,
     mixins.EquilibrationTriggersMixin,
@@ -1267,7 +1266,7 @@ class MultiStepPotentiometry(
     interval_time: float = 0.1
     """Interval time in s."""
 
-    n_cycles: float = 1
+    n_cycles: int = 1
     """Number of cycles."""
 
     levels: list[ILevel] = attrs.field(factory=lambda: [ILevel()])
