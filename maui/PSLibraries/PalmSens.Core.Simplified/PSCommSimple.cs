@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -27,10 +26,9 @@ namespace PalmSens.Core.Simplified
         /// <exception cref="System.ArgumentNullException">Platform cannot be null</exception>
         public PSCommSimple(IPlatform platform, IPlatformInvoker platformInvoker)
         {
-            ArgumentNullException.ThrowIfNull(platform);
-            ArgumentNullException.ThrowIfNull(platformInvoker);
+            if (platform == null)
+                throw new ArgumentNullException("Platform cannot be null");
             _platform = platform;
-            _platform.AvailableDeviceDiscoveryCompleted += _platform_AvailableDeviceDiscoveryCompleted;
             _platformInvoker = platformInvoker;
         }
 
@@ -38,12 +36,12 @@ namespace PalmSens.Core.Simplified
         /// <summary>
         /// The platform specific interface implementing the layers to communicate with the instrument
         /// </summary>
-        private readonly IPlatform _platform;
+        private IPlatform _platform = null;
 
         /// <summary>
         /// The platform specific interface implementing the dispatch of events to the UI thread
         /// </summary>
-        private readonly IPlatformInvoker _platformInvoker;
+        private IPlatformInvoker _platformInvoker = null;
 
         /// <summary>
         /// Returns an array of connected devices.
@@ -51,21 +49,15 @@ namespace PalmSens.Core.Simplified
         /// <value>
         /// The connected devices.
         /// </value>
-        public ReadOnlyObservableCollection<Device> DiscoverAvailableDevices() => _platform.DiscoverAvailableDevices();
+        public IReadOnlyList<Device> AvailableDevices => _platform.AvailableDevices;
 
         /// <summary>
         /// Returns an array of connected devices.
         /// </summary>
-        /// <param name="timeOut">Maximum time to discover devices</param>
         /// <value>
         /// The connected devices.
         /// </value>
-        public ReadOnlyObservableCollection<Device> DiscoverAvailableDevices(TimeSpan timeOut) => _platform.DiscoverAvailableDevices();
-
-        /// <summary>
-        /// Cancels the scan for available devices
-        /// </summary>
-        public void CancelDeviceDiscovery() => _platform.CancelAvailableDeviceDiscovery();
+        public Task<IReadOnlyList<Device>> GetAvailableDevicesAsync() => _platform.GetAvailableDevices();
 
         /// <summary>
         /// The connected device's CommManager
@@ -242,6 +234,22 @@ namespace PalmSens.Core.Simplified
 
         #region Functions
         /// <summary>
+        /// Connects to the device with the highest priority.
+        /// </summary>
+        public void Connect()
+        {
+            Connect(AvailableDevices.First());
+        }
+
+        /// <summary>
+        /// Connects to the device with the highest priority.
+        /// </summary>
+        public Task ConnectAsync()
+        {
+            return ConnectAsync(AvailableDevices.First());
+        }
+
+        /// <summary>
         /// Connects to the specified device.
         /// </summary>
         /// <param name="device">The device.</param>
@@ -270,7 +278,7 @@ namespace PalmSens.Core.Simplified
                 _platform.Disconnect(_comm);
                 _activeMeasurement = null;
             }
-            catch (Exception e)
+            catch(Exception e)
             {
                 throw new Exception("Failed to disconnect.", e);
             }
@@ -282,10 +290,11 @@ namespace PalmSens.Core.Simplified
         /// <exception cref="System.NullReferenceException">Not connected to a device.</exception>
         public async Task DisconnectAsync()
         {
-            try
-            {
-                await _platform.DisconnectAsync(_comm);
-                _activeMeasurement = null;
+            try {
+                await Task.Run(async () => { //The disconnect function should not be run using CommManager.ClientConnection.RunAsync()
+                    await _platform.DisconnectAsync(_comm);
+                    _activeMeasurement = null;
+                });
             }
             catch (Exception e)
             {
@@ -386,7 +395,7 @@ namespace PalmSens.Core.Simplified
                     CommManager commSender = sender as CommManager;
                     ActiveMeasurement = e.NewMeasurement;
 
-                    if (e.NewMeasurement is ImpedimetricMeasurementBase eis)
+                    if (e.NewMeasurement is ImpedimetricMeasurementBase || e.NewMeasurement is ImpedimetricMeasBaseMS)
                         _activeSimpleMeasurement.NewSimpleCurve(PalmSens.Data.DataArrayType.ZRe, PalmSens.Data.DataArrayType.ZIm, "Nyquist", true); //Create a nyquist curve by default
 
                     tcs.SetResult(_activeSimpleMeasurement);
@@ -400,7 +409,9 @@ namespace PalmSens.Core.Simplified
                     throw new Exception($"Could not start measurement: {errorString}");
                 }
 
+                comm.ClientConnection.Semaphore.Release();
                 SimpleMeasurement result = await tcs.Task;
+                await comm.ClientConnection.Semaphore.WaitAsync();
                 comm.BeginMeasurementAsync -= asyncEventHandler;
 
                 return result;
@@ -1013,27 +1024,6 @@ namespace PalmSens.Core.Simplified
 
         #region events
         /// <summary>
-        /// Occurs when the discovery of available devices has completed.
-        /// </summary>
-        public event EventHandler<ScanCompletedEventArgs> AvailableDeviceDiscoveryCompleted;
-
-        /// <summary>
-        /// Casts the event indicating the end of the available device discovery to the UI thread when necessary.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="scanCompletedEventArgs"></param>
-        /// <exception cref="NotImplementedException"></exception>
-        private void _platform_AvailableDeviceDiscoveryCompleted(object sender, ScanCompletedEventArgs scanCompletedEventArgs)
-        {
-            if (_platformInvoker.InvokeIfRequired(() => _platform_AvailableDeviceDiscoveryCompleted(sender, scanCompletedEventArgs))) //Recast event to UI thread when necessary
-            {
-                return;
-            }
-
-            AvailableDeviceDiscoveryCompleted?.Invoke(this, scanCompletedEventArgs);
-        }
-
-        /// <summary>
         /// Occurs when a device status package is received, these packages are not sent during a measurement.
         /// </summary>
         public event StatusEventHandler ReceiveStatus;
@@ -1046,11 +1036,10 @@ namespace PalmSens.Core.Simplified
         /// <exception cref="System.NullReferenceException">PlatformInvoker not set.</exception>
         private void Comm_ReceiveStatus(object sender, StatusEventArgs e)
         {
-            if (_platformInvoker.InvokeIfRequired(() => Comm_ReceiveStatus(sender, e))) //Recast event to UI thread when necessary
-            {
+            if (_platformInvoker == null)
+                throw new NullReferenceException("PlatformInvoker not set.");
+            if (_platformInvoker.InvokeIfRequired(new StatusEventHandler(Comm_ReceiveStatus), sender, e)) //Recast event to UI thread when necessary
                 return;
-            }
-
             ReceiveStatus?.Invoke(this, e);
         }
 
@@ -1079,11 +1068,10 @@ namespace PalmSens.Core.Simplified
         /// <exception cref="System.NullReferenceException">PlatformInvoker not set.</exception>
         private void Comm_BeginMeasurement(object sender, ActiveMeasurement newMeasurement)
         {
-            if (_platformInvoker.InvokeIfRequired(() => Comm_BeginMeasurement(sender, newMeasurement))) //Recast event to UI thread when necessary
-            {
+            if (_platformInvoker == null)
+                throw new NullReferenceException("PlatformInvoker not set.");
+            if (_platformInvoker.InvokeIfRequired(new CommManager.BeginMeasurementEventHandler(Comm_BeginMeasurement), sender, newMeasurement)) //Recast event to UI thread when necessary
                 return;
-            }
-
             MeasurementStarted?.Invoke(this, EventArgs.Empty);
         }
 
@@ -1112,10 +1100,16 @@ namespace PalmSens.Core.Simplified
         /// <exception cref="System.NullReferenceException">PlatformInvoker not set.</exception>
         private void Comm_EndMeasurement(object _, EventArgs e)
         {
+            if (_platformInvoker == null)
+                throw new NullReferenceException("PlatformInvoker not set.");
+
             ActiveMeasurement = null;
 
-            if (!_platformInvoker.InvokeIfRequired(() =>
-                    MeasurementEnded?.Invoke(this, _commErrorException))) //Recast event to UI thread when necessary
+            if (!_platformInvoker.InvokeIfRequired(
+                (EventHandler<Exception>)((sender, ex) =>
+                {
+                    MeasurementEnded?.Invoke(sender, ex);
+                }), this, _commErrorException)) //Recast event to UI thread when necessary
             {
                 MeasurementEnded?.Invoke(this, _commErrorException);
             }
@@ -1141,12 +1135,16 @@ namespace PalmSens.Core.Simplified
         /// <exception cref="System.NullReferenceException">PlatformInvoker not set.</exception>
         private void Comm_BeginReceiveCurve(object _, CurveEventArgs e)
         {
+            if (_platformInvoker == null)
+                throw new NullReferenceException("PlatformInvoker not set.");
+
             var activeSimpleCurve = SetActiveSimpleCurve(e.GetCurve());
 
-            if (!_platformInvoker.InvokeIfRequired(() =>
+            if (!_platformInvoker.InvokeIfRequired(
+                (SimpleCurveStartReceivingDataHandler) ((sender, simpleCuve) =>
                 {
-                    if (activeSimpleCurve != null) SimpleCurveStartReceivingData?.Invoke(this, activeSimpleCurve);
-                })) //Recast event to UI thread when necessary
+                    if (simpleCuve != null) SimpleCurveStartReceivingData?.Invoke(sender, simpleCuve);
+                }), this, activeSimpleCurve)) //Recast event to UI thread when necessary
             {
                 if (activeSimpleCurve != null) SimpleCurveStartReceivingData?.Invoke(this, activeSimpleCurve);
             }
@@ -1177,11 +1175,10 @@ namespace PalmSens.Core.Simplified
         /// <exception cref="System.NullReferenceException">PlatformInvoker not set.</exception>
         private void Comm_StateChanged(object sender, CommManager.DeviceState CurrentState)
         {
-            if (_platformInvoker.InvokeIfRequired(() => Comm_StateChanged(sender, CurrentState))) //Recast event to UI thread when necessary
-            {
+            if (_platformInvoker == null)
+                throw new NullReferenceException("PlatformInvoker not set.");
+            if (_platformInvoker.InvokeIfRequired(new CommManager.StatusChangedEventHandler(Comm_StateChanged), sender, CurrentState)) //Recast event to UI thread when necessary
                 return;
-            }
-
             StateChanged?.Invoke(this, CurrentState);
         }
 
@@ -1210,15 +1207,19 @@ namespace PalmSens.Core.Simplified
         /// <exception cref="System.NotImplementedException"></exception>
         private void Comm_Disconnected(object _, EventArgs e)
         {
+            if (_platformInvoker == null)
+                throw new NullReferenceException("PlatformInvoker not set.");
+
             _comm?.Dispose();
             Comm = null;
             var ex = _commErrorException;
             _commErrorException = null;
 
-            if (!_platformInvoker.InvokeIfRequired(() =>
+            if (!_platformInvoker.InvokeIfRequired(
+                (DisconnectedEventHandler) ((sender, exception) =>
                 {
-                    Disconnected?.Invoke(this, ex);
-                })) //Recast event to UI thread when necessary
+                    Disconnected?.Invoke(sender, exception);
+                }), this, ex)) //Recast event to UI thread when necessary
             {
                 Disconnected?.Invoke(this, ex);
             }
@@ -1257,7 +1258,6 @@ namespace PalmSens.Core.Simplified
             ReceiveStatus = null;
             StateChanged = null;
             SimpleCurveStartReceivingData = null;
-            AvailableDeviceDiscoveryCompleted = null;
         }
     }
 

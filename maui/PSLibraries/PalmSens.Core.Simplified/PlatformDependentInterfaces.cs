@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -12,13 +11,9 @@ namespace PalmSens.Core.Simplified
 {
     public interface IPlatform
     {
-        ReadOnlyObservableCollection<Device> DiscoverAvailableDevices();
+        IReadOnlyList<Device> AvailableDevices { get; }
 
-        ReadOnlyObservableCollection<Device> DiscoverAvailableDevices(TimeSpan timeOut);
-
-        void CancelAvailableDeviceDiscovery();
-
-        event EventHandler<ScanCompletedEventArgs> AvailableDeviceDiscoveryCompleted;
+        Task<IReadOnlyList<Device>> GetAvailableDevices();
 
         CommManager Connect(Device device);
 
@@ -31,7 +26,9 @@ namespace PalmSens.Core.Simplified
 
     public interface IPlatformMulti
     {
-        IList<Device> AvailableDevices { get; }
+        IReadOnlyList<Device> AvailableDevices { get; }
+
+        Task<IReadOnlyList<Device>> GetAvailableDevices();
 
         /// <summary>
         /// Connects to the specified channels.
@@ -51,6 +48,14 @@ namespace PalmSens.Core.Simplified
         /// </summary>
         /// <param name="comms">The comm.</param>
         Task<IList<(int ChannelIndex, Exception Exception)>> Disconnect(IList<CommManager> comms);
+
+        /// <summary>
+        /// Replaces the instance of a device with a new one if possible.
+        /// This is used to recover a dropped connection.
+        /// </summary>
+        /// <param name="deviceInErrorState"></param>
+        /// <returns></returns>
+        Task<Device> MatchDevices(Device deviceInErrorState);
     }
 
     public interface IPlatformInvoker
@@ -61,8 +66,6 @@ namespace PalmSens.Core.Simplified
         /// <param name="method">The method.</param>
         /// <param name="args">The arguments.</param>
         /// <returns></returns>
-        bool InvokeIfRequired(Action action);
+        bool InvokeIfRequired(Delegate method, params object[] args);
     }
-
-    public record ScanCompletedEventArgs(Exception? Exception);
 }

@@ -67,12 +67,12 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Condition="'$(TargetFramework)' == 'net9.0-windows10.0.19041.0'" Include="..\..\..\trunk\PSWindows\PalmSens.Core.Windows\PalmSens.Core.Windows.NET.SDK.csproj" />
-	  <ProjectReference Condition="'$(TargetFramework)' == 'net9.0-windows10.0.19041.0'" Include="..\..\..\trunk\PSWindows\PSWindowsSDK\PSWindowsSDK - NET - DEBUG\PalmSens.Core.Simplified.Windows.NET\PalmSens.Core.Simplified.Windows.NET.csproj" />
-	  <ProjectReference Include="..\..\..\trunk\Shared\Core.Simplified\PalmSens.Core.Simplified\PalmSens.Core.Simplified.NET.csproj" />
-	  <ProjectReference Include="..\..\..\trunk\Shared\Core.Simplified\SDKPlot\SDKPlot.NET.csproj" />
-	  <ProjectReference Include="..\..\..\trunk\Shared\Core\PalmSens.Core.NET.csproj" />
-	  <ProjectReference Include="..\SDKPlot.Maui\SDKPlot.Maui.csproj" />
+	  <ProjectReference Condition="'$(TargetFramework)' == 'net9.0-windows10.0.19041.0'" Include="..\..\..\..\trunk\PSWindows\PalmSens.Core.Windows\PalmSens.Core.Windows.NET.SDK.csproj" />
+	  <ProjectReference Condition="'$(TargetFramework)' == 'net9.0-windows10.0.19041.0'" Include="..\..\..\..\trunk\PSWindows\PSWindowsSDK\PSWindowsSDK - NET - DEBUG\PalmSens.Core.Simplified.Windows.NET\PalmSens.Core.Simplified.Windows.NET.csproj" />
+	  <ProjectReference Include="..\..\PSLibraries\PalmSens.Core.Simplified\PalmSens.Core.Simplified.NET.csproj" />
+	  <ProjectReference Include="..\..\PSLibraries\SDKPlot\SDKPlot.NET.csproj" />
+	  <ProjectReference Include="..\..\..\..\trunk\Shared\Core\PalmSens.Core.NET.csproj" />
+	  <ProjectReference Include="..\..\PSLibraries\SDKPlot.Maui\SDKPlot.Maui.csproj" />
 	</ItemGroup>
 
 </Project>

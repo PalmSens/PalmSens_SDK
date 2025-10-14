@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Core\PalmSens.Core.NET.csproj" />
+    <ProjectReference Include="..\..\..\..\trunk\Shared\Core\PalmSens.Core.NET.csproj" />
     <ProjectReference Include="..\PalmSens.Core.Simplified\PalmSens.Core.Simplified.NET.csproj" />
   </ItemGroup>
 

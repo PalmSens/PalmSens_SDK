@@ -5,31 +5,33 @@ VisualStudioVersion = 17.14.36511.14
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PalmSens.Core.NET", "..\..\trunk\Shared\Core\PalmSens.Core.NET.csproj", "{686F76E1-7822-2A8B-411F-020CCF1F43C7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PalmSens.Core.Simplified.NET", "..\..\trunk\Shared\Core.Simplified\PalmSens.Core.Simplified\PalmSens.Core.Simplified.NET.csproj", "{F9AD333D-ED0C-5048-4CC6-66C704375D25}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PalmSens.Core.Simplified.NET", "PSLibraries\PalmSens.Core.Simplified\PalmSens.Core.Simplified.NET.csproj", "{F9AD333D-ED0C-5048-4CC6-66C704375D25}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PalmSens.Core.Windows.NET.SDK", "..\..\trunk\PSWindows\PalmSens.Core.Windows\PalmSens.Core.Windows.NET.SDK.csproj", "{F4943E8C-8AAE-2AB5-A742-F4D25B70B570}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PalmSens.Core.Simplified.Windows.NET", "..\..\trunk\PSWindows\PSWindowsSDK\PSWindowsSDK - NET - DEBUG\PalmSens.Core.Simplified.Windows.NET\PalmSens.Core.Simplified.Windows.NET.csproj", "{24ECA041-4E61-A4C4-793A-E79B64637F56}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PalmSens.Core.Simplified.MAUI", "PSLibraries\PalmSens.Core.Simplified.MAUI\PalmSens.Core.Simplified.MAUI.csproj", "{D9949105-5E98-4C82-1A0E-8E92C0DEDC7A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PalmSens.Core.Simplified.MAUI", "..\..\trunk\PSMAUI\PSSDKMaui\Libraries\PalmSens.Core.Simplified.MAUI\PalmSens.Core.Simplified.MAUI.csproj", "{D9949105-5E98-4C82-1A0E-8E92C0DEDC7A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BasicExample", "Examples\BasicExampleApp\BasicExample.csproj", "{F6A6A78F-921C-9FB6-DFD1-D26375539BA6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BasicExample", "BasicExampleApp\BasicExample.csproj", "{F6A6A78F-921C-9FB6-DFD1-D26375539BA6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BiPotAuxExample", "Examples\BiPotAuxExampleApp\BiPotAuxExample.csproj", "{6D1CA250-949B-72B2-8828-C97CA2A311F7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BiPotAuxExample", "BiPotAuxExampleApp\BiPotAuxExample.csproj", "{6D1CA250-949B-72B2-8828-C97CA2A311F7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataProcessingExample", "Examples\DataProcessingApp\DataProcessingExample.csproj", "{5237E62B-CFF3-56D6-59C1-97FA5FDCB8AB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataProcessingExample", "DataProcessingApp\DataProcessingExample.csproj", "{5237E62B-CFF3-56D6-59C1-97FA5FDCB8AB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SDKPlot.Maui", "PSLibraries\SDKPlot.Maui\SDKPlot.Maui.csproj", "{DFDFD807-87C1-435E-A879-E9D43C2B944F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SDKPlot.Maui", "SDKPlot.Maui\SDKPlot.Maui.csproj", "{DFDFD807-87C1-435E-A879-E9D43C2B944F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SDKPlot.NET", "PSLibraries\SDKPlot\SDKPlot.NET.csproj", "{3D597950-312B-B4E3-920A-EE833FFC9D92}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SDKPlot.NET", "..\..\trunk\Shared\Core.Simplified\SDKPlot\SDKPlot.NET.csproj", "{3D597950-312B-B4E3-920A-EE833FFC9D92}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InternalStorage", "Examples\InternalStorageApp\InternalStorage.csproj", "{77831193-C91A-D225-5EDD-E797F1BA5369}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InternalStorage", "InternalStorageApp\InternalStorage.csproj", "{77831193-C91A-D225-5EDD-E797F1BA5369}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LivePlot", "Examples\LivePlotApp\LivePlot.csproj", "{6B192B9C-A699-326B-E9A7-6394DA0D5E76}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LivePlot", "LivePlotApp\LivePlot.csproj", "{6B192B9C-A699-326B-E9A7-6394DA0D5E76}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PeakDetection", "Examples\PeakDetectionApp\PeakDetection.csproj", "{F76669AA-B66E-24BF-09A4-DE69A8C1B355}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PeakDetection", "PeakDetectionApp\PeakDetection.csproj", "{F76669AA-B66E-24BF-09A4-DE69A8C1B355}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EISFit", "Examples\EISFitApp\EISFit.csproj", "{27ECE1CA-0C13-6793-058B-54D640FB331E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EISFit", "EISFitApp\EISFit.csproj", "{27ECE1CA-0C13-6793-058B-54D640FB331E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PalmSens.Core.Simplified.Android", "PSLibraries\PalmSens.Core.Simplified.Android\PalmSens.Core.Simplified.Android.csproj", "{5D651976-31F8-D49C-13E6-12F913F90DFF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PalmSens.Core.Simplified.Windows.NET", "PSLibraries\PalmSens.Core.Simplified.Windows.NET\PalmSens.Core.Simplified.Windows.NET.csproj", "{2DDB262E-11A2-4539-885B-DEBDFBF87CB8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -49,10 +51,6 @@ Global
 		{F4943E8C-8AAE-2AB5-A742-F4D25B70B570}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F4943E8C-8AAE-2AB5-A742-F4D25B70B570}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F4943E8C-8AAE-2AB5-A742-F4D25B70B570}.Release|Any CPU.Build.0 = Release|Any CPU
-		{24ECA041-4E61-A4C4-793A-E79B64637F56}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{24ECA041-4E61-A4C4-793A-E79B64637F56}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{24ECA041-4E61-A4C4-793A-E79B64637F56}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{24ECA041-4E61-A4C4-793A-E79B64637F56}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D9949105-5E98-4C82-1A0E-8E92C0DEDC7A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D9949105-5E98-4C82-1A0E-8E92C0DEDC7A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D9949105-5E98-4C82-1A0E-8E92C0DEDC7A}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -100,6 +98,14 @@ Global
 		{27ECE1CA-0C13-6793-058B-54D640FB331E}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
 		{27ECE1CA-0C13-6793-058B-54D640FB331E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{27ECE1CA-0C13-6793-058B-54D640FB331E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5D651976-31F8-D49C-13E6-12F913F90DFF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5D651976-31F8-D49C-13E6-12F913F90DFF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5D651976-31F8-D49C-13E6-12F913F90DFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5D651976-31F8-D49C-13E6-12F913F90DFF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2DDB262E-11A2-4539-885B-DEBDFBF87CB8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2DDB262E-11A2-4539-885B-DEBDFBF87CB8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2DDB262E-11A2-4539-885B-DEBDFBF87CB8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2DDB262E-11A2-4539-885B-DEBDFBF87CB8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

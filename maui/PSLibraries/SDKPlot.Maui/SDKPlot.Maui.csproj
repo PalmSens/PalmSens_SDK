@@ -19,11 +19,9 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<ProjectReference Condition="'$(TargetFramework)' == 'net9.0-windows10.0.19041.0'" Include="..\..\..\trunk\PSWindows\PalmSens.Core.Windows\PalmSens.Core.Windows.NET.SDK.csproj" />
-		<ProjectReference Condition="'$(TargetFramework)' == 'net9.0-windows10.0.19041.0'" Include="..\..\..\trunk\PSWindows\PSWindowsSDK\PSWindowsSDK - NET - DEBUG\PalmSens.Core.Simplified.Windows.NET\PalmSens.Core.Simplified.Windows.NET.csproj" />
-		<ProjectReference Include="..\..\..\trunk\Shared\Core.Simplified\PalmSens.Core.Simplified\PalmSens.Core.Simplified.NET.csproj" />
-		<ProjectReference Include="..\..\..\trunk\Shared\Core.Simplified\SDKPlot\SDKPlot.NET.csproj" />
-		<ProjectReference Include="..\..\..\trunk\Shared\Core\PalmSens.Core.NET.csproj" />
+		<ProjectReference Include="..\PalmSens.Core.Simplified\PalmSens.Core.Simplified.NET.csproj" />
+		<ProjectReference Include="..\SDKPlot\SDKPlot.NET.csproj" />
+		<ProjectReference Include="..\..\..\..\trunk\Shared\Core\PalmSens.Core.NET.csproj" />
 		<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
 		<PackageReference Include="OxyPlot.Maui.Skia" Version="1.1.0" />
 	</ItemGroup>

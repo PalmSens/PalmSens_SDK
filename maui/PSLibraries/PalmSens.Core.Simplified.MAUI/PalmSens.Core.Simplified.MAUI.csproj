@@ -18,8 +18,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\..\..\..\PSWindows\PSWindowsSDK\PSWindowsSDK - NET - DEBUG\PalmSens.Core.Simplified.Windows.NET\PalmSens.Core.Simplified.Windows.NET.csproj" Condition="'$(TargetFramework)' == 'net9.0-windows10.0.19041.0'" />
-	  <ProjectReference Include="..\PalmSens.Core.Simplified.Android\PalmSens.Core.Simplified.Android.csproj" Condition="$(TargetFramework.Endswith('-android'))" />
+	  <ProjectReference Include="..\PalmSens.Core.Simplified.Windows.NET\PalmSens.Core.Simplified.Windows.NET.csproj" Condition="'$(TargetFramework)' == 'net9.0-windows10.0.19041.0'" />
+	  <ProjectReference Include="..\PalmSens.Core.Simplified\PalmSens.Core.Simplified.NET.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
