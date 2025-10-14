@@ -905,6 +905,67 @@ class PulsedAmperometricDetection(
 
 
 @attrs.define
+class MultiplePulseAmperometry(
+    BaseTechnique,
+    mixins.CurrentRangeMixin,
+    mixins.PretreatmentMixin,
+    mixins.PostMeasurementMixin,
+    mixins.DataProcessingMixin,
+    mixins.GeneralMixin,
+):
+    """Create multiple pulse amperometry method parameters."""
+
+    _id = 'mpad'
+
+    equilibration_time: float = 0.0
+    """Equilibration time in s."""
+
+    run_time: float = 10.0
+    """Run time in s."""
+
+    duration_1: float = 0.1
+    """Duration of the first applied potential in s."""
+
+    duration_2: float = 0.1
+    """Duration of the first applied potential in s."""
+
+    duration_3: float = 0.1
+    """Duration of the first applied potential in s."""
+
+    potential_1: float = 0.0
+    """First applied potential level at which the current is recorded in V."""
+
+    potential_2: float = 0.0
+    """Second applied potential level at which the current is recorded in V."""
+
+    potential_3: float = 0.0
+    """Third applied potential level at which the current is recorded in V."""
+
+    def _update_psmethod(self, psmethod: PSMethod, /):
+        """Update method with multistep amperometry settings."""
+        psmethod.EquilibrationTime = self.equilibration_time
+        psmethod.RunTime = self.run_time
+
+        psmethod.E1 = self.potential_1
+        psmethod.E2 = self.potential_2
+        psmethod.E3 = self.potential_3
+        psmethod.t1 = self.duration_1
+        psmethod.t2 = self.duration_2
+        psmethod.t3 = self.duration_3
+
+    def _update_params(self, psmethod: PSMethod, /):
+        self.equilibration_time = psmethod.EquilibrationTime
+        self.run_time = psmethod.RunTime
+
+        self.potential_1 = psmethod.E1
+        self.potential_2 = psmethod.E2
+        self.potential_3 = psmethod.E3
+        self.duration_1 = psmethod.t1
+        self.duration_2 = psmethod.t2
+        self.duration_3 = psmethod.t3
+
+
+@attrs.define
 class OpenCircuitPotentiometry(
     BaseTechnique,
     mixins.CurrentRangeMixin,
