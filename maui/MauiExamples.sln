@@ -3,11 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.14.36511.14
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PalmSens.Core.NET", "..\..\trunk\Shared\Core\PalmSens.Core.NET.csproj", "{686F76E1-7822-2A8B-411F-020CCF1F43C7}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PalmSens.Core.Simplified.NET", "PSLibraries\PalmSens.Core.Simplified\PalmSens.Core.Simplified.NET.csproj", "{F9AD333D-ED0C-5048-4CC6-66C704375D25}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PalmSens.Core.Windows.NET.SDK", "..\..\trunk\PSWindows\PalmSens.Core.Windows\PalmSens.Core.Windows.NET.SDK.csproj", "{F4943E8C-8AAE-2AB5-A742-F4D25B70B570}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PalmSens.Core.Simplified.MAUI", "PSLibraries\PalmSens.Core.Simplified.MAUI\PalmSens.Core.Simplified.MAUI.csproj", "{D9949105-5E98-4C82-1A0E-8E92C0DEDC7A}"
 EndProject
@@ -39,18 +35,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{686F76E1-7822-2A8B-411F-020CCF1F43C7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{686F76E1-7822-2A8B-411F-020CCF1F43C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{686F76E1-7822-2A8B-411F-020CCF1F43C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{686F76E1-7822-2A8B-411F-020CCF1F43C7}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F9AD333D-ED0C-5048-4CC6-66C704375D25}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F9AD333D-ED0C-5048-4CC6-66C704375D25}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F9AD333D-ED0C-5048-4CC6-66C704375D25}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F9AD333D-ED0C-5048-4CC6-66C704375D25}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F4943E8C-8AAE-2AB5-A742-F4D25B70B570}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F4943E8C-8AAE-2AB5-A742-F4D25B70B570}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F4943E8C-8AAE-2AB5-A742-F4D25B70B570}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F4943E8C-8AAE-2AB5-A742-F4D25B70B570}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D9949105-5E98-4C82-1A0E-8E92C0DEDC7A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D9949105-5E98-4C82-1A0E-8E92C0DEDC7A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D9949105-5E98-4C82-1A0E-8E92C0DEDC7A}.Release|Any CPU.ActiveCfg = Release|Any CPU

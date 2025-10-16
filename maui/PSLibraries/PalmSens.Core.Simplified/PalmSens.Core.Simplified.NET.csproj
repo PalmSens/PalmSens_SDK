@@ -20,6 +20,8 @@
     <PackageReference Include="Portable.BouncyCastle" Version="1.9.0" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\trunk\Shared\Core\PalmSens.Core.NET.csproj" />
+    <Reference Include="PalmSens.Core">
+      <HintPath>..\PalmSens.Core.dll</HintPath>
+    </Reference>
   </ItemGroup>
 </Project>

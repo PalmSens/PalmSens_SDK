@@ -67,10 +67,17 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\..\..\..\trunk\PSWindows\PalmSens.Core.Windows\PalmSens.Core.Windows.NET.SDK.csproj" Condition="'$(TargetFramework)' == 'net9.0-windows10.0.19041.0'" />
-	  <ProjectReference Include="..\..\..\..\trunk\Shared\Core\PalmSens.Core.NET.csproj" />
-	  <ProjectReference Include="..\..\PSLibraries\PalmSens.Core.Simplified.Windows.NET\PalmSens.Core.Simplified.Windows.NET.csproj" Condition="'$(TargetFramework)' == 'net9.0-windows10.0.19041.0'" />
-	  <ProjectReference Include="..\..\PSLibraries\PalmSens.Core.Simplified\PalmSens.Core.Simplified.NET.csproj" />
+		<ProjectReference Include="..\..\PSLibraries\PalmSens.Core.Simplified.Windows.NET\PalmSens.Core.Simplified.Windows.NET.csproj" Condition="'$(TargetFramework)' == 'net9.0-windows10.0.19041.0'" />
+		<ProjectReference Include="..\..\PSLibraries\PalmSens.Core.Simplified\PalmSens.Core.Simplified.NET.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Reference Include="PalmSens.Core">
+			<HintPath>..\..\PSLibraries\PalmSens.Core.dll</HintPath>
+		</Reference>
+		<Reference Include="PalmSens.Core.Windows.NET" Condition="'$(TargetFramework)' == 'net9.0-windows10.0.19041.0'" >
+			<HintPath>..\..\PSLibraries\PalmSens.Core.Windows.NET.dll</HintPath>
+		</Reference>
 	</ItemGroup>
 
 </Project>
