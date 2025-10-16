@@ -1,8 +1,8 @@
 = Working with files
 
 As of version 5 of the PalmSens SDK and PSTrace, measurements and their
-corresponding methods are stored in **.pssession* files. Methods can be
-stored separately in **.psmethod* files.
+corresponding methods are stored in `.pssession` files. Methods can be
+stored separately in `.psmethod` files.
 
 The PalmSens SDK is backward compatible with following filetypes:
 
@@ -43,7 +43,7 @@ using PalmSens;
 using PalmSens.Windows;
 ----
 
-This method loads a `*.psmethod*` file from the specified file path (i.e. `C:\path\to\my_method.psmethod`).
+This method loads a `.psmethod` file from the specified file path (i.e. `C:\path\to\my_method.psmethod`).
 
 [,csharp]
 ----
@@ -97,7 +97,7 @@ using PalmSens.Windows;
 ----
 
 This saves the previously defined Linear Sweep Voltammetry *method*
-(lsv) to a `*.psmethod` file specified in the file path (i.e. C:\path\to\my_method.psmethod`).
+(lsv) to a `.psmethod` file specified in the file path (i.e. C:\path\to\my_method.psmethod`).
 
 ----
 LoadSaveHelperFunctions.SaveMethod(lsv, filepath);
@@ -107,7 +107,7 @@ LoadSaveHelperFunctions.SaveMethod(lsv, filepath);
 
 //TODO: loading data is missing from this section
 
-Data from measurements can be loaded from and stored to **.pssession* files.
+Data from measurements can be loaded from and stored to `.pssession` files.
 This contains a session with one or more measurements containing its respective method and curves.
 
 [discrete]
@@ -131,7 +131,7 @@ using PalmSens.Core.Simplified.Data;
 using PalmSens.Core.Simplified.Maui;
 ----
 
-This saves a `SimpleMeasurement` to a **.pssession` file specified in the file path (i.e. `C:\path\to\my_data.pssession`).
+This saves a `SimpleMeasurement` to a `.pssession` file specified in the file path (i.e. `C:\path\to\my_data.pssession`).
 
 ----
 SimpleLoadSaveFunctions.SaveMeasurement(lsv, filepath);
@@ -149,7 +149,7 @@ using PalmSens.Data;
 using PalmSens.Windows;
 ----
 
-This saves a measurement (`PalmSens.Measurement` class) to a `*.pssession` file specified in the filepath (i.e. `C:\path\to\my_data.pssession`).
+This saves a measurement (`PalmSens.Measurement` class) to a `.pssession` file specified in the filepath (i.e. `C:\path\to\my_data.pssession`).
 
 [,csharp]
 ----

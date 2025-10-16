@@ -1,145 +1,59 @@
 = Example programs
 
-The following examples are included. All examples use the simplified
-wrapper for the PalmSens.Core libraries, except the Console Example.
+This page lists some examples to help you get started with app development.
 
-*Example – Console Example (C#):*
+The examples use https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/async/[asynchronous
+programming] where necessary to prevent the PalmSens SDK libraries from blocking the user interface.
 
-____
-Shows how to discover devices, establish a connection and run a
-measurement using only the PalmSens.Core.dll & PalmSens.Core.Windows.dll
-____
+[cols="7a,3", frame=none, grid=none]
+|===
+| == Basic App
 
-*Example – Basic Example (C#):*
+Shows how to discover devices, make a connection, run a measurement, and show the data in a table.
 
-____
-Shows how to make a connection and run a measurement, with a minimum
-amount of code.
-____
+https://github.com/palmsens/palmsens_sdk/blob/main/maui/Examples/BasicExampleApp[Link to the code]
+| image:example_basic.png[]
 
-*Example – Plot Example (C#):*
+| == Auxilliary/BiPot App
 
-____
-Shows how to make a connection, run a measurement and plot the results.
-____
-
-*Example – Electrochemical Impedance Spectroscopy Plot Example (C#):*
-
-____
-Shows how to make a connection, run an Electrochemical Impedance
-Spectroscopy measurement and plot the results.
-____
-
-*Example – Import, Analyze and Save Data Example (C#):*
-
-____
-Shows how to load and measurements and methods from and to *.pssession
-and *.psmethod files, and how to smooth data, manipulate data and detect
-peaks.
-____
-
-*Example – Multiplexer Example (C#):*
-
-____
-Shows how to make a connection and run a measurement on different
-multiplexer channels.
-____
-
-*Example – Auxilliary/BiPot Example (C#):*
-
-____
 Shows how to measure additional data from the auxiliary port or a bipot.
-____
 
-*Example – Internal Storage Example (C#):*
+https://github.com/palmsens/palmsens_sdk/blob/main/maui/Examples/BiPotAuxExampleApp[Link to the code]
+| image:example_bipotaux.png[]
 
-____
-Shows how to navigate and access files on the internal storage of a
-EmStat Pico Development Board, Sensit BT, EmStat4 and PalmSens4.
-____
+| == Import, Analyze and Save Data App
 
-*Example – Electrochemical Impedance Spectroscopy Fit Example (C#):*
+Shows how to load and measurements and methods from and to `.pssession` and `.psmethod files`, how to smooth data, manipulate data, and detect peaks.
 
-____
-Shows how perform an equivalent circuit analysis on an EIS frequency
-scan measurement.
-____
+https://github.com/palmsens/palmsens_sdk/blob/main/maui/Examples/DataProcessingApp[Link to the code]
+| image:example_data-processing.png[width=1000]
 
-*Example – Peak Detection Example (C#):*
+| == Electrochemical Impedance Spectroscopy Fit App
 
-____
-Shows how to perform an advanced peak detection for Linear Sweep
-Voltammetry and Cyclic Voltammetry measurements.
-____
+Shows how perform an equivalent circuit analysis on an EIS frequency scan measurement.
 
-The following examples utilize
-https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/async/[asynchronous
-programming] to prevent the PalmSens SDK libraries from blocking the
-user interface. Please note that when using the async functionalities of
-the core not to mix in any synchronous functions that communicate with
-the PalmSens/EmStat instrument.
+https://github.com/palmsens/palmsens_sdk/blob/main/maui/Examples/EISFitApp[Link to the code]
+| image:example_eisfit.png[]
 
-*Example – Basic Example Async (C#):*
+| == Internal Storage App
 
-____
-Shows how to make a connection and run a measurement, with a minimum
-amount of code.
-____
+Shows how to navigate and access files on the internal storage of a EmStat Pico Development Board, Sensit BT, EmStat4 and PalmSens4.
 
-*Example – Plot Example Async (C#):*
+https://github.com/palmsens/palmsens_sdk/blob/main/maui/Examples/InternalStorageApp[Link to the code]
+| image:example_internal-storage.png[]
 
-____
-Shows how to make a connection, run a measurement and plot the results.
-____
+| == Plot App
 
-*Example – Multi Channel Example (C#):*
+Shows how to make a connection, run a measurement and plot the results while the measurement is running.
 
-____
-Shows how to make a connection to multiple channels, run different types
-of measurements and plot the results.
-____
+https://github.com/palmsens/palmsens_sdk/blob/main/maui/Examples/LivePlotApp[Link to the code]
+| image:example_liveplot.png[]
 
-*Example – Electrochemical Impedance Spectroscopy Fit Example Async
-(C#):*
+| == Peak Detection App
 
-____
-Shows how perform an equivalent circuit analysis on an EIS frequency
-scan measurement.
-____
+Shows how to perform an advanced peak detection for Linear Sweep Voltammetry and Cyclic Voltammetry measurements.
 
-* +
-*
+https://github.com/palmsens/palmsens_sdk/blob/main/maui/Examples/PeakDetectionApp[Link to the code]
+| image:example_peakdetection.png[]
 
-*Example – Peak Detection Example Async (C#):*
-
-____
-Shows how to perform an advanced peak detection for Linear Sweep
-Voltammetry and Cyclic Voltammetry measurements.
-____
-
-*Example – Internal Storage Example Async (C#):*
-
-____
-Shows how to navigate and access files on the internal storage of a
-EmStat Pico Development Board, Sensit BT, EmStat4 and PalmSens4.
-____
-
-*Example – Firmware Update Example Async (C#):*
-
-____
-Shows how to update the firmware of an instrument.
-____
-
-*Example – MethodSCRIPT^TM^ Example (C#):*
-
-____
-Shows how to execute MethodSCRIPT^TM^ on compatible instruments using a
-Sandbox measurement or directly using getter and setter functions.
-____
-
-*Example – GPIO Example Async (C#):*
-
-____
-Shows how to read and set the digital lines of a EmStat Pico Development
-Board.
-____
+|===
