@@ -1,0 +1,64 @@
+== Using the SDK in your Visual Studio.NET project
+
+=== Add SDK References to the project
+
+Right-click on the References map in your project and click Add
+Reference:
+
+image:media/image3.png[media/image3,width=198,height=149]
+
+Reference *external libraries (*.dll files)* by selecting them via the
+‘Browse’ button and reference *project files (*.csproj)* by adding them
+to your solution and referencing the project. (*Important!* When using
+the PalmSens SDK without the simplified wrapper the *CoreDependencies*
+must be initiated before you run a measurement, to do this call the
+*PalmSens.Windows.CoreDependencies.Init()* method one time beforehand)
+
+The PalmSens.Core.dll and PalmSens.Core.Windows.dll libraries should
+always be referenced. If you wish to use the simplified wrapper to
+control your devices the *PalmSens.Core.Simplified.csproj* and
+*PalmSens.Core.Simplified.WinForms.csproj* should be referenced. To use
+the plot control the *SDKPlot.csproj*, *SDKPlot.WinForms.csproj*,
+*OxyPlot.dll,* and *OxyPlot.WindowsForms.dll* should be referenced.
+
+If your project does not build please make sure you are targeting the
+.NET Framework 4.7.2 or higher, you are using visual studio 2017 or
+higher, and that the .NET standard 2.0 is available.
+
+image:media/image4.png[media/image4,width=200,height=120]
+
+=== Add PSCommSimpleWinforms or PS component to your user interface (simplified wrapper only)
+
+image:media/image5.png[media/image5,width=228,height=115]First import
+the *PalmSens.Core.Simplified.csproj* and
+*PalmSens.Core.Simplified.WinForms.csproj* into your solution and build
+the *PalmSens.Core.Simplified.WinForms* project. Then reference these
+projects in your project. Next, go to the designer of your *Main Form*
+and look for the *PSCommSimpleWinforms* component in your toolbox. Drag
+and drop this component on top of your *Form*. If you would like to
+develop for a multi channel instrument use the
+*PSMultiCommSimpleWinForms* component instead.
+
+image:media/image6.png[media/image6,width=197,height=143]Finally, select
+the PSCommSimpleWinforms/ PSMultiCommSimpleWinForms component in your
+form, go to the properties window and set the property Parent to
+reference the current form. (This is necessary for the simplified
+PalmSens.Core wrapper to automatically handle potential threading issues
+for you).
+
+image:media/image7.png[media/image7,width=208,height=206]
+
+== PalmSens.Core.dll
+
+The basis for handling measurements is the *PalmSens.Measurement* class,
+or the *PalmSens.Core.Simplified.Data.SimpleMeasurement* class when
+using the simplified wrapper.
+
+The measurement class contains all classes, functions, and parameters
+necessary for performing a measurement with a PalmSens or EmStat
+instrument. It has one method and can contain multiple curves. Curves
+are a representation of the data in the measurement used for plotting
+and analysis.
+
+The following diagram shows the inheritance structure of the Method
+classes:
