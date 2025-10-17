@@ -64,6 +64,7 @@
 		<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.5" />
 		<PackageReference Include="OxyPlot.Maui.Skia" Version="1.1.0" />
+		<PackageReference Include="PalmSens.Core" Version="5.12.1610" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -73,13 +74,10 @@
 	  <ProjectReference Include="..\..\PSLibraries\SDKPlot.Maui\SDKPlot.Maui.csproj" />
 	</ItemGroup>
 
-	<ItemGroup>
-	  <Reference Include="PalmSens.Core">
-	    <HintPath>..\..\PSLibraries\PalmSens.Core.dll</HintPath>
-	  </Reference>
-	  <Reference Include="PalmSens.Core.Windows.NET" Condition="'$(TargetFramework)' == 'net9.0-windows10.0.19041.0'">
-	    <HintPath>..\..\PSLibraries\PalmSens.Core.Windows.NET.dll</HintPath>
-	  </Reference>
+	<ItemGroup Condition="'$(TargetFramework)' == 'net9.0-windows10.0.19041.0'">
+	  <PackageReference Include="PalmSens.Core.Windows">
+	    <Version>5.12.1610</Version>
+	  </PackageReference>
 	</ItemGroup>
 
 </Project>

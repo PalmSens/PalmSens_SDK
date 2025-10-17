@@ -17,11 +17,8 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="PalmSens.Core" Version="5.12.1610" />
     <PackageReference Include="Portable.BouncyCastle" Version="1.9.0" />
   </ItemGroup>
-  <ItemGroup>
-    <Reference Include="PalmSens.Core">
-      <HintPath>..\PalmSens.Core.dll</HintPath>
-    </Reference>
-  </ItemGroup>
+
 </Project>
