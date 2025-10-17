@@ -9,16 +9,6 @@ from pythonnet import load, unload
 
 PSSDK_DIR = files('pypalmsens._pssdk.mono')
 
-# runtime must be imported before clr is loaded
-load('coreclr', runtime_config=str(PSSDK_DIR / 'runtimeconfig.json'))
-
-import clr  # noqa: E402
-
-core_dll = PSSDK_DIR / 'PalmSens.Core.dll'
-core_linux_dll = PSSDK_DIR / 'PalmSens.Core.Linux.dll'
-
-RUNTIME_DIR = files('pypalmsens._runtimes')
-
 system = platform.system()  # Windows, Linux, Darwin
 machine = platform.machine()  # AMD64, x86_64, arm64
 
@@ -27,8 +17,8 @@ machine = platform.machine()  # AMD64, x86_64, arm64
 # library must be loaded to into pythonnet.
 PLATFORMS = {
     ('Linux', 'x86_64'): 'linux-x64',
-    ('Linux', 'arm'): 'linux-arm',
-    ('Linux', 'aarch'): 'linux-arm',
+    # ('Linux', 'arm'): 'linux-arm',
+    # ('Linux', 'aarch'): 'linux-arm',
     ('Linux', 'arm64'): 'linux-arm64',
     ('Linux', 'aarch64'): 'linux-arm64',  # raspberrypi / raspbian
     ('Darwin', 'arm64'): 'osx-arm64',
@@ -37,11 +27,22 @@ PLATFORMS = {
 
 plat = PLATFORMS[system, machine]
 
-ioports_dll = RUNTIME_DIR / plat / 'native' / 'System.IO.Ports.dll'
+# runtime must be imported before clr is loaded
+load('coreclr', runtime_config=str(PSSDK_DIR / plat / 'runtimeconfig.json'))
+
+import clr  # noqa: E402
+
+core_dll = PSSDK_DIR / plat / 'PalmSens.Core.dll'
+core_linux_dll = PSSDK_DIR / plat / 'PalmSens.Core.Linux.dll'
+ioports_dll = PSSDK_DIR / plat / 'System.IO.Ports.dll'
 
 assert isinstance(core_dll, Path)
 assert isinstance(core_linux_dll, Path)
 assert isinstance(ioports_dll, Path)
+
+assert core_dll.exists()
+assert core_linux_dll.exists()
+assert ioports_dll.exists()
 
 # This dll contains the classes in which the data is stored
 clr.AddReference(str(core_dll.with_suffix('')))
