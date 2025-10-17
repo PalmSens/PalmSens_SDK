@@ -7,7 +7,7 @@ from pathlib import Path
 
 from pythonnet import load, unload
 
-PSSDK_DIR = files('pypalmsens._pssdk.mono')
+PSSDK_DIR = files('pypalmsens._pssdk')
 
 system = platform.system()  # Windows, Linux, Darwin
 machine = platform.machine()  # AMD64, x86_64, arm64
