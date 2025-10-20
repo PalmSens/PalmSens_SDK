@@ -46,12 +46,7 @@ Bluetooth Classic works on all supported platforms (Windows 7 SP1, Windows 8.1 a
 Bluetooth Low energy only works on Windows 10.
 
 To enable Bluetooth Low Energy you should add references to the `PalmSens.Core.Windows.BLE.dll` library (included in the PSLibraries folder) in `your` project and the `PalmSens.Core.Simplified` project.
-Finally, you will also need to respectively uncomment the following lines in the `ScanDevices` and the `ScanDevicesAsync` methods of the `DeviceHandler` class in the `PalmSens.Core.Simplified` project. +
-
-----
-discFuncs.Add(BLEDevice.DiscoverDevices);
-discFuncs.Add(BLEDevice.DiscoverDevicesAsync());
-____
+Finally, you will also need to respectively uncomment the following lines in the `ScanDevices` and the `ScanDevicesAsync` methods of the `DeviceHandler` class in the `PalmSens.Core.Simplified` project.
 
 == Receive idle status readings
 
