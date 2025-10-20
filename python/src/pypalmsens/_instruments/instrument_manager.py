@@ -65,7 +65,7 @@ def discover(
 
     if ftdi:
         ftdi_instruments = FTDIDevice.DiscoverDevices(*args)
-        for ftdi_instrument in ftdi_instruments[0]:
+        for ftdi_instrument in ftdi_instruments:
             available_instruments.append(
                 Instrument(
                     id=ftdi_instrument.ToString(),
