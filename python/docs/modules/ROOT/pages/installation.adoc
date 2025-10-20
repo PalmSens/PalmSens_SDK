@@ -5,14 +5,9 @@
 
 * https://python.org[Python version 3.10 or newer]
 * .NET Framework 4.7.2
-* Drivers included with _PSTrace5.x_, _MultiTrace4.x_, _PSTrace Xpress_ or the included http://TODO_LINK_TO_DRIVERS[driver installer]
+* Drivers included with PSTrace 5, MultiTrace 4, PSTrace Xpress or the https://github.com/PalmSens/PalmSens_SDK/releases/download/python-1.0.0/PalmSens.Drivers.exe[driver installer].
 
-[NOTE]
-====
-Python 3.13 contains https://github.com/python/cpython/issues/130522[a known issue] which will print errors to the output due to threads not being disposed correctly, these errors can safely be ignored.
-`Exception ignored in: <function _DeleteDummyThreadOnDel.__del__ at 0x000001B73AEEE5C0>`
-====
-
+[#req-linux]
 == Requirements (Linux)
 
 * https://python.org[Python version 3.10 or newer]. Use your system's package manager to install Python.
@@ -23,20 +18,74 @@ Python 3.13 contains https://github.com/python/cpython/issues/130522[a known iss
   - https://learn.microsoft.com/en-us/dotnet/core/install/linux-fedora[Fedora]
   - https://learn.microsoft.com/en-us/dotnet/core/install/linux-rhel[Redhat]
   - https://learn.microsoft.com/en-us/dotnet/iot/deployment[Raspberry Pi and other single-board ARM computers]
-* Optional: FTDI d2xx drivers available on https://ftdichip.com/drivers/d2xx-drivers/[the ftdi website].
-+
-Devices with an FTDI chip include the PalmSens 3 and the EmStat 1, 2, 3, 3+, Go, and Pico.
-If you do not use them it is recommended to disable scanning for FTDI devices.
-+
+* Optional: https://ftdichip.com/drivers/d2xx-drivers/[FTDI d2xx drivers].
+  - Devices with an FTDI chip include the PalmSens 3 and the EmStat 1, 2, 3, 3+, Go, and Pico.
+  - For Raspberry Pi 4 or 5 you need the ARMv8 driver.
+  - See xref:#ftdisetup[below] for how to set up your system for FTDI devices.
+
+// [,bash]
+// ----
+// tar xfvz libftd2xx-arm-v8-1.4.33.tgz
+// cd libftd2xx-arm-v8-1.4.33.tgz
+// sudo cp libftd2xx.* /usr/local/lib
+// sudo chmod 0755 /usr/local/lib/libftd2xx.so.1.4.33
+// sudo ln -sf /usr/local/lib/libftd2xx.so.1.4.33 /usr/local/lib/libftd2xx.so
+// ----
+
+[#ftdisetup]
+=== FTDI devices (PS 3, ES 1/2/3/Go/Pico)
+
+To set up your system to work with devices using the https://ftdichip.com/[FTDI chip], you need to follow a few additional steps.
+
+First, make sure your user is added to the 'dialout' group:
+
+[,bash]
+----
+$ groups
+pi adm dialout ...
+----
+
+If not, add your user:
+
+[,bash]
+----
+sudo usermod -a -G dialout $USER
+----
+
+Then set up https://wiki.archlinux.org/title/Udev[udev rules].
+`udev` manages permissions of the device to be accessible to non-root users and groups.
+Add the following lines to `/etc/udev/rules.d/50-ftdi.rules`:
+
+[,ascii]
+----
+ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6015", RUN+="/bin/sh -c 'rmmod ftdi_sio && rmmod usbserial'", MODE="0666"
+ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6011", RUN+="/bin/sh -c 'rmmod ftdi_sio && rmmod usbserial'", MODE="0666"
+ATTRS{idVendor}=="0403", ATTRS{idProduct}=="d180", RUN+="/bin/sh -c 'rmmod ftdi_sio && rmmod usbserial'", MODE="0666"
+ATTRS{idVendor}=="0403", ATTRS{idProduct}=="d181", RUN+="/bin/sh -c 'rmmod ftdi_sio && rmmod usbserial'", MODE="0666"
+----
+
+And restart `udevadm`.
+
+[,bash]
+----
+sudo udevadm control --reload
+sudo udevadm trigger
+----
+
+Finally, don't forget to enable scanning for FTDI devices.
+
 [,python]
 ----
-import pypalmsens as ps
-available_instruments = ps.discover(ftdi=False)
+>>> import pypalmsens as ps
+>>> instruments = ps.discover(ftdi=True)  <1>
+>>> instruments
+[Instrument(name='EmStat3+Blue[ES93QFLP]', interface='ftdi')]
 ----
+<1> Enable scanning for FTDI devices
 
 === RuntimeError: Failed to create a .NET runtime (coreclr)
 
-This error is raised if you did not install the dotnet runtime correctly. See instructions above.
+This error is raised if you did not install the dotnet runtime correctly. See xref:#req-linux[installation instructions above].
 
 The error will say somethin along the likes of:
 
