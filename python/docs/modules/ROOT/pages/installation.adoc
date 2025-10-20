@@ -25,7 +25,7 @@ Python 3.13 contains https://github.com/python/cpython/issues/130522[a known iss
   - https://learn.microsoft.com/en-us/dotnet/iot/deployment[Raspberry Pi and other single-board ARM computers]
 * Optional: FTDI d2xx drivers available on https://ftdichip.com/drivers/d2xx-drivers/[the ftdi website].
 +
-Devices with an FTDI chip include: EmStat 1, EmStat 2, EmStat 3, EmStat3+, EmStat Go, and PalmSens 3.
+Devices with an FTDI chip include the PalmSens 3 and the EmStat 1, 2, 3, 3+, Go, and Pico.
 If you do not use them it is recommended to disable scanning for FTDI devices.
 +
 [,python]
