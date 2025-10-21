@@ -1,6 +1,13 @@
 # .NET MAUI SDK for PalmSens devices
 
+![Make your own Electrochemistry apps!](./docs/modules/ROOT/images/banner.png)
+
 **The .NET MAUI SDK is under active development and not ready for actual use.**
+
+With this PalmSens Software Development Kit you develop Windows applications in Visual Studio using [https://dotnet.microsoft.com/en-us/apps/maui](.NET MAUI).
+
+.NET MAUI is a multi-platform app UI framework that lets you build native, cross-platform desktop and mobile apps with one codebase.
+The PalmSens .NET MAUI SDK can be used with all PalmSens instruments and potentiostat modules.
 
 For more information, see the [documentation](https://sdk.palmsens.com/maui/latest/index.html).
 
