@@ -1,9 +1,18 @@
 = Example programs
+:experimental:
 
 This page lists some examples to help you get started with app development.
 
 The examples use https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/async/[asynchronous
 programming] where necessary to prevent the PalmSens SDK libraries from blocking the user interface.
+
+To make a new app using one of the example apps as a template:
+
+1. Copy the directory you want to copy, e.g. `BasicExampleApp`
+2. Rename the directory to e.g. `MyPalmSensApp`
+3. Rename `BasicExampleApp.csproj` to `MyPalmSensApp.csproj`
+4. Right click menu:Solution[Add > Existing Project], select `MyPalmSensApp.csproj` file
+5. Update namespace (find-replace), `BasicExampleApp` -> `MyPalmSensApp`
 
 [cols="7a,3", frame=none, grid=none]
 |===
