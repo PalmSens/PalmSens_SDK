@@ -64,14 +64,15 @@ private void _activeCurve_Finished(object sender, EventArgs e) {
 }
 ----
 
-// TODO: fixme
-----
-`Mains Frequency
 
-`To eliminate noise induced by other electrical appliances it is highly
+[WARNING]
+.Mains frequency
+====
+To eliminate noise induced by other electrical appliances it is highly
 recommended to set your regional mains frequency (50/60 Hz) in the
-static property PalmSens.Method.PowerFreq.
-----
+static property `PalmSens.Method.PowerFreq`.
+====
+
 
 == MethodSCRIPT™
 
@@ -245,7 +246,6 @@ However, as it can be run at a later point in time it is important to check whet
 
 This can be adjusted in the `PSCommSimple.cs` or `PSMultiCommSimple.cs` files in the `PalmSens.Core.Simplified` project.
 
-// TODO: delete until end? PS.Core related
 When using the `PalmSens.Core` directly, useful aids to prevent threading issues are the `comm.ClientConnection.Run` and `comm.ClientConnection.Run<T>` methods.
 These assure the commands are run on the correct context which prevents communication errors due to multiple threads communicating with the device simultaneously. When using multiple threads it is highly recommended to use these helper methods when invoking methods that communicate with the device (i.e. Measure, Current, Potential, CurrentRange and CellOn) from a different thread.
 
@@ -273,7 +273,7 @@ GetPotentialTask.Wait();
 float potential = GetPotentialTask.Result;
 ----
 
-or when connected to a device asynchronously
+Or when connected to a device asynchronously:
 
 ----
 float potential = comm.ClientConnection.RunAsync<float>(() => comm.GetPotentialAsync());
