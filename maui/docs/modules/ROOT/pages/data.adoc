@@ -1,4 +1,5 @@
 = Working with data
+:source-language: csharp
 
 This chapter covers how retrieve, manipulate, and analyze datafrom a measurement.
 
@@ -21,26 +22,23 @@ For Cyclic Voltammetry or Mux measurements, multiple `SimpleCurve` objects can b
 The `SimpleMeasurement.AvailableDataTypes` property contains a list of the available `DataArrayType` in the measurement.
 To plot a different `SimpleCurve`, call the `SimpleMeasurement.NewSimpleCurve` method directly after it has started to generate another `SimpleCurve` with different units/values.
 
-[,csharp]
 ----
-// Get Charge over Time curves
 List<SimpleCurve> chargeCurves = simpleMeasurement.NewSimpleCurve(
     PalmSens.Data.DataArrayType.Time,
     PalmSens.Data.DataArrayType.Charge,
     "Charge/Time"
-);
+); <1>
 ----
+<1> Get Charge over Time curves
 
 To access the raw values in the form of an array of doubles use either the `SimpleCurve.XAxisValues` or the `SimpleCurve.YAxisValues` properties.
 
-[,csharp]
 ----
 double[] xValues = simpleCurve.XAxisValues;
 ----
 
 Get value of the Y Axis a specified index:
 
-[,csharp]
 ----
 double firstYValue = simpleCurve.YAxisValue(0);
 ----
@@ -53,14 +51,12 @@ These methods use the https://en.wikipedia.org/wiki/Savitzky%E2%80%93Golay_filte
 
 The arguments can be either the `SmoothLevel` enumerator:
 
-[,csharp]
 ----
 SimpleCurve smoothedCurve = simpleCurve.Smooth(SmoothLevel.Medium);
 ----
 
 Or an int specifying the window size, i.e. a window of 4 will filter based on the 4 adjacent points in both directions:
 
-[,csharp]
 ----
 SimpleCurve smoothedCurve2 = simpleCurve.Smooth(25);
 ----
@@ -70,14 +66,12 @@ SimpleCurve smoothedCurve2 = simpleCurve.Smooth(25);
 Perform a baseline correction by subtracting the `SimpleCurve` of a baseline measurement from your `SimpleCurve` using a moving average baseline by calling `SimpleCurve.MovingAverageBaseline`.
 To subtract one curve from another, call `SimpleCurve.Subtract` with the `SimpleCurve` to subtract as the argument.
 
-[,csharp]
 ----
-// Get the moving average baseline curve
-SimpleCurve movingAverageBaseline = simpleCurve.MovingAverageBaseline();
-
-// Get the simple curve with the subtracted baseline
-SimpleCurve baselineSubtractedCurve = simpleCurve.Subtract(movingAverageBaseline);
+SimpleCurve movingAverageBaseline = simpleCurve.MovingAverageBaseline(); <1>
+SimpleCurve baselineSubtractedCurve = simpleCurve.Subtract(movingAverageBaseline); <2>
 ----
+<1> Get the moving average baseline curve
+<2> Get the simple curve with the subtracted baseline
 
 == Arithmetic operations
 
@@ -108,100 +102,102 @@ There are three peak detection algorithms.
 The detected peaks are added to `SimpleCurve.Peak`, an `IEnumerable` collection of the `Peak` interface.
 The `Peak` interface describes the properties of the peak (i.e. the peak potential, current, height, width, etc.).
 
-Examples of the peak detection are also provided in the xref:examples.adoc#example-data[Data processing] and  xref:examples.adoc#example-peaks[Peak detection] example projects.
+Examples of the peak detection are also provided in the xref:examples.adoc#example-data[Data processing] and xref:examples.adoc#example-peaks[Peak detection] example projects.
 
-[,csharp]
+Detect peaks with a minimum width of 0.01V, a minimum height of 0.05µA and discard any existing peaks:
+
 ----
-// Detect peaks with a minimum width of 0.01V, a minimum height of 0.05µA and discard any existing peaks, using the default algorithm
-activeSimpleCurve.DetectPeaks(minPeakWidth=0.01, minPeakHeight=0.05, clearPeaks=true);
+activeSimpleCurve.DetectPeaks(
+    minPeakWidth=0.01,
+    minPeakHeight=0.05,
+    clearPeaks=true
+);
+----
 
-// Now using the the Linear Sweep / Cyclic Voltammetry algorithm
-await activeSimpleCurve.DetectPeaksAsync(minPeakWidth=0.01, minPeakHeight=0.05, clearPeaks=true, peakType=PeakTypes.LSVCV);
+Now using the the specialized Linear Sweep / Cyclic Voltammetry algorithm:
 
-// Get peak properties from the first peak
+----
+await activeSimpleCurve.DetectPeaksAsync(
+    minPeakWidth=0.01,
+    minPeakHeight=0.05,
+    clearPeaks=true,
+    peakType=PeakTypes.LSVCV
+);
+----
+
+Get peak properties from the first peak:
+
+----
 double peakHeight = activeSimpleCurve.Peaks[0].PeakValue;
 double peakPotential = activeSimpleCurve.Peaks[0].PeakX;
 ----
 
 Level detection works similar to peak detection, except that the results are stored in `SimpleCurve.Levels`, an `IEnumerable` collection of the `Level` class.
 
-[,csharp]
+Detect levels with a minimum width of 0.5s, a minimum height of 0.05µA, discard any existing levels:
+
 ----
-// Detect levels with a minimum width of 0.5s, a minimum height of 0.05µA, discard any existing levels
 await activeSimpleCurve.DetectLevelsAsync(0.5,0.05,true);
 
-// Get level properties from the first level
-double levelBegin = activeSimpleCurve.Levels[0].LeftX;
+double levelBegin = activeSimpleCurve.Levels[0].LeftX; <1>
 double levelEnd = activeSimpleCurve.Levels[0].RightX;
 double levelCurrent = activeSimpleCurve.Levels[0].LevelY;
 ----
+<1> Get level properties from the first level
 
 == Equivalent circuit fitting
 
 The `SimpleCurve.FitEquivalentCircuit()` function fits an equivalent circuit model on your data.
 
-For example:
+The next code example shows how to fit a Randles circuit using the specified inital values and default fit options. It sets the initial values for the solution resistance (series resistor), charge transfer resistance (parallel resistor), and double layer capacitance (parallel capacitor).
 
-[,csharp]
 ----
-// Fit a Randles circuit using the specified inital values and default fit options
-// Sets the initial values for the solution resistance (series resistor),
-// charge transfer resistance (parallel resistor), and
-// double layer capacitance (parallel capacitor)
 FitResult fitResult = await activeSimpleCurve.FitEquivalentCircuit(
     "R(RC)", new double[] { 100, 8000, 1e-8 }
 );
 
-// Get fit results
-double solutionResistance = fitResult.FinalParameters[0];
+double solutionResistance = fitResult.FinalParameters[0]; <1>
 double chargeTransferResistance = fitResult.FinalParameters[1];
 double doubleLayerCapacitance = fitResult.FinalParameters[2];
 ----
+<1> Get fit results
 
-To change the default fit options use the following function in combination with the `CircuitModel` and `FitOptionsCircuit` classes.
+To change the default fit options and parameters use the following function in combination with the `CircuitModel` and `FitOptionsCircuit` classes.
 
-[,csharp]
 ----
-// Change model parameters
 CircuitModel circuitModel = new CircuitModel();
+circuitModel.SetEISdata(_activeMeasurement.Measurement.EISdata[0]); <1>
 
-// Sets reference to measured data
-circuitModel.SetEISdata(_activeMeasurement.Measurement.EISdata[0]);
+circuitModel.SetCircuit("R(RC)"); <2>
 
-// Sets the circuit defined in the CDC code string, in this case a Randles circuit
-circuitModel.SetCircuit("R(RC)");
-
-// Change bounds and initial value of the solution resistance in the Randles circuit
-Parameter p = circuitModel.InitialParameters[0];
-
-// Set 1e6 Ω as the upper bound
+Parameter p = circuitModel.InitialParameters[0]; <3>
 p.MaxValue = 1e6;
-
-// Set 1e4 Ω as the lower bound
 p.MinValue = 1e4;
+p.Value = 1e5; <4>
+----
+<1> Sets reference to measured data
+<2> Sets the circuit defined in the CDC code string (Randles circuit)
+<3> Change bounds and starting value of the solution resistance (in Ω)
+<4> Set starting value (Ω)
 
-// Set 1e5 Ω as the initial value
-p.Value = 1e5;
+To change the fit options:
 
-//Override default Fit Options
+----
 FitOptionsCircuit fitOptions = new FitOptionsCircuit();
-
-// Specift model to fit
 fitOptions.Model = circuitModel;
+fitOptions.RawData = _activeMeasurement.Measurement.EISdata[0]; <1>
+fitOptions.MaxIterations = 1000; <2>
+fitOptions.MinimumDeltaErrorTerm = 1e-12; <3>
+----
+<1> Sets reference to measured data
+<2> The maximum number of iterations, 500 by default
+<3> The minimum delta in the error term (sum of squares difference between model and data), default is 1e-9
 
-// Sets reference to measured data
-fitOptions.RawData = _activeMeasurement.Measurement.EISdata[0];
+Fit the circuit defined in the CircuitModel and the options specified in the `FitOptions`:
 
-// The maximum number of iterations, 500 by default
-fitOptions.MaxIterations = 1000;
-
-// The minimum delta in the error term (sum of squares difference between model and data), default is 1e-9
-fitOptions.MinimumDeltaErrorTerm = 1e-12;
-
-// Fit the circuit defined in the CircuitModel and the options specified in the FitOptions
+----
 FitResult fitResult = await activeSimpleCurve.FitEquivalentCircuit(circuitModel, fitOptions);
 
-//Get fit results
 double solutionResistance = fitResult.FinalParameters[0];
 double chargeTransferResistance = fitResult.FinalParameters[1];
 double doubleLayerCapacitance = fitResult.FinalParameters[2];

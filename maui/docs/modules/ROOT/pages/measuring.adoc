@@ -16,15 +16,15 @@ Subscribing to these events informs you on the status of a measurement and gives
 `psCommSimple` is a reference to the instance of the `psCommSimple` component.
 
 ----
-// Raised when a measurement begins
-psCommSimple.MeasurementStarted += PsCommSimple_MeasurementStarted;
+psCommSimple.MeasurementStarted += PsCommSimple_MeasurementStarted; <1>
 
-// Raised when a measurement is ended
-psCommSimple.MeasurementEnded += PsCommSimple_MeasurementEnded;
+psCommSimple.MeasurementEnded += PsCommSimple_MeasurementEnded; <2>
 
-// Raised when a new  SimpleCurve instance starts receiving datapoints, returns a reference to the active SimpleCurve instance
-psCommSimple.SimpleCurveStartReceivingData += PsCommSimple_SimpleCurveStartReceivingData;
+psCommSimple.SimpleCurveStartReceivingData += PsCommSimple_SimpleCurveStartReceivingData; <3>
 ----
+<1> Raised when a measurement begins
+<2> Raised when a measurement is ended
+<3> Raised when a new `SimpleCurve` instance starts receiving datapoints, returns a reference to the active `SimpleCurve` instance
 
 This line starts the measurement described in the instance of the method class.
 It returns a reference to the instance of the SimpleMeasurement, in the case of a connection error or invalid method parameters it returns null.
@@ -131,12 +131,13 @@ pck_end
 endloop
 on_finished:
 cell_off
-".Replace("\r", ""); // Remove all carriage return characters
+".Replace("\r", ""); <1>
 
 var sandbox = new MethodScriptSandbox {
     MethodScript = methodSCRIPT
 };
 ----
+<1> Remove all carriage return characters
 
 MethodSCRIPT™ allows multiple measurements with a single script without having to send multiple scripts.
 The script string text must not contain the default newline characters (`\r\n`), these need to be replace just with the line feed or new line character (`\n`).
@@ -160,31 +161,31 @@ The getter/setter allows you to control the IO pins of the devices that allow th
 Getter Example:
 
 ----
-// A bitmask specifying which digital lines to read (0 = ignore, 1 = read).
-byte bitMask = 0b10101010;
+byte bitMask = 0b10101010; <1>
 
-// Synchronous
-var result = psCommSimple.ReadDigitalLine(bitMask);
+var result = psCommSimple.ReadDigitalLine(bitMask); <2>
 
-// Asynchronous
-var result = await psCommSimple.ReadDigitalLineAsync(bitMask);
+var result = await psCommSimple.ReadDigitalLineAsync(bitMask); <3>
 ----
+<1> A bitmask specifying which digital lines to read (0 = ignore, 1 = read).
+<2> Synchronous
+<3> Asynchronous
 
 Setter Example:
 
 ----
-// A bitmask specifying the output signal of the digital lines (0 = low, 1 = high).
-byte bitMask = 0b11111111;
+byte bitMask = 0b11111111; <1>
 
-// A bitmask specifying the the mode of digital lines (0 = input, 1 = output).
-var configGPIO = 0b10101010;
+var configGPIO = 0b10101010; <2>
 
-// Synchronous
-psCommSimple.SetDigitalOutput(bitMask, configGPIO);
+psCommSimple.SetDigitalOutput(bitMask, configGPIO); <3>
 
-// Asynchronous
-await psCommSimple.SetDigitalOutputAsync(bitMask, configGPIO);
+await psCommSimple.SetDigitalOutputAsync(bitMask, configGPIO); <4>
 ----
+<1> A bitmask specifying the output signal of the digital lines (0 = low, 1 = high).
+<2> A bitmask specifying the the mode of digital lines (0 = input, 1 = output).
+<3> Synchronous
+<4> Asynchronous
 
 Setter example using MethodSCRIPT™:
 
@@ -194,12 +195,12 @@ set_gpio_cfg 0b11111111 1
 set_gpio 0b10101010i
 ".Replace("\r", "");;
 
-// Synchronous
-psCommSimple.StartSetterMethodScript(script);
+psCommSimple.StartSetterMethodScript(script); <1>
 
-// Asynchronous
-await psCommSimple.StartSetterMethodScriptAsync(script);
+await psCommSimple.StartSetterMethodScriptAsync(script); <2>
 ----
+<1> Synchronous
+<2> Asynchronous
 
 Getter example using MethodSCRIPT™:
 
@@ -213,12 +214,12 @@ pck_add p
 pck_end
 ".Replace("\r", "");;
 
-//Synchronous
-var result = psCommSimple.StartGetterMethodScript(script);
+var result = psCommSimple.StartGetterMethodScript(script); <1>
 
-//Asynchronous
-var result = await psCommSimple.StartGetterMethodScriptAsync(script);
+var result = await psCommSimple.StartGetterMethodScriptAsync(script); <2>
 ----
+<1> Synchronous
+<2> Asynchronous
 
 == Disconnecting and disposing the device
 

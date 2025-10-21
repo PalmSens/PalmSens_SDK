@@ -1,4 +1,5 @@
 = Working with files
+:source-language: csharp
 
 As of version 5 of the PalmSens SDK and PSTrace, measurements and their
 corresponding methods are stored in `.pssession` files. Methods can be
@@ -36,7 +37,6 @@ To use the following examples, make sure the `PalmSens.Core` and `PalmSens.Core.
 
 Add these namespaces at the top of the document.
 
-[,csharp]
 ----
 using PalmSens;
 using PalmSens.Windows;
@@ -44,7 +44,6 @@ using PalmSens.Windows;
 
 This method loads a `.psmethod` file from the specified file path (i.e. `C:\path\to\my_method.psmethod`).
 
-[,csharp]
 ----
 Method method = SimpleLoadSaveFunctions.LoadMethod(filepath);
 ----
@@ -55,7 +54,6 @@ The next example defines a Linear Sweep Voltammetry *method*.
 
 Add these namespaces at the top of the document.
 
-[,csharp]
 ----
 using PalmSens;
 using PalmSens.Techniques;
@@ -63,7 +61,6 @@ using PalmSens.Techniques;
 
 Instantiate a new Linear Sweep Voltammetry method.
 
-[,csharp]
 ----
 LinearSweep lsv = new LinearSweep() {
     BeginPotential = -1f,
@@ -75,7 +72,6 @@ LinearSweep lsv = new LinearSweep() {
 
 Define the current range settings.
 
-[,csharp]
 ----
 lsv.Ranging.StartCurrentRange = new CurrentRange(CurrentRanges.cr1uA);
 lsv.Ranging.MaximumCurrentRange = new CurrentRange(CurrentRanges.cr10uA);
@@ -123,7 +119,6 @@ The `SimpleMeasurement` and `SimpleCurve` classes make it easier to perform basi
 Add these namespaces at the top of the document.
 
 // TODO, maui wrapper does not exit yet
-[,csharp]
 ----
 using PalmSens;
 using PalmSens.Core.Simplified.Data;
@@ -141,7 +136,6 @@ SimpleLoadSaveFunctions.SaveMeasurement(lsv, filepath);
 
 Add these namespaces at the top of the document.
 
-[,csharp]
 ----
 using PalmSens;
 using PalmSens.Data;
@@ -150,7 +144,6 @@ using PalmSens.Windows;
 
 This saves a measurement (`PalmSens.Measurement` class) to a `.pssession` file specified in the filepath (i.e. `C:\path\to\my_data.pssession`).
 
-[,csharp]
 ----
 SessionManager session = new SessionManager();
 session.AddMeasurement(measurement);
@@ -170,7 +163,6 @@ The documentation on Connecting explains how to connect to a device and create a
 
 This line will return the root folder of the device’s internal storage.
 
-[,csharp]
 ----
 using PalmSens;
 using PalmSens.Data;
@@ -181,7 +173,6 @@ IInternalStorageFolder folder = psCommSimple.GetInternalStorageBrowser().GetRoot
 
 The `IInternalStorageFolder` interface allows you to list subfolders and any files (measurements) located in that folder.
 
-[,csharp]
 ----
 IReadOnlyList<IInternalStorageFolder> subFolders = folder.GetSubFolders();
 IReadOnlyList<IInternalStorageFile> files = folder.GetFiles();
@@ -190,7 +181,6 @@ IReadOnlyList<IInternalStorageFile> files = folder.GetFiles();
 To load a measurement from a `IInternalStorageFile` use the GetMeasurement
 method.
 
-[,csharp]
 ----
 SimpleMeasurement measurement = files[0].GetMeasurement();
 ----
@@ -198,7 +188,6 @@ SimpleMeasurement measurement = files[0].GetMeasurement();
 [discrete]
 === `PalmSens.Core`
 
-[,csharp]
 ----
 using PalmSens;
 using PalmSens.Data;
@@ -212,7 +201,6 @@ The `DeviceFile` class contains information on the `Type` (File/Folder), `Name`,
 The EmStat4, Sensit BT and EmStat Pico Development Board will list the contents of all subfolders.
 The PalmSens4 can list the contents of a certain folder pass on the following argument to the GetDeviceFiles method.
 
-[,csharp]
 ----
 List<DeviceFile> DeviceFiles = comm.ClientConnection.GetDeviceFiles($"{file.Dir}\\{file.Name}");
 ----
@@ -221,7 +209,6 @@ Where the file object refers to a `DeviceFile` of the type folder.
 
 To get the contents of a `DeviceFile` of the type measurement use the `GetDeviceFile` method.
 
-[,csharp]
 ----
 DeviceFile rawData = comm.ClientConnection.GetDeviceFile($"{file.Dir}\\{file.Name}");
 ----
