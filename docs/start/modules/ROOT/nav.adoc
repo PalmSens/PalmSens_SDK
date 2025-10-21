@@ -5,4 +5,4 @@
 
 .PalmSens .NET libraries
 ** xref:api.adoc[]
-** xref:core_dll.adoc[]
+** xref:core.adoc[]

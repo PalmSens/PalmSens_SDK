@@ -5,4 +5,3 @@
 * xref:connecting.adoc[]
 * xref:measuring.adoc[]
 * xref:examples.adoc[]
-* xref:appendix.adoc[]

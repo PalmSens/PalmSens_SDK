@@ -18,20 +18,22 @@ Supported platforms:
 
 == Contents
 
-These projects contain an open source wrapper for the `PalmSens.Core` libraries.
+These projects contain an open source wrapper for the xref:start:ROOT:core.adoc[`PalmSens.Core`] libraries.
 
 * `PalmSens.Core.Simplified.NET`
 * `PalmSens.Core.Simplified.MAUI`
 * `PalmSens.Core.Simplified.Android`
 * `PalmSens.Core.Simplified.Windows.NET`
 
-This wrapper gives you quick and easy access to all the basic functions of the PalmSens/EmStat devices and automatically handles most potential threading issues for you:
+The simplified wrappers give you quick and easy access to all the basic functions of the PalmSens/EmStat devices and automatically handles most potential threading issues for you:
 
 * Connecting
 * Manual control of the cell
 * Running measurements
 * Accessing and processing measured data
 * Analyzing and manipulating data
+
+Methods and data structures are referenced from the xref:start:ROOT:core.adoc[`PalmSens.Core`] libraries.
 
 In addition, the projects contain a simple open source plot control that you can use to plot your measurements in real-time.
 They are based on the open-source http://www.oxyplot.org/[OxyPlot library].
@@ -40,22 +42,6 @@ They are based on the open-source http://www.oxyplot.org/[OxyPlot library].
 * `SDKPlot.Maui`
 
 Click xref:examples.adoc[here] for a list of examples!
-
-=== Core libraries
-
-The PalmSens SDK is built on the following libraries:
-
-* `PalmSens.Core`
-* `PalmSens.Core.Windows`
-
-These libraries are provided as dlls and contain the namespaces with all the necessary files for using PalmSens/EmStat devices in your software.
-
-* `PalmSens`: All necessary classes and functions for performing measurements and doing analysis with PalmSens or EmStat.
-* `PalmSens.Comm`: For Serial, USB or TCP communication with PalmSens or EmStat
-* `PalmSens.DataFiles`: For saving and loading method and data files
-* `PalmSens.Devices`: For handling communications and device capabilities
-* `PalmSens.Techniques`: Contains all measurement techniques for PalmSens and EmStat
-* `PalmSens.Units`: Contains a collection of units used by these libraries
 
 == Compatible devices and firmware
 
