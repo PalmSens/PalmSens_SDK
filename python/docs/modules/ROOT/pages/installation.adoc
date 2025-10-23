@@ -23,6 +23,27 @@
   - For Raspberry Pi 4 or 5 you need the ARMv8 driver.
   - See xref:#ftdisetup[below] for how to set up your system for FTDI devices.
 
+In addition, make sure your user is added to the 'dialout' group:
+
+[,bash]
+----
+$ groups
+pi adm dialout ...
+----
+
+If your username is not among the list, add it using:
+
+[,bash]
+----
+sudo usermod -a -G dialout $USER
+----
+
+And log out and in again to make sure the changes have take effect.
+This avoids errors like `can’t open device "/dev/ttyACM0": Permission denied` when trying to connect to a device.
+
+[#ftdisetup]
+=== FTDI devices (PS 3, ES 1/2/3/Go/Pico)
+
 // [,bash]
 // ----
 // tar xfvz libftd2xx-arm-v8-1.4.33.tgz
@@ -32,27 +53,9 @@
 // sudo ln -sf /usr/local/lib/libftd2xx.so.1.4.33 /usr/local/lib/libftd2xx.so
 // ----
 
-[#ftdisetup]
-=== FTDI devices (PS 3, ES 1/2/3/Go/Pico)
-
 To set up your system to work with devices using the https://ftdichip.com/[FTDI chip], you need to follow a few additional steps.
 
-First, make sure your user is added to the 'dialout' group:
-
-[,bash]
-----
-$ groups
-pi adm dialout ...
-----
-
-If not, add your user:
-
-[,bash]
-----
-sudo usermod -a -G dialout $USER
-----
-
-Then set up https://wiki.archlinux.org/title/Udev[udev rules].
+Set up https://wiki.archlinux.org/title/Udev[udev rules].
 `udev` manages permissions of the device to be accessible to non-root users and groups.
 Add the following lines to `/etc/udev/rules.d/50-ftdi.rules`:
 
@@ -72,7 +75,7 @@ sudo udevadm control --reload
 sudo udevadm trigger
 ----
 
-Finally, don't forget to enable scanning for FTDI devices.
+Don't forget to enable scanning for FTDI devices.
 
 [,python]
 ----
