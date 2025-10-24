@@ -22,7 +22,6 @@ measurement types using any MethodSCRIPT capable PalmSens instrument. The code
 can easily be modified for other (similar) types of measurements.
 """
 
-# Standard library imports
 from __future__ import annotations
 
 import csv
@@ -33,17 +32,11 @@ import os.path
 import sys
 import typing
 
-# Third-party imports
 import matplotlib.pyplot as plt
 
-# Local imports
-import palmsens.instrument
-import palmsens.mscript
-import palmsens.serial
-
-###############################################################################
-# Start of configuration
-###############################################################################
+import pypalmsens.instrument
+import pypalmsens.mscript
+import pypalmsens.serial
 
 # COM port of the device (None = auto detect).
 DEVICE_PORT = None
@@ -83,7 +76,9 @@ YAXIS_COLUMN_INDICES = [1, 2, 3]
 LOG = logging.getLogger(__name__)
 
 
-def write_curves_to_csv(file: typing.IO, curves: list[list[list[palmsens.mscript.MScriptVar]]]):
+def write_curves_to_csv(
+    file: typing.IO, curves: list[list[list[pypalmsens.mscript.MScriptVar]]]
+):
     """Write the curves to file in CSV format.
 
     `file` must be a file-like object in text mode with newlines translation
@@ -120,7 +115,7 @@ def main():
         level=logging.DEBUG, format='[%(module)s] %(message)s', stream=sys.stdout
     )
     # Uncomment the following line to reduce the log level of our library.
-    # logging.getLogger('palmsens').setLevel(logging.INFO)
+    # logging.getLogger('pypalmsens').setLevel(logging.INFO)
     # Disable excessive logging from matplotlib.
     logging.getLogger('matplotlib').setLevel(logging.INFO)
     logging.getLogger('PIL.PngImagePlugin').setLevel(logging.INFO)
@@ -132,15 +127,15 @@ def main():
 
     port = DEVICE_PORT
     if port is None:
-        port = palmsens.serial.auto_detect_port()
+        port = pypalmsens.serial.auto_detect_port()
 
     # Create and open serial connection to the device.
-    with palmsens.serial.Serial(port, 1) as comm:
-        device = palmsens.instrument.Instrument(comm)
+    with pypalmsens.serial.Serial(port, 1) as comm:
+        device = pypalmsens.instrument.Instrument(comm)
         device_type = device.get_device_type()
         LOG.info('Connected to %s.', device_type)
 
-        if device_type == palmsens.instrument.DeviceType.EMSTAT_PICO:
+        if device_type == pypalmsens.instrument.DeviceType.EMSTAT_PICO:
             mscript_file_path = MSCRIPT_FILE_PATH_ESPICO
         elif 'EmStat4' in device_type:
             mscript_file_path = MSCRIPT_FILE_PATH_ES4
@@ -162,7 +157,7 @@ def main():
         file.writelines(result_lines)
 
     # Parse the result.
-    curves = palmsens.mscript.parse_result_lines(result_lines)
+    curves = pypalmsens.mscript.parse_result_lines(result_lines)
 
     # Store results in CSV format.
     with open(base_path + '.csv', 'wt', newline='', encoding='ascii') as file:
@@ -184,10 +179,12 @@ def main():
     # Loop through all curves and plot them.
     for icurve, curve in enumerate(curves):
         # Get xaxis column for this curve.
-        xvalues = palmsens.mscript.get_values_by_column(curves, XAXIS_COLUMN_INDEX, icurve)
+        xvalues = pypalmsens.mscript.get_values_by_column(curves, XAXIS_COLUMN_INDEX, icurve)
         # Loop through all y axis columns and plot one curve per column.
         for yaxis_column_index in YAXIS_COLUMN_INDICES:
-            yvalues = palmsens.mscript.get_values_by_column(curves, yaxis_column_index, icurve)
+            yvalues = pypalmsens.mscript.get_values_by_column(
+                curves, yaxis_column_index, icurve
+            )
 
             # Ignore invalid columns.
             if curve[0][yaxis_column_index].type != yvar.type:
