@@ -1,0 +1,84 @@
+= MethodSCRIPT serial communication
+
+This page describes how to use PyPalmSens to communicate directly with your PalmSens instrument using a serial communication bus.
+
+The `pypalmsens.serial` submodule gives you the control (and responsibility!) for directly communicating with your PalmSens instrument.
+
+[NOTE]
+.MethodSCRIPT Sandbox
+====
+Note that this goes further than sending a MethodSCRIPT using the `pypalmsens.MethodSCRIPT()` technique using MethodSCRIPT.
+
+If you just want to send a MethodSCRIPT to your device, have a look at xref:examples#methodscript_sandbox[MethodSCRIPT Sandbox] instead.
+====
+
+== Connecting to the device
+
+The examples use the https://github.com/pyserial/pyserial[pyserial package] for serial communication with the device.
+This package offers a convenient interface to communicate with any device using a serial port.
+The baud rate must be configured to 230400 bps.
+For all other settings, the defaults can be used.
+The timeout should be configured to match the application code.
+
+== Sending a MethodSCRIPT
+
+The MethodSCRIPT can be read from a text file and then sent to the device.
+In the xref:methodscript_examples.adoc[examples], the MethodSCRIPT files are stored in the https://github.com/PalmSens/PalmSens_SDK/tree/main/python/methodscript_examples/scripts[`methodscript_examples/scripts`] directory.
+
+== Receiving packages
+
+Once the script file is sent to the device, the measurement packages can be read continuously, line by line from the device, using the method serial.readline(). In our example code, we provide two example methods that also demonstrate how to decode the received bytes objects into str objects and how to handle communication timeouts:
+
+[,python]
+----
+line = instrument.readline()
+result_lines = instrument.readlines_until_end()
+----
+
+== Parsing the response
+
+The measurement data packages received from the device should be parsed to obtain the actual data values.
+For example, here's a set of data packages received from a Linear Sweep Voltammetry (LSV) measurement on a dummy cell with 10 kΩ resistance:
+
+----
+eM0000\n
+Pda7F85F3Fu;ba48D503Dp,10,288\n
+Pda7F9234Bu;ba4E2C324p,10,288\n
+Pda806EC24u;baAE16C6Dp,10,288\n
+Pda807B031u;baB360495p,10,288\n
+*\n
+\n
+----
+
+While parsing a measurement package, various identifiers are used to identify the type of package.
+In the above sample:
+
+[arabic]
+. `e` is the confirmation of the "execute MethodSCRIPT" command.
+. `M` marks the beginning of a measurement loop.
+. `P` marks the beginning of a measurement data package.
+. `*\n` marks the end of a measurement loop.
+. `\n` marks the end of the MethodSCRIPT.
+
+The data values to be received from a measurement can be sent through `pck` commands in the MethodSCRIPT.
+Most techniques return the data values Potential (set cell potential in V) and Current (measured current in A).
+These can be sent with the MethodSCRIPT.
+
+In case of Electrochemical Impedance Spectroscopy (EIS) measurements, the following _variable types_ can be sent with the MethodSCRIPT and received as measurement data values.
+
+* Frequency (set frequency in Hz).
+* Real part of complex Impedance (measured impedance Ω).
+* Imaginary part of complex Impedance (measured impedance in Ω).
+
+The following metadata values if present can also be obtained from the data packages.
+
+* status (OK, Loop timing not met, Underload, Overload, Overload warning)
+* Current range (the current range in use)
+* Noise
+
+The example code contains two methods that demonstrate how to parse the data packages:
+
+* `parse_mscript_data_package()` converts one received line to a list of MethodSCRIPT variables.
+Each object in the list contains the value, variable type, unit, metadata, etc.
+* `parse_result_lines()` converts a list of received lines into a list of "curves", where each curve represents the data from one measurement loop.
+A curve itself is a list measurement points, each point corresponding to one response line (as parsed using `parse_mscript_data_package()`.

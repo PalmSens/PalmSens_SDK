@@ -5,6 +5,8 @@
 * xref:methods.adoc[]
 * xref:circuit_fitting.adoc[]
 * xref:examples.adoc[]
+* xref:methodscript.adoc[Serial communication]
+** xref:methodscript_examples.adoc[Examples]
 * xref:api/index.adoc[]
 ** xref:api/io.adoc[]
 ** xref:api/techniques.adoc[]
