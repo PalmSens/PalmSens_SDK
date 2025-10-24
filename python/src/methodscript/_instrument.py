@@ -10,13 +10,13 @@ can be supported.
 
 MethodSCRIPT specific methods, such as parsing and interpreting the measurement
 data, is implemented in the mscript module.
-
 """
 
 from __future__ import annotations
 
 import logging
 import time
+from pathlib import Path
 
 logger = logging.getLogger(__name__)
 
@@ -199,7 +199,7 @@ class Instrument:
         # TODO: check response!
         self.write('r\n')
 
-    def send_script(self, path):
+    def send_script(self, path: str | Path):
         """Read a script from file and send it to the device.
 
         Note that the file should contain ASCII characters only. Other

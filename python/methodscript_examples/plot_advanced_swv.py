@@ -27,22 +27,21 @@ from __future__ import annotations
 import csv
 import datetime
 import logging
-import os
-import os.path
 import sys
 import typing
+from pathlib import Path
 
 import matplotlib.pyplot as plt
 
-import pypalmsens.methodscript as mscript
+import methodscript
 
 # COM port of the device (None = auto detect).
 DEVICE_PORT = None
 
-MSCRIPT_FILE_PATH_ES4 = 'scripts/advanced_swv_es4.mscr'
-MSCRIPT_FILE_PATH_ESPICO = 'scripts/advanced_swv_espico.mscr'
+MSCRIPT_FILE_PATH_ES4 = Path(__file__).parent / 'scripts' / 'advanced_swv_es4.mscr'
+MSCRIPT_FILE_PATH_ESPICO = Path(__file__).parent / 'scripts' / 'advanced_swv_espico.mscr'
 
-OUTPUT_PATH = 'output'
+OUTPUT_PATH = Path(__file__).parent / 'output'
 
 # In this example, columns refer to the separate "pck_add" entries in each
 # MethodSCRIPT data package. For example, in the used script there are
@@ -68,7 +67,7 @@ YAXIS_COLUMN_INDICES = [1, 2, 3]
 logger = logging.getLogger(__name__)
 
 
-def write_curves_to_csv(file: typing.IO, curves: list[list[list[mscript.MScriptVar]]]):
+def write_curves_to_csv(file: typing.IO, curves: list[list[list[methodscript.MScriptVar]]]):
     """Write the curves to file in CSV format.
 
     `file` must be a file-like object in text mode with newlines translation
@@ -112,18 +111,18 @@ def main():
     logging.getLogger('PIL.PngImagePlugin').setLevel(logging.INFO)
 
     base_name = datetime.datetime.now().strftime('ms_plot_swv_%Y%m%d-%H%M%S')
-    base_path = os.path.join(OUTPUT_PATH, base_name)
+    base_path = OUTPUT_PATH / base_name
 
     port = DEVICE_PORT
     if port is None:
-        port = mscript.auto_detect_port()
+        port = methodscript.auto_detect_port()
 
-    with mscript.Serial(port, 1) as comm:
-        device = mscript.Instrument(comm)
+    with methodscript.Serial(port, 1) as comm:
+        device = methodscript.Instrument(comm)
         device_type = device.get_device_type()
         logger.info('Connected to %s.', device_type)
 
-        if device_type == mscript.DeviceType.EMSTAT_PICO:
+        if device_type == methodscript.DeviceType.EMSTAT_PICO:
             mscript_file_path = MSCRIPT_FILE_PATH_ESPICO
         elif 'EmStat4' in device_type:
             mscript_file_path = MSCRIPT_FILE_PATH_ES4
@@ -137,13 +136,13 @@ def main():
         logger.info('Waiting for results.')
         result_lines = device.readlines_until_end()
 
-    os.makedirs(OUTPUT_PATH, exist_ok=True)
-    with open(base_path + '.txt', 'wt', encoding='ascii') as file:
+    OUTPUT_PATH.mkdir(exist_ok=True)
+    with open(base_path.with_suffix('.txt'), 'wt', encoding='ascii') as file:
         file.writelines(result_lines)
 
-    curves = mscript.parse_result_lines(result_lines)
+    curves = methodscript.parse_result_lines(result_lines)
 
-    with open(base_path + '.csv', 'wt', newline='', encoding='ascii') as file:
+    with open(base_path.with_suffix('.csv'), 'wt', newline='', encoding='ascii') as file:
         write_curves_to_csv(file, curves)
 
     plt.figure()
@@ -160,10 +159,10 @@ def main():
     plt.minorticks_on()
 
     for icurve, curve in enumerate(curves):
-        xvalues = mscript.get_values_by_column(curves, XAXIS_COLUMN_INDEX, icurve)
+        xvalues = methodscript.get_values_by_column(curves, XAXIS_COLUMN_INDEX, icurve)
 
         for yaxis_column_index in YAXIS_COLUMN_INDICES:
-            yvalues = mscript.get_values_by_column(curves, yaxis_column_index, icurve)
+            yvalues = methodscript.get_values_by_column(curves, yaxis_column_index, icurve)
 
             if curve[0][yaxis_column_index].type != yvar.type:
                 continue
@@ -177,7 +176,7 @@ def main():
 
     plt.legend()
 
-    plt.savefig(base_path + '.png')
+    plt.savefig(base_path.with_suffix('.png'))
     plt.show()
 
 

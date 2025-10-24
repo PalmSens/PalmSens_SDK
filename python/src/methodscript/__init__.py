@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from ._instrument import CommunicationError, CommunicationTimeout, Instrument
+from ._instrument import CommunicationError, CommunicationTimeout, DeviceType, Instrument
 from ._mscript import (
     MScriptVar,
     get_values_by_column,
@@ -16,6 +16,7 @@ __all__ = [
     'auto_detect_port',
     'CommunicationError',
     'CommunicationTimeout',
+    'DeviceType',
     'get_values_by_column',
     'get_variable_type',
     'Instrument',

@@ -15,21 +15,20 @@ from __future__ import annotations
 
 import datetime
 import logging
-import os
-import os.path
 import sys
+from pathlib import Path
 
 import matplotlib.pyplot as plt
 import numpy as np
 
-import pypalmsens.methodscript as mscript
+import methodscript
 
 # COM port of the device (None = auto detect).
 DEVICE_PORT = None
 
-MSCRIPT_FILE_PATH = 'scripts/eis.mscr'
+MSCRIPT_FILE_PATH = Path(__file__).parent / 'scripts' / 'eis.mscr'
 
-OUTPUT_PATH = 'output'
+OUTPUT_PATH = Path(__file__).parent / 'output'
 
 AX1_COLOR = 'tab:red'  # Color for impedance (Z)
 AX2_COLOR = 'tab:blue'  # Color for phase
@@ -52,10 +51,10 @@ def main():
 
     port = DEVICE_PORT
     if port is None:
-        port = mscript.auto_detect_port()
+        port = methodscript.auto_detect_port()
 
-    with mscript.Serial(port, 1) as comm:
-        device = mscript.Instrument(comm)
+    with methodscript.Serial(port, 1) as comm:
+        device = methodscript.Instrument(comm)
         device_type = device.get_device_type()
         logger.info('Connected to %s.', device_type)
 
@@ -65,22 +64,22 @@ def main():
         logger.info('Waiting for results.')
         result_lines = device.readlines_until_end()
 
-    os.makedirs(OUTPUT_PATH, exist_ok=True)
+    OUTPUT_PATH.mkdir(exist_ok=True)
     result_file_name = datetime.datetime.now().strftime('ms_plot_eis_%Y%m%d-%H%M%S.txt')
-    result_file_path = os.path.join(OUTPUT_PATH, result_file_name)
+    result_file_path = OUTPUT_PATH / result_file_name
 
     with open(result_file_path, 'wt', encoding='ascii') as file:
         file.writelines(result_lines)
 
-    curves = mscript.parse_result_lines(result_lines)
+    curves = methodscript.parse_result_lines(result_lines)
 
     for curve in curves:
         for package in curve:
             logger.info([str(value) for value in package])
 
-    applied_frequency = mscript.get_values_by_column(curves, 0)
-    measured_z_real = mscript.get_values_by_column(curves, 1)
-    measured_z_imag = mscript.get_values_by_column(curves, 2)
+    applied_frequency = methodscript.get_values_by_column(curves, 0)
+    measured_z_real = methodscript.get_values_by_column(curves, 1)
+    measured_z_imag = methodscript.get_values_by_column(curves, 2)
 
     # Invert the imaginary part for the electrochemist convention.
     measured_z_imag = -measured_z_imag
