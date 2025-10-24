@@ -19,26 +19,21 @@ from __future__ import annotations
 import logging
 import sys
 
-import pypalmsens.instrument
-import pypalmsens.mscript
-import pypalmsens.serial
+import pypalmsens.methodscript as mscript
 
 # COM port of the MethodSCRIPT device (None = auto-detect).
 # In case auto-detection does not work or is not wanted, fill in the correct
 # port name, e.g. 'COM6' on Windows, or '/dev/ttyUSB0' on Linux.
-# DEVICE_PORT = 'COM6'
 DEVICE_PORT = None
 
-# Location of MethodSCRIPT file to use.
 MSCRIPT_FILE_PATH = 'scripts/cv.mscr'
 
 
-LOG = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 def main():
     """Run the example."""
-    # Configure the logging.
     logging.basicConfig(
         level=logging.INFO, format='[%(module)s] %(message)s', stream=sys.stdout
     )
@@ -47,24 +42,23 @@ def main():
 
     port = DEVICE_PORT
     if port is None:
-        port = pypalmsens.serial.auto_detect_port()
+        port = mscript.auto_detect_port()
 
-    # Create and open serial connection to the device.
-    LOG.info('Trying to connect to device using port %s...', port)
-    with pypalmsens.serial.Serial(port, 5) as comm:
-        device = pypalmsens.instrument.Instrument(comm)
-        LOG.info('Connected.')
+    logger.info('Trying to connect to device using port %s...', port)
+    with mscript.Serial(port, 5) as comm:
+        device = mscript.Instrument(comm)
+        logger.info('Connected.')
 
-        # For development: abort any previous script and restore communication.
+        # Abort any previous script and restore communication.
         device.abort_and_sync()
 
         # Check if device is connected and responding successfully.
         firmware_version = device.get_firmware_version()
         device_type = device.get_device_type()
-        LOG.info('Connected to %s.', device_type)
-        LOG.info('Firmware version: %s', firmware_version)
-        LOG.info('MethodSCRIPT version: %s', device.get_mscript_version())
-        LOG.info('Serial number = %s', device.get_serial_number())
+        logger.info('Connected to %s.', device_type)
+        logger.info('Firmware version: %s', firmware_version)
+        logger.info('MethodSCRIPT version: %s', device.get_mscript_version())
+        logger.info('Serial number = %s', device.get_serial_number())
 
         # Read MethodSCRIPT from file and send to device.
         device.send_script(MSCRIPT_FILE_PATH)
@@ -82,7 +76,7 @@ def main():
                 break
 
             # Non-empty line received. Try to parse as data package.
-            variables = pypalmsens.mscript.parse_mscript_data_package(line)
+            variables = mscript.parse_mscript_data_package(line)
 
             if variables:
                 # Apparently it was a data package. Print all variables.
@@ -90,12 +84,10 @@ def main():
                 for var in variables:
                     cols.append(f'{var.type.name} = {var.value:11.4g} {var.type.unit}')
                     if 'status' in var.metadata:
-                        status_text = pypalmsens.mscript.metadata_status_to_text(
-                            var.metadata['status']
-                        )
+                        status_text = mscript.metadata_status_to_text(var.metadata['status'])
                         cols.append(f'STATUS: {status_text:<16s}')
                     if 'cr' in var.metadata:
-                        cr_text = pypalmsens.mscript.metadata_current_range_to_text(
+                        cr_text = mscript.metadata_current_range_to_text(
                             device_type, var.type, var.metadata['cr']
                         )
                         cols.append(f'CR: {cr_text}')

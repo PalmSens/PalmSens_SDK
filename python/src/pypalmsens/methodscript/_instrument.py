@@ -18,7 +18,7 @@ from __future__ import annotations
 import logging
 import time
 
-LOG = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 class DeviceType:
@@ -97,7 +97,7 @@ class Instrument:
         non-ASCII characters.
         """
         data = text.encode('ascii')
-        LOG.debug('TX: %r', data)
+        logger.debug('TX: %r', data)
         self.comm.write(data)
 
     def writelines(self, lines):
@@ -110,7 +110,7 @@ class Instrument:
         data = self.comm.readline()
 
         if data:
-            LOG.debug('RX: %r', data)
+            logger.debug('RX: %r', data)
 
         line = data.decode('ascii', errors='replace')
 
@@ -227,7 +227,7 @@ class Instrument:
         would cause communication issues.
         This method should recover from such situation and restore communication.
         """
-        LOG.info('Aborting possible active scripts and syncing communication.')
+        logger.info('Aborting possible active scripts and syncing communication.')
 
         # Send new line character to flush possible command in command buffer.
         self.write('\n')
@@ -242,12 +242,12 @@ class Instrument:
                 break
 
         if response == 'Z!0006\n':
-            LOG.info('No active scripts are currently running.')
+            logger.info('No active scripts are currently running.')
             # Wait for > 50 ms after a failed command ('!' in response).
             time.sleep(0.1)
 
         if response == 'Z\n':
-            LOG.info('Waiting for active script to finish...')
+            logger.info('Waiting for active script to finish...')
             self.readlines_until_end()
 
-        LOG.info('Device is ready.')
+        logger.info('Device is ready.')

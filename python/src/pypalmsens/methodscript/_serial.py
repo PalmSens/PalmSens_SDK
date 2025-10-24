@@ -10,7 +10,7 @@ import logging
 import serial
 import serial.tools.list_ports
 
-LOG = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 def _is_mscript_device(port_description: str):
@@ -51,27 +51,27 @@ def auto_detect_port():
     which port to connect to (or disconnect unneeded devices with the
     same port name).
     """
-    LOG.info('Auto-detecting serial communication port.')
+    logger.info('Auto-detecting serial communication port.')
     ports = serial.tools.list_ports.comports(include_links=False)
     candidates = []
 
     for port in ports:
-        LOG.debug('Found port: %s', port.description)
+        logger.debug('Found port: %s', port.description)
         if _is_mscript_device(port.description):
             candidates.append(port.device)
 
     if len(candidates) != 1:
-        LOG.error('%d candidates found. Auto-detect failed.', len(candidates))
+        logger.error('%d candidates found. Auto-detect failed.', len(candidates))
         raise RuntimeError('Auto-detection of serial port failed.')
 
-    LOG.info('Exactly one candidate found. Using %s.', candidates[0])
+    logger.info('Exactly one candidate found. Using %s.', candidates[0])
     return candidates[0]
 
 
 class Serial:
     """Serial communication interface for EmStat Pico."""
 
-    def __init__(self, port, timeout):
+    def __init__(self, port: str, timeout: float):
         self.connection = serial.Serial(port=None, baudrate=230400, timeout=timeout)
         self.connection.port = port
 

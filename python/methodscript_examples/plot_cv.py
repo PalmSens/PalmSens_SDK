@@ -20,51 +20,44 @@ import sys
 
 import matplotlib.pyplot as plt
 
-import pypalmsens.instrument
-import pypalmsens.mscript
-import pypalmsens.serial
+import pypalmsens.methodscript as mscript
 
 # COM port of the device (None = auto detect).
 DEVICE_PORT = None
 
-# Location of MethodSCRIPT file to use.
 MSCRIPT_FILE_PATH = 'scripts/cv.mscr'
 
-# Location of output files. Directory will be created if it does not exist.
 OUTPUT_PATH = 'output'
 
 
-LOG = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 def main():
     """Run the example."""
-    # Configure the logging.
     logging.basicConfig(
         level=logging.DEBUG, format='[%(module)s] %(message)s', stream=sys.stdout
     )
     # Uncomment the following line to reduce the log level for our library.
     # logging.getLogger('pypalmsens').setLevel(logging.INFO)
+
     # Disable excessive logging from matplotlib.
     logging.getLogger('matplotlib').setLevel(logging.INFO)
     logging.getLogger('PIL.PngImagePlugin').setLevel(logging.INFO)
 
     port = DEVICE_PORT
     if port is None:
-        port = pypalmsens.serial.auto_detect_port()
+        port = mscript.auto_detect_port()
 
-    # Create and open serial connection to the device.
-    with pypalmsens.serial.Serial(port, 1) as comm:
-        device = pypalmsens.instrument.Instrument(comm)
+    with mscript.Serial(port, 1) as comm:
+        device = mscript.Instrument(comm)
         device_type = device.get_device_type()
-        LOG.info('Connected to %s.', device_type)
+        logger.info('Connected to %s.', device_type)
 
-        # Read and send the MethodSCRIPT file.
-        LOG.info('Sending MethodSCRIPT.')
+        logger.info('Sending MethodSCRIPT.')
         device.send_script(MSCRIPT_FILE_PATH)
 
-        # Read the result lines.
-        LOG.info('Waiting for results.')
+        logger.info('Waiting for results.')
         result_lines = device.readlines_until_end()
 
     # Store results in file.
@@ -74,20 +67,15 @@ def main():
     with open(result_file_path, 'wt', encoding='ascii') as file:
         file.writelines(result_lines)
 
-    # Parse the result.
-    curves = pypalmsens.mscript.parse_result_lines(result_lines)
+    curves = mscript.parse_result_lines(result_lines)
 
-    # Log the results.
     for curve in curves:
         for package in curve:
-            LOG.info([str(value) for value in package])
+            logger.info([str(value) for value in package])
 
-    # Get the applied potentials (first column of each row)
-    applied_potential = pypalmsens.mscript.get_values_by_column(curves, 0)
-    # Get the measured currents (second column of each row)
-    measured_current = pypalmsens.mscript.get_values_by_column(curves, 1)
+    applied_potential = mscript.get_values_by_column(curves, 0)
+    measured_current = mscript.get_values_by_column(curves, 1)
 
-    # Plot the results.
     plt.figure(1)
     plt.plot(applied_potential, measured_current)
     plt.title('Voltammogram')
