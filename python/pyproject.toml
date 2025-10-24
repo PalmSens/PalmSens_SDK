@@ -37,6 +37,7 @@ dependencies = [
     'attrs',
     'numpy',
     'packaging',
+    'pyserial',
     'pythonnet',
 ]
 
@@ -67,7 +68,7 @@ package-dir = {"" = "src"}
 
 [tool.coverage.run]
 branch = true
-source = ["pypalmsens"]
+source = ["pypalmsens", "methodscript"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
