@@ -318,7 +318,9 @@ def get_values_by_column(
         Specifies the index of the curve to use. If `None` (the default
         value), the data from all curves are used and concatenated into one list.
 
-    array : np.ndarray
+    Returns
+    -------
+    np.ndarray
         Return a numpy array containing (only) the values of each
         variable in the specified column, so they can easily be used for further
         processing and/or plotting.

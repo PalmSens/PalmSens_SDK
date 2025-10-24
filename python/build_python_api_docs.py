@@ -186,6 +186,11 @@ pages = (
         title='Data',
         module='pypalmsens.data',
     ),
+    Page(
+        name='methodscript',
+        title='MethodSCRIPT',
+        module='methodscript',
+    ),
 )
 
 ROOT_DIR = Path(__file__).parent

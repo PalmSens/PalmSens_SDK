@@ -1,0 +1,25 @@
+= MethodSCRIPT api
+
+This page contains a listing of the `methodscript` package.
+
+For example, to load your custom CV experiment from a `.mscr` file:
+
+[,python]
+----
+>>> import methodscript
+
+>>> path = 'custom_cv.mscr'
+
+>>> port = methodscript.auto_detect_port()
+
+>>> with methodscript.Serial(port, 1) as comm:
+...     device = methodscript.Instrument(comm)
+...     device_type = device.get_device_type()
+...     print(device_type)
+...     device.send_script(path)
+...     result_lines = device.readlines_until_end()
+
+>>> curves = methodscript.parse_result_lines(result_lines)
+----
+
+include::partial$api/methodscript.adoc[]
