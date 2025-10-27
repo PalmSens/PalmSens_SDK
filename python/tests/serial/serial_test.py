@@ -6,6 +6,7 @@ from typing import Type
 import pytest
 
 import pypalmsens as ps
+from pypalmsens.serial import MScriptVar
 
 # CommunicationError
 # CommunicationTimeout
@@ -17,8 +18,8 @@ import pypalmsens as ps
 
 @pytest.mark.instrument
 def test_auto_detect_port():
-    port = ps.serial.auto_detect_port()
-    assert port
+    instruments = ps.serial.discover()
+    assert instruments
 
 
 def test_get_values_by_column():
@@ -40,9 +41,9 @@ def test_metadata_status_to_text():
 @dataclass
 class Package:
     input: str
-    output: list[str] | None = None
+    output: list[MScriptVar] | None = None
     error: Type[Exception] | None = None
-    metadata: list[dict] | None = None
+    str: list[str] | None = None
 
 
 @pytest.mark.parametrize(
@@ -54,13 +55,40 @@ class Package:
         Package(input='Pda8000000 ;\n', error=ValueError),
         Package(
             input='Pda7F9234Bu;ba4E2C324p\n',
-            output=['-449717 uV', '-52247772 pA'],
-            metadata=[{}, {}],
+            output=[
+                MScriptVar.from_package('da7F9234Bu'),
+                MScriptVar.from_package('ba4E2C324p'),
+            ],
+            str=[
+                '-449717 uV',
+                '-52247772 pA',
+            ],
         ),
         Package(
             input='Pda807B031u;baB360495p,10,288\n',
-            output=['503857 uV', '53871765 pA'],
-            metadata=[{}, {'status': 0, 'cr': 136}],
+            output=[
+                MScriptVar.from_package('da807B031u'),
+                MScriptVar.from_package('baB360495p,10,288'),
+            ],
+            str=[
+                '503857 uV',
+                '53871765 pA',
+            ],
+        ),
+        Package(
+            input='Pda80273D4u;ba8000000 ,14,209,40;ba2F5DFC8a,14,209,40;ba2F5DFC8a,14,209,40\n',
+            output=[
+                MScriptVar.from_package('da80273D4u'),
+                MScriptVar.from_package('ba8000000 ,14,209,40'),
+                MScriptVar.from_package('ba2F5DFC8a,14,209,40'),
+                MScriptVar.from_package('ba2F5DFC8a,14,209,40'),
+            ],
+            str=[
+                '160724 uV',
+                '0 A',
+                '-84549688 aA',
+                '-84549688 aA',
+            ],
         ),
     ),
 )
@@ -79,8 +107,8 @@ def test_parse_mscript_data_package(package):
     assert isinstance(ret, list)
     assert len(ret) == len(package.output)
     for i, var in enumerate(ret):
-        assert str(var) == package.output[i]
-        assert var.metadata == package.metadata[i]
+        assert var == package.output[i]
+        assert str(var) == package.str[i]
 
 
 # e

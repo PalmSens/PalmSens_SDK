@@ -13,6 +13,7 @@ from __future__ import annotations
 import collections
 import math
 import warnings
+from dataclasses import dataclass
 
 import numpy as np
 
@@ -173,30 +174,50 @@ def metadata_current_range_to_text(device_type: str, var_type: VarType, cr: int)
     return cr_text or 'UNKNOWN CURRENT RANGE'
 
 
+@dataclass
 class MScriptVar:
     """Class to store and parse a received MethodSCRIPT variable."""
 
-    def __init__(self, data: str):
+    data: str
+    """Data package."""
+
+    raw_value: float
+    """Raw data value."""
+
+    si_prefix: str
+    """SI prefix for value."""
+
+    metadata: dict[str, int]
+    """Metadata associated with value."""
+
+    @classmethod
+    def from_package(cls, data: str):
         if len(data) < 10:
             raise ValueError(f'Data package has less than 10 characters: {data}')
-        self.data = data[:]
-        self.id = data[0:2]
+
+        data = data[:]
 
         if data[2:10] == '     nan':
-            self.raw_value = math.nan
-            self.si_prefix = ' '
+            raw_value = math.nan
+            si_prefix = ' '
         else:
-            self.raw_value = self.decode_value(data[2:9])
-            self.si_prefix = data[9]
+            raw_value = cls.decode_value(data[2:9])
+            si_prefix = data[9]
 
-        self.raw_metadata = data.split(',')[1:]
-        self.metadata = self.parse_metadata(self.raw_metadata)
+        tokens = data.split(',')[1:]
+        metadata = cls.parse_metadata(tokens)
+
+        return cls(data=data, raw_value=raw_value, si_prefix=si_prefix, metadata=metadata)
 
     def __repr__(self):
-        return f'MScriptVar({self.data!r})'
+        return f'{self.__class__.__name__}({self.data!r})'
 
     def __str__(self):
         return self.value_string
+
+    @property
+    def id(self) -> str:
+        return self.data[0:2]
 
     @property
     def type(self) -> VarType:
@@ -262,7 +283,7 @@ def parse_mscript_data_package(line: str) -> None | list[MScriptVar]:
     returned.
     """
     if line.startswith('P') and line.endswith('\n'):
-        return [MScriptVar(var) for var in line[1:-1].split(';')]
+        return [MScriptVar.from_package(var) for var in line[1:-1].split(';')]
     return None
 
 

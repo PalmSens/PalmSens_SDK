@@ -114,12 +114,12 @@ def discover() -> list[Instrument]:
 
 
 class InstrumentManager:
-    """Instrument manager for PalmSens instruments.
+    """Instrument manager for serial instruments.
 
     Parameters
     ----------
     instrument: Instrument
-        Instrument to connect to, use `discover()` to find connected instruments.
+        Instrument to connect to, use `discover()` to find connected serial instruments.
     """
 
     def __init__(self, instrument: Instrument):
@@ -129,11 +129,8 @@ class InstrumentManager:
         self.comm = self.instrument.device
         """Communication channel."""
 
-        self.firmware_version = None
-        """Firmware version."""
-
-        self.device_type = DeviceType.UNKNOWN
-        """Device type."""
+        self._firmware_version = None
+        self._device_type = DeviceType.UNKNOWN
 
     def __repr__(self):
         return (
@@ -213,7 +210,7 @@ class InstrumentManager:
         return lines
 
     def _update_firmware_version_and_device_type(self, force=False):
-        if force or not self.firmware_version:
+        if force or not self._firmware_version:
             self.write('t\n')
             line1 = self.readline()
             line2 = self.readline()
@@ -221,13 +218,13 @@ class InstrumentManager:
             if not (line1.startswith('t') and line2.endswith('*\n')):
                 raise CommunicationError('Invalid response to firmware version request.')
 
-            self.firmware_version = (line1 + line2).replace('\n', ' ')[1:-1]
+            self._firmware_version = (line1 + line2).replace('\n', ' ')[1:-1]
 
-        self.device_type = DeviceType.UNKNOWN
+        self._device_type = DeviceType.UNKNOWN
 
         for device_id, device_type in _FIRMWARE_VERSION_TO_DEVICE_TYPE_MAPPING:
-            if self.firmware_version.startswith(device_id):
-                self.device_type = device_type
+            if self._firmware_version.startswith(device_id):
+                self._device_type = device_type
                 break
 
     def get_firmware_version(self, force: bool = False):
@@ -237,7 +234,7 @@ class InstrumentManager:
         `force=true` to force reading it from the device again.
         """
         self._update_firmware_version_and_device_type(force=force)
-        return self.firmware_version
+        return self._firmware_version
 
     def get_device_type(self, force: bool = False) -> str:
         """Get the device type.
@@ -246,9 +243,10 @@ class InstrumentManager:
         `force=true` to force reading it from the device again.
         """
         self._update_firmware_version_and_device_type(force=force)
-        return self.device_type
+        return self._device_type
 
     def get_mscript_version(self) -> str:
+        """Read methodscript version."""
         self.write('v\n')
         response = self.readline()
         return response[1:-1]
