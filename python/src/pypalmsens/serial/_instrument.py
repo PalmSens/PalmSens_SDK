@@ -162,7 +162,7 @@ class Instrument:
         self._update_firmware_version_and_device_type(force=force)
         return self.firmware_version
 
-    def get_device_type(self, force: bool = False):
+    def get_device_type(self, force: bool = False) -> str:
         """Get the device type.
 
         The result of this call is cached. If it is changed on the device, use

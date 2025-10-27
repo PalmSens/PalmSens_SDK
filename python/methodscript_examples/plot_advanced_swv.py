@@ -33,7 +33,7 @@ from pathlib import Path
 
 import matplotlib.pyplot as plt
 
-import methodscript
+import pypalmsens as ps
 
 # COM port of the device (None = auto detect).
 DEVICE_PORT = None
@@ -67,7 +67,7 @@ YAXIS_COLUMN_INDICES = [1, 2, 3]
 logger = logging.getLogger(__name__)
 
 
-def write_curves_to_csv(file: typing.IO, curves: list[list[list[methodscript.MScriptVar]]]):
+def write_curves_to_csv(file: typing.IO, curves: list[list[list[ps.serial.MScriptVar]]]):
     """Write the curves to file in CSV format.
 
     `file` must be a file-like object in text mode with newlines translation
@@ -115,14 +115,14 @@ def main():
 
     port = DEVICE_PORT
     if port is None:
-        port = methodscript.auto_detect_port()
+        port = ps.serial.auto_detect_port()
 
-    with methodscript.Serial(port, 1) as comm:
-        device = methodscript.Instrument(comm)
+    with ps.serial.Serial(port, 1) as comm:
+        device = ps.serial.Instrument(comm)
         device_type = device.get_device_type()
         logger.info('Connected to %s.', device_type)
 
-        if device_type == methodscript.DeviceType.EMSTAT_PICO:
+        if device_type == ps.serial.DeviceType.EMSTAT_PICO:
             mscript_file_path = MSCRIPT_FILE_PATH_ESPICO
         elif 'EmStat4' in device_type:
             mscript_file_path = MSCRIPT_FILE_PATH_ES4
@@ -140,7 +140,7 @@ def main():
     with open(base_path.with_suffix('.txt'), 'wt', encoding='ascii') as file:
         file.writelines(result_lines)
 
-    curves = methodscript.parse_result_lines(result_lines)
+    curves = ps.serial.parse_result_lines(result_lines)
 
     with open(base_path.with_suffix('.csv'), 'wt', newline='', encoding='ascii') as file:
         write_curves_to_csv(file, curves)
@@ -159,10 +159,10 @@ def main():
     plt.minorticks_on()
 
     for icurve, curve in enumerate(curves):
-        xvalues = methodscript.get_values_by_column(curves, XAXIS_COLUMN_INDEX, icurve)
+        xvalues = ps.serial.get_values_by_column(curves, XAXIS_COLUMN_INDEX, icurve)
 
         for yaxis_column_index in YAXIS_COLUMN_INDICES:
-            yvalues = methodscript.get_values_by_column(curves, yaxis_column_index, icurve)
+            yvalues = ps.serial.get_values_by_column(curves, yaxis_column_index, icurve)
 
             if curve[0][yaxis_column_index].type != yvar.type:
                 continue

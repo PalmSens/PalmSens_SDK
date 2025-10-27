@@ -19,7 +19,7 @@ from pathlib import Path
 
 import matplotlib.pyplot as plt
 
-import methodscript
+import pypalmsens as ps
 
 # COM port of the device (None = auto detect).
 DEVICE_PORT = None
@@ -46,10 +46,10 @@ def main():
 
     port = DEVICE_PORT
     if port is None:
-        port = methodscript.auto_detect_port()
+        port = ps.serial.auto_detect_port()
 
-    with methodscript.Serial(port, 1) as comm:
-        device = methodscript.Instrument(comm)
+    with ps.serial.Serial(port, 1) as comm:
+        device = ps.serial.Instrument(comm)
         device_type = device.get_device_type()
         logger.info('Connected to %s.', device_type)
 
@@ -65,14 +65,14 @@ def main():
     with open(result_file_path, 'wt', encoding='ascii') as file:
         file.writelines(result_lines)
 
-    curves = methodscript.parse_result_lines(result_lines)
+    curves = ps.serial.parse_result_lines(result_lines)
 
     for curve in curves:
         for package in curve:
             logger.info([str(value) for value in package])
 
-    applied_potential = methodscript.get_values_by_column(curves, 0)
-    measured_current = methodscript.get_values_by_column(curves, 1)
+    applied_potential = ps.serial.get_values_by_column(curves, 0)
+    measured_current = ps.serial.get_values_by_column(curves, 1)
 
     plt.figure(1)
     plt.plot(applied_potential, measured_current)

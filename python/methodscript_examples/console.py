@@ -18,15 +18,16 @@ from __future__ import annotations
 
 import logging
 import sys
+from pathlib import Path
 
-import methodscript
+import pypalmsens as ps
 
 # COM port of the MethodSCRIPT device (None = auto-detect).
 # In case auto-detection does not work or is not wanted, fill in the correct
 # port name, e.g. 'COM6' on Windows, or '/dev/ttyUSB0' on Linux.
 DEVICE_PORT = None
 
-MSCRIPT_FILE_PATH = 'scripts/cv.mscr'
+MSCRIPT_FILE_PATH = MSCRIPT_FILE_PATH_ES4 = Path(__file__).parent / 'scripts' / 'cv.mscr'
 
 
 logger = logging.getLogger(__name__)
@@ -42,11 +43,11 @@ def main():
 
     port = DEVICE_PORT
     if port is None:
-        port = methodscript.auto_detect_port()
+        port = ps.serial.auto_detect_port()
 
     logger.info('Trying to connect to device using port %s...', port)
-    with methodscript.Serial(port, 5) as comm:
-        device = methodscript.Instrument(comm)
+    with ps.serial.Serial(port, 5) as comm:
+        device = ps.serial.Instrument(comm)
         logger.info('Connected.')
 
         # Abort any previous script and restore communication.
@@ -76,7 +77,7 @@ def main():
                 break
 
             # Non-empty line received. Try to parse as data package.
-            variables = methodscript.parse_mscript_data_package(line)
+            variables = ps.serial.parse_mscript_data_package(line)
 
             if variables:
                 # Apparently it was a data package. Print all variables.
@@ -84,12 +85,10 @@ def main():
                 for var in variables:
                     cols.append(f'{var.type.name} = {var.value:11.4g} {var.type.unit}')
                     if 'status' in var.metadata:
-                        status_text = methodscript.metadata_status_to_text(
-                            var.metadata['status']
-                        )
+                        status_text = ps.serial.metadata_status_to_text(var.metadata['status'])
                         cols.append(f'STATUS: {status_text:<16s}')
                     if 'cr' in var.metadata:
-                        cr_text = methodscript.metadata_current_range_to_text(
+                        cr_text = ps.serial.metadata_current_range_to_text(
                             device_type, var.type, var.metadata['cr']
                         )
                         cols.append(f'CR: {cr_text}')

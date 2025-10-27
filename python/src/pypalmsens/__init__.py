@@ -11,7 +11,7 @@ else:
 __version__ = '1.2.2'
 __sdk_version__ = sdk_version
 
-from . import data, fitting, mixed_mode, settings
+from . import data, fitting, mixed_mode, serial, settings
 from ._instruments.instrument_manager import (
     InstrumentManager,
     connect,
@@ -56,6 +56,7 @@ __all__ = [
     'data',
     'fitting',
     'mixed_mode',
+    'serial',
     'connect',
     'connect_async',
     'discover',
