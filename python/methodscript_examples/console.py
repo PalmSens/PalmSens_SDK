@@ -45,12 +45,12 @@ def main():
         print(f'Connected to {device_type}')
         print(f'Firmware version: {firmware_version}')
         print(f'MethodSCRIPT version: {mgr.get_mscript_version()}')
-        print(f'Serial number = {mgr.get_serial_number()}')
+        print(f'Serial number: {mgr.get_serial_number()}')
 
-        # Read MethodSCRIPT from file and send to mgr.
+        # Read MethodSCRIPT from file and send to device.
         mgr.send_script(MSCRIPT_FILE_PATH)
 
-        # Read the script output (results) from the mgr.
+        # Read the script output (results) from the device.
         while True:
             line = mgr.readline()
 
@@ -68,16 +68,17 @@ def main():
             if variables:
                 # Apparently it was a data package. Print all variables.
                 cols = []
+
                 for var in variables:
                     cols.append(f'{var.type.name} = {var.value:11.4g} {var.type.unit}')
+
                     if 'status' in var.metadata:
-                        status_text = ps.serial.metadata_status_to_text(var.metadata['status'])
-                        cols.append(f'STATUS: {status_text:<16s}')
+                        cols.append(f'STATUS: {var.status_string():<16s}')
+
                     if 'cr' in var.metadata:
-                        cr_text = ps.serial.metadata_current_range_to_text(
-                            device_type, var.type, var.metadata['cr']
-                        )
+                        cr_text = var.current_range_string(device_type=device_type)
                         cols.append(f'CR: {cr_text}')
+
                 print(' | '.join(cols))
 
 

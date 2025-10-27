@@ -10,7 +10,6 @@ from ._instrument import (
 from ._mscript import (
     MScriptVar,
     get_values_by_column,
-    get_variable_type,
     metadata_current_range_to_text,
     metadata_status_to_text,
     parse_mscript_data_package,
@@ -23,7 +22,6 @@ __all__ = [
     'DeviceType',
     'discover',
     'get_values_by_column',
-    'get_variable_type',
     'InstrumentManager',
     'metadata_current_range_to_text',
     'metadata_status_to_text',

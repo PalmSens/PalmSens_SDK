@@ -10,14 +10,18 @@ The most relevant functions are:
 
 from __future__ import annotations
 
-import collections
 import math
-import warnings
 from dataclasses import dataclass
 
 import numpy as np
 
-VarType = collections.namedtuple('VarType', ['id', 'name', 'unit'])
+
+@dataclass
+class VarType:
+    id: str
+    name: str
+    unit: str
+
 
 SI_PREFIX_FACTOR = {
     # supported SI prefixes:
@@ -38,58 +42,56 @@ SI_PREFIX_FACTOR = {
     'i': 1e0,  # integer
 }
 
-MSCRIPT_VAR_TYPES_LIST = [
-    VarType('aa', 'unknown', ''),
-    VarType('ab', 'WE vs RE potential', 'V'),
-    VarType('ac', 'CE vs GND potential', 'V'),
-    VarType('ad', 'SE vs GND potential', 'V'),
-    VarType('ae', 'RE vs GND potential', 'V'),
-    VarType('af', 'WE vs GND potential', 'V'),
-    VarType('ag', 'WE vs CE potential', 'V'),
-    VarType('as', 'AIN0 potential', 'V'),
-    VarType('at', 'AIN1 potential', 'V'),
-    VarType('au', 'AIN2 potential', 'V'),
-    VarType('av', 'AIN3 potential', 'V'),
-    VarType('aw', 'AIN4 potential', 'V'),
-    VarType('ax', 'AIN5 potential', 'V'),
-    VarType('ay', 'AIN6 potential', 'V'),
-    VarType('az', 'AIN7 potential', 'V'),
-    VarType('ba', 'WE current', 'A'),
-    VarType('ca', 'Phase', 'degrees'),
-    VarType('cb', 'Impedance', '\u2126'),  # NB: '\u2126' = ohm symbol
-    VarType('cc', 'Z_real', '\u2126'),
-    VarType('cd', 'Z_imag', '\u2126'),
-    VarType('ce', 'EIS E TDD', 'V'),
-    VarType('cf', 'EIS I TDD', 'A'),
-    VarType('cg', 'EIS sampling frequency', 'Hz'),
-    VarType('ch', 'EIS E AC', 'Vrms'),
-    VarType('ci', 'EIS E DC', 'V'),
-    VarType('cj', 'EIS I AC', 'Arms'),
-    VarType('ck', 'EIS I DC', 'A'),
-    VarType('da', 'Applied potential', 'V'),
-    VarType('db', 'Applied current', 'A'),
-    VarType('dc', 'Applied frequency', 'Hz'),
-    VarType('dd', 'Applied AC amplitude', 'Vrms'),
-    VarType('ea', 'Channel', ''),
-    VarType('eb', 'Time', 's'),
-    VarType('ec', 'Pin mask', ''),
-    VarType('ed', 'Temperature', '\u00b0 Celsius'),  # NB: '\u00B0' = degrees symbol
-    VarType('ee', 'Count', ''),
-    VarType('ha', 'Generic current 1', 'A'),
-    VarType('hb', 'Generic current 2', 'A'),
-    VarType('hc', 'Generic current 3', 'A'),
-    VarType('hd', 'Generic current 4', 'A'),
-    VarType('ia', 'Generic potential 1', 'V'),
-    VarType('ib', 'Generic potential 2', 'V'),
-    VarType('ic', 'Generic potential 3', 'V'),
-    VarType('id', 'Generic potential 4', 'V'),
-    VarType('ja', 'Misc. generic 1', ''),
-    VarType('jb', 'Misc. generic 2', ''),
-    VarType('jc', 'Misc. generic 3', ''),
-    VarType('jd', 'Misc. generic 4', ''),
-]
-
-MSCRIPT_VAR_TYPES_DICT = {x.id: x for x in MSCRIPT_VAR_TYPES_LIST}
+MSCRIPT_VAR_TYPES_DICT = {
+    'aa': VarType('aa', 'unknown', ''),
+    'ab': VarType('ab', 'WE vs RE potential', 'V'),
+    'ac': VarType('ac', 'CE vs GND potential', 'V'),
+    'ad': VarType('ad', 'SE vs GND potential', 'V'),
+    'ae': VarType('ae', 'RE vs GND potential', 'V'),
+    'af': VarType('af', 'WE vs GND potential', 'V'),
+    'ag': VarType('ag', 'WE vs CE potential', 'V'),
+    'as': VarType('as', 'AIN0 potential', 'V'),
+    'at': VarType('at', 'AIN1 potential', 'V'),
+    'au': VarType('au', 'AIN2 potential', 'V'),
+    'av': VarType('av', 'AIN3 potential', 'V'),
+    'aw': VarType('aw', 'AIN4 potential', 'V'),
+    'ax': VarType('ax', 'AIN5 potential', 'V'),
+    'ay': VarType('ay', 'AIN6 potential', 'V'),
+    'az': VarType('az', 'AIN7 potential', 'V'),
+    'ba': VarType('ba', 'WE current', 'A'),
+    'ca': VarType('ca', 'Phase', 'degrees'),
+    'cb': VarType('cb', 'Impedance', '\u2126'),  # NB: '\u2126' = ohm symbol
+    'cc': VarType('cc', 'Z_real', '\u2126'),
+    'cd': VarType('cd', 'Z_imag', '\u2126'),
+    'ce': VarType('ce', 'EIS E TDD', 'V'),
+    'cf': VarType('cf', 'EIS I TDD', 'A'),
+    'cg': VarType('cg', 'EIS sampling frequency', 'Hz'),
+    'ch': VarType('ch', 'EIS E AC', 'Vrms'),
+    'ci': VarType('ci', 'EIS E DC', 'V'),
+    'cj': VarType('cj', 'EIS I AC', 'Arms'),
+    'ck': VarType('ck', 'EIS I DC', 'A'),
+    'da': VarType('da', 'Applied potential', 'V'),
+    'db': VarType('db', 'Applied current', 'A'),
+    'dc': VarType('dc', 'Applied frequency', 'Hz'),
+    'dd': VarType('dd', 'Applied AC amplitude', 'Vrms'),
+    'ea': VarType('ea', 'Channel', ''),
+    'eb': VarType('eb', 'Time', 's'),
+    'ec': VarType('ec', 'Pin mask', ''),
+    'ed': VarType('ed', 'Temperature', '\u00b0 Celsius'),  # NB: '\u00B0' = degrees symbol
+    'ee': VarType('ee', 'Count', ''),
+    'ha': VarType('ha', 'Generic current 1', 'A'),
+    'hb': VarType('hb', 'Generic current 2', 'A'),
+    'hc': VarType('hc', 'Generic current 3', 'A'),
+    'hd': VarType('hd', 'Generic current 4', 'A'),
+    'ia': VarType('ia', 'Generic potential 1', 'V'),
+    'ib': VarType('ib', 'Generic potential 2', 'V'),
+    'ic': VarType('ic', 'Generic potential 3', 'V'),
+    'id': VarType('id', 'Generic potential 4', 'V'),
+    'ja': VarType('ja', 'Misc. generic 1', ''),
+    'jb': VarType('jb', 'Misc. generic 2', ''),
+    'jc': VarType('jc', 'Misc. generic 3', ''),
+    'jd': VarType('jd', 'Misc. generic 4', ''),
+}
 
 METADATA_STATUS_FLAGS = [
     (0x1, 'TIMING_ERROR'),
@@ -147,20 +149,14 @@ MSCRIPT_POTENTIAL_RANGES_EMSTAT4 = {
 }
 
 
-def get_variable_type(var_id: str) -> VarType:
-    """Get the variable type with the specified id."""
-    if var_id in MSCRIPT_VAR_TYPES_DICT:
-        return MSCRIPT_VAR_TYPES_DICT[var_id]
-    warnings.warn(f'Unsupported VarType id "{var_id}"!')
-    return VarType(var_id, 'unknown', '')
-
-
 def metadata_status_to_text(status: int) -> str:
+    """Format metadata status."""
     descriptions = [description for mask, description in METADATA_STATUS_FLAGS if status & mask]
     return ' | '.join(descriptions) if descriptions else 'OK'
 
 
 def metadata_current_range_to_text(device_type: str, var_type: VarType, cr: int) -> str:
+    """Format metadata current range."""
     cr_text = None
     if device_type == 'EmStat Pico':
         cr_text = MSCRIPT_CURRENT_RANGES_EMSTAT_PICO.get(cr)
@@ -192,6 +188,7 @@ class MScriptVar:
 
     @classmethod
     def from_package(cls, data: str):
+        """Return dataclass from data package."""
         if len(data) < 10:
             raise ValueError(f'Data package has less than 10 characters: {data}')
 
@@ -217,22 +214,27 @@ class MScriptVar:
 
     @property
     def id(self) -> str:
+        """Variable ID."""
         return self.data[0:2]
 
     @property
     def type(self) -> VarType:
-        return get_variable_type(self.id)
+        """Variable type."""
+        return MSCRIPT_VAR_TYPES_DICT.get(self.id, VarType(self.id, 'unknown', ''))
 
     @property
     def si_prefix_factor(self) -> float:
+        """Prefix for variable."""
         return SI_PREFIX_FACTOR[self.si_prefix]
 
     @property
     def value(self) -> float:
+        """Value for variable."""
         return self.raw_value * self.si_prefix_factor
 
     @property
     def value_string(self) -> str:
+        """Formatted variable."""
         if not self.type.unit:
             return f'{self.value:.9g}'
 
@@ -244,8 +246,18 @@ class MScriptVar:
 
         return f'{self.raw_value} {self.type.unit}'
 
+    def status_string(self) -> str:
+        """Formatted status variable."""
+        return metadata_status_to_text(self.metadata['status'])
+
+    def current_range_string(self, device_type: str) -> str:
+        """Formatted current range variable for given device type."""
+        return metadata_current_range_to_text(
+            device_type=device_type, var_type=self.type, cr=self.metadata['cr']
+        )
+
     @staticmethod
-    def decode_value(var: str):
+    def decode_value(var: str) -> int:
         """Decode the raw value of a MethodSCRIPT variable in a data package.
 
         The input is a 7-digit hexadecimal string (without the variable type
