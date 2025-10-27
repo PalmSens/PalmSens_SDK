@@ -1,0 +1,296 @@
+from __future__ import annotations
+
+from dataclasses import dataclass
+from typing import Type
+
+import pytest
+
+import pypalmsens as ps
+
+# CommunicationError
+# CommunicationTimeout
+# Instrument
+# MScriptVar
+# Serial
+# DeviceType
+
+
+@pytest.mark.instrument
+def test_auto_detect_port():
+    port = ps.serial.auto_detect_port()
+    assert port
+
+
+def test_get_values_by_column():
+    pass
+
+
+def get_variable_type():
+    pass
+
+
+def test_metadata_current_range_to_text():
+    pass
+
+
+def test_metadata_status_to_text():
+    pass
+
+
+@dataclass
+class Package:
+    input: str
+    output: list[str] | None = None
+    error: Type[Exception] | None = None
+    metadata: list[dict] | None = None
+
+
+@pytest.mark.parametrize(
+    'package',
+    (
+        Package(input='does_not_start_with_P'),
+        Package(input='P_no_line_end'),
+        Package(input='P\n', error=ValueError),
+        Package(input='Pda8000000 ;\n', error=ValueError),
+        Package(
+            input='Pda7F9234Bu;ba4E2C324p\n',
+            output=['-449717 uV', '-52247772 pA'],
+            metadata=[{}, {}],
+        ),
+        Package(
+            input='Pda807B031u;baB360495p,10,288\n',
+            output=['503857 uV', '53871765 pA'],
+            metadata=[{}, {'status': 0, 'cr': 136}],
+        ),
+    ),
+)
+def test_parse_mscript_data_package(package):
+    if package.error:
+        with pytest.raises(package.error):
+            ps.serial.parse_mscript_data_package(package.input)
+        return
+
+    ret = ps.serial.parse_mscript_data_package(package.input)
+
+    if not package.output:
+        assert not ret
+        return
+
+    assert isinstance(ret, list)
+    assert len(ret) == len(package.output)
+    for i, var in enumerate(ret):
+        assert str(var) == package.output[i]
+        assert var.metadata == package.metadata[i]
+
+
+# e
+# M0007
+# *
+# M0005
+# Pda8000000 ;ba0B87C28a,14,209,40
+# Pda899FAA9n;ba0292338a,14,209,40
+# Pda933F552n;ba0292338a,14,209,40
+# Pda9CDEFFAn;ba0B87C28a,14,209,40
+# PdaA67EAA4n;ba147D508a,14,209,40
+# PdaB01E550n;ba0B87C28a,14,209,40
+# PdaB9BDFF4n;ba0292338a,14,209,40
+# PdaC35DAA0n;ba0292338a,14,209,40
+# PdaCCFD548n;ba147D508a,14,209,40
+# PdaD69CFF0n;ba0B87C28a,14,209,40
+# PdaE03CAA0n;ba7FDD98Cf,14,209,40
+# PdaE9DC540n;ba0292338a,14,209,40
+# PdaF37BFE8n;ba7FDD98Cf,14,209,40
+# PdaFD1BAA0n;ba7FDB4DAf,14,209,40
+# Pda80227DCu;ba7FDB4DAf,14,209,40
+# Pda8024F47u;ba0B87C28a,14,209,40
+# Pda80276B2u;ba0292338a,14,209,40
+# Pda8029E1Eu;ba0292338a,14,209,40
+# Pda802C589u;ba0B87C28a,14,209,40
+# Pda802ECF4u;ba0B87C28a,14,209,40
+# Pda803145Fu;ba147D508a,14,209,40
+# Pda8033BCAu;ba0292338a,14,209,40
+# Pda8036335u;ba0B87C28a,14,209,40
+# Pda8038AA1u;ba0B87C28a,14,209,40
+# Pda803B20Cu;ba0292338a,14,209,40
+# Pda803D977u;ba0B87C28a,14,209,40
+# Pda80400E2u;ba147D508a,14,209,40
+# Pda804284Du;ba0B87C28a,14,209,40
+# Pda8044FB8u;ba0B87C28a,14,209,40
+# Pda8047724u;ba0B87C28a,14,209,40
+# Pda8049E8Fu;ba0B87C28a,14,209,40
+# Pda804C5FAu;ba0B87C28a,14,209,40
+# Pda804ED65u;ba7FDD98Cf,14,209,40
+# Pda80514D0u;ba0292338a,14,209,40
+# Pda8053C3Cu;ba0B87C28a,14,209,40
+# Pda80563A7u;ba147D508a,14,209,40
+# Pda8058B12u;ba0292338a,14,209,40
+# Pda805B27Du;ba0292338a,14,209,40
+# Pda805D9E8u;ba0B87C28a,14,209,40
+# Pda8060153u;ba7FDD98Cf,14,209,40
+# Pda80628BFu;ba7FDD98Cf,14,209,40
+# Pda806502Au;ba0B87C28a,14,209,40
+# Pda8067795u;ba0B87C28a,14,209,40
+# Pda8069F00u;ba7FDD98Cf,14,209,40
+# Pda806C66Bu;ba147D508a,14,209,40
+# Pda806EDD6u;ba0292338a,14,209,40
+# Pda8071542u;ba7FDD98Cf,14,209,40
+# Pda8073CADu;ba0292338a,14,209,40
+# Pda8076418u;ba7FDD98Cf,14,209,40
+# Pda8078B83u;ba7FDD98Cf,14,209,40
+# Pda807B2EEu;ba0292338a,14,209,40
+# Pda8078B83u;ba0292338a,14,209,40
+# Pda8076418u;ba7FDD98Cf,14,209,40
+# Pda8073CADu;ba7FDD98Cf,14,209,40
+# Pda8071542u;ba7FDD98Cf,14,209,40
+# Pda806EDD6u;ba7FDB4DAf,14,209,40
+# Pda806C66Bu;ba0292338a,14,209,40
+# Pda8069F00u;ba7FDD98Cf,14,209,40
+# Pda8067795u;ba7FDD98Cf,14,209,40
+# Pda806502Au;ba7FDD98Cf,14,209,40
+# Pda80628BFu;ba7FDD98Cf,14,209,40
+# Pda8060153u;ba7FDB4DAf,14,209,40
+# Pda805D9E8u;ba0B87C28a,14,209,40
+# Pda805B27Du;ba7FDD98Cf,14,209,40
+# Pda8058B12u;ba0B87C28a,14,209,40
+# Pda80563A7u;ba0292338a,14,209,40
+# Pda8053C3Cu;ba0B87C28a,14,209,40
+# Pda80514D0u;ba0292338a,14,209,40
+# Pda804ED65u;ba0292338a,14,209,40
+# Pda804C5FAu;ba0292338a,14,209,40
+# Pda8049E8Fu;ba0292338a,14,209,40
+# Pda8047724u;ba7FDB4DAf,14,209,40
+# Pda8044FB8u;ba0292338a,14,209,40
+# Pda804284Du;ba0292338a,14,209,40
+# Pda80400E2u;ba0292338a,14,209,40
+# Pda803D977u;ba0292338a,14,209,40
+# Pda803B20Cu;ba0B87C28a,14,209,40
+# Pda8038AA1u;ba0B87C28a,14,209,40
+# Pda8036335u;ba0B87C28a,14,209,40
+# Pda8033BCAu;ba0B87C28a,14,209,40
+# Pda803145Fu;ba7FDB4DAf,14,209,40
+# Pda802ECF4u;ba7FDD98Cf,14,209,40
+# Pda802C589u;ba7FDD98Cf,14,209,40
+# Pda8029E1Eu;ba7FDD98Cf,14,209,40
+# Pda80276B2u;ba7FDB4DAf,14,209,40
+# Pda8024F47u;ba7FDB4DAf,14,209,40
+# Pda80227DCu;ba7FDB4DAf,14,209,40
+# PdaFD1BAA0n;ba7FDD98Cf,14,209,40
+# PdaF37BFE8n;ba7FDB4DAf,14,209,40
+# PdaE9DC540n;ba7FDB4DAf,14,209,40
+# PdaE03CAA0n;ba7FDD98Cf,14,209,40
+# PdaD69CFF0n;ba7FDD98Cf,14,209,40
+# PdaCCFD548n;ba7FDD98Cf,14,209,40
+# PdaC35DAA0n;ba7FDB4DAf,14,209,40
+# PdaB9BDFF4n;ba7FDD98Cf,14,209,40
+# PdaB01E550n;ba0292338a,14,209,40
+# PdaA67EAA4n;ba0292338a,14,209,40
+# Pda9CDEFFAn;ba7FDD98Cf,14,209,40
+# Pda933F552n;ba0B87C28a,14,209,40
+# Pda899FAA9n;ba147D508a,14,209,40
+# Pda8000000 ;ba0292338a,14,209,40
+# Pda7660557n;ba0292338a,14,209,40
+# Pda6CC0AAEn;ba7FDD98Cf,14,209,40
+# Pda6321006n;ba0292338a,14,209,40
+# Pda598155Cn;ba0292338a,14,209,40
+# Pda4FE1AB0n;ba7FDB4DAf,14,209,40
+# Pda464200Cn;ba0292338a,14,209,40
+# Pda3CA2560n;ba7FDB4DAf,14,209,40
+# Pda3302AB8n;ba0292338a,14,209,40
+# Pda2963010n;ba7FDD98Cf,14,209,40
+# Pda1FC3560n;ba7FDD98Cf,14,209,40
+# Pda1623AC0n;ba7FDB4DAf,14,209,40
+# Pda0C84018n;ba7FDD98Cf,14,209,40
+# Pda02E4560n;ba7FDD98Cf,14,209,40
+# Pda7FDD824u;ba0B87C28a,14,209,40
+# Pda7FDB0B9u;ba0B87C28a,14,209,40
+# Pda7FD894Eu;ba7FD9028f,14,209,40
+# Pda7FD61E2u;ba7FDD98Cf,14,209,40
+# Pda7FD3A77u;ba7FDD98Cf,14,209,40
+# Pda7FD130Cu;ba0B87C28a,14,209,40
+# Pda7FCEBA1u;ba0292338a,14,209,40
+# Pda7FCC436u;ba0292338a,14,209,40
+# Pda7FC9CCBu;ba0B87C28a,14,209,40
+# Pda7FC755Fu;ba7FDD98Cf,14,209,40
+# Pda7FC4DF4u;ba0B87C28a,14,209,40
+# Pda7FC2689u;ba147D508a,14,209,40
+# Pda7FBFF1Eu;ba0292338a,14,209,40
+# Pda7FBD7B3u;ba7FDB4DAf,14,209,40
+# Pda7FBB048u;ba7FDD98Cf,14,209,40
+# Pda7FB88DCu;ba7FDB4DAf,14,209,40
+# Pda7FB6171u;ba7FDD98Cf,14,209,40
+# Pda7FB3A06u;ba0292338a,14,209,40
+# Pda7FB129Bu;ba7FDD98Cf,14,209,40
+# Pda7FAEB30u;ba7FDB4DAf,14,209,40
+# Pda7FAC3C4u;ba7FDD98Cf,14,209,40
+# Pda7FA9C59u;ba0B87C28a,14,209,40
+# Pda7FA74EEu;ba7FDD98Cf,14,209,40
+# Pda7FA4D83u;ba7FDB4DAf,14,209,40
+# Pda7FA2618u;ba7FDD98Cf,14,209,40
+# Pda7F9FEADu;ba0B87C28a,14,209,40
+# Pda7F9D741u;ba7FDD98Cf,14,209,40
+# Pda7F9AFD6u;ba0292338a,14,209,40
+# Pda7F9886Bu;ba0B87C28a,14,209,40
+# Pda7F96100u;ba0292338a,14,209,40
+# Pda7F93995u;ba0292338a,14,209,40
+# Pda7F9122Au;ba0292338a,14,209,40
+# Pda7F8EABEu;ba7FDD98Cf,14,209,40
+# Pda7F8C353u;ba147D508a,14,209,40
+# Pda7F89BE8u;ba0292338a,14,209,40
+# Pda7F8747Du;ba7FDD98Cf,14,209,40
+# Pda7F84D12u;ba7FDD98Cf,14,209,40
+# Pda7F8747Du;ba7FDD98Cf,14,209,40
+# Pda7F89BE8u;ba7FDD98Cf,14,209,40
+# Pda7F8C353u;ba7FDD98Cf,14,209,40
+# Pda7F8EABEu;ba7FDD98Cf,14,209,40
+# Pda7F9122Au;ba0292338a,14,209,40
+# Pda7F93995u;ba0292338a,14,209,40
+# Pda7F96100u;ba7FDD98Cf,14,209,40
+# Pda7F9886Bu;ba0B87C28a,14,209,40
+# Pda7F9AFD6u;ba7FDD98Cf,14,209,40
+# Pda7F9D741u;ba0292338a,14,209,40
+# Pda7F9FEADu;ba0292338a,14,209,40
+# Pda7FA2618u;ba7FDD98Cf,14,209,40
+# Pda7FA4D83u;ba0292338a,14,209,40
+# Pda7FA74EEu;ba7FDD98Cf,14,209,40
+# Pda7FA9C59u;ba0292338a,14,209,40
+# Pda7FAC3C4u;ba0B87C28a,14,209,40
+# Pda7FAEB30u;ba7FDD98Cf,14,209,40
+# Pda7FB129Bu;ba7FD9028f,14,209,40
+# Pda7FB3A06u;ba7FDD98Cf,14,209,40
+# Pda7FB6171u;ba7FDD98Cf,14,209,40
+# Pda7FB88DCu;ba7FDD98Cf,14,209,40
+# Pda7FBB048u;ba7FDD98Cf,14,209,40
+# Pda7FBD7B3u;ba7FDB4DAf,14,209,40
+# Pda7FBFF1Eu;ba0292338a,14,209,40
+# Pda7FC2689u;ba0B87C28a,14,209,40
+# Pda7FC4DF4u;ba0B87C28a,14,209,40
+# Pda7FC755Fu;ba0292338a,14,209,40
+# Pda7FC9CCBu;ba0B87C28a,14,209,40
+# Pda7FCC436u;ba147D508a,14,209,40
+# Pda7FCEBA1u;ba7FDD98Cf,14,209,40
+# Pda7FD130Cu;ba7FDD98Cf,14,209,40
+# Pda7FD3A77u;ba7FDD98Cf,14,209,40
+# Pda7FD61E2u;ba0292338a,14,209,40
+# Pda7FD894Eu;ba147D508a,14,209,40
+# Pda7FDB0B9u;ba0292338a,14,209,40
+# Pda7FDD824u;ba7FDD98Cf,14,209,40
+# Pda02E4560n;ba0292338a,14,209,40
+# Pda0C84018n;ba0292338a,14,209,40
+# Pda1623AC0n;ba147D508a,14,209,40
+# Pda1FC3560n;ba0292338a,14,209,40
+# Pda2963010n;ba147D508a,14,209,40
+# Pda3302AB8n;ba147D508a,14,209,40
+# Pda3CA2560n;ba0292338a,14,209,40
+# Pda464200Cn;ba7FDB4DAf,14,209,40
+# Pda4FE1AB0n;ba7FDD98Cf,14,209,40
+# Pda598155Cn;ba7FDB4DAf,14,209,40
+# Pda6321006n;ba0292338a,14,209,40
+# Pda6CC0AAEn;ba7FDD98Cf,14,209,40
+# Pda7660557n;ba0292338a,14,209,40
+# Pda8000000 ;ba7FDD98Cf,14,209,40
+# *
+
+
+def test_parse_result_lines():
+    # breakpoint()
+    pass

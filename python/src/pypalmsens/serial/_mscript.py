@@ -177,7 +177,8 @@ class MScriptVar:
     """Class to store and parse a received MethodSCRIPT variable."""
 
     def __init__(self, data: str):
-        assert len(data) >= 10
+        if len(data) < 10:
+            raise ValueError(f'Data package has less than 10 characters: {data}')
         self.data = data[:]
         self.id = data[0:2]
 

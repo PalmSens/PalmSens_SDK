@@ -41,7 +41,7 @@ def _is_mscript_device(port_description: str) -> bool:
     )
 
 
-def auto_detect_port():
+def auto_detect_port() -> str:
     """Auto-detect serial communication port.
 
     This works by searching for an available port with the correct name.
