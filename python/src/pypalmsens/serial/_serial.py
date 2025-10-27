@@ -13,7 +13,7 @@ import serial.tools.list_ports
 logger = logging.getLogger(__name__)
 
 
-def _is_mscript_device(port_description: str):
+def _is_mscript_device(port_description: str) -> bool:
     """Check if the specified port is a known MethodSCRIPT device.
 
     NOTES:

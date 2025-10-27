@@ -187,9 +187,9 @@ pages = (
         module='pypalmsens.data',
     ),
     Page(
-        name='methodscript',
-        title='MethodSCRIPT',
-        module='methodscript',
+        name='serial',
+        title='Serial',
+        module='pypalmsens.serial',
     ),
 )
 

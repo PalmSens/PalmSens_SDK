@@ -23,7 +23,7 @@ The timeout should be configured to match the application code.
 == Sending a MethodSCRIPT
 
 The MethodSCRIPT can be read from a text file and then sent to the device.
-In the xref:methodscript_examples.adoc[examples], the MethodSCRIPT files are stored in the https://github.com/PalmSens/PalmSens_SDK/tree/main/python/methodscript_examples/scripts[`methodscript_examples/scripts`] directory.
+In the xref:serial_examples.adoc[examples], the MethodSCRIPT files are stored in the https://github.com/PalmSens/PalmSens_SDK/tree/main/python/methodscript_examples/scripts[`methodscript_examples/scripts`] directory.
 
 == Receiving packages
 
