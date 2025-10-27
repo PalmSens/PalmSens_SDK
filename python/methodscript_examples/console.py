@@ -22,51 +22,37 @@ from pathlib import Path
 
 import pypalmsens as ps
 
-# COM port of the MethodSCRIPT device (None = auto-detect).
-# In case auto-detection does not work or is not wanted, fill in the correct
-# port name, e.g. 'COM6' on Windows, or '/dev/ttyUSB0' on Linux.
-DEVICE_PORT = None
-
 MSCRIPT_FILE_PATH = MSCRIPT_FILE_PATH_ES4 = Path(__file__).parent / 'scripts' / 'cv.mscr'
 
 
-logger = logging.getLogger(__name__)
-
-
 def main():
-    """Run the example."""
     logging.basicConfig(
         level=logging.INFO, format='[%(module)s] %(message)s', stream=sys.stdout
     )
     # Uncomment the following line to reduce the log level for our library.
     # logging.getLogger('pypalmsens').setLevel(logging.INFO)
 
-    port = DEVICE_PORT
-    if port is None:
-        port = ps.serial.auto_detect_port()
+    instruments = ps.serial.discover()
+    instrument = instruments[0]
 
-    logger.info('Trying to connect to device using port %s...', port)
-    with ps.serial.Serial(port, 5) as comm:
-        device = ps.serial.Instrument(comm)
-        logger.info('Connected.')
-
+    with ps.serial.InstrumentManager(instrument) as mgr:
         # Abort any previous script and restore communication.
-        device.abort_and_sync()
+        mgr.abort_and_sync()
 
         # Check if device is connected and responding successfully.
-        firmware_version = device.get_firmware_version()
-        device_type = device.get_device_type()
-        logger.info('Connected to %s.', device_type)
-        logger.info('Firmware version: %s', firmware_version)
-        logger.info('MethodSCRIPT version: %s', device.get_mscript_version())
-        logger.info('Serial number = %s', device.get_serial_number())
+        firmware_version = mgr.get_firmware_version()
+        device_type = mgr.get_device_type()
+        print(f'Connected to {device_type}')
+        print(f'Firmware version: {firmware_version}')
+        print(f'MethodSCRIPT version: {mgr.get_mscript_version()}')
+        print(f'Serial number = {mgr.get_serial_number()}')
 
-        # Read MethodSCRIPT from file and send to device.
-        device.send_script(MSCRIPT_FILE_PATH)
+        # Read MethodSCRIPT from file and send to mgr.
+        mgr.send_script(MSCRIPT_FILE_PATH)
 
-        # Read the script output (results) from the device.
+        # Read the script output (results) from the mgr.
         while True:
-            line = device.readline()
+            line = mgr.readline()
 
             # No data means timeout, so ignore it and try again.
             if not line:

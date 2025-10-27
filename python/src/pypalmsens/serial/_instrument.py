@@ -1,15 +1,6 @@
-"""PalmSens instrument module
+"""PalmSens Serial Port (UART) interface
 
-This module implements the communication protocol. This consists of the
-high-level read and write methods, methods to read the firmware version,
-identify the device type, execute scripts on the device, etc.
-
-The low-level (physical) communication interface,  is implemented in another
-module, so that multiple physical interfaces (e.g. serial port, USB, etc.)
-can be supported.
-
-MethodSCRIPT specific methods, such as parsing and interpreting the measurement
-data, is implemented in the mscript module.
+This module implements the serial interface to the PalmSens instrument.
 """
 
 from __future__ import annotations
@@ -18,7 +9,17 @@ import logging
 import time
 from pathlib import Path
 
+import serial
+import serial.tools.list_ports
+
+from .._instruments import Instrument
+
 logger = logging.getLogger(__name__)
+
+
+logger = logging.getLogger(__name__)
+
+BAUDRATE = 230400
 
 
 class DeviceType:
@@ -59,29 +60,105 @@ class CommunicationTimeout(Exception):
     """
 
 
-class Instrument:
-    """Communication interface for MethodSCRIPT instruments.
+def _is_mscript_device(port_description: str) -> bool:
+    """Check if the specified port is a known MethodSCRIPT device.
 
-    This class contains high-level communication methods that are independent
-    of the physical interface (e.g.: serial port, USB, Bluetooth, ...). The
-    low-level communication should be provided by a communication object that
-    is passed to the initializer.
+    NOTES:
+    - Since the EmStat Pico uses a generic FTDI USB-to-Serial chip,
+      it is identified by Windows as "USB Serial Port". This is the
+      text to look for when using the auto-detection feature. Note
+      that an EmStat Pico or Sensit BT cannot be auto-detected if
+      there are also other devices connected that use this name.
+    - An EmStat4 device in bootloader mode would be identified as
+      'EmStat4 Bootloader', but we only want to connect to devices
+      that can run MethodSCRIPTs, so we do not include that here.
+    """
+    return (
+        # Linux descriptions
+        port_description == 'EmStat4'
+        or port_description.startswith('ESPicoDev')
+        or port_description.startswith('SensitBT')
+        or port_description.startswith('SensitSmart')
+        # Windows descriptions
+        or port_description.startswith('EmStat4 LR (COM')
+        or port_description.startswith('EmStat4 HR (COM')
+        or port_description.startswith('MultiEmStat4 LR (COM')
+        or port_description.startswith('MultiEmStat4 HR (COM')
+        or port_description.startswith('USB Serial Port')
+    )
 
-    The low-level communication module should only implement the following
-    two methods:
-        - write(data: bytes)
-        - readline() -> bytes
+
+def discover() -> list[Instrument]:
+    """Discover MethodSCRIPT compatible serial communication devices.
+
+    This works by searching for an available port with the correct name.
+    """
+    ports = serial.tools.list_ports.comports(include_links=False)
+    instruments = []
+
+    for port in ports:
+        logger.debug('Found port: %s', port.description)
+        if _is_mscript_device(port.description):
+            device = serial.Serial(baudrate=BAUDRATE)
+            device.port = port.device
+
+            instruments.append(
+                Instrument(
+                    id=port.description,
+                    interface='pyserial',
+                    device=device,
+                )
+            )
+
+    return instruments
+
+
+class InstrumentManager:
+    """Instrument manager for PalmSens instruments.
+
+    Parameters
+    ----------
+    instrument: Instrument
+        Instrument to connect to, use `discover()` to find connected instruments.
     """
 
-    def __init__(self, comm):
-        """Initialize the object.
+    def __init__(self, instrument: Instrument):
+        self.instrument = instrument
+        """Instrument to connect to."""
 
-        `comm` must be a communication object as described in the
-        documentation of this class.
-        """
-        self.comm = comm
+        self.comm = self.instrument.device
+        """Communication channel."""
+
         self.firmware_version = None
+        """Firmware version."""
+
         self.device_type = DeviceType.UNKNOWN
+        """Device type."""
+
+    def __repr__(self):
+        return (
+            f'{self.__class__.__name__}({self.instrument.id}, connected={self.is_connected()})'
+        )
+
+    def __enter__(self):
+        if not self.is_connected():
+            self.connect()
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        self.disconnect()
+
+    def is_connected(self) -> bool:
+        """Return True if an instrument connection exists."""
+        return self.instrument.device.is_open
+
+    def connect(self):
+        """Connect to instrument."""
+        self.instrument.device.open()
+
+    def disconnect(self):
+        """Disconnect from the instrument."""
+        self.instrument.device.close()
 
     def write(self, text: str):
         """Write to device.

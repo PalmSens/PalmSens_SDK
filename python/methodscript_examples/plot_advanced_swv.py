@@ -113,13 +113,11 @@ def main():
     base_name = datetime.datetime.now().strftime('ms_plot_swv_%Y%m%d-%H%M%S')
     base_path = OUTPUT_PATH / base_name
 
-    port = DEVICE_PORT
-    if port is None:
-        port = ps.serial.auto_detect_port()
+    instruments = ps.serial.discover()
+    instrument = instruments[0]
 
-    with ps.serial.Serial(port, 1) as comm:
-        device = ps.serial.Instrument(comm)
-        device_type = device.get_device_type()
+    with ps.serial.InstrumentManager(instrument) as mgr:
+        device_type = mgr.get_device_type()
         logger.info('Connected to %s.', device_type)
 
         if device_type == ps.serial.DeviceType.EMSTAT_PICO:
@@ -131,10 +129,10 @@ def main():
             return
 
         logger.info('Sending MethodSCRIPT.')
-        device.send_script(mscript_file_path)
+        mgr.send_script(mscript_file_path)
 
         logger.info('Waiting for results.')
-        result_lines = device.readlines_until_end()
+        result_lines = mgr.readlines_until_end()
 
     OUTPUT_PATH.mkdir(exist_ok=True)
     with open(base_path.with_suffix('.txt'), 'wt', encoding='ascii') as file:

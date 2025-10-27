@@ -44,20 +44,18 @@ def main():
     logging.getLogger('matplotlib').setLevel(logging.INFO)
     logging.getLogger('PIL.PngImagePlugin').setLevel(logging.INFO)
 
-    port = DEVICE_PORT
-    if port is None:
-        port = ps.serial.auto_detect_port()
+    instruments = ps.serial.discover()
+    instrument = instruments[0]
 
-    with ps.serial.Serial(port, 1) as comm:
-        device = ps.serial.Instrument(comm)
-        device_type = device.get_device_type()
+    with ps.serial.InstrumentManager(instrument) as mgr:
+        device_type = mgr.get_device_type()
         logger.info('Connected to %s.', device_type)
 
         logger.info('Sending MethodSCRIPT.')
-        device.send_script(MSCRIPT_FILE_PATH)
+        mgr.send_script(MSCRIPT_FILE_PATH)
 
         logger.info('Waiting for results.')
-        result_lines = device.readlines_until_end()
+        result_lines = mgr.readlines_until_end()
 
     OUTPUT_PATH.mkdir(exist_ok=True)
     result_file_name = datetime.datetime.now().strftime('ms_plot_cv_%Y%m%d-%H%M%S.txt')
