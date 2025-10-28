@@ -64,12 +64,6 @@ class TestCV:
     }
     pycls = ps.CyclicVoltammetry
 
-    def test_params_round_trip(self):
-        assert_params_round_trip_equal(
-            pycls=self.pycls,
-            kwargs=self.kwargs,
-        )
-
     @pytest.mark.instrument
     def test_measurement(self, manager):
         method = self.pycls(
@@ -114,12 +108,6 @@ class TestFCV:
     }
     pycls = ps.FastCyclicVoltammetry
 
-    def test_params_round_trip(self):
-        assert_params_round_trip_equal(
-            pycls=self.pycls,
-            kwargs=self.kwargs,
-        )
-
     @pytest.mark.xfail(raises=AssertionError, reason='FCV only returns 1 scan with nScans>1')
     @pytest.mark.instrument
     def test_measurement(self, manager):
@@ -163,12 +151,6 @@ class TestLSV:
     }
     pycls = ps.LinearSweepVoltammetry
 
-    def test_params_round_trip(self):
-        assert_params_round_trip_equal(
-            pycls=self.pycls,
-            kwargs=self.kwargs,
-        )
-
     @pytest.mark.instrument
     def test_measurement(self, manager):
         method = self.pycls(
@@ -201,12 +183,6 @@ class TestACV:
         'scanrate': 0.2,
     }
     pycls = ps.ACVoltammetry
-
-    def test_params_round_trip(self):
-        assert_params_round_trip_equal(
-            pycls=self.pycls,
-            kwargs=self.kwargs,
-        )
 
     @pytest.mark.instrument
     def test_measurement(self, manager):
@@ -251,12 +227,6 @@ class TestSWV:
     }
     pycls = ps.SquareWaveVoltammetry
 
-    def test_params_round_trip(self):
-        assert_params_round_trip_equal(
-            pycls=self.pycls,
-            kwargs=self.kwargs,
-        )
-
     @pytest.mark.instrument
     def test_measurement(self, manager):
         method = self.pycls(
@@ -289,12 +259,6 @@ class TestCP:
     }
     pycls = ps.ChronoPotentiometry
 
-    def test_params_round_trip(self):
-        assert_params_round_trip_equal(
-            pycls=self.pycls,
-            kwargs=self.kwargs,
-        )
-
     @pytest.mark.instrument
     def test_measurement(self, manager):
         method = self.pycls(
@@ -324,12 +288,6 @@ class TestSCP:
         'measurement_time': 0.2,
     }
     pycls = ps.StrippingChronoPotentiometry
-
-    def test_params_round_trip(self):
-        assert_params_round_trip_equal(
-            pycls=self.pycls,
-            kwargs=self.kwargs,
-        )
 
     @pytest.mark.xfail(
         raises=System.NotImplementedException,
@@ -365,12 +323,6 @@ class TestLSP:
     }
     pycls = ps.LinearSweepPotentiometry
 
-    def test_params_round_trip(self):
-        assert_params_round_trip_equal(
-            pycls=self.pycls,
-            kwargs=self.kwargs,
-        )
-
     @pytest.mark.instrument
     def test_measurement(self, manager):
         method = self.pycls(
@@ -399,12 +351,6 @@ class TestOCP:
         'run_time': 1.0,
     }
     pycls = ps.OpenCircuitPotentiometry
-
-    def test_params_round_trip(self):
-        assert_params_round_trip_equal(
-            pycls=self.pycls,
-            kwargs=self.kwargs,
-        )
 
     @pytest.mark.instrument
     def test_measurement(self, manager):
@@ -435,12 +381,6 @@ class TestCA:
     }
     pycls = ps.ChronoAmperometry
 
-    def test_params_round_trip(self):
-        assert_params_round_trip_equal(
-            pycls=self.pycls,
-            kwargs=self.kwargs,
-        )
-
     @pytest.mark.instrument
     def test_measurement(self, manager):
         method = self.pycls(**self.kwargs)
@@ -462,12 +402,6 @@ class TestFA:
         'run_time': 1.0,
     }
     pycls = ps.FastAmperometry
-
-    def test_params_round_trip(self):
-        assert_params_round_trip_equal(
-            pycls=self.pycls,
-            kwargs=self.kwargs,
-        )
 
     @pytest.mark.instrument
     def test_measurement(self, manager):
@@ -495,12 +429,6 @@ class TestDP:
     }
     pycls = ps.DifferentialPulseVoltammetry
 
-    def test_params_round_trip(self):
-        assert_params_round_trip_equal(
-            pycls=self.pycls,
-            kwargs=self.kwargs,
-        )
-
     @pytest.mark.instrument
     def test_measurement(self, manager):
         method = self.pycls(**self.kwargs)
@@ -526,12 +454,6 @@ class TestPAD:
         'interval_time': 0.2,
     }
     pycls = ps.PulsedAmperometricDetection
-
-    def test_params_round_trip(self):
-        assert_params_round_trip_equal(
-            pycls=self.pycls,
-            kwargs=self.kwargs,
-        )
 
     @pytest.mark.instrument
     def test_measurement(self, manager):
@@ -559,12 +481,6 @@ class TestMPAD:
         'duration_3': 0.15,
     }
     pycls = ps.MultiplePulseAmperometry
-
-    def test_params_round_trip(self):
-        assert_params_round_trip_equal(
-            pycls=self.pycls,
-            kwargs=self.kwargs,
-        )
 
     @pytest.mark.xfail(
         raises=ValueError,
@@ -596,12 +512,6 @@ class TestNPV:
     }
     pycls = ps.NormalPulseVoltammetry
 
-    def test_params_round_trip(self):
-        assert_params_round_trip_equal(
-            pycls=self.pycls,
-            kwargs=self.kwargs,
-        )
-
     @pytest.mark.instrument
     def test_measurement(self, manager):
         method = self.pycls(**self.kwargs)
@@ -628,12 +538,6 @@ class TestMA:
         ],
     }
     pycls = ps.MultiStepAmperometry
-
-    def test_params_round_trip(self):
-        assert_params_round_trip_equal(
-            pycls=self.pycls,
-            kwargs=self.kwargs,
-        )
 
     @pytest.mark.instrument
     def test_measurement(self, manager):
@@ -666,12 +570,6 @@ class TestMP:
     }
     pycls = ps.MultiStepPotentiometry
 
-    def test_params_round_trip(self):
-        assert_params_round_trip_equal(
-            pycls=self.pycls,
-            kwargs=self.kwargs,
-        )
-
     @pytest.mark.instrument
     def test_measurement(self, manager):
         method = self.pycls(**self.kwargs)
@@ -701,12 +599,6 @@ class TestCC:
     }
     pycls = ps.ChronoCoulometry
 
-    def test_params_round_trip(self):
-        assert_params_round_trip_equal(
-            pycls=self.pycls,
-            kwargs=self.kwargs,
-        )
-
     @pytest.mark.instrument
     def test_measurement(self, manager):
         method = self.pycls(**self.kwargs)
@@ -734,12 +626,6 @@ class TestEIS:
         'min_frequency': 1e3,
     }
     pycls = ps.ElectrochemicalImpedanceSpectroscopy
-
-    def test_params_round_trip(self):
-        assert_params_round_trip_equal(
-            pycls=self.pycls,
-            kwargs=self.kwargs,
-        )
 
     @pytest.mark.instrument
     def test_measurement(self, manager):
@@ -796,12 +682,6 @@ class TestFIS:
         'run_time': 0.5,
     }
     pycls = ps.FastImpedanceSpectroscopy
-
-    def test_params_round_trip(self):
-        assert_params_round_trip_equal(
-            pycls=self.pycls,
-            kwargs=self.kwargs,
-        )
 
     @pytest.mark.instrument
     def test_measurement(self, manager):
@@ -862,12 +742,6 @@ class TestGIS:
     }
     pycls = ps.GalvanostaticImpedanceSpectroscopy
 
-    def test_params_round_trip(self):
-        assert_params_round_trip_equal(
-            pycls=self.pycls,
-            kwargs=self.kwargs,
-        )
-
     @pytest.mark.instrument
     def test_measurement(self, manager):
         method = self.pycls(**self.kwargs)
@@ -923,12 +797,6 @@ class TestFGIS:
         'run_time': 0.3,
     }
     pycls = ps.FastGalvanostaticImpedanceSpectroscopy
-
-    def test_params_round_trip(self):
-        assert_params_round_trip_equal(
-            pycls=self.pycls,
-            kwargs=self.kwargs,
-        )
 
     @pytest.mark.instrument
     def test_measurement(self, manager):
@@ -999,12 +867,6 @@ class TestMS:
     }
     pycls = ps.MethodScript
 
-    def test_params_round_trip(self):
-        assert_params_round_trip_equal(
-            pycls=self.pycls,
-            kwargs=self.kwargs,
-        )
-
     @pytest.mark.instrument
     def test_measurement(self, manager):
         method = self.pycls(**self.kwargs)
@@ -1055,12 +917,6 @@ class TestMM:
         ],
     }
     pycls = ps.mixed_mode.MixedMode
-
-    def test_params_round_trip(self):
-        assert_params_round_trip_equal(
-            pycls=self.pycls,
-            kwargs=self.kwargs,
-        )
 
     @pytest.mark.instrument
     def test_measurement(self, manager):
@@ -1118,3 +974,39 @@ class TestMM:
             'Z',
             "Z'",
         }
+
+
+@pytest.mark.parametrize(
+    'method',
+    (
+        TestCV,
+        TestFCV,
+        TestLSV,
+        TestACV,
+        TestSWV,
+        TestCP,
+        TestSCP,
+        TestLSP,
+        TestOCP,
+        TestCA,
+        TestFA,
+        TestDP,
+        TestPAD,
+        TestMPAD,
+        TestNPV,
+        TestMA,
+        TestMP,
+        TestCC,
+        TestEIS,
+        TestFIS,
+        TestGIS,
+        TestFGIS,
+        TestMS,
+        TestMM,
+    ),
+)
+def test_params_round_trip(method):
+    assert_params_round_trip_equal(
+        pycls=method.pycls,
+        kwargs=method.kwargs,
+    )
