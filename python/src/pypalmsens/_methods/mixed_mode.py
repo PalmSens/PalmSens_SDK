@@ -31,7 +31,7 @@ class BaseStage(Protocol):
     @classmethod
     def from_stage_type(cls, id: str) -> BaseStage:
         """Create new instance of appropriate stage from its type."""
-        new = cls._registry[id]
+        new = cls._registry[str(id)]
         return new()
 
     @classmethod

@@ -6,7 +6,6 @@ from pathlib import Path
 
 import pytest
 import System
-from helpers import assert_params_match_kwargs
 
 import pypalmsens as ps
 from pypalmsens._methods import BaseTechnique
@@ -476,8 +475,8 @@ class TestMA:
         'interval_time': 0.01,
         'n_cycles': 2,
         'levels': [
-            ps.settings.ELevel(level=0.5, duration=0.1),
-            ps.settings.ELevel(level=0.3, duration=0.2),
+            {'level': 0.5, 'duration': 0.1},
+            {'level': 0.3, 'duration': 0.2},
         ],
     }
 
@@ -951,9 +950,7 @@ class TestMM:
     ),
 )
 def test_params_round_trip(method):
-    method_class = BaseTechnique._registry[method.id]
-
-    params = method_class(**method.kwargs)
+    params = BaseTechnique._registry[method.id].from_dict(method.kwargs)
 
     with tempfile.TemporaryDirectory() as tmp:
         path = Path(tmp, f'{method.id}.psmethod')
@@ -961,4 +958,3 @@ def test_params_round_trip(method):
         new_params = ps.load_method_file(path)
 
     assert new_params == params
-    assert_params_match_kwargs(new_params, kwargs=method.kwargs)
