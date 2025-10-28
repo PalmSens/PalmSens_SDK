@@ -321,7 +321,7 @@ class TestSCP:
     kwargs = {
         'current': 0.1,
         'applied_current_range': ps.settings.CURRENT_RANGE.cr_100_uA,
-        'measurement_time': 0.2,
+        'measurement_time': 1.0,
     }
     pycls = ps.StrippingChronoPotentiometry
 
@@ -338,13 +338,10 @@ class TestSCP:
     @pytest.mark.instrument
     def test_measurement(self, manager):
         method = self.pycls(
-            potential_range=ps.settings.PotentialRange(
-                max=ps.settings.POTENTIAL_RANGE.pr_1_V,
-                min=ps.settings.POTENTIAL_RANGE.pr_10_mV,
-                start=ps.settings.POTENTIAL_RANGE.pr_1_V,
-            ),
+            potential_range=ps.settings.POTENTIAL_RANGE.pr_1_V,
             **self.kwargs,
         )
+
         measurement = manager.measure(method)
 
         assert measurement
