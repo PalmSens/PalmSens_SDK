@@ -4,7 +4,6 @@ import logging
 import tempfile
 from pathlib import Path
 
-import cattrs
 import pytest
 import System
 from helpers import assert_params_match_kwargs
@@ -57,8 +56,7 @@ class TestCV:
 
     @pytest.mark.instrument
     def test_measurement(self, manager):
-        method_class = BaseTechnique._registry[self.id]
-        method = cattrs.structure(self.kwargs, method_class)
+        method = BaseTechnique._registry[self.id].from_dict(self.kwargs)
 
         measurement = manager.measure(method)
 
@@ -98,8 +96,7 @@ class TestFCV:
     @pytest.mark.xfail(raises=AssertionError, reason='FCV only returns 1 scan with nScans>1')
     @pytest.mark.instrument
     def test_measurement(self, manager):
-        method_class = BaseTechnique._registry[self.id]
-        method = cattrs.structure(self.kwargs, method_class)
+        method = BaseTechnique._registry[self.id].from_dict(self.kwargs)
 
         measurement = manager.measure(method)
 
@@ -140,8 +137,7 @@ class TestLSV:
 
     @pytest.mark.instrument
     def test_measurement(self, manager):
-        method_class = BaseTechnique._registry[self.id]
-        method = cattrs.structure(self.kwargs, method_class)
+        method = BaseTechnique._registry[self.id].from_dict(self.kwargs)
 
         measurement = manager.measure(method)
 
@@ -169,8 +165,7 @@ class TestACV:
 
     @pytest.mark.instrument
     def test_measurement(self, manager):
-        method_class = BaseTechnique._registry[self.id]
-        method = cattrs.structure(self.kwargs, method_class)
+        method = BaseTechnique._registry[self.id].from_dict(self.kwargs)
         measurement = manager.measure(method)
 
         assert measurement
@@ -207,8 +202,7 @@ class TestSWV:
 
     @pytest.mark.instrument
     def test_measurement(self, manager):
-        method_class = BaseTechnique._registry[self.id]
-        method = cattrs.structure(self.kwargs, method_class)
+        method = BaseTechnique._registry[self.id].from_dict(self.kwargs)
         measurement = manager.measure(method)
 
         assert measurement
@@ -234,8 +228,7 @@ class TestCP:
 
     @pytest.mark.instrument
     def test_measurement(self, manager):
-        method_class = BaseTechnique._registry[self.id]
-        method = cattrs.structure(self.kwargs, method_class)
+        method = BaseTechnique._registry[self.id].from_dict(self.kwargs)
 
         measurement = manager.measure(method)
 
@@ -264,8 +257,7 @@ class TestSCP:
     )
     @pytest.mark.instrument
     def test_measurement(self, manager):
-        method_class = BaseTechnique._registry[self.id]
-        method = cattrs.structure(self.kwargs, method_class)
+        method = BaseTechnique._registry[self.id].from_dict(self.kwargs)
         measurement = manager.measure(method)
 
         assert measurement
@@ -289,8 +281,7 @@ class TestLSP:
 
     @pytest.mark.instrument
     def test_measurement(self, manager):
-        method_class = BaseTechnique._registry[self.id]
-        method = cattrs.structure(self.kwargs, method_class)
+        method = BaseTechnique._registry[self.id].from_dict(self.kwargs)
         measurement = manager.measure(method)
 
         assert measurement
@@ -313,8 +304,7 @@ class TestOCP:
 
     @pytest.mark.instrument
     def test_measurement(self, manager):
-        method_class = BaseTechnique._registry[self.id]
-        method = cattrs.structure(self.kwargs, method_class)
+        method = BaseTechnique._registry[self.id].from_dict(self.kwargs)
         measurement = manager.measure(method)
 
         assert measurement
@@ -336,8 +326,7 @@ class TestCA:
 
     @pytest.mark.instrument
     def test_measurement(self, manager):
-        method_class = BaseTechnique._registry[self.id]
-        method = cattrs.structure(self.kwargs, method_class)
+        method = BaseTechnique._registry[self.id].from_dict(self.kwargs)
         measurement = manager.measure(method)
 
         assert measurement
@@ -359,8 +348,7 @@ class TestFAM:
 
     @pytest.mark.instrument
     def test_measurement(self, manager):
-        method_class = BaseTechnique._registry[self.id]
-        method = cattrs.structure(self.kwargs, method_class)
+        method = BaseTechnique._registry[self.id].from_dict(self.kwargs)
         measurement = manager.measure(method)
 
         assert measurement
@@ -386,8 +374,7 @@ class TestDPV:
 
     @pytest.mark.instrument
     def test_measurement(self, manager):
-        method_class = BaseTechnique._registry[self.id]
-        method = cattrs.structure(self.kwargs, method_class)
+        method = BaseTechnique._registry[self.id].from_dict(self.kwargs)
         measurement = manager.measure(method)
 
         assert measurement
@@ -413,8 +400,7 @@ class TestPAD:
 
     @pytest.mark.instrument
     def test_measurement(self, manager):
-        method_class = BaseTechnique._registry[self.id]
-        method = cattrs.structure(self.kwargs, method_class)
+        method = BaseTechnique._registry[self.id].from_dict(self.kwargs)
         measurement = manager.measure(method)
 
         assert measurement
@@ -445,8 +431,7 @@ class TestMPAD:
     )
     @pytest.mark.instrument
     def test_measurement(self, manager):
-        method_class = BaseTechnique._registry[self.id]
-        method = cattrs.structure(self.kwargs, method_class)
+        method = BaseTechnique._registry[self.id].from_dict(self.kwargs)
         measurement = manager.measure(method)
 
         assert measurement
@@ -471,8 +456,7 @@ class TestNPV:
 
     @pytest.mark.instrument
     def test_measurement(self, manager):
-        method_class = BaseTechnique._registry[self.id]
-        method = cattrs.structure(self.kwargs, method_class)
+        method = BaseTechnique._registry[self.id].from_dict(self.kwargs)
         measurement = manager.measure(method)
 
         assert measurement
@@ -499,8 +483,7 @@ class TestMA:
 
     @pytest.mark.instrument
     def test_measurement(self, manager):
-        method_class = BaseTechnique._registry[self.id]
-        method = cattrs.structure(self.kwargs, method_class)
+        method = BaseTechnique._registry[self.id].from_dict(self.kwargs)
         measurement = manager.measure(method)
 
         assert measurement
@@ -531,8 +514,7 @@ class TestMP:
 
     @pytest.mark.instrument
     def test_measurement(self, manager):
-        method_class = BaseTechnique._registry[self.id]
-        method = cattrs.structure(self.kwargs, method_class)
+        method = BaseTechnique._registry[self.id].from_dict(self.kwargs)
 
         measurement = manager.measure(method)
 
@@ -562,8 +544,7 @@ class TestCC:
 
     @pytest.mark.instrument
     def test_measurement(self, manager):
-        method_class = BaseTechnique._registry[self.id]
-        method = cattrs.structure(self.kwargs, method_class)
+        method = BaseTechnique._registry[self.id].from_dict(self.kwargs)
         measurement = manager.measure(method)
 
         assert measurement
@@ -591,8 +572,7 @@ class TestEIS:
 
     @pytest.mark.instrument
     def test_measurement(self, manager):
-        method_class = BaseTechnique._registry[self.id]
-        method = cattrs.structure(self.kwargs, method_class)
+        method = BaseTechnique._registry[self.id].from_dict(self.kwargs)
         measurement = manager.measure(method)
 
         assert measurement
@@ -648,8 +628,7 @@ class TestFIS:
 
     @pytest.mark.instrument
     def test_measurement(self, manager):
-        method_class = BaseTechnique._registry[self.id]
-        method = cattrs.structure(self.kwargs, method_class)
+        method = BaseTechnique._registry[self.id].from_dict(self.kwargs)
         measurement = manager.measure(method)
 
         assert measurement
@@ -708,8 +687,7 @@ class TestGIS:
 
     @pytest.mark.instrument
     def test_measurement(self, manager):
-        method_class = BaseTechnique._registry[self.id]
-        method = cattrs.structure(self.kwargs, method_class)
+        method = BaseTechnique._registry[self.id].from_dict(self.kwargs)
         measurement = manager.measure(method)
 
         assert measurement
@@ -765,8 +743,7 @@ class TestFGIS:
 
     @pytest.mark.instrument
     def test_measurement(self, manager):
-        method_class = BaseTechnique._registry[self.id]
-        method = cattrs.structure(self.kwargs, method_class)
+        method = BaseTechnique._registry[self.id].from_dict(self.kwargs)
         measurement = manager.measure(method)
 
         assert measurement
@@ -835,8 +812,7 @@ class TestMS:
 
     @pytest.mark.instrument
     def test_measurement(self, manager):
-        method_class = BaseTechnique._registry[self.id]
-        method = cattrs.structure(self.kwargs, method_class)
+        method = BaseTechnique._registry[self.id].from_dict(self.kwargs)
         measurement = manager.measure(method)
 
         assert measurement
@@ -855,40 +831,41 @@ class TestMM:
         'cycles': 2,
         'interval_time': 0.02,
         'stages': [
-            ps.mixed_mode.ConstantE(
-                run_time=0.1,
-                potential=0.5,
-                current_limits=ps.settings.CurrentLimits(min=1, max=10.0),
-            ),
-            ps.mixed_mode.ConstantI(
-                run_time=0.1,
-                current=1.0,
-                applied_current_range=ps.settings.CURRENT_RANGE.cr_100_nA,
-                potential_limits=ps.settings.PotentialLimits(min=-1, max=1),
-            ),
-            ps.mixed_mode.SweepE(
-                begin_potential=-0.5,
-                end_potential=0.5,
-                step_potential=0.25,
-                scanrate=20.0,
-            ),
-            ps.mixed_mode.OpenCircuit(
-                run_time=0.1,
-            ),
-            ps.mixed_mode.Impedance(
-                frequency=50000,
-                ac_potential=0.01,
-                dc_potential=0.0,
-                run_time=0.1,
-                min_sampling_time=0.0,
-            ),
+            {
+                'type': 'ConstantE',
+                'current_limits': {'max': 10.0, 'min': 1},
+                'potential': 0.5,
+                'run_time': 0.1,
+            },
+            {
+                'type': 'ConstantI',
+                'potential_limits': {'max': 1, 'min': -1},
+                'current': 1.0,
+                'applied_current_range': 3,
+                'run_time': 0.1,
+            },
+            {
+                'type': 'SweepE',
+                'begin_potential': -0.5,
+                'end_potential': 0.5,
+                'step_potential': 0.25,
+                'scanrate': 20.0,
+            },
+            {'type': 'OpenCircuit', 'run_time': 0.1},
+            {
+                'type': 'Impedance',
+                'run_time': 0.1,
+                'dc_potential': 0.0,
+                'ac_potential': 0.01,
+                'min_sampling_time': 0.0,
+                'max_equilibration_time': 5.0,
+            },
         ],
     }
 
     @pytest.mark.instrument
     def test_measurement(self, manager):
-        method_class = BaseTechnique._registry[self.id]
-        method = cattrs.structure(self.kwargs, method_class)
+        method = BaseTechnique._registry[self.id].from_dict(self.kwargs)
         measurement = manager.measure(method)
 
         assert measurement
