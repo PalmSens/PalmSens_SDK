@@ -34,23 +34,18 @@ import clr  # noqa: E402
 
 core_dll = PSSDK_DIR / plat / 'PalmSens.Core.dll'
 core_linux_dll = PSSDK_DIR / plat / 'PalmSens.Core.Linux.dll'
-ioports_dll = PSSDK_DIR / plat / 'System.IO.Ports.dll'
 
 assert isinstance(core_dll, Path)
 assert isinstance(core_linux_dll, Path)
-assert isinstance(ioports_dll, Path)
 
 assert core_dll.exists()
 assert core_linux_dll.exists()
-assert ioports_dll.exists()
 
 # This dll contains the classes in which the data is stored
 clr.AddReference(str(core_dll.with_suffix('')))
 
 # This dll is used to load your session file
 clr.AddReference(str(core_linux_dll.with_suffix('')))
-
-clr.AddReference(str(ioports_dll.with_suffix('')))
 
 clr.AddReference('System')
 
