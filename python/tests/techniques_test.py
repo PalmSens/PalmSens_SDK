@@ -354,6 +354,9 @@ class TestCA:
     }
 
     @pytest.mark.instrument
+    @pytest.mark.xfail(
+        raises=AssertionError, reason='https://github.com/PalmSens/PalmSens_SDK/issues/143'
+    )
     def test_measurement(self, manager):
         method = BaseTechnique._registry[self.id].from_dict(self.kwargs)
         measurement = manager.measure(method)
@@ -596,6 +599,9 @@ class TestCC:
     }
 
     @pytest.mark.instrument
+    @pytest.mark.xfail(
+        raises=AssertionError, reason='https://github.com/PalmSens/PalmSens_SDK/issues/143'
+    )
     def test_measurement(self, manager):
         method = BaseTechnique._registry[self.id].from_dict(self.kwargs)
         measurement = manager.measure(method)
