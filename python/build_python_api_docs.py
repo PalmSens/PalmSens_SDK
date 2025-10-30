@@ -186,6 +186,11 @@ pages = (
         title='Data',
         module='pypalmsens.data',
     ),
+    Page(
+        name='serial',
+        title='Serial',
+        module='pypalmsens.serial',
+    ),
 )
 
 ROOT_DIR = Path(__file__).parent

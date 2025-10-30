@@ -486,8 +486,9 @@ Discover instruments.
 * *ftdi* (link:#bool[bool]) – If True, discover ftdi devices
 * *usbcdc* (link:#bool[bool]) – If True, discover usbcdc devices
 (Windows only)
-* *winusb* (link:#bool[bool]) – If True, discover winusb devices
-(Windows only)
+* *winusb* (link:#bool[bool]) – If True, discover devices using the
+winusb driver (Windows only)
 * *bluetooth* (link:#bool[bool]) – If True, discover bluetooth devices
 (Windows only)
-* *serial* (link:#bool[bool]) – If True, discover serial devices
+* *serial* (link:#bool[bool]) – If True, discover serial devices (Linux
+only)

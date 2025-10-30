@@ -11,3 +11,7 @@ ext:
       dir: python/examples/
       into: modules/ROOT/examples
       files: '*.py'
+  - scan:
+      dir: python/methodscript_examples/
+      into: modules/ROOT/examples
+      files: '*.py'

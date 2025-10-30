@@ -1,0 +1,100 @@
+= MethodSCRIPT Examples
+
+PyPalmSens contains methods for communication with the PalmSens instruments, and parsing the output of a MethodSCRIPT.
+
+All examples below are based on `pypalmsens.serial`:
+
+- `console_example.py`: demonstrates basic communication with a MethodSCRIPT capable PalmSens instrument using Python.
+It demonstrates how to connect with the device, send and execute a script, and receive and interpret the response.
+- `plot_cv.py`: demonstrates the common electrochemical technique, Cyclic Voltammetry, and plots the resulting voltammogram.
+- `plot_eis.py`: demonstrates the Electrochemical Impedance Spectroscopy technique and draws the resulting Nyquist and Bode plots.
+- `plot_advanced_swv.py`: demonstrates the Square Wave Voltammetry (SWV) technique and plots multiple curves sharing a common x axis.
+
+== Console
+
+This example opens a communication port, sends a MethodSCRIPT file, reads and parses the device responses and prints the parsed data (variable type, value, unit) to the console.
+Also the metadata (status, current range) are parsed in this example.
+
+To communication port to be used is specified in the variable `DEVICE_PORT`.
+If this variable is `None` (the default value), the script tries to auto-detect the COM port.
+This only works if there is only one device connected with a matching name, and is only tested on Windows.
+If the auto-detection does not work, you should manually change this variable to specify the correct port.
+The name of the COM port connected to the PalmSens instrument can be looked up in the Device manager in Control Panel in Windows, as shown below.
+In this case, an EmStat Pico device is connected using `COM55`.
+
+image:methodscript_image3.png[Available com ports in device manager]
+
+This example script opens the specified port and checks what type of device is connected.
+Since this example was initially written for an EmStat Pico device, it will print a warning if the connected device is not an EmStat Pico.
+However, the script will also run successfully with an EmStat4S, for example.
+If a MethodSCRIPT capable device is recognized, the version information and the serial number are printed, a MethodSCRIPT file is sent to the device and the returned measurement packages are parsed into variables with their corresponding value and unit.
+Each data package is printed to the console in a more human-friendly format.
+
+Here’s a sample measurement data package in response to a MethodSCRIPT, `example_cv.mscr`, on a PalmSens Dummy Cell (10 kΩ) and its corresponding output.
+
+----
+Pda84E63DAn;ba82AB973f,14,284
+----
+
+Output:
+
+----
+Applied potential = 0.005137 V | WE current = 2.8e-09 A | STATUS: UNDERLOAD | CR: 25 uA (High speed)
+----
+
+.console.py
+[,python]
+----
+include::example$console.py[]
+----
+
+== CV Plot
+
+This example performs a Cyclic Voltammetry (CV) on a PalmSens Dummy Cell WE A (RedOx Circuit) and plots the I vs E curve.
+
+The first part of the example connects to the EmStat Pico, sends the MethodSCRIPT file `example_cv.mscr`, reads the data and saves it to a text file in the _output_ directory.
+The second part of the example parses the data to a value matrix and plots the I vs E curve as shown below.
+
+image:methodscript_image4.png[CV on PalmSens Dummy Cell WE A (RedOx circuit)]
+
+.plot_cv.py
+[,python]
+----
+include::example$plot_cv.py[]
+----
+
+== EIS Plot
+
+This example performs an EIS (Electrochemical Impedance Spectroscopy) measurement on a PalmSens Dummy Cell WE C (Randles circuit) and generates a Nyquist plot and a Bode plot.
+
+The parsed values are stored in a matrix, where the first column (index 0) holds the applied frequencies, the second column (index 1) holds the real part of the complex impedance and the third column (index 2) holds the imaginary part of the complex impedance.
+The complex impedance is composed from the real and imaginary parts and the absolute impedance (Z) and phase are calculated from the complex impedance, _z_complex_.
+A sample Nyquist plot and a Bode plot for an EIS scan on a dummy cell with Randles circuit are shown below.
+
+image:methodscript_image5.png[Sample plot EIS: Nyquist plot]
+
+image:methodscript_image6.png[Sample plot EIS: Bode plot]
+
+.plot_eis.py
+[,python]
+----
+include::example$plot_eis.py[]
+----
+
+== Advanced SWV Plot
+
+This example showcases some of the more advanced features.
+The example runs a script that contains two SWV measurements.
+This example is meant to be run on the PalmSens RedOx dummy cell (WE A).
+An example output plot is shown in the image below.
+
+The example script can easily be adjusted to plot the output of another MethodSCRIPT in a similar way.
+To do this, simply change the variables `COLUMN_NAMES`, `XAXIS_COLUMN_INDEX` and `YAXIS_COLUMN_INDICES` to configure which columns to plot and which names to use in the figure.
+
+image:methodscript_image7.png[SWV on PalmSens Dummy Cell WE A (RedOx circuit)]
+
+.plot_advanced_swv.py
+[,python]
+----
+include::example$plot_advanced_swv.py[]
+----

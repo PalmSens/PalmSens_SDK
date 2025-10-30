@@ -1,0 +1,627 @@
+== `methodscript`
+
+*Classes:*
+
+* link:#methodscript.DeviceType[*DeviceType*] –
+* link:#methodscript.CommunicationError[*CommunicationError*] – Generic
+communication error class.
+* link:#methodscript.CommunicationTimeout[*CommunicationTimeout*] –
+Communication timeout.
+* link:#methodscript.Instrument[*Instrument*] – Communication interface
+for MethodSCRIPT instruments.
+* link:#methodscript.Serial[*Serial*] – Serial communication interface
+for EmStat Pico.
+* link:#methodscript.MScriptVar[*MScriptVar*] – Class to store and parse
+a received MethodSCRIPT variable.
+
+*Functions:*
+
+* link:#methodscript.auto_detect_port[*auto++_++detect++_++port*] –
+Auto-detect serial communication port.
+* link:#methodscript.get_variable_type[*get++_++variable++_++type*] –
+Get the variable type with the specified id.
+* link:#methodscript.metadata_status_to_text[*metadata++_++status++_++to++_++text*]
+–
+* link:#methodscript.metadata_current_range_to_text[*metadata++_++current++_++range++_++to++_++text*]
+–
+* link:#methodscript.parse_mscript_data_package[*parse++_++mscript++_++data++_++package*]
+– Parse a MethodSCRIPT data package.
+* link:#methodscript.parse_result_lines[*parse++_++result++_++lines*] –
+Parse the result of a MethodSCRIPT and return a list of curves.
+* link:#methodscript.get_values_by_column[*get++_++values++_++by++_++column*]
+– Get all values from the specified column.
+
+=== `DeviceType`
+
+*Attributes:*
+
+* link:#methodscript.DeviceType.UNKNOWN[*UNKNOWN*] –
+* link:#methodscript.DeviceType.EMSTAT_PICO[*EMSTAT++_++PICO*] –
+* link:#methodscript.DeviceType.EMSTAT4_HR[*EMSTAT4++_++HR*] –
+* link:#methodscript.DeviceType.EMSTAT4_LR[*EMSTAT4++_++LR*] –
+* link:#methodscript.DeviceType.MULTI_EMSTAT4_HR[*MULTI++_++EMSTAT4++_++HR*]
+–
+* link:#methodscript.DeviceType.MULTI_EMSTAT4_LR[*MULTI++_++EMSTAT4++_++LR*]
+–
+* link:#methodscript.DeviceType.EMSTAT_PICO_BOOTLOADER[*EMSTAT++_++PICO++_++BOOTLOADER*]
+–
+
+==== `UNKNOWN`
+
+[source,python]
+----
+UNKNOWN = 'unknown device'
+----
+
+==== `EMSTAT++_++PICO`
+
+[source,python]
+----
+EMSTAT_PICO = 'EmStat Pico'
+----
+
+==== `EMSTAT4++_++HR`
+
+[source,python]
+----
+EMSTAT4_HR = 'EmStat4 HR'
+----
+
+==== `EMSTAT4++_++LR`
+
+[source,python]
+----
+EMSTAT4_LR = 'EmStat4 LR'
+----
+
+==== `MULTI++_++EMSTAT4++_++HR`
+
+[source,python]
+----
+MULTI_EMSTAT4_HR = 'MultiEmStat4 HR'
+----
+
+==== `MULTI++_++EMSTAT4++_++LR`
+
+[source,python]
+----
+MULTI_EMSTAT4_LR = 'MultiEmStat4 LR'
+----
+
+==== `EMSTAT++_++PICO++_++BOOTLOADER`
+
+[source,python]
+----
+EMSTAT_PICO_BOOTLOADER = 'EmStat Pico bootloader'
+----
+
+=== `CommunicationError`
+
+Generic communication error class.
+
+=== `CommunicationTimeout`
+
+Communication timeout.
+
+Note that a communication timeout does not have to be an error. If a
+long measurement is running, it is possible that a communication timeout
+occurs while waiting on the response. In that case, just keep trying to
+read and (optionally) handle a global timeout in the calling method.
+This exception could be avoided by increasing the timeout on the
+low-level (serial) interface. However, that could cause the application
+to block and become unresponsive. It’s better to keep the low-level read
+timeouts low (++<++ 1 s) and handle timeouts at the application level.
+
+=== `Instrument`
+
+[source,python]
+----
+Instrument(comm)
+----
+
+Communication interface for MethodSCRIPT instruments.
+
+This class contains high-level communication methods that are
+independent of the physical interface (e.g.: serial port, USB,
+Bluetooth, …). The low-level communication should be provided by a
+communication object that is passed to the initializer.
+
+The low-level communication module should only implement the following
+two methods: - write(data: bytes) - readline() -++>++ bytes
+
+*Functions:*
+
+* link:#methodscript.Instrument.write[*write*] – Write to device.
+* link:#methodscript.Instrument.writelines[*writelines*] – Write
+multiple lines to the device.
+* link:#methodscript.Instrument.readline[*readline*] – Read one response
+line from the device.
+* link:#methodscript.Instrument.readlines_until_end[*readlines++_++until++_++end*]
+– Receive all lines until an empty line is received.
+* link:#methodscript.Instrument.get_firmware_version[*get++_++firmware++_++version*]
+– Get the device firmware version.
+* link:#methodscript.Instrument.get_device_type[*get++_++device++_++type*]
+– Get the device type.
+* link:#methodscript.Instrument.get_mscript_version[*get++_++mscript++_++version*]
+–
+* link:#methodscript.Instrument.get_serial_number[*get++_++serial++_++number*]
+– Read the EmStat Pico serial number.
+* link:#methodscript.Instrument.get_register[*get++_++register*] – Get
+the value of a register.
+* link:#methodscript.Instrument.load_mscript_from_flash[*load++_++mscript++_++from++_++flash*]
+– Load the MethodSCRIPT from flash to RAM.
+* link:#methodscript.Instrument.run_mscript_from_flash[*run++_++mscript++_++from++_++flash*]
+– Load the MethodSCRIPT from flash to RAM and execute it.
+* link:#methodscript.Instrument.send_script[*send++_++script*] – Read a
+script from file and send it to the device.
+* link:#methodscript.Instrument.abort_and_sync[*abort++_++and++_++sync*]
+– Abort a possibly running script and wait for it to finish.
+
+*Attributes:*
+
+* link:#methodscript.Instrument.comm[*comm*] –
+* link:#methodscript.Instrument.firmware_version[*firmware++_++version*]
+–
+* link:#methodscript.Instrument.device_type[*device++_++type*] –
+
+`comm` must be a communication object as described in the documentation
+of this class.
+
+==== `comm`
+
+[source,python]
+----
+comm = comm
+----
+
+==== `firmware++_++version`
+
+[source,python]
+----
+firmware_version = None
+----
+
+==== `device++_++type`
+
+[source,python]
+----
+device_type = DeviceType.UNKNOWN
+----
+
+==== `write`
+
+[source,python]
+----
+write(text)
+----
+
+Write to device.
+
+The text is encoded using ASCII encoding, since all MethodSCRIPT
+commands are plain ASCII text. String literals (as used in the
+`send++_++string` command) and comments _could_ contain non-ASCII
+characters, but this is not officially supported or recommended.
+Although using another encoding here could be beneficial for some users,
+it could lead to unexpected problems for other users. Therefore, the
+ASCII encoding is chosen, which is always safe and easy to use as long
+as the input MethodSCRIPT does not contain non-ASCII characters.
+
+==== `writelines`
+
+[source,python]
+----
+writelines(lines)
+----
+
+Write multiple lines to the device.
+
+==== `readline`
+
+[source,python]
+----
+readline()
+----
+
+Read one response line from the device.
+
+==== `readlines++_++until++_++end`
+
+[source,python]
+----
+readlines_until_end()
+----
+
+Receive all lines until an empty line is received.
+
+==== `get++_++firmware++_++version`
+
+[source,python]
+----
+get_firmware_version(force=False)
+----
+
+Get the device firmware version.
+
+The result of this call is cached. If it is changed on the device, use
+`force=true` to force reading it from the device again.
+
+==== `get++_++device++_++type`
+
+[source,python]
+----
+get_device_type(force=False)
+----
+
+Get the device type.
+
+The result of this call is cached. If it is changed on the device, use
+`force=true` to force reading it from the device again.
+
+==== `get++_++mscript++_++version`
+
+[source,python]
+----
+get_mscript_version()
+----
+
+==== `get++_++serial++_++number`
+
+[source,python]
+----
+get_serial_number()
+----
+
+Read the EmStat Pico serial number.
+
+==== `get++_++register`
+
+[source,python]
+----
+get_register(register)
+----
+
+Get the value of a register.
+
+==== `load++_++mscript++_++from++_++flash`
+
+[source,python]
+----
+load_mscript_from_flash()
+----
+
+Load the MethodSCRIPT from flash to RAM.
+
+==== `run++_++mscript++_++from++_++flash`
+
+[source,python]
+----
+run_mscript_from_flash()
+----
+
+Load the MethodSCRIPT from flash to RAM and execute it.
+
+==== `send++_++script`
+
+[source,python]
+----
+send_script(path)
+----
+
+Read a script from file and send it to the device.
+
+....
+    Note that the file should contain ASCII characters only. Other
+    characters or encodings are not supported. The file may contain
+    any common end-of-line style (e.g. Unix or Windows line endings).
+    The lines written to the device will always use '
+....
+
+’ line endings (Linux format).
+
+==== `abort++_++and++_++sync`
+
+[source,python]
+----
+abort_and_sync()
+----
+
+Abort a possibly running script and wait for it to finish.
+
+This method tries to get the device in a known valid state by sending an
+abort command and checking the response. If a script was still running,
+it will wait for it to complete. Note that this could take long,
+depending on the measurement that was running.
+
+Note that it should normally not be necessary to call this method, but
+it could be useful in case the Python script was interrupted or the
+serial communication was lost during a measurement. In that case, when
+restarting the script, it would receive data from the previous
+measurement, which would cause communication issues. This method should
+recover from such situation and restore communication.
+
+=== `Serial`
+
+[source,python]
+----
+Serial(port, timeout)
+----
+
+Serial communication interface for EmStat Pico.
+
+*Functions:*
+
+* link:#methodscript.Serial.open[*open*] –
+* link:#methodscript.Serial.close[*close*] –
+* link:#methodscript.Serial.write[*write*] –
+* link:#methodscript.Serial.readline[*readline*] –
+
+*Attributes:*
+
+* link:#methodscript.Serial.connection[*connection*] –
+
+==== `connection`
+
+[source,python]
+----
+connection = serial.Serial(port=None, baudrate=230400, timeout=timeout)
+----
+
+==== `open`
+
+[source,python]
+----
+open()
+----
+
+==== `close`
+
+[source,python]
+----
+close()
+----
+
+==== `write`
+
+[source,python]
+----
+write(data)
+----
+
+==== `readline`
+
+[source,python]
+----
+readline()
+----
+
+=== `MScriptVar`
+
+[source,python]
+----
+MScriptVar(data)
+----
+
+Class to store and parse a received MethodSCRIPT variable.
+
+*Functions:*
+
+* link:#methodscript.MScriptVar.decode_value[*decode++_++value*] –
+Decode the raw value of a MethodSCRIPT variable in a data package.
+* link:#methodscript.MScriptVar.parse_metadata[*parse++_++metadata*] –
+Parse the (optional) metadata.
+
+*Attributes:*
+
+* link:#methodscript.MScriptVar.data[*data*] –
+* link:#methodscript.MScriptVar.id[*id*] –
+* link:#methodscript.MScriptVar.raw_value[*raw++_++value*] –
+* link:#methodscript.MScriptVar.si_prefix[*si++_++prefix*] –
+* link:#methodscript.MScriptVar.raw_metadata[*raw++_++metadata*] –
+* link:#methodscript.MScriptVar.metadata[*metadata*] –
+* link:#methodscript.MScriptVar.type[*type*]
+(link:#methodscript._mscript.VarType[VarType]) –
+* link:#methodscript.MScriptVar.si_prefix_factor[*si++_++prefix++_++factor*]
+(link:#float[float]) –
+* link:#methodscript.MScriptVar.value[*value*] (link:#float[float]) –
+* link:#methodscript.MScriptVar.value_string[*value++_++string*]
+(link:#str[str]) –
+
+==== `data`
+
+[source,python]
+----
+data = data[:]
+----
+
+==== `id`
+
+[source,python]
+----
+id = data[0:2]
+----
+
+==== `raw++_++value`
+
+[source,python]
+----
+raw_value = math.nan
+----
+
+==== `si++_++prefix`
+
+[source,python]
+----
+si_prefix = ' '
+----
+
+==== `raw++_++metadata`
+
+[source,python]
+----
+raw_metadata = data.split(',')[1:]
+----
+
+==== `metadata`
+
+[source,python]
+----
+metadata = self.parse_metadata(self.raw_metadata)
+----
+
+==== `type`
+
+[source,python]
+----
+type: VarType
+----
+
+==== `si++_++prefix++_++factor`
+
+[source,python]
+----
+si_prefix_factor: float
+----
+
+==== `value`
+
+[source,python]
+----
+value: float
+----
+
+==== `value++_++string`
+
+[source,python]
+----
+value_string: str
+----
+
+==== `decode++_++value`
+
+[source,python]
+----
+decode_value(var)
+----
+
+Decode the raw value of a MethodSCRIPT variable in a data package.
+
+The input is a 7-digit hexadecimal string (without the variable type
+and/or SI prefix). The output is the converted (signed) integer value.
+
+==== `parse++_++metadata`
+
+[source,python]
+----
+parse_metadata(tokens)
+----
+
+Parse the (optional) metadata.
+
+=== `auto++_++detect++_++port`
+
+[source,python]
+----
+auto_detect_port()
+----
+
+Auto-detect serial communication port.
+
+This works by searching for an available port with the correct name. If
+exactly one port matches, this port will be returned. If there are
+either no or multiple matches, the auto-detection fails and None is
+returned instead. In that case, the user must explicitly specify which
+port to connect to (or disconnect unneeded devices with the same port
+name).
+
+=== `get++_++variable++_++type`
+
+[source,python]
+----
+get_variable_type(var_id)
+----
+
+Get the variable type with the specified id.
+
+=== `metadata++_++status++_++to++_++text`
+
+[source,python]
+----
+metadata_status_to_text(status)
+----
+
+=== `metadata++_++current++_++range++_++to++_++text`
+
+[source,python]
+----
+metadata_current_range_to_text(device_type, var_type, cr)
+----
+
+=== `parse++_++mscript++_++data++_++package`
+
+[source,python]
+----
+parse_mscript_data_package(line)
+----
+
+Parse a MethodSCRIPT data package.
+
+....
+The format of a MethodSCRIPT data package is described in the
+MethodSCRIPT documentation. It starts with a 'P' and ends with a
+'
+....
+
+’ character. A package consists of an arbitrary number of variables.
+Each variable consists of a type (describing the variable), a value, and
+optionally one or more metadata values.
+
+....
+This method returns a list of variables (of type `MScriptVar`)
+found in the line, if the line could successfully be decoded.
+If the line was not a MethodSCRIPT data package, `None` is
+returned.
+....
+
+=== `parse++_++result++_++lines`
+
+[source,python]
+----
+parse_result_lines(lines)
+----
+
+Parse the result of a MethodSCRIPT and return a list of curves.
+
+This method returns a list of curves, where each curve is a list of
+measurement data (packages) seperated by an end-of-curve terminator such
+as '`++*++`', '`{plus}`' or '`-`'. Each data package is a list of
+variables of type MScriptVar.
+
+So, the return type is a list of list of list of MScriptVars, and each
+variable can be accessed as `result++[++curve++][++row++][++col++]++`.
+For example, `result++[++1++][++2++][++3++]++` is the 4th variable of
+the 3th data point of the 2nd measurement loop.
+
+=== `get++_++values++_++by++_++column`
+
+[source,python]
+----
+get_values_by_column(curves, column, icurve=None)
+----
+
+Get all values from the specified column.
+
+*Parameters:*
+
+* *curves* (Matrix of MScriptVar) – List of list of list of variables of
+type `MScriptVar`, as returned by `parse++_++result++_++lines()`.
+* *column* (link:#int[int]) – Specifies which variable to return (i.e.,
+the index within each data package).
+* *icurve* (link:#int[int]) – Specifies the index of the curve to use.
+If `None` (the default value), the data from all curves are used and
+concatenated into one list.
+
+*Returns:*
+
+* link:#numpy.ndarray[ndarray] – Return a numpy array containing (only)
+the values of each variable in the specified column, so they can easily
+be used for further processing and/or plotting.

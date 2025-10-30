@@ -54,11 +54,11 @@ def discover(
     usbcdc : bool
         If True, discover usbcdc devices (Windows only)
     winusb : bool
-        If True, discover winusb devices (Windows only)
+        If True, discover devices using the winusb driver (Windows only)
     bluetooth : bool
         If True, discover bluetooth devices (Windows only)
     serial : bool
-        If True, discover serial devices
+        If True, discover serial devices (Linux only)
     """
     available_instruments = []
     args = [''] if WINDOWS else []

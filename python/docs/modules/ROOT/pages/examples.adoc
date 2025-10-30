@@ -83,7 +83,7 @@ Note that the example has a reduced number of cycles and maximum run time.
 include::example$mixed_mode.py[]
 ----
 
-
+[#methodscript_randbox]
 == MethodSCRIPT sandbox
 
 This example shows how to set up and run a MethodSCRIPT Sandbox measurement.
