@@ -63,7 +63,7 @@ class TestCV:
         assert isinstance(measurement, ps.data.Measurement)
 
         for curve in measurement.curves:
-            assert curve.n_points > 1
+            assert curve.n_points >= 5
 
         assert measurement.method.psmethod.nScans == 2
 
@@ -107,7 +107,7 @@ class TestFCV:
         assert isinstance(measurement, ps.data.Measurement)
 
         for curve in measurement.curves:
-            assert curve.n_points > 1
+            assert curve.n_points >= 5
 
         assert measurement.method.psmethod.nScans == 3
         assert measurement.method.psmethod.nAvgScans == 2
@@ -152,7 +152,7 @@ class TestLSV:
         assert isinstance(measurement, ps.data.Measurement)
 
         for curve in measurement.curves:
-            assert curve.n_points > 1
+            assert curve.n_points >= 5
 
         dataset = measurement.dataset
         assert len(dataset) == 4
@@ -182,7 +182,7 @@ class TestACV:
         assert isinstance(measurement, ps.data.Measurement)
 
         for curve in measurement.curves:
-            assert curve.n_points > 1
+            assert curve.n_points >= 5
 
         dataset = measurement.dataset
         assert len(dataset) == 8
@@ -222,7 +222,7 @@ class TestSWV:
         assert isinstance(measurement, ps.data.Measurement)
 
         for curve in measurement.curves:
-            assert curve.n_points > 1
+            assert curve.n_points >= 5
 
         assert measurement.method.psmethod.nScans == 1
 
@@ -253,7 +253,7 @@ class TestCP:
         assert isinstance(measurement, ps.data.Measurement)
 
         for curve in measurement.curves:
-            assert curve.n_points > 1
+            assert curve.n_points >= 5
 
         dataset = measurement.dataset
         assert len(dataset) == 4
@@ -284,7 +284,7 @@ class TestSCP:
         assert isinstance(measurement, ps.data.Measurement)
 
         for curve in measurement.curves:
-            assert curve.n_points > 1
+            assert curve.n_points >= 5
 
         dataset = measurement.dataset
         assert len(dataset) == 4
@@ -311,7 +311,7 @@ class TestLSP:
         assert isinstance(measurement, ps.data.Measurement)
 
         for curve in measurement.curves:
-            assert curve.n_points > 1
+            assert curve.n_points >= 5
 
         dataset = measurement.dataset
         assert len(dataset) == 4
@@ -337,7 +337,7 @@ class TestOCP:
         assert isinstance(measurement, ps.data.Measurement)
 
         for curve in measurement.curves:
-            assert curve.n_points > 1
+            assert curve.n_points >= 5
 
         dataset = measurement.dataset
         assert len(dataset) == 2
@@ -365,7 +365,7 @@ class TestCA:
         assert isinstance(measurement, ps.data.Measurement)
 
         for curve in measurement.curves:
-            assert curve.n_points > 1
+            assert curve.n_points >= 5
 
         dataset = measurement.dataset
         assert len(dataset) == 4
@@ -390,7 +390,7 @@ class TestFAM:
         assert isinstance(measurement, ps.data.Measurement)
 
         for curve in measurement.curves:
-            assert curve.n_points > 1
+            assert curve.n_points >= 5
 
         dataset = measurement.dataset
         assert len(dataset) == 4
@@ -419,7 +419,7 @@ class TestDPV:
         assert isinstance(measurement, ps.data.Measurement)
 
         for curve in measurement.curves:
-            assert curve.n_points > 1
+            assert curve.n_points >= 5
 
         dataset = measurement.dataset
         assert len(dataset) == 3
@@ -448,7 +448,7 @@ class TestPAD:
         assert isinstance(measurement, ps.data.Measurement)
 
         for curve in measurement.curves:
-            assert curve.n_points > 1
+            assert curve.n_points >= 5
 
         dataset = measurement.dataset
         assert len(dataset) == 3
@@ -482,7 +482,7 @@ class TestMPAD:
         assert isinstance(measurement, ps.data.Measurement)
 
         for curve in measurement.curves:
-            assert curve.n_points > 1
+            assert curve.n_points >= 5
 
         dataset = measurement.dataset
         assert len(dataset) == 3
@@ -510,7 +510,7 @@ class TestNPV:
         assert isinstance(measurement, ps.data.Measurement)
 
         for curve in measurement.curves:
-            assert curve.n_points > 1
+            assert curve.n_points >= 5
 
         dataset = measurement.dataset
         assert len(dataset) == 3
@@ -540,7 +540,7 @@ class TestMA:
         assert isinstance(measurement, ps.data.Measurement)
 
         for curve in measurement.curves:
-            assert curve.n_points > 1
+            assert curve.n_points >= 5
 
         dataset = measurement.dataset
         assert len(dataset) == 4
@@ -575,7 +575,7 @@ class TestMP:
         assert isinstance(measurement, ps.data.Measurement)
 
         for curve in measurement.curves:
-            assert curve.n_points > 1
+            assert curve.n_points >= 5
 
         dataset = measurement.dataset
         assert len(dataset) == 4
@@ -610,7 +610,7 @@ class TestCC:
         assert isinstance(measurement, ps.data.Measurement)
 
         for curve in measurement.curves:
-            assert curve.n_points > 1
+            assert curve.n_points >= 5
 
         dataset = measurement.dataset
         assert len(dataset) == 4
@@ -641,7 +641,7 @@ class TestEIS:
         assert isinstance(measurement, ps.data.Measurement)
 
         for curve in measurement.curves:
-            assert curve.n_points > 1
+            assert curve.n_points >= 5
 
         dataset = measurement.dataset
         assert len(dataset) == 18
@@ -700,7 +700,7 @@ class TestFIS:
         assert isinstance(measurement, ps.data.Measurement)
 
         for curve in measurement.curves:
-            assert curve.n_points > 1
+            assert curve.n_points >= 5
 
         dataset = measurement.dataset
         assert len(dataset) == 18
@@ -762,7 +762,7 @@ class TestGIS:
         assert isinstance(measurement, ps.data.Measurement)
 
         for curve in measurement.curves:
-            assert curve.n_points > 1
+            assert curve.n_points >= 5
 
         dataset = measurement.dataset
         assert len(dataset) == 18
@@ -821,7 +821,7 @@ class TestFGIS:
         assert isinstance(measurement, ps.data.Measurement)
 
         for curve in measurement.curves:
-            assert curve.n_points > 1
+            assert curve.n_points >= 5
 
         dataset = measurement.dataset
         assert len(dataset) == 18
@@ -893,7 +893,7 @@ class TestMS:
         assert isinstance(measurement, ps.data.Measurement)
 
         for curve in measurement.curves:
-            assert curve.n_points > 1
+            assert curve.n_points >= 5
 
         dataset = measurement.dataset
         assert len(dataset) == 2
@@ -949,7 +949,7 @@ class TestMM:
         assert isinstance(measurement, ps.data.Measurement)
 
         for curve in measurement.curves:
-            assert curve.n_points > 1
+            assert curve.n_points >= 5
 
         dataset = measurement.dataset
 
