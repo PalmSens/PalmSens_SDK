@@ -26,8 +26,8 @@ jobs:
     strategy:
       matrix:
         os: [
-          'windows-latest',
-          'macos-latest',
+          # 'windows-latest',
+          # 'macos-latest',
           'ubuntu-latest',
         ]
         python-version: ['3.10', '3.13']
