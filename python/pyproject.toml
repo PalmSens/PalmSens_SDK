@@ -19,7 +19,7 @@ keywords = [
     "potentiometry",
     "impedance-specroscopy",
 ]
-license= "LicenseRef-Modified-BSD-3-Clause-PalmSens"
+license = "LicenseRef-Modified-BSD-3-Clause-PalmSens"
 license-files = ["LICENSE"]
 classifiers = [
     "Development Status :: 5 - Production/Stable",
@@ -110,8 +110,14 @@ quote-style = "single"
 
 [tool.mypy]
 files = ["src", "tests", "examples"]
+ignore = ["typings"]
 allow_redefinition = true
 ignore_missing_imports = true
+
+[tool.pyright]
+include = ["src/pypalmsens", "tests", "examples"]
+reportMissingModuleSource = false
+reportAttributeAccessIssue = false
 
 [tool.bumpversion]
 current_version = "1.2.2"
