@@ -19,7 +19,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\PalmSens.Core.Simplified\PalmSens.Core.Simplified.NET.csproj" />
+		<ProjectReference Include="..\PalmSens.Core.Simplified\PalmSens.Core.Simplified.csproj" />
 		<ProjectReference Include="..\SDKPlot\SDKPlot.NET.csproj" />
 		<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
 		<PackageReference Include="OxyPlot.Maui.Skia" Version="1.1.0" />
