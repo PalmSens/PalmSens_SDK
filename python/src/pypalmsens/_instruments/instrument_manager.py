@@ -4,7 +4,7 @@ import asyncio
 import sys
 import traceback
 from time import sleep
-from typing import Optional
+from typing import Any, Optional
 
 import clr
 import PalmSens
@@ -38,6 +38,29 @@ else:
     from PalmSens.Core.Linux.Comm.Devices import FTDIDevice, SerialPortDevice
 
 
+def _discover(interfaces: dict[str, Any]) -> list[Instrument]:
+    """Helper class for discovering instruments."""
+    args = [''] if WINDOWS else []
+    ret = []
+
+    for name, interface in interfaces.items():
+        discovered = interface.DiscoverDevices(*args)
+
+        if WINDOWS:
+            discovered = discovered[0]
+
+        for instrument in discovered:
+            ret.append(
+                Instrument(
+                    id=instrument.ToString(),
+                    interface=name,
+                    device=instrument,
+                )
+            )
+
+    return ret
+
+
 def discover(
     ftdi: bool = False,
     usbcdc: bool = True,
@@ -59,78 +82,35 @@ def discover(
         If True, discover bluetooth devices (Windows only)
     serial : bool
         If True, discover serial devices
+
+    Return
+    ------
+    discovered : list[Instrument]
+        List of dataclasses with discovered instruments.
     """
-    available_instruments = []
-    args = [''] if WINDOWS else []
+    interfaces = {}
 
     if ftdi:
-        ftdi_instruments = FTDIDevice.DiscoverDevices(*args)
-        for ftdi_instrument in ftdi_instruments:
-            available_instruments.append(
-                Instrument(
-                    id=ftdi_instrument.ToString(),
-                    interface='ftdi',
-                    device=ftdi_instrument,
-                )
-            )
+        interfaces['ftdi'] = FTDIDevice
 
-    if WINDOWS and usbcdc:
-        usbcdc_instruments = USBCDCDevice.DiscoverDevices(*args)
-        for usbcdc_instrument in usbcdc_instruments[0]:
-            available_instruments.append(
-                Instrument(
-                    id=usbcdc_instrument.ToString(),
-                    interface='usbcdc',
-                    device=usbcdc_instrument,
-                )
-            )
+    if WINDOWS:
+        if usbcdc:
+            interfaces['usbcdc'] = USBCDCDevice
+        if winusb:
+            interfaces['winusb'] = WinUSBDevice
+        if bluetooth:
+            interfaces['bluetooth'] = BluetoothDevice
+            interfaces['ble'] = BLEDevice
 
-    if WINDOWS and winusb:
-        winusb_instruments = WinUSBDevice.DiscoverDevices(*args)
-        for winusb_instrument in winusb_instruments[0]:
-            available_instruments.append(
-                Instrument(
-                    id=winusb_instrument.ToString(),
-                    interface='winusb',
-                    device=winusb_instrument,
-                )
-            )
+    if LINUX:
+        if serial:
+            interfaces['serial'] = SerialPortDevice
 
-    if WINDOWS and bluetooth:
-        ble_instruments = BLEDevice.DiscoverDevices(*args)
-        for ble_instrument in ble_instruments[0]:
-            available_instruments.append(
-                Instrument(
-                    id=ble_instrument.ToString(),
-                    interface='ble',
-                    device=ble_instrument,
-                )
-            )
+    discovered = _discover(interfaces)
 
-        bluetooth_instruments = BluetoothDevice.DiscoverDevices(*args)
-        for bluetooth_instrument in bluetooth_instruments[0]:
-            available_instruments.append(
-                Instrument(
-                    id=bluetooth_instrument.ToString(),
-                    interface='bluetooth',
-                    device=bluetooth_instrument,
-                )
-            )
+    discovered.sort(key=lambda instrument: instrument.id)
 
-    if LINUX and serial:
-        serial_instruments = SerialPortDevice.DiscoverDevices(*args)
-        for serial_instrument in serial_instruments:
-            available_instruments.append(
-                Instrument(
-                    id=serial_instrument.ToString(),
-                    interface='serial',
-                    device=serial_instrument,
-                )
-            )
-
-    available_instruments.sort(key=lambda instrument: instrument.id)
-
-    return available_instruments
+    return discovered
 
 
 def connect(
