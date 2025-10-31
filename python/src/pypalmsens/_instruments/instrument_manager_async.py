@@ -3,7 +3,7 @@ from __future__ import annotations
 import asyncio
 import sys
 import traceback
-from typing import Any, Awaitable, Optional
+from typing import Awaitable, Optional
 
 import clr
 import PalmSens
@@ -37,25 +37,6 @@ if WINDOWS:
 
 if LINUX:
     from PalmSens.Core.Linux.Comm.Devices import FTDIDevice, SerialPortDevice
-
-
-async def _discover(interfaces: dict[str, Any]) -> list[Instrument]:
-    """Helper class for discovering instruments."""
-    ret = []
-
-    for name, interface in interfaces.items():
-        discovered = await create_future(interface.DiscoverDevicesAsync())
-
-        for instrument in discovered:
-            ret.append(
-                Instrument(
-                    id=instrument.ToString(),
-                    interface=name,
-                    device=instrument,
-                )
-            )
-
-    return ret
 
 
 async def discover_async(
@@ -96,11 +77,23 @@ async def discover_async(
         if serial:
             interfaces['serial'] = SerialPortDevice
 
-    discovered = await _discover(interfaces)
+    instruments = []
 
-    discovered.sort(key=lambda instrument: instrument.id)
+    for name, interface in interfaces.items():
+        devices = await create_future(interface.DiscoverDevicesAsync())
 
-    return discovered
+        for device in devices:
+            instruments.append(
+                Instrument(
+                    id=device.ToString(),
+                    interface=name,
+                    device=device,
+                )
+            )
+
+    instruments.sort(key=lambda instrument: instrument.id)
+
+    return instruments
 
 
 async def connect_async(

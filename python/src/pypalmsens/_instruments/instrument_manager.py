@@ -4,7 +4,7 @@ import asyncio
 import sys
 import traceback
 from time import sleep
-from typing import Any, Optional
+from typing import Optional
 
 import clr
 import PalmSens
@@ -38,29 +38,6 @@ else:
     from PalmSens.Core.Linux.Comm.Devices import FTDIDevice, SerialPortDevice
 
 
-def _discover(interfaces: dict[str, Any]) -> list[Instrument]:
-    """Helper class for discovering instruments."""
-    args = [''] if WINDOWS else []
-    ret = []
-
-    for name, interface in interfaces.items():
-        discovered = interface.DiscoverDevices(*args)
-
-        if WINDOWS:
-            discovered = discovered[0]
-
-        for instrument in discovered:
-            ret.append(
-                Instrument(
-                    id=instrument.ToString(),
-                    interface=name,
-                    device=instrument,
-                )
-            )
-
-    return ret
-
-
 def discover(
     ftdi: bool = False,
     usbcdc: bool = True,
@@ -88,6 +65,7 @@ def discover(
     discovered : list[Instrument]
         List of dataclasses with discovered instruments.
     """
+    args = [''] if WINDOWS else []
     interfaces = {}
 
     if ftdi:
@@ -106,11 +84,26 @@ def discover(
         if serial:
             interfaces['serial'] = SerialPortDevice
 
-    discovered = _discover(interfaces)
+    instruments = []
 
-    discovered.sort(key=lambda instrument: instrument.id)
+    for name, interface in interfaces.items():
+        devices = interface.DiscoverDevices(*args)
 
-    return discovered
+        if WINDOWS:
+            devices = devices[0]
+
+        for device in devices:
+            instruments.append(
+                Instrument(
+                    id=device.ToString(),
+                    interface=name,
+                    device=device,
+                )
+            )
+
+    instruments.sort(key=lambda instrument: instrument.id)
+
+    return instruments
 
 
 def connect(
