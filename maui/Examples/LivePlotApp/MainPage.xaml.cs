@@ -86,7 +86,7 @@ namespace PalmSensLivePlot
             DiscoverBtn.IsEnabled = false;
             try
             {
-                AvailableDevices = await _psCommSimple.GetAvailableDevicesAsync();
+                AvailableDevices = await _psCommSimple.GetAvailableDevices();
                 SelectedDevice = AvailableDevices.FirstOrDefault();
             }
             finally
@@ -103,14 +103,14 @@ namespace PalmSensLivePlot
 
             if (_psCommSimple.Connected)
             {
-                await _psCommSimple.DisconnectAsync();
+                await _psCommSimple.Disconnect();
 
             }
             else
             {
                 try
                 {
-                    await _psCommSimple.ConnectAsync(SelectedDevice);
+                    await _psCommSimple.Connect(SelectedDevice);
                 }
                 catch (Exception ex)
                 {
@@ -132,7 +132,7 @@ namespace PalmSensLivePlot
                 Log.Add($"Starting measurement...");
                 try
                 {
-                    _activeMeasurement = await _psCommSimple.MeasureAsync(method);
+                    _activeMeasurement = await _psCommSimple.StartMeasurement(method);
                 }
                 catch (Exception ex)
                 {
@@ -144,7 +144,7 @@ namespace PalmSensLivePlot
                 Log.Add($"Aborting measurement...");
                 try
                 {
-                    await _psCommSimple.AbortMeasurementAsync();
+                    await _psCommSimple.AbortMeasurement();
                 }
                 catch (Exception ex)
                 {

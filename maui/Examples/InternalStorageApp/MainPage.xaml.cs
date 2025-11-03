@@ -77,7 +77,7 @@ namespace PalmSensInternalStorage
             DiscoverBtn.IsEnabled = false;
             try
             {
-                AvailableDevices = await _psCommSimple.GetAvailableDevicesAsync();
+                AvailableDevices = await _psCommSimple.GetAvailableDevices();
                 SelectedDevice = AvailableDevices.FirstOrDefault();
             }
             finally
@@ -94,14 +94,14 @@ namespace PalmSensInternalStorage
 
             if (_psCommSimple.Connected)
             {
-                await _psCommSimple.DisconnectAsync();
+                await _psCommSimple.Disconnect();
 
             }
             else
             {
                 try
                 {
-                    await _psCommSimple.ConnectAsync(SelectedDevice);
+                    await _psCommSimple.Connect(SelectedDevice);
                 }
                 catch (Exception ex)
                 {
@@ -136,7 +136,7 @@ namespace PalmSensInternalStorage
             Log.Add("Reading contents from: Root");
 
             var browser = _psCommSimple.GetInternalStorageBrowser();
-            _root = await browser.GetRootAsync();
+            _root = await browser.GetRoot();
 
             LoadChildren(_root);
 
