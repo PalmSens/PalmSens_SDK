@@ -75,10 +75,4 @@
 	  <ProjectReference Include="..\..\PSLibraries\SDKPlot.Maui\SDKPlot.Maui.csproj" />
 	</ItemGroup>
 
-	<ItemGroup>
-	  <Reference Include="PalmSens.Core">
-	    <HintPath>..\..\PSLibraries\PalmSens.Core.dll</HintPath>
-	  </Reference>
-	</ItemGroup>
-
 </Project>
