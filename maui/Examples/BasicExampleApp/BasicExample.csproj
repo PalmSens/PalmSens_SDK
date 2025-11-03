@@ -75,9 +75,7 @@
 	  <Reference Include="PalmSens.Core">
 	    <HintPath>..\..\PSLibraries\PalmSens.Core.dll</HintPath>
 	  </Reference>
-	  <Reference Include="PalmSens.Core.Windows.NET" Condition="'$(TargetFramework)' == 'net9.0-windows10.0.19041.0'">
-	    <HintPath>..\..\PSLibraries\PalmSens.Core.Windows.NET.dll</HintPath>
-	  </Reference>
+
 	</ItemGroup>
 
 </Project>
