@@ -3,23 +3,29 @@ using PalmSens.Comm;
 using PalmSens.Core.Simplified;
 using PalmSens.Core.Simplified.Data;
 using PalmSens.Techniques;
-using PalmSensBiPotExample.Services;
 using System.Collections.ObjectModel;
+using PalmSens.Core.Simplified.MAUI;
 using Device = PalmSens.Devices.Device;
 
 namespace PalmSensBiPotExample
 {
     public partial class MainPage : ContentPage
     {
+        public IPlatformInvoker PlatformInvoker { get; }
         private IReadOnlyList<Device> _availableDevices;
         private Device _selectedDevice;
         private readonly PSCommSimple _psCommSimple;
         private bool _isBiPotSupported = false;
 
-        public MainPage(PSCommSimple psCommSimple)
+        public MainPage(
+            PSCommSimpleMaui psCommSimple,
+            IPlatformInvoker platformInvoker)
         {
+            PlatformInvoker = platformInvoker;
             InitializeComponent();
             BindingContext = this;
+
+            psCommSimple.Initialize();  // This needs to be called after the main page has been initialized
             this._psCommSimple = psCommSimple;
 
             _psCommSimple.StateChanged += OnStateChanged;
@@ -143,7 +149,7 @@ namespace PalmSensBiPotExample
             DiscoverBtn.IsEnabled = false;
             try
             {
-                AvailableDevices = await _psCommSimple.GetAvailableDevicesAsync();
+                AvailableDevices = await _psCommSimple.GetAvailableDevices();
                 SelectedDevice = AvailableDevices.FirstOrDefault();
             }
             finally
@@ -160,14 +166,14 @@ namespace PalmSensBiPotExample
 
             if (_psCommSimple.Connected)
             {
-                await _psCommSimple.DisconnectAsync();
+                await _psCommSimple.Disconnect();
 
             }
             else
             {
                 try
                 {
-                    await _psCommSimple.ConnectAsync(SelectedDevice);
+                    await _psCommSimple.Connect(SelectedDevice);
                 }
                 catch (Exception ex)
                 {
@@ -208,7 +214,7 @@ namespace PalmSensBiPotExample
                 Log.Add($"Starting Aux measurement...");
                 try
                 {
-                    _activeMeasurement = await _psCommSimple.MeasureAsync(method);
+                    _activeMeasurement = await _psCommSimple.StartMeasurement(method);
                     _extraValueCurve = (_activeMeasurement.NewSimpleCurve(
                         PalmSens.Data.DataArrayType.Time,
                         PalmSens.Data.DataArrayType.AuxInput,
@@ -225,7 +231,7 @@ namespace PalmSensBiPotExample
                 Log.Add($"Aborting measurement...");
                 try
                 {
-                    await _psCommSimple.AbortMeasurementAsync();
+                    await _psCommSimple.AbortMeasurement();
                 }
                 catch (Exception ex)
                 {
@@ -244,7 +250,7 @@ namespace PalmSensBiPotExample
                 Log.Add($"Starting BiPot measurement...");
                 try
                 {
-                    _activeMeasurement = await _psCommSimple.MeasureAsync(method);
+                    _activeMeasurement = await _psCommSimple.StartMeasurement(method);
                     _extraValueCurve = (_activeMeasurement.NewSimpleCurve(
                         PalmSens.Data.DataArrayType.Time,
                         PalmSens.Data.DataArrayType.Current, // BipotCurrent ?
@@ -261,7 +267,7 @@ namespace PalmSensBiPotExample
                 Log.Add($"Aborting measurement...");
                 try
                 {
-                    await _psCommSimple.AbortMeasurementAsync();
+                    await _psCommSimple.AbortMeasurement();
                 }
                 catch (Exception ex)
                 {
@@ -290,7 +296,7 @@ namespace PalmSensBiPotExample
             }
 
             double aux = status.GetAuxInputAsVoltage();
-            ExtraValueAux.Text = $"{aux} V";
+            ExtraValueAux.Text = $"{aux:F3} V";
         }
 
         private void OnStateChanged(object sender, PalmSens.Comm.CommManager.DeviceState CurrentState)
@@ -345,7 +351,7 @@ namespace PalmSensBiPotExample
 
         private void OnNewDataAdded(object sender, PalmSens.Data.ArrayDataAddedEventArgs e)
         {
-            if (MauiPlatformInvoker.InvokeIfRequired(() => OnNewDataAdded(sender, e)))
+            if (PlatformInvoker.InvokeIfRequired(() => OnNewDataAdded(sender, e)))
             {
                 return;
             }
@@ -379,7 +385,7 @@ namespace PalmSensBiPotExample
 
         private void CurveFinished(SimpleCurve activeSimpleCurve)
         {
-            if (MauiPlatformInvoker.InvokeIfRequired(() => CurveFinished(activeSimpleCurve)))
+            if (PlatformInvoker.InvokeIfRequired(() => CurveFinished(activeSimpleCurve)))
             {
                 return;
             }
