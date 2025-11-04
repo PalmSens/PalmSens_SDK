@@ -5,7 +5,6 @@ using PalmSens.Core.Simplified;
 using PalmSens.Core.Simplified.Data;
 using PalmSens.Plottables;
 using PalmSens.Techniques;
-using PalmSensPeakDetection.Services;
 using System.Collections.ObjectModel;
 using Device = PalmSens.Devices.Device;
 

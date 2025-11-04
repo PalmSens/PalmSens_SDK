@@ -1,12 +1,8 @@
-﻿using OxyPlot;
-using OxyPlot.Axes;
-using OxyPlot.Series;
-using PalmSens;
+﻿using PalmSens;
 using PalmSens.Comm;
 using PalmSens.Core.Simplified;
 using PalmSens.Core.Simplified.Data;
 using PalmSens.Techniques;
-using PalmSensLivePlot.Services;
 using System.Collections.ObjectModel;
 using Device = PalmSens.Devices.Device;
 

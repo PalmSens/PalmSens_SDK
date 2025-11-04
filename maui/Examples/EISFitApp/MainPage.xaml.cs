@@ -6,7 +6,6 @@ using PalmSens.Fitting;
 using PalmSens.Fitting.Models;
 using PalmSens.Techniques;
 using PalmSens.Techniques.Impedance;
-using PalmSensEISFIt.Services;
 using System.Collections.ObjectModel;
 using Device = PalmSens.Devices.Device;
 
