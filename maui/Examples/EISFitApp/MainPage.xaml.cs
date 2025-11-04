@@ -295,7 +295,7 @@ namespace PalmSensEISFIt
             plotView1.CorePlot.AddSimpleCurve(_fitResultCurves[1], useSecondaryYAxis: true, update: true);
         }
 
-        private async void OnProgressChanged(object sender, FitProgressUpdate e)
+        private void OnProgressChanged(object sender, FitProgressUpdate e)
         {
             switch (e.Progress)
             {

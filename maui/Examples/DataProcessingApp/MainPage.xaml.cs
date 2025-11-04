@@ -1,14 +1,8 @@
-using OxyPlot;
-using PalmSens;
 using PalmSens.Core.Simplified;
 using PalmSens.Core.Simplified.Data;
-using PalmSens.Data;
 using SDKPlot;
 using System.Collections.ObjectModel;
 
-#if WINDOWS
-using PalmSens.Windows;
-#endif
 
 namespace DataProcessingExample
 {
@@ -24,7 +18,6 @@ namespace DataProcessingExample
         private SimpleMeasurement _activeMeasurement;
         private SimpleCurve _activeCurve;
         private SimpleCurve _baselineCurve;
-        private PlotModel _plotmodel;
 
         public ObservableCollection<string> Log
         {
@@ -38,8 +31,6 @@ namespace DataProcessingExample
         {
             LoadDataBtn.IsEnabled = false;
             Log.Add($"Loading example data...");
-
-            SessionManager session = null;
 
             using var stream = await FileSystem.OpenAppPackageFileAsync("Example.pssession");
             using var reader = new StreamReader(stream);

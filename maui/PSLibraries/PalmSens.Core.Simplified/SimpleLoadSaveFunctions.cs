@@ -68,7 +68,7 @@ namespace PalmSens.Core.Simplified
 
             List<SimpleMeasurement> simpleMeasurements = new List<SimpleMeasurement>();
             SessionManager session = new SessionManager();
-            
+
             try { session.Load(streamReader.BaseStream, ""); }
             catch (Exception ex)
             {
