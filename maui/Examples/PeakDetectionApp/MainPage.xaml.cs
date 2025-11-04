@@ -6,20 +6,27 @@ using PalmSens.Core.Simplified.Data;
 using PalmSens.Plottables;
 using PalmSens.Techniques;
 using System.Collections.ObjectModel;
+using PalmSens.Core.Simplified.MAUI;
 using Device = PalmSens.Devices.Device;
 
 namespace PalmSensPeakDetection
 {
     public partial class MainPage : ContentPage
     {
+        public IPlatformInvoker PlatformInvoker { get; }
         private IReadOnlyList<Device> _availableDevices;
         private Device _selectedDevice;
         private readonly PSCommSimple _psCommSimple;
-
-        public MainPage(PSCommSimple psCommSimple)
+        
+        public MainPage(
+            PSCommSimpleMaui psCommSimple,
+            IPlatformInvoker platformInvoker)
         {
+            PlatformInvoker = platformInvoker;
             InitializeComponent();
             BindingContext = this;
+
+            psCommSimple.Initialize();  // This needs to be called after the main page has been initialized
             this._psCommSimple = psCommSimple;
 
             _psCommSimple.StateChanged += OnStateChanged;
@@ -127,33 +134,41 @@ namespace PalmSensPeakDetection
         {
             Method method = InitMethod();
 
-            if (_psCommSimple.DeviceState == PalmSens.Comm.CommManager.DeviceState.Idle)
+            switch (_psCommSimple.DeviceState)
             {
-                plotView1.CorePlot.ClearAll();
+                case PalmSens.Comm.CommManager.DeviceState.Idle:
+                    plotView1.CorePlot.ClearAll();
 
-                Log.Add($"Starting measurement...");
-                try
-                {
-                    _activeMeasurement = await _psCommSimple.StartMeasurement(method);
-                }
-                catch (Exception ex)
-                {
-                    Log.Add(ex.Message);
-                }
-            }
-            else
-            {
-                Log.Add($"Aborting measurement...");
-                try
-                {
-                    await _psCommSimple.AbortMeasurement();
-                }
-                catch (Exception ex)
-                {
-                    Log.Add(ex.Message);
-                }
+                    Log.Add($"Starting measurement...");
+                    try
+                    {
+                        _activeMeasurement = await _psCommSimple.StartMeasurement(method);
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Add(ex.Message);
+                    }
+                    break;
+
+                case PalmSens.Comm.CommManager.DeviceState.Pretreatment:
+                case PalmSens.Comm.CommManager.DeviceState.Measurement:
+                    Log.Add($"Aborting measurement...");
+                    try
+                    {
+                        await _psCommSimple.AbortMeasurement();
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Add(ex.Message);
+                    }
+                    break;
+
+                default:
+                    Log.Add($"Unknown state : {_psCommSimple.DeviceState}.");
+                    break;
             }
         }
+
 
         private void DetectPeaksClicked(object? sender, EventArgs e)
         {
@@ -268,7 +283,7 @@ namespace PalmSensPeakDetection
 
         private void OnNewDataAdded(object sender, PalmSens.Data.ArrayDataAddedEventArgs e)
         {
-            if (MauiPlatformInvoker.InvokeIfRequired(() => OnNewDataAdded(sender, e)))
+            if (PlatformInvoker.InvokeIfRequired(() => OnNewDataAdded(sender, e)))
             {
                 return;
             }
@@ -298,7 +313,7 @@ namespace PalmSensPeakDetection
 
         private void CurveFinished(SimpleCurve activeSimpleCurve)
         {
-            if (MauiPlatformInvoker.InvokeIfRequired(() => CurveFinished(activeSimpleCurve)))
+            if (PlatformInvoker.InvokeIfRequired(() => CurveFinished(activeSimpleCurve)))
             {
                 return;
             }

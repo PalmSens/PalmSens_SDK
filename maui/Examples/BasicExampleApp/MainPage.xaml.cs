@@ -136,37 +136,45 @@ namespace PalmSensBasicExample
             Log.Add(_psCommSimple.Connected ? $"Connected to {_psCommSimple.ConnectedDevice}" : "Nothing is connected");
         }
 
+
+
         private async void MeasureClicked(object? sender, EventArgs e)
         {
             Method method = InitMethod();
 
-            if (_psCommSimple.DeviceState == PalmSens.Comm.CommManager.DeviceState.Idle)
+            switch (_psCommSimple.DeviceState)
             {
-                _dataPoints.Clear();
+                case PalmSens.Comm.CommManager.DeviceState.Idle:
+                    Log.Add($"Starting measurement...");
+                    try
+                    {
+                        _activeMeasurement = await _psCommSimple.StartMeasurement(method);
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Add(ex.Message);
+                    }
+                    break;
 
-                Log.Add($"Starting measurement...");
-                try
-                {
-                    _activeMeasurement = await _psCommSimple.StartMeasurement(method);
-                }
-                catch (Exception ex)
-                {
-                    Log.Add(ex.Message);
-                }
-            }
-            else
-            {
-                Log.Add($"Aborting measurement...");
-                try
-                {
-                    await _psCommSimple.AbortMeasurement();
-                }
-                catch (Exception ex)
-                {
-                    Log.Add(ex.Message);
-                }
+                case PalmSens.Comm.CommManager.DeviceState.Pretreatment:
+                case PalmSens.Comm.CommManager.DeviceState.Measurement:
+                    Log.Add($"Aborting measurement...");
+                    try
+                    {
+                        await _psCommSimple.AbortMeasurement();
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Add(ex.Message);
+                    }
+                    break;
+
+                default:
+                    Log.Add($"Unknown state : {_psCommSimple.DeviceState}.");
+                    break;
             }
         }
+
         private void OnReceiveStatus(object sender, PalmSens.Comm.StatusEventArgs e)
         {
             Status status = e.GetStatus();

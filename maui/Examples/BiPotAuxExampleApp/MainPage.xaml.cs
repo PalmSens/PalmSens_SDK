@@ -208,35 +208,42 @@ namespace PalmSensBiPotExample
         {
             Method method = InitMethodAux();
 
-            if (_psCommSimple.DeviceState == PalmSens.Comm.CommManager.DeviceState.Idle)
+            switch (_psCommSimple.DeviceState)
             {
-                _dataPoints.Clear();
-                Log.Add($"Starting Aux measurement...");
-                try
-                {
-                    _activeMeasurement = await _psCommSimple.StartMeasurement(method);
-                    _extraValueCurve = (_activeMeasurement.NewSimpleCurve(
-                        PalmSens.Data.DataArrayType.Time,
-                        PalmSens.Data.DataArrayType.AuxInput,
-                        "",
-                        true))[0];
-                }
-                catch (Exception ex)
-                {
-                    Log.Add(ex.Message);
-                }
-            }
-            else
-            {
-                Log.Add($"Aborting measurement...");
-                try
-                {
-                    await _psCommSimple.AbortMeasurement();
-                }
-                catch (Exception ex)
-                {
-                    Log.Add(ex.Message);
-                }
+                case PalmSens.Comm.CommManager.DeviceState.Idle:
+                    _dataPoints.Clear();
+                    Log.Add($"Starting Aux measurement...");
+                    try
+                    {
+                        _activeMeasurement = await _psCommSimple.StartMeasurement(method);
+                        _extraValueCurve = (_activeMeasurement.NewSimpleCurve(
+                            PalmSens.Data.DataArrayType.Time,
+                            PalmSens.Data.DataArrayType.AuxInput,
+                            "",
+                            true))[0];
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Add(ex.Message);
+                    }
+                    break;
+
+                case PalmSens.Comm.CommManager.DeviceState.Pretreatment:
+                case PalmSens.Comm.CommManager.DeviceState.Measurement:
+                    Log.Add($"Aborting measurement...");
+                    try
+                    {
+                        await _psCommSimple.AbortMeasurement();
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Add(ex.Message);
+                    }
+                    break;
+
+                default:
+                    Log.Add($"Unknown state : {_psCommSimple.DeviceState}.");
+                    break;
             }
         }
 
@@ -244,26 +251,28 @@ namespace PalmSensBiPotExample
         {
             Method method = InitMethodBiPot();
 
-            if (_psCommSimple.DeviceState == PalmSens.Comm.CommManager.DeviceState.Idle)
+            switch (_psCommSimple.DeviceState)
             {
-                _dataPoints.Clear();
-                Log.Add($"Starting BiPot measurement...");
-                try
-                {
-                    _activeMeasurement = await _psCommSimple.StartMeasurement(method);
-                    _extraValueCurve = (_activeMeasurement.NewSimpleCurve(
-                        PalmSens.Data.DataArrayType.Time,
-                        PalmSens.Data.DataArrayType.Current, // BipotCurrent ?
-                        "",
-                        true))[0];
-                }
-                catch (Exception ex)
-                {
-                    Log.Add(ex.Message);
-                }
-            }
-            else
-            {
+                case PalmSens.Comm.CommManager.DeviceState.Idle:
+                    _dataPoints.Clear();
+                    Log.Add($"Starting BiPot measurement...");
+                    try
+                    {
+                        _activeMeasurement = await _psCommSimple.StartMeasurement(method);
+                        _extraValueCurve = (_activeMeasurement.NewSimpleCurve(
+                            PalmSens.Data.DataArrayType.Time,
+                            PalmSens.Data.DataArrayType.Current, // BipotCurrent ?
+                            "",
+                            true))[0];
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Add(ex.Message);
+                    }
+                    break;
+           
+            case PalmSens.Comm.CommManager.DeviceState.Pretreatment:
+            case PalmSens.Comm.CommManager.DeviceState.Measurement:
                 Log.Add($"Aborting measurement...");
                 try
                 {
@@ -273,6 +282,11 @@ namespace PalmSensBiPotExample
                 {
                     Log.Add(ex.Message);
                 }
+                break;
+
+            default:
+                    Log.Add($"Unknown state : {_psCommSimple.DeviceState}.");
+                break;
             }
         }
 
