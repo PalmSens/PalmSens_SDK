@@ -67,7 +67,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\PSLibraries\PalmSens.Core.Simplified.Windows.NET\PalmSens.Core.Simplified.Windows.NET.csproj" Condition="'$(TargetFramework)' == 'net9.0-windows10.0.19041.0'" />
+		<ProjectReference Include="..\..\PSLibraries\PalmSens.Core.Simplified.MAUI\PalmSens.Core.Simplified.MAUI.csproj" />
 		<ProjectReference Include="..\..\PSLibraries\PalmSens.Core.Simplified\PalmSens.Core.Simplified.csproj" />
 	</ItemGroup>
 
