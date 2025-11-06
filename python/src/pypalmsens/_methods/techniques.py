@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Literal
+from typing import Literal, LiteralString, get_args
 
 import attrs
 import PalmSens.Techniques as PSTechniques
@@ -1451,6 +1451,11 @@ class ElectrochemicalImpedanceSpectroscopy(
     """Create potentiometry method parameters."""
 
     _id = 'eis'
+    _FREQ_TYPES: tuple[LiteralString, ...] = ('potential', 'time', 'fixed')
+    _SCAN_TYPES: tuple[LiteralString, ...] = ('fixed', 'scan')
+
+    # _mode_t = Literal['dc', 'pulse', 'differential']
+    # _MODES: tuple[_mode_t, ...] = ('dc', 'pulse', 'differential')
 
     equilibration_time: float = 0.0
     """Equilibration time in s."""
@@ -1470,10 +1475,16 @@ class ElectrochemicalImpedanceSpectroscopy(
     min_frequency: float = 1e3
     """Minimum frequency in Hz."""
 
+    scan_type: Literal['potential', 'time', 'fixed'] = 'fixed'
+    """Scan type: 'potential', 'time', 'fixed'."""
+
+    frequency_type: Literal['fixed', 'scan'] = 'scan'
+    """Scan type: 'scan', 'fixed'."""
+
     def _update_psmethod(self, psmethod: PSMethod, /):
         """Update method with electrochemical impedance spectroscopy settings."""
-        psmethod.ScanType = enumScanType.Fixed
-        psmethod.FreqType = enumFrequencyType.Scan
+        psmethod.ScanType = enumScanType(self._SCAN_TYPES.index(self.scan_type))
+        psmethod.FreqType = enumFrequencyType(self._FREQ_TYPES.index(self.frequency_type))
         psmethod.EquilibrationTime = self.equilibration_time
         psmethod.Potential = self.dc_potential
         psmethod.Eac = self.ac_potential
@@ -1482,6 +1493,14 @@ class ElectrochemicalImpedanceSpectroscopy(
         psmethod.MinFrequency = self.min_frequency
 
     def _update_params(self, psmethod: PSMethod, /):
+        if psmethod.ScanType not in get_args(self.scan_type):
+            raise ValueError
+
+        if psmethod.FreqType not in get_args(self.frequency_type):
+            raise ValueError
+
+        self.scan_type = get_args(self.scan_type)[int(psmethod.ScanType)]
+        self.frequency_type = get_args(self.frequency_type)[int(psmethod.FreqType)]
         self.equilibration_time = single_to_double(psmethod.EquilibrationTime)
         self.dc_potential = single_to_double(psmethod.Potential)
         self.ac_potential = single_to_double(psmethod.Eac)
