@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Literal, get_args, get_type_hints
+from typing import Literal
 
 import attrs
 import PalmSens
@@ -150,10 +150,9 @@ class VersusOCP(BaseSettings):
 class BiPot(BaseSettings):
     """Set the bipot settings for a given method."""
 
-    _mode_t = Literal['constant', 'offset']
-    _MODES: tuple[_mode_t, ...] = ('constant', 'offset')
+    _MODES: tuple[Literal['constant', 'offset'], ...] = ('constant', 'offset')
 
-    mode: _mode_t = 'constant'
+    mode: Literal['constant', 'offset'] = 'constant'
     """Set the bipotential mode.
 
     Possible values: `constant` or `offset`"""
@@ -494,6 +493,12 @@ class DelayTriggers(BaseSettings):
 class Multiplexer(BaseSettings):
     """Set the multiplexer settings for a given method."""
 
+    _MODES: tuple[Literal['none', 'consecutive', 'alternate'], ...] = (
+        'none',
+        'consecutive',
+        'alternate',
+    )
+
     mode: Literal['none', 'consecutive', 'alternate'] = 'none'
     """Set multiplexer mode.
 
@@ -523,10 +528,6 @@ class Multiplexer(BaseSettings):
 
     set_unselected_channel_working_electrode: int = 0
     """Set the unselected channel working electrode to 0 = Disconnected / floating, 1 = Ground, 2 = Standby potential. Default is 0."""
-
-    @property
-    def _MODES(self):
-        return get_args(get_type_hints(self.__class__)['mode'])
 
     def _update_psmethod(self, psmethod: PSMethod, /):
         # Create a mux8r2 multiplexer settings settings object

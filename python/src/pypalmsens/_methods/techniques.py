@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Literal, get_args, get_type_hints
+from typing import Literal
 
 import attrs
 import PalmSens.Techniques as PSTechniques
@@ -856,6 +856,8 @@ class PulsedAmperometricDetection(
 
     _id = 'pad'
 
+    _MODES: tuple[Literal['dc', 'pulse', 'differential'], ...] = ('dc', 'pulse', 'differential')
+
     equilibration_time: float = 0.0
     """Equilibration time in s."""
 
@@ -881,10 +883,6 @@ class PulsedAmperometricDetection(
 
     run_time: float = 10.0
     """Run time in s."""
-
-    @property
-    def _MODES(self):
-        return get_args(get_type_hints(self.__class__)['mode'])
 
     def _update_psmethod(self, psmethod: PSMethod, /):
         """Update method with pulsed amperometric detection settings."""
@@ -1454,6 +1452,13 @@ class ElectrochemicalImpedanceSpectroscopy(
 
     _id = 'eis'
 
+    _SCAN_TYPES: tuple[Literal['potential', 'time', 'fixed'], ...] = (
+        'potential',
+        'time',
+        'fixed',
+    )
+    _FREQ_TYPES: tuple[Literal['fixed', 'scan'], ...] = ('fixed', 'scan')
+
     equilibration_time: float = 0.0
     """Equilibration time in s."""
 
@@ -1477,14 +1482,6 @@ class ElectrochemicalImpedanceSpectroscopy(
 
     frequency_type: Literal['fixed', 'scan'] = 'scan'
     """Scan type: 'scan', 'fixed'."""
-
-    @property
-    def _SCAN_TYPES(self):
-        return get_args(get_type_hints(self.__class__)['scan_type'])
-
-    @property
-    def _FREQ_TYPES(self):
-        return get_args(get_type_hints(self.__class__)['frequency_type'])
 
     def _update_psmethod(self, psmethod: PSMethod, /):
         """Update method with electrochemical impedance spectroscopy settings."""
