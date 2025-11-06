@@ -618,92 +618,92 @@ class TestCC:
         assert dataset.array_quantities == {'Charge', 'Potential', 'Time', 'Current'}
 
 
+def check_eis_measurement(measurement):
+    assert measurement
+    assert isinstance(measurement, ps.data.Measurement)
+
+    for curve in measurement.curves:
+        assert curve.n_points >= 5
+
+    dataset = measurement.dataset
+    assert len(dataset) == 18
+
+    assert dataset.array_names == {
+        "Capacitance'",
+        "Capacitance''",
+        'Capacitance',
+        'Eac',
+        'Frequency',
+        'Iac',
+        'Idc',
+        'Phase',
+        'Y',
+        'YIm',
+        'YRe',
+        'Z',
+        'ZIm',
+        'ZRe',
+        'mEdc',
+        'miDC',
+        'potential',
+        'time',
+    }
+    assert dataset.array_quantities == {
+        "-C''",
+        '-Phase',
+        "-Z''",
+        'C',
+        "C'",
+        'Current',
+        'Frequency',
+        'Potential',
+        'Time',
+        'Y',
+        "Y'",
+        "Y''",
+        'Z',
+        "Z'",
+    }
+
+    eis_datas = measurement.eis_data
+    for eis_data in eis_datas:
+        assert list(eis_data.dataset) == [
+            'Current',
+            'Potential',
+            'Time',
+            'Frequency',
+            'ZRe',
+            'ZIm',
+            'Z',
+            'Phase',
+            'Iac',
+            'miDC',
+            'mEdc',
+            'Eac',
+            'Y',
+            'YRe',
+            'YIm',
+            'Cs',
+            'CsRe',
+            'CsIm',
+        ]
+
+
 class TestEIS:
     id = 'eis'
     kwargs = {
         'n_frequencies': 5,
         'max_frequency': 1e5,
         'min_frequency': 1e3,
+        'scan_type': 'fixed',
+        'frequency_type': 'scan',
     }
 
-    def check_measurement(self, measurement):
-        assert measurement
-        assert isinstance(measurement, ps.data.Measurement)
-
-        for curve in measurement.curves:
-            assert curve.n_points >= 5
-
-        dataset = measurement.dataset
-        assert len(dataset) == 18
-
-        assert dataset.array_names == {
-            "Capacitance'",
-            "Capacitance''",
-            'Capacitance',
-            'Eac',
-            'Frequency',
-            'Iac',
-            'Idc',
-            'Phase',
-            'Y',
-            'YIm',
-            'YRe',
-            'Z',
-            'ZIm',
-            'ZRe',
-            'mEdc',
-            'miDC',
-            'potential',
-            'time',
-        }
-        assert dataset.array_quantities == {
-            "-C''",
-            '-Phase',
-            "-Z''",
-            'C',
-            "C'",
-            'Current',
-            'Frequency',
-            'Potential',
-            'Time',
-            'Y',
-            "Y'",
-            "Y''",
-            'Z',
-            "Z'",
-        }
-
-        eis_datas = measurement.eis_data
-        for eis_data in eis_datas:
-            assert list(eis_data.dataset) == [
-                'Current',
-                'Potential',
-                'Time',
-                'Frequency',
-                'ZRe',
-                'ZIm',
-                'Z',
-                'Phase',
-                'Iac',
-                'miDC',
-                'mEdc',
-                'Eac',
-                'Y',
-                'YRe',
-                'YIm',
-                'Cs',
-                'CsRe',
-                'CsIm',
-            ]
-
     @pytest.mark.instrument
-    def test_fixed_scan(self, manager):
-        # default
+    def test_measurement(self, manager):
         method = BaseTechnique._registry[self.id].from_dict(self.kwargs)
-        method.scan_type = 'fixed'
-        method.frequency_type = 'scan'
         measurement = manager.measure(method)
-        self.check_measurement(measurement)
+        check_eis_measurement(measurement)
 
         eis_datas = measurement.eis_data
         assert len(eis_datas) == 1
@@ -712,16 +712,25 @@ class TestEIS:
             assert eis_data.n_subscans == 0
             assert eis_data.n_frequencies == 10
 
+
+class TestEIS_pot_fixed:
+    id = 'eis'
+    kwargs = {
+        'n_frequencies': 5,
+        'max_frequency': 1e5,
+        'min_frequency': 1e3,
+        'scan_type': 'potential',
+        'frequency_type': 'fixed',
+        'start_potential': 0.0,
+        'end_potential': -0.1,
+        'step_potential': 0.1,
+    }
+
     @pytest.mark.instrument
     def test_potential_fixed(self, manager):
         method = BaseTechnique._registry[self.id].from_dict(self.kwargs)
-        method.scan_type = 'potential'
-        method.frequency_type = 'fixed'
-        method.start_potential = 0.0
-        method.end_potential = -0.1
-        method.step_potential = 0.1
         measurement = manager.measure(method)
-        self.check_measurement(measurement)
+        check_eis_measurement(measurement)
 
         eis_datas = measurement.eis_data
         assert len(eis_datas) == 1
@@ -730,16 +739,25 @@ class TestEIS:
             assert eis_data.n_subscans == 0
             assert eis_data.n_frequencies == 1
 
+
+class TestEIS_pot_scan:
+    id = 'eis'
+    kwargs = {
+        'n_frequencies': 5,
+        'max_frequency': 1e5,
+        'min_frequency': 1e3,
+        'scan_type': 'potential',
+        'frequency_type': 'scan',
+        'start_potential': 0.0,
+        'end_potential': -0.1,
+        'step_potential': 0.1,
+    }
+
     @pytest.mark.instrument
     def test_potential_scan(self, manager):
         method = BaseTechnique._registry[self.id].from_dict(self.kwargs)
-        method.scan_type = 'potential'
-        method.frequency_type = 'scan'
-        method.start_potential = 0.0
-        method.end_potential = -0.1
-        method.step_potential = 0.1
         measurement = manager.measure(method)
-        self.check_measurement(measurement)
+        check_eis_measurement(measurement)
 
         eis_datas = measurement.eis_data
         assert len(eis_datas) == 1
@@ -748,14 +766,23 @@ class TestEIS:
             assert eis_data.n_subscans == 2
             assert eis_data.n_frequencies == 5
 
+
+class TestEIS_time_fixed:
+    id = 'eis'
+    kwargs = {
+        'n_frequencies': 5,
+        'max_frequency': 1e5,
+        'min_frequency': 1e3,
+        'scan_type': 'time',
+        'frequency_type': 'fixed',
+        'run_time': 1.0,
+    }
+
     @pytest.mark.instrument
     def test_time_fixed(self, manager):
         method = BaseTechnique._registry[self.id].from_dict(self.kwargs)
-        method.scan_type = 'time'
-        method.frequency_type = 'fixed'
-        method.run_time = 1.0
         measurement = manager.measure(method)
-        self.check_measurement(measurement)
+        check_eis_measurement(measurement)
 
         eis_datas = measurement.eis_data
         assert len(eis_datas) == 1
@@ -764,14 +791,23 @@ class TestEIS:
             assert eis_data.n_subscans == 0
             assert eis_data.n_frequencies == 1
 
+
+class TestEIS_time_scan:
+    id = 'eis'
+    kwargs = {
+        'n_frequencies': 5,
+        'max_frequency': 1e5,
+        'min_frequency': 1e3,
+        'scan_type': 'time',
+        'frequency_type': 'scan',
+        'run_time': 0.4,
+    }
+
     @pytest.mark.instrument
     def test_time_scan(self, manager):
         method = BaseTechnique._registry[self.id].from_dict(self.kwargs)
-        method.scan_type = 'time'
-        method.frequency_type = 'scan'
-        method.run_time = 0.4
         measurement = manager.measure(method)
-        self.check_measurement(measurement)
+        check_eis_measurement(measurement)
 
         eis_datas = measurement.eis_data
         assert len(eis_datas) == 1
@@ -780,13 +816,22 @@ class TestEIS:
             assert eis_data.n_subscans == 2
             assert eis_data.n_frequencies == 5
 
+
+class TestEIS_single_point:
+    id = 'eis'
+    kwargs = {
+        'n_frequencies': 5,
+        'max_frequency': 1e5,
+        'min_frequency': 1e3,
+        'scan_type': 'fixed',
+        'frequency_type': 'fixed',
+    }
+
     @pytest.mark.instrument
     def test_freq_fixed(self, manager):
         method = BaseTechnique._registry[self.id].from_dict(self.kwargs)
-        method.scan_type = 'fixed'
-        method.frequency_type = 'fixed'
         measurement = manager.measure(method)
-        self.check_measurement(measurement)
+        check_eis_measurement(measurement)
 
         eis_datas = measurement.eis_data
         assert len(eis_datas) == 1
@@ -1135,6 +1180,11 @@ class TestMM:
         TestMP,
         TestCC,
         TestEIS,
+        TestEIS_pot_fixed,
+        TestEIS_pot_scan,
+        TestEIS_time_scan,
+        TestEIS_time_fixed,
+        TestEIS_single_point,
         TestFIS,
         TestGIS,
         TestFGIS,

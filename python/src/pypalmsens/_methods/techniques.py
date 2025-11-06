@@ -1592,12 +1592,12 @@ class ElectrochemicalImpedanceSpectroscopy(
         self.min_frequency = single_to_double(psmethod.MinFrequency)
 
         if self.scan_type == 'potential':
-            self.begin_potential = psmethod.BeginPotential
-            self.end_potential = psmethod.EndPotential
-            self.step_potential = psmethod.StepPotential
+            self.begin_potential = single_to_double(psmethod.BeginPotential)
+            self.end_potential = single_to_double(psmethod.EndPotential)
+            self.step_potential = single_to_double(psmethod.StepPotential)
         elif self.scan_type == 'time':
-            self.run_time = psmethod.RunTime
-            self.interval_time = psmethod.IntervalTime
+            self.run_time = single_to_double(psmethod.RunTime)
+            self.interval_time = single_to_double(psmethod.IntervalTime)
 
 
 @attrs.define
