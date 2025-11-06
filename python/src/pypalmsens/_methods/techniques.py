@@ -1478,13 +1478,98 @@ class ElectrochemicalImpedanceSpectroscopy(
     """Minimum frequency in Hz."""
 
     scan_type: Literal['potential', 'time', 'fixed'] = 'fixed'
-    """Scan type: 'potential', 'time', 'fixed'."""
+    """Whether a single or multiple frequency scans are performed.
+
+    Possible values: 'potential', 'time', 'fixed'.
+
+    * Fixed scan: perform a single scan (default).
+    * Time scan: scans are repeated for a specific amount of time at a specific interval.
+    * Potential scan: scans are repeated over a range of DC potential values.
+      A potential scan should not be performed versus the OCP.
+    """
 
     frequency_type: Literal['fixed', 'scan'] = 'scan'
-    """Scan type: 'scan', 'fixed'."""
+    """Whether to measure a single frequency or scan over a range of frequencies.
+
+    Possible values: 'scan', 'fixed'.
+
+    Scan: multiple frequency
+    Fixed: single frequency. This can be used in combination with a time or a potential scan.
+    """
+
+    run_time: float = 10.0
+    """This is the minimal run time in seconds (time scan only).
+
+    For example, if a frequency scan takes 18 seconds and is measured
+    at an interval of 19 seconds for a `run_time` of 40 seconds, then
+    three iterations will be performed."""
+
+    interval_time: float = 0.1
+    """The interval at which a measurement iteration should be performed (time scan only).
+
+    If a measurement iteration takes longer than the interval time the next measurement
+    will not be triggered until after it has been completed.
+    """
+
+    begin_potential: float = 0.0
+    """Begin potential in V (potential scan only).
+
+    The DC potential of the applied sine wave to start the series of iterative measurements at.
+    """
+
+    end_potential: float = 0.0
+    """End potential in V (potential scan only).
+
+    The DC potential of the applied sine wave at which the series of iterative measurements ends.
+    """
+
+    step_potential: float = 0.01
+    """Step potential in V (potential scan only).
+
+    The size of DC potential step to iterate with.
+    """
+
+    min_sampling_time: float = 0.5
+    """Minimum sampling time in s.
+
+    Each measurement point of the impedance spectrum is performed
+    during the period specified by SamplingTime.
+
+    This means that the number of measured sine waves is equal to SamplingTime * frequency.
+    If this value is less than 1 sine wave, the sampling is extended to 1 / frequency.
+
+    So for a measurement at a frequency, at least one complete sine wave is measured.
+    Reasonable values for the sampling are in the range of 0.1 to 1 s."""
+
+    max_equilibration_time: float = 5.0
+    """Max equilibration time in s.
+
+    The EIS measurement requires a stationary state.
+    This means that before the actual measurement starts, the sine wave is
+    applied during `max_equilibration_time` only to reach the stationary state.
+
+    The maximum number of equilibration sine waves is however 5.
+
+    The minimum number of equilibration sines is set to 1, but for very
+    low frequencies, this time is limited by `max_equilibration_time`.
+
+    The maximum time to wait for stationary state is determined by the
+    value of this parameter. A reasonable value might be 5 seconds.
+    In this case this parameter is only relevant when the lowest frequency
+    is less than 1/5 s so 0.2 Hz.
+    """
 
     def _update_psmethod(self, psmethod: PSMethod, /):
         """Update method with electrochemical impedance spectroscopy settings."""
+
+        if self.scan_type == 'potential':
+            psmethod.BeginPotential = self.begin_potential
+            psmethod.EndPotential = self.end_potential
+            psmethod.StepPotential = self.step_potential
+        elif self.scan_type == 'time':
+            psmethod.RunTime = self.run_time
+            psmethod.IntervalTime = self.interval_time
+
         psmethod.ScanType = enumScanType(self._SCAN_TYPES.index(self.scan_type))
         psmethod.FreqType = enumFrequencyType(self._FREQ_TYPES.index(self.frequency_type))
         psmethod.EquilibrationTime = self.equilibration_time
@@ -1493,6 +1578,8 @@ class ElectrochemicalImpedanceSpectroscopy(
         psmethod.nFrequencies = self.n_frequencies
         psmethod.MaxFrequency = self.max_frequency
         psmethod.MinFrequency = self.min_frequency
+        psmethod.SamplingTime = self.min_sampling_time
+        psmethod.MaxEqTime = self.max_equilibration_time
 
     def _update_params(self, psmethod: PSMethod, /):
         self.scan_type = self._SCAN_TYPES[int(psmethod.ScanType)]
@@ -1503,6 +1590,14 @@ class ElectrochemicalImpedanceSpectroscopy(
         self.n_frequencies = psmethod.nFrequencies
         self.max_frequency = single_to_double(psmethod.MaxFrequency)
         self.min_frequency = single_to_double(psmethod.MinFrequency)
+
+        if self.scan_type == 'potential':
+            self.begin_potential = psmethod.BeginPotential
+            self.end_potential = psmethod.EndPotential
+            self.step_potential = psmethod.StepPotential
+        elif self.scan_type == 'time':
+            self.run_time = psmethod.RunTime
+            self.interval_time = psmethod.IntervalTime
 
 
 @attrs.define
