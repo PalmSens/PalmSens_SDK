@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Literal
+from typing import Literal, get_args, get_type_hints
 
 import attrs
 import PalmSens
@@ -494,10 +494,7 @@ class DelayTriggers(BaseSettings):
 class Multiplexer(BaseSettings):
     """Set the multiplexer settings for a given method."""
 
-    _mode_t = Literal['none', 'consecutive', 'alternate']
-    _MODES: tuple[_mode_t, ...] = ('none', 'consecutive', 'alternate')
-
-    mode: _mode_t = 'none'
+    mode: Literal['none', 'consecutive', 'alternate'] = 'none'
     """Set multiplexer mode.
 
     Possible values:
@@ -526,6 +523,10 @@ class Multiplexer(BaseSettings):
 
     set_unselected_channel_working_electrode: int = 0
     """Set the unselected channel working electrode to 0 = Disconnected / floating, 1 = Ground, 2 = Standby potential. Default is 0."""
+
+    @property
+    def _MODES(self):
+        return get_args(get_type_hints(self.__class__)['mode'])
 
     def _update_psmethod(self, psmethod: PSMethod, /):
         # Create a mux8r2 multiplexer settings settings object

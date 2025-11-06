@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Literal, LiteralString, get_args
+from typing import Literal, get_args, get_type_hints
 
 import attrs
 import PalmSens.Techniques as PSTechniques
@@ -855,8 +855,6 @@ class PulsedAmperometricDetection(
     """Create pulsed amperometric detection method parameters."""
 
     _id = 'pad'
-    _mode_t = Literal['dc', 'pulse', 'differential']
-    _MODES: tuple[_mode_t, ...] = ('dc', 'pulse', 'differential')
 
     equilibration_time: float = 0.0
     """Equilibration time in s."""
@@ -870,7 +868,7 @@ class PulsedAmperometricDetection(
     pulse_time: float = 0.01
     """Pulse time in s."""
 
-    mode: _mode_t = 'dc'
+    mode: Literal['dc', 'pulse', 'differential'] = 'dc'
     """Measurement mode.
 
     - dc: Measurement is performed at potential (E dc)
@@ -883,6 +881,10 @@ class PulsedAmperometricDetection(
 
     run_time: float = 10.0
     """Run time in s."""
+
+    @property
+    def _MODES(self):
+        return get_args(get_type_hints(self.__class__)['mode'])
 
     def _update_psmethod(self, psmethod: PSMethod, /):
         """Update method with pulsed amperometric detection settings."""
@@ -1451,11 +1453,6 @@ class ElectrochemicalImpedanceSpectroscopy(
     """Create potentiometry method parameters."""
 
     _id = 'eis'
-    _FREQ_TYPES: tuple[LiteralString, ...] = ('potential', 'time', 'fixed')
-    _SCAN_TYPES: tuple[LiteralString, ...] = ('fixed', 'scan')
-
-    # _mode_t = Literal['dc', 'pulse', 'differential']
-    # _MODES: tuple[_mode_t, ...] = ('dc', 'pulse', 'differential')
 
     equilibration_time: float = 0.0
     """Equilibration time in s."""
@@ -1481,6 +1478,14 @@ class ElectrochemicalImpedanceSpectroscopy(
     frequency_type: Literal['fixed', 'scan'] = 'scan'
     """Scan type: 'scan', 'fixed'."""
 
+    @property
+    def _SCAN_TYPES(self):
+        return get_args(get_type_hints(self.__class__)['scan_type'])
+
+    @property
+    def _FREQ_TYPES(self):
+        return get_args(get_type_hints(self.__class__)['frequency_type'])
+
     def _update_psmethod(self, psmethod: PSMethod, /):
         """Update method with electrochemical impedance spectroscopy settings."""
         psmethod.ScanType = enumScanType(self._SCAN_TYPES.index(self.scan_type))
@@ -1493,14 +1498,8 @@ class ElectrochemicalImpedanceSpectroscopy(
         psmethod.MinFrequency = self.min_frequency
 
     def _update_params(self, psmethod: PSMethod, /):
-        if psmethod.ScanType not in get_args(self.scan_type):
-            raise ValueError
-
-        if psmethod.FreqType not in get_args(self.frequency_type):
-            raise ValueError
-
-        self.scan_type = get_args(self.scan_type)[int(psmethod.ScanType)]
-        self.frequency_type = get_args(self.frequency_type)[int(psmethod.FreqType)]
+        self.scan_type = self._SCAN_TYPES[int(psmethod.ScanType)]
+        self.frequency_type = self._FREQ_TYPES[int(psmethod.FreqType)]
         self.equilibration_time = single_to_double(psmethod.EquilibrationTime)
         self.dc_potential = single_to_double(psmethod.Potential)
         self.ac_potential = single_to_double(psmethod.Eac)
