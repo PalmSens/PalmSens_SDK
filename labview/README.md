@@ -13,8 +13,6 @@
 With this SDK, you can control your PalmSens instrument and process the data in Labview.
 Connect, control and process data from your PalmSens instrument using Labview.
 
-![Control your PalmSens device from Labview](./docs/modules/ROOT/images/measuring_1.png)
-
 Download the latest [release here](https://github.com/palmsens/PalmSens_SDK/releases).
 
 See [the installation guidelines](https://sdk.palmsens.com/labview/latest/installation.html) for more information.
