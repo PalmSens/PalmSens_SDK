@@ -4,8 +4,12 @@
 <br>
 
 <p align="center">
-    <a href="https://sdk.palmsens.com" target="_blank">
-        <img src="./docs/start/modules/ROOT/images/banner.svg" alt="PalmSens banner" width="80%">
+    <a href="https://sdk.palmsens.com/maui/latest" target="_blank">
+        <picture>
+          <source media="(prefers-color-scheme: dark)" srcset="./docs/start/modules/ROOT/images/banner_dark.svg">
+          <source media="(prefers-color-scheme: light)" srcset="./docs/start/modules/ROOT/images/banner.svg">
+          <img alt="PalmSens banner" src="./docs/start/modules/ROOT/images/banner.svg" width="80%">
+        </picture>
     </a>
 </p>
 

@@ -1,8 +1,12 @@
 <br>
 
 <p align="center">
-    <a href="https://sdk.palmsens.com/matlab/latest" target="_blank">
-        <img src="./docs/modules/ROOT/images/banner.svg" alt="PalmSens Matlab banner" width="80%">
+    <a href="https://sdk.palmsens.com/maui/latest" target="_blank">
+        <picture>
+          <source media="(prefers-color-scheme: dark)" srcset="./docs/modules/ROOT/images/banner_dark.svg">
+          <source media="(prefers-color-scheme: light)" srcset="./docs/modules/ROOT/images/banner.svg">
+          <img alt="PalmSens banner" src="./docs/modules/ROOT/images/banner.svg" width="80%">
+        </picture>
     </a>
 </p>
 
