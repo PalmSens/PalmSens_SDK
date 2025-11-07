@@ -1,5 +1,11 @@
 # Labview SDK for PalmSens devices
 
+<p align="center">
+    <a href="https://sdk.palmsens.com/labview/latest" target="_blank">
+        <img src="./docs/modules/ROOT/images/banner.svg" alt="PalmSens LabView banner" width="80%">
+    </a>
+</p>
+
 With this SDK, you can control your PalmSens instrument and process the data in Labview.
 Connect, control and process data from your PalmSens instrument using Labview.
 
