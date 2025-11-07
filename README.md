@@ -3,11 +3,15 @@
 
 # PalmSens SDKs
 
+<br>
+
 <p align="center">
     <a href="https://sdk.palmsens.com" target="_blank">
         <img src="./docs/start/modules/ROOT/images/banner.svg" alt="PalmSens banner" width="80%">
     </a>
 </p>
+
+<br>
 
 Take full control of your PalmSens instruments and modules with the PalmSens Software Development Kits (SDKs) and code examples.
 

@@ -1,10 +1,14 @@
 # .NET MAUI SDK for PalmSens devices
 
+<br>
+
 <p align="center">
     <a href="https://sdk.palmsens.com/maui/latest" target="_blank">
         <img src="./docs/modules/ROOT/images/banner.svg" alt="PalmSens .NET MAUI banner" width="80%">
     </a>
 </p>
+
+<br>
 
 **The .NET MAUI SDK is under active development and not ready for actual use.**
 
