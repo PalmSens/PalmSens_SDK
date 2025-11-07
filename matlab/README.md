@@ -1,5 +1,3 @@
-# Matlab SDK for PalmSens devices
-
 <br>
 
 <p align="center">
@@ -9,6 +7,8 @@
 </p>
 
 <br>
+
+# Matlab SDK for PalmSens devices
 
 With this SDK, you can control your PalmSens instrument and process the data in MATLAB.
 Connect, control and process data from your PalmSens instrument using MATLAB.

@@ -1,5 +1,3 @@
-# .NET MAUI SDK for PalmSens devices
-
 <br>
 
 <p align="center">
@@ -9,6 +7,8 @@
 </p>
 
 <br>
+
+# .NET MAUI SDK for PalmSens devices
 
 **The .NET MAUI SDK is under active development and not ready for actual use.**
 

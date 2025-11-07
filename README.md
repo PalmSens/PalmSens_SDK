@@ -1,8 +1,6 @@
 [![Publish to GitHub Pages](https://github.com/PalmSens/PalmSens_SDK/actions/workflows/publish-docs.yml/badge.svg)](https://github.com/PalmSens/PalmSens_SDK/actions/workflows/publish-docs.yml)
 [![Tests for Python SDK](https://github.com/PalmSens/PalmSens_SDK/actions/workflows/python-tests.yml/badge.svg)](https://github.com/PalmSens/PalmSens_SDK/actions/workflows/python-tests.yml)
 
-# PalmSens SDKs
-
 <br>
 
 <p align="center">
@@ -12,6 +10,8 @@
 </p>
 
 <br>
+
+# PalmSens SDKs
 
 Take full control of your PalmSens instruments and modules with the PalmSens Software Development Kits (SDKs) and code examples.
 

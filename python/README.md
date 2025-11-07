@@ -2,8 +2,6 @@
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/pypalmsens)](https://pypi.org/project/pypalmsens/)
 [![PyPI](https://img.shields.io/pypi/v/pypalmsens.svg?style=flat)](https://pypi.org/project/pypalmsens/)
 
-# PyPalmSens: Python SDK for PalmSens devices
-
 <br>
 
 <p align="center">
@@ -13,6 +11,8 @@
 </p>
 
 <br>
+
+# PyPalmSens: Python SDK for PalmSens devices
 
 PyPalmSens is a Python library for automating electrochemistry experiments with your PalmSens instruments.
 It provides an intuitive Python API, making it straightforward to integrate into your Python workflows.
