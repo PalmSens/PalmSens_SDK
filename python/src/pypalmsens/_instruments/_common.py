@@ -2,12 +2,19 @@ from __future__ import annotations
 
 import asyncio
 import warnings
+from collections.abc import Sequence
 from dataclasses import dataclass, field
 from math import floor
-from typing import Any, Protocol, Sequence
+from typing import TYPE_CHECKING, Any, Protocol, override
 
 from PalmSens.Comm import enumDeviceType
 from System import Action
+
+from .. import __sdk_version__
+
+if TYPE_CHECKING:
+    from PalmSens.Devices import Device as PSDevice
+    from PalmSens.Devices import PalmSensCapabilities
 
 
 class Callback(Protocol):
@@ -33,9 +40,8 @@ def on_completion(future, loop, task):
         loop.call_soon_threadsafe(lambda: future.set_result(task.GetAwaiter().GetResult()))
 
 
-def firmware_warning(capabilities, /) -> None:
+def firmware_warning(capabilities: PalmSensCapabilities, /) -> None:
     """Raise warning if firmware is not supported."""
-    from pypalmsens import __sdk_version__
 
     device_type = capabilities.DeviceType
     firmware_version = capabilities.FirmwareVersion
@@ -91,7 +97,7 @@ class Instrument:
     Returns -1 if instrument is not part of a multi-channel device."""
     interface: str
     """Type of the connection."""
-    device: Any = field(repr=False)
+    device: PSDevice = field(repr=False)
     """Device connection class."""
 
     def __post_init__(self):
@@ -104,6 +110,7 @@ class Instrument:
             self.channel = int(ch_str[2:])
             self.name = self.id[:idx]
 
+    @override
     def __repr__(self):
         args = ''.join(
             (

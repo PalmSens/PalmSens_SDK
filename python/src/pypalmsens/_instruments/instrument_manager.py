@@ -18,7 +18,7 @@ from PalmSens.Plottables import (
 )
 from System import EventHandler  # type: ignore
 
-from .._data._shared import ArrayType, _get_values_from_NETArray
+from .._data._shared import ArrayType, get_values_from_NETArray
 from .._methods import CURRENT_RANGE, BaseTechnique
 from ..data import Measurement
 from ._common import Callback, Instrument, create_future, firmware_warning
@@ -401,14 +401,10 @@ class InstrumentManager:
             for i in range(start, start + count):
                 point = {}
                 point['index'] = i + 1
-                point['x'] = _get_values_from_NETArray(curve.XAxisDataArray, start=i, count=1)[
-                    0
-                ]
+                point['x'] = get_values_from_NETArray(curve.XAxisDataArray, start=i, count=1)[0]
                 point['x_unit'] = curve.XUnit.ToString()
                 point['x_type'] = ArrayType(curve.XAxisDataArray.ArrayType).name
-                point['y'] = _get_values_from_NETArray(curve.YAxisDataArray, start=i, count=1)[
-                    0
-                ]
+                point['y'] = get_values_from_NETArray(curve.YAxisDataArray, start=i, count=1)[0]
                 point['y_unit'] = curve.YUnit.ToString()
                 point['y_type'] = ArrayType(curve.YAxisDataArray.ArrayType).name
                 data.append(point)
@@ -423,13 +419,13 @@ class InstrumentManager:
                 for array in arrays:
                     array_type = ArrayType(array.ArrayType)
                     if array_type == ArrayType.Frequency:
-                        point['frequency'] = _get_values_from_NETArray(array, start=i, count=1)[
+                        point['frequency'] = get_values_from_NETArray(array, start=i, count=1)[
                             0
                         ]
                     elif array_type == ArrayType.ZRe:
-                        point['zre'] = _get_values_from_NETArray(array, start=i, count=1)[0]
+                        point['zre'] = get_values_from_NETArray(array, start=i, count=1)[0]
                     elif array_type == ArrayType.ZIm:
-                        point['zim'] = _get_values_from_NETArray(array, start=i, count=1)[0]
+                        point['zim'] = get_values_from_NETArray(array, start=i, count=1)[0]
                 data.append(point)
             self.callback(data)
 
