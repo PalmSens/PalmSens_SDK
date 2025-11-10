@@ -54,16 +54,12 @@ class InstrumentPoolAsync:
 
     async def connect(self) -> None:
         """Connect all instrument managers in the pool."""
-        tasks = []
-        for manager in self.managers:
-            tasks.append(manager.connect())
+        tasks = [manager.connect() for manager in self.managers]
         await asyncio.gather(*tasks)
 
     async def disconnect(self) -> None:
         """Disconnect all instrument managers in the pool."""
-        tasks = []
-        for manager in self.managers:
-            tasks.append(manager.disconnect())
+        tasks = [manager.disconnect() for manager in self.managers]
         await asyncio.gather(*tasks)
 
     def is_connected(self) -> bool:
