@@ -1,21 +1,12 @@
 import typing
-
 from PalmSens.Units import Unit
 
 class AuxiliaryInputType:
     @typing.overload
     def __init__(self) -> None: ...
     @typing.overload
-    def __init__(
-        self,
-        isReadOnly: bool,
-        name: str,
-        description: str,
-        offset: float,
-        slope: float,
-        unit: Unit,
-    ) -> None: ...
-    IsReadOnly: bool
+    def __init__(self, isReadOnly: bool, name: str, description: str, offset: float, slope: float, unit: Unit) -> None: ...
+    IsReadOnly : bool
     @property
     def Description(self) -> str: ...
     @Description.setter
@@ -46,9 +37,9 @@ class AuxiliaryInputType:
     def Serialize(self) -> str: ...
     # Skipped ToString due to it being static, abstract and generic.
 
-    ToString: ToString_MethodGroup
+    ToString : ToString_MethodGroup
     class ToString_MethodGroup:
         @typing.overload
-        def __call__(self) -> str: ...
+        def __call__(self) -> str:...
         @typing.overload
-        def __call__(self, value: float) -> str: ...
+        def __call__(self, value: float) -> str:...

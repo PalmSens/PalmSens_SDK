@@ -1,67 +1,40 @@
-import abc
-import typing
-
-from PalmSens import (
-    CurrentRange,
-    CurrentRanges,
-    ExtraValueMask,
-    MeasType,
-    Method,
-    MethodScript,
-    MuxMethod,
-    PolyEmStatMethodEx,
-    PotentionstatChannels,
-    Ranging,
-    RangingPotential,
-    SE2vsXChannels,
-    TaskBarrier,
-    enumReaction,
-    enumSignal,
-)
-from PalmSens.Comm import ActiveMeasurement, Buffer, ClientConnection, ClientConnectionMS
+import typing, abc
+from PalmSens.Techniques import ImpedimetricMethod, ImpedimetricIterationMethodBase, ImpedimetricGstatMethod
 from PalmSens.Data import DataArrayType
-from PalmSens.Devices import DeviceCapabilities, MethodScriptDeviceCapabilities
-from PalmSens.Plottables import CurveDirection
-from PalmSens.Techniques import (
-    ImpedimetricGstatMethod,
-    ImpedimetricIterationMethodBase,
-    ImpedimetricMethod,
-)
-from PalmSens.Techniques.Impedance import (
-    DualEISModes,
-    EnumFrequencyMode,
-    enumFrequencyType,
-    enumScanType,
-)
-from PalmSens.Units import Unit
+from PalmSens import Method, PolyEmStatMethodEx, CurrentRange, Ranging, ExtraValueMask, MuxMethod, MethodScript, RangingPotential, enumReaction, SE2vsXChannels, PotentionstatChannels, enumSignal, MeasType, TaskBarrier, CurrentRanges
 from System import Array_1
 from System.Collections import BitArray
+from PalmSens.Units import Unit
 from System.Collections.Generic import List_1
+from PalmSens.Techniques.Impedance import enumFrequencyType, EnumFrequencyMode, DualEISModes, enumScanType
+from PalmSens.Plottables import CurveDirection
+from PalmSens.Comm import ActiveMeasurement, ClientConnection, Buffer, ClientConnectionMS
 from System.Threading.Tasks import Task_1
+from PalmSens.Devices import MethodScriptDeviceCapabilities, DeviceCapabilities
 
 class FastImpedance(ImpedimetricMethod):
     def __init__(self) -> None: ...
-    AnalyteName: str
-    DefaultXAxis: DataArrayType
-    DefaultYAxis: DataArrayType
-    MaxPGAgain: int
-    MethodID: str
-    MethodIsGalvanostatic: bool
-    MuxSett: Method.MuxSettings
-    Name: str
-    PeakOverlap: float
-    PolyEmStat: PolyEmStatMethodEx
-    RecordCE: bool
-    ShortName: str
-    SmoothLevel: int
-    Standard: Array_1[float]
-    Technique: int
-    UseMuxChannel: BitArray
-    UseStirrer: bool
-    ViewBottom: float
-    ViewLeft: float
-    ViewRight: float
-    ViewTop: float
+    AnalyteName : str
+    DefaultXAxis : DataArrayType
+    DefaultYAxis : DataArrayType
+    MaxPGAgain : int
+    MethodID : str
+    MethodIsGalvanostatic : bool
+    MuxSett : Method.MuxSettings
+    Name : str
+    PeakOverlap : float
+    PolyEmStat : PolyEmStatMethodEx
+    RecordCE : bool
+    ShortName : str
+    SmoothLevel : int
+    Standard : Array_1[float]
+    Technique : int
+    UseMuxChannel : BitArray
+    UseStirrer : bool
+    ViewBottom : float
+    ViewLeft : float
+    ViewRight : float
+    ViewTop : float
     @property
     def Area(self) -> float: ...
     @Area.setter
@@ -93,9 +66,7 @@ class FastImpedance(ImpedimetricMethod):
     @property
     def BipotModePS(self) -> Method.EnumPalmSensBipotMode: ...
     @BipotModePS.setter
-    def BipotModePS(
-        self, value: Method.EnumPalmSensBipotMode
-    ) -> Method.EnumPalmSensBipotMode: ...
+    def BipotModePS(self, value: Method.EnumPalmSensBipotMode) -> Method.EnumPalmSensBipotMode: ...
     @property
     def BiPotPotential(self) -> float: ...
     @BiPotPotential.setter
@@ -203,9 +174,7 @@ class FastImpedance(ImpedimetricMethod):
     @property
     def IterationMethodOverrides(self) -> ImpedimetricIterationMethodBase: ...
     @IterationMethodOverrides.setter
-    def IterationMethodOverrides(
-        self, value: ImpedimetricIterationMethodBase
-    ) -> ImpedimetricIterationMethodBase: ...
+    def IterationMethodOverrides(self, value: ImpedimetricIterationMethodBase) -> ImpedimetricIterationMethodBase: ...
     @property
     def LimitMaxValue(self) -> float: ...
     @LimitMaxValue.setter
@@ -405,9 +374,7 @@ class FastImpedance(ImpedimetricMethod):
     @property
     def SelectedPotentiostatChannel(self) -> PotentionstatChannels: ...
     @SelectedPotentiostatChannel.setter
-    def SelectedPotentiostatChannel(
-        self, value: PotentionstatChannels
-    ) -> PotentionstatChannels: ...
+    def SelectedPotentiostatChannel(self, value: PotentionstatChannels) -> PotentionstatChannels: ...
     @property
     def ShowTDDMS(self) -> bool: ...
     @ShowTDDMS.setter
@@ -519,53 +486,41 @@ class FastImpedance(ImpedimetricMethod):
     @property
     def YTop(self) -> float: ...
     def GetMethodID(self) -> str: ...
-    def ReceiveMeasurementMS(
-        self, c: ClientConnection, muxChannel: int, measType: MeasType, measBuff: Buffer = ...
-    ) -> ActiveMeasurement: ...
-    def ReceiveMeasurementMSAsync(
-        self,
-        c: ClientConnection,
-        muxChannel: int,
-        measType: MeasType,
-        measBuff: Buffer = ...,
-        taskBarrier: TaskBarrier = ...,
-    ) -> Task_1[ActiveMeasurement]: ...
-    def ToMethodScript(
-        self,
-        capabilities: MethodScriptDeviceCapabilities,
-        forEditor: bool,
-        connMS: ClientConnectionMS = ...,
-    ) -> MethodScript: ...
+    def ReceiveMeasurementMS(self, c: ClientConnection, muxChannel: int, measType: MeasType, measBuff: Buffer = ...) -> ActiveMeasurement: ...
+    def ReceiveMeasurementMSAsync(self, c: ClientConnection, muxChannel: int, measType: MeasType, measBuff: Buffer = ..., taskBarrier: TaskBarrier = ...) -> Task_1[ActiveMeasurement]: ...
+    def ToMethodScript(self, capabilities: MethodScriptDeviceCapabilities, forEditor: bool, connMS: ClientConnectionMS = ...) -> MethodScript: ...
     def ToShortString(self) -> str: ...
     def ToString(self) -> str: ...
+
 
 class FastImpedanceDeviceCapabilitiesExtensions(abc.ABC):
     @staticmethod
     def SupportsFastImpedance(capabilities: DeviceCapabilities) -> bool: ...
 
+
 class FastImpedanceGstat(ImpedimetricGstatMethod):
     def __init__(self) -> None: ...
-    AnalyteName: str
-    DefaultXAxis: DataArrayType
-    DefaultYAxis: DataArrayType
-    MaxPGAgain: int
-    MethodID: str
-    MethodIsGalvanostatic: bool
-    MuxSett: Method.MuxSettings
-    Name: str
-    PeakOverlap: float
-    PolyEmStat: PolyEmStatMethodEx
-    RecordCE: bool
-    ShortName: str
-    SmoothLevel: int
-    Standard: Array_1[float]
-    Technique: int
-    UseMuxChannel: BitArray
-    UseStirrer: bool
-    ViewBottom: float
-    ViewLeft: float
-    ViewRight: float
-    ViewTop: float
+    AnalyteName : str
+    DefaultXAxis : DataArrayType
+    DefaultYAxis : DataArrayType
+    MaxPGAgain : int
+    MethodID : str
+    MethodIsGalvanostatic : bool
+    MuxSett : Method.MuxSettings
+    Name : str
+    PeakOverlap : float
+    PolyEmStat : PolyEmStatMethodEx
+    RecordCE : bool
+    ShortName : str
+    SmoothLevel : int
+    Standard : Array_1[float]
+    Technique : int
+    UseMuxChannel : BitArray
+    UseStirrer : bool
+    ViewBottom : float
+    ViewLeft : float
+    ViewRight : float
+    ViewTop : float
     @property
     def AppliedCurrentRange(self) -> CurrentRange: ...
     @AppliedCurrentRange.setter
@@ -601,9 +556,7 @@ class FastImpedanceGstat(ImpedimetricGstatMethod):
     @property
     def BipotModePS(self) -> Method.EnumPalmSensBipotMode: ...
     @BipotModePS.setter
-    def BipotModePS(
-        self, value: Method.EnumPalmSensBipotMode
-    ) -> Method.EnumPalmSensBipotMode: ...
+    def BipotModePS(self, value: Method.EnumPalmSensBipotMode) -> Method.EnumPalmSensBipotMode: ...
     @property
     def BiPotPotential(self) -> float: ...
     @BiPotPotential.setter
@@ -715,9 +668,7 @@ class FastImpedanceGstat(ImpedimetricGstatMethod):
     @property
     def IterationMethodOverrides(self) -> ImpedimetricIterationMethodBase: ...
     @IterationMethodOverrides.setter
-    def IterationMethodOverrides(
-        self, value: ImpedimetricIterationMethodBase
-    ) -> ImpedimetricIterationMethodBase: ...
+    def IterationMethodOverrides(self, value: ImpedimetricIterationMethodBase) -> ImpedimetricIterationMethodBase: ...
     @property
     def LimitMaxValue(self) -> float: ...
     @LimitMaxValue.setter
@@ -803,9 +754,7 @@ class FastImpedanceGstat(ImpedimetricGstatMethod):
     @property
     def OriginalAppliedCurrentRange(self) -> typing.Optional[CurrentRanges]: ...
     @OriginalAppliedCurrentRange.setter
-    def OriginalAppliedCurrentRange(
-        self, value: typing.Optional[CurrentRanges]
-    ) -> typing.Optional[CurrentRanges]: ...
+    def OriginalAppliedCurrentRange(self, value: typing.Optional[CurrentRanges]) -> typing.Optional[CurrentRanges]: ...
     @property
     def OverrideBandwidth(self) -> bool: ...
     @OverrideBandwidth.setter
@@ -917,9 +866,7 @@ class FastImpedanceGstat(ImpedimetricGstatMethod):
     @property
     def SelectedPotentiostatChannel(self) -> PotentionstatChannels: ...
     @SelectedPotentiostatChannel.setter
-    def SelectedPotentiostatChannel(
-        self, value: PotentionstatChannels
-    ) -> PotentionstatChannels: ...
+    def SelectedPotentiostatChannel(self, value: PotentionstatChannels) -> PotentionstatChannels: ...
     @property
     def ShowTDDMS(self) -> bool: ...
     @ShowTDDMS.setter
@@ -1027,22 +974,8 @@ class FastImpedanceGstat(ImpedimetricGstatMethod):
     @property
     def YTop(self) -> float: ...
     def GetMethodID(self) -> str: ...
-    def ReceiveMeasurementMS(
-        self, c: ClientConnection, muxChannel: int, measType: MeasType, measBuff: Buffer = ...
-    ) -> ActiveMeasurement: ...
-    def ReceiveMeasurementMSAsync(
-        self,
-        c: ClientConnection,
-        muxChannel: int,
-        measType: MeasType,
-        measBuff: Buffer = ...,
-        taskBarrier: TaskBarrier = ...,
-    ) -> Task_1[ActiveMeasurement]: ...
-    def ToMethodScript(
-        self,
-        capabilities: MethodScriptDeviceCapabilities,
-        forEditor: bool,
-        connMS: ClientConnectionMS = ...,
-    ) -> MethodScript: ...
+    def ReceiveMeasurementMS(self, c: ClientConnection, muxChannel: int, measType: MeasType, measBuff: Buffer = ...) -> ActiveMeasurement: ...
+    def ReceiveMeasurementMSAsync(self, c: ClientConnection, muxChannel: int, measType: MeasType, measBuff: Buffer = ..., taskBarrier: TaskBarrier = ...) -> Task_1[ActiveMeasurement]: ...
+    def ToMethodScript(self, capabilities: MethodScriptDeviceCapabilities, forEditor: bool, connMS: ClientConnectionMS = ...) -> MethodScript: ...
     def ToShortString(self) -> str: ...
     def ToString(self) -> str: ...

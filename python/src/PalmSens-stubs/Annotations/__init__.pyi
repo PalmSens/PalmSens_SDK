@@ -1,5 +1,4 @@
 import typing
-
 from System import Attribute
 
 class AspChildControlTypeAttribute(Attribute):
@@ -15,20 +14,24 @@ class AspChildControlTypeAttribute(Attribute):
     @property
     def TypeId(self) -> typing.Any: ...
 
+
 class AspDataFieldAttribute(Attribute):
     def __init__(self) -> None: ...
     @property
     def TypeId(self) -> typing.Any: ...
+
 
 class AspDataFieldsAttribute(Attribute):
     def __init__(self) -> None: ...
     @property
     def TypeId(self) -> typing.Any: ...
 
+
 class AspMethodPropertyAttribute(Attribute):
     def __init__(self) -> None: ...
     @property
     def TypeId(self) -> typing.Any: ...
+
 
 class AspMvcActionAttribute(Attribute):
     @typing.overload
@@ -42,10 +45,12 @@ class AspMvcActionAttribute(Attribute):
     @property
     def TypeId(self) -> typing.Any: ...
 
+
 class AspMvcActionSelectorAttribute(Attribute):
     def __init__(self) -> None: ...
     @property
     def TypeId(self) -> typing.Any: ...
+
 
 class AspMvcAreaAttribute(Attribute):
     @typing.overload
@@ -59,6 +64,7 @@ class AspMvcAreaAttribute(Attribute):
     @property
     def TypeId(self) -> typing.Any: ...
 
+
 class AspMvcAreaMasterLocationFormatAttribute(Attribute):
     def __init__(self, format: str) -> None: ...
     @property
@@ -67,6 +73,7 @@ class AspMvcAreaMasterLocationFormatAttribute(Attribute):
     def Format(self, value: str) -> str: ...
     @property
     def TypeId(self) -> typing.Any: ...
+
 
 class AspMvcAreaPartialViewLocationFormatAttribute(Attribute):
     def __init__(self, format: str) -> None: ...
@@ -77,6 +84,7 @@ class AspMvcAreaPartialViewLocationFormatAttribute(Attribute):
     @property
     def TypeId(self) -> typing.Any: ...
 
+
 class AspMvcAreaViewLocationFormatAttribute(Attribute):
     def __init__(self, format: str) -> None: ...
     @property
@@ -85,6 +93,7 @@ class AspMvcAreaViewLocationFormatAttribute(Attribute):
     def Format(self, value: str) -> str: ...
     @property
     def TypeId(self) -> typing.Any: ...
+
 
 class AspMvcControllerAttribute(Attribute):
     @typing.overload
@@ -98,20 +107,24 @@ class AspMvcControllerAttribute(Attribute):
     @property
     def TypeId(self) -> typing.Any: ...
 
+
 class AspMvcDisplayTemplateAttribute(Attribute):
     def __init__(self) -> None: ...
     @property
     def TypeId(self) -> typing.Any: ...
+
 
 class AspMvcEditorTemplateAttribute(Attribute):
     def __init__(self) -> None: ...
     @property
     def TypeId(self) -> typing.Any: ...
 
+
 class AspMvcMasterAttribute(Attribute):
     def __init__(self) -> None: ...
     @property
     def TypeId(self) -> typing.Any: ...
+
 
 class AspMvcMasterLocationFormatAttribute(Attribute):
     def __init__(self, format: str) -> None: ...
@@ -120,15 +133,18 @@ class AspMvcMasterLocationFormatAttribute(Attribute):
     @property
     def TypeId(self) -> typing.Any: ...
 
+
 class AspMvcModelTypeAttribute(Attribute):
     def __init__(self) -> None: ...
     @property
     def TypeId(self) -> typing.Any: ...
 
+
 class AspMvcPartialViewAttribute(Attribute):
     def __init__(self) -> None: ...
     @property
     def TypeId(self) -> typing.Any: ...
+
 
 class AspMvcPartialViewLocationFormatAttribute(Attribute):
     def __init__(self, format: str) -> None: ...
@@ -139,30 +155,36 @@ class AspMvcPartialViewLocationFormatAttribute(Attribute):
     @property
     def TypeId(self) -> typing.Any: ...
 
+
 class AspMvcSuppressViewErrorAttribute(Attribute):
     def __init__(self) -> None: ...
     @property
     def TypeId(self) -> typing.Any: ...
+
 
 class AspMvcTemplateAttribute(Attribute):
     def __init__(self) -> None: ...
     @property
     def TypeId(self) -> typing.Any: ...
 
+
 class AspMvcViewAttribute(Attribute):
     def __init__(self) -> None: ...
     @property
     def TypeId(self) -> typing.Any: ...
+
 
 class AspMvcViewComponentAttribute(Attribute):
     def __init__(self) -> None: ...
     @property
     def TypeId(self) -> typing.Any: ...
 
+
 class AspMvcViewComponentViewAttribute(Attribute):
     def __init__(self) -> None: ...
     @property
     def TypeId(self) -> typing.Any: ...
+
 
 class AspMvcViewLocationFormatAttribute(Attribute):
     def __init__(self, format: str) -> None: ...
@@ -173,6 +195,7 @@ class AspMvcViewLocationFormatAttribute(Attribute):
     @property
     def TypeId(self) -> typing.Any: ...
 
+
 class AspRequiredAttributeAttribute(Attribute):
     def __init__(self, attribute: str) -> None: ...
     @property
@@ -182,12 +205,14 @@ class AspRequiredAttributeAttribute(Attribute):
     @property
     def TypeId(self) -> typing.Any: ...
 
+
 class AspTypePropertyAttribute(Attribute):
     def __init__(self, createConstructorReferences: bool) -> None: ...
     @property
     def CreateConstructorReferences(self) -> bool: ...
     @property
     def TypeId(self) -> typing.Any: ...
+
 
 class AssertionConditionAttribute(Attribute):
     def __init__(self, conditionType: AssertionConditionType) -> None: ...
@@ -196,23 +221,26 @@ class AssertionConditionAttribute(Attribute):
     @property
     def TypeId(self) -> typing.Any: ...
 
+
 class AssertionConditionType(typing.SupportsInt):
     @typing.overload
-    def __init__(self, value: int) -> None: ...
+    def __init__(self, value : int) -> None: ...
     @typing.overload
-    def __init__(self, value: int, force_if_true: bool) -> None: ...
+    def __init__(self, value : int, force_if_true: bool) -> None: ...
     def __int__(self) -> int: ...
 
     # Values:
-    IS_TRUE: AssertionConditionType  # 0
-    IS_FALSE: AssertionConditionType  # 1
-    IS_NULL: AssertionConditionType  # 2
-    IS_NOT_NULL: AssertionConditionType  # 3
+    IS_TRUE : AssertionConditionType # 0
+    IS_FALSE : AssertionConditionType # 1
+    IS_NULL : AssertionConditionType # 2
+    IS_NOT_NULL : AssertionConditionType # 3
+
 
 class AssertionMethodAttribute(Attribute):
     def __init__(self) -> None: ...
     @property
     def TypeId(self) -> typing.Any: ...
+
 
 class BaseTypeRequiredAttribute(Attribute):
     def __init__(self, baseType: typing.Type[typing.Any]) -> None: ...
@@ -223,15 +251,18 @@ class BaseTypeRequiredAttribute(Attribute):
     @property
     def TypeId(self) -> typing.Any: ...
 
+
 class CanBeNullAttribute(Attribute):
     def __init__(self) -> None: ...
     @property
     def TypeId(self) -> typing.Any: ...
 
+
 class CannotApplyEqualityOperatorAttribute(Attribute):
     def __init__(self) -> None: ...
     @property
     def TypeId(self) -> typing.Any: ...
+
 
 class CollectionAccessAttribute(Attribute):
     def __init__(self, collectionAccessType: CollectionAccessType) -> None: ...
@@ -240,18 +271,20 @@ class CollectionAccessAttribute(Attribute):
     @property
     def TypeId(self) -> typing.Any: ...
 
+
 class CollectionAccessType(typing.SupportsInt):
     @typing.overload
-    def __init__(self, value: int) -> None: ...
+    def __init__(self, value : int) -> None: ...
     @typing.overload
-    def __init__(self, value: int, force_if_true: bool) -> None: ...
+    def __init__(self, value : int, force_if_true: bool) -> None: ...
     def __int__(self) -> int: ...
 
     # Values:
-    None_: CollectionAccessType  # 0
-    Read: CollectionAccessType  # 1
-    ModifyExistingContent: CollectionAccessType  # 2
-    UpdatedContent: CollectionAccessType  # 6
+    None_ : CollectionAccessType # 0
+    Read : CollectionAccessType # 1
+    ModifyExistingContent : CollectionAccessType # 2
+    UpdatedContent : CollectionAccessType # 6
+
 
 class ContractAnnotationAttribute(Attribute):
     @typing.overload
@@ -267,6 +300,7 @@ class ContractAnnotationAttribute(Attribute):
     @property
     def TypeId(self) -> typing.Any: ...
 
+
 class HtmlAttributeValueAttribute(Attribute):
     def __init__(self, name: str) -> None: ...
     @property
@@ -275,6 +309,7 @@ class HtmlAttributeValueAttribute(Attribute):
     def Name(self, value: str) -> str: ...
     @property
     def TypeId(self) -> typing.Any: ...
+
 
 class HtmlElementAttributesAttribute(Attribute):
     @typing.overload
@@ -288,62 +323,71 @@ class HtmlElementAttributesAttribute(Attribute):
     @property
     def TypeId(self) -> typing.Any: ...
 
+
 class ImplicitNotNullAttribute(Attribute):
     def __init__(self) -> None: ...
     @property
     def TypeId(self) -> typing.Any: ...
 
+
 class ImplicitUseKindFlags(typing.SupportsInt):
     @typing.overload
-    def __init__(self, value: int) -> None: ...
+    def __init__(self, value : int) -> None: ...
     @typing.overload
-    def __init__(self, value: int, force_if_true: bool) -> None: ...
+    def __init__(self, value : int, force_if_true: bool) -> None: ...
     def __int__(self) -> int: ...
 
     # Values:
-    Access: ImplicitUseKindFlags  # 1
-    Assign: ImplicitUseKindFlags  # 2
-    InstantiatedWithFixedConstructorSignature: ImplicitUseKindFlags  # 4
-    Default: ImplicitUseKindFlags  # 7
-    InstantiatedNoFixedConstructorSignature: ImplicitUseKindFlags  # 8
+    Access : ImplicitUseKindFlags # 1
+    Assign : ImplicitUseKindFlags # 2
+    InstantiatedWithFixedConstructorSignature : ImplicitUseKindFlags # 4
+    Default : ImplicitUseKindFlags # 7
+    InstantiatedNoFixedConstructorSignature : ImplicitUseKindFlags # 8
+
 
 class ImplicitUseTargetFlags(typing.SupportsInt):
     @typing.overload
-    def __init__(self, value: int) -> None: ...
+    def __init__(self, value : int) -> None: ...
     @typing.overload
-    def __init__(self, value: int, force_if_true: bool) -> None: ...
+    def __init__(self, value : int, force_if_true: bool) -> None: ...
     def __int__(self) -> int: ...
 
     # Values:
-    Default: ImplicitUseTargetFlags  # 1
-    Itself: ImplicitUseTargetFlags  # 1
-    Members: ImplicitUseTargetFlags  # 2
-    WithMembers: ImplicitUseTargetFlags  # 3
+    Default : ImplicitUseTargetFlags # 1
+    Itself : ImplicitUseTargetFlags # 1
+    Members : ImplicitUseTargetFlags # 2
+    WithMembers : ImplicitUseTargetFlags # 3
+
 
 class InstantHandleAttribute(Attribute):
     def __init__(self) -> None: ...
     @property
     def TypeId(self) -> typing.Any: ...
 
+
 class InvokerParameterNameAttribute(Attribute):
     def __init__(self) -> None: ...
     @property
     def TypeId(self) -> typing.Any: ...
+
 
 class ItemCanBeNullAttribute(Attribute):
     def __init__(self) -> None: ...
     @property
     def TypeId(self) -> typing.Any: ...
 
+
 class ItemNotNullAttribute(Attribute):
     def __init__(self) -> None: ...
     @property
     def TypeId(self) -> typing.Any: ...
 
+
 class LinqTunnelAttribute(Attribute):
     def __init__(self) -> None: ...
     @property
     def TypeId(self) -> typing.Any: ...
+
 
 class LocalizationRequiredAttribute(Attribute):
     @typing.overload
@@ -354,6 +398,7 @@ class LocalizationRequiredAttribute(Attribute):
     def Required(self) -> bool: ...
     @property
     def TypeId(self) -> typing.Any: ...
+
 
 class MacroAttribute(Attribute):
     def __init__(self) -> None: ...
@@ -372,6 +417,7 @@ class MacroAttribute(Attribute):
     @property
     def TypeId(self) -> typing.Any: ...
 
+
 class MeansImplicitUseAttribute(Attribute):
     @typing.overload
     def __init__(self) -> None: ...
@@ -380,9 +426,7 @@ class MeansImplicitUseAttribute(Attribute):
     @typing.overload
     def __init__(self, useKindFlags: ImplicitUseKindFlags) -> None: ...
     @typing.overload
-    def __init__(
-        self, useKindFlags: ImplicitUseKindFlags, targetFlags: ImplicitUseTargetFlags
-    ) -> None: ...
+    def __init__(self, useKindFlags: ImplicitUseKindFlags, targetFlags: ImplicitUseTargetFlags) -> None: ...
     @property
     def TargetFlags(self) -> ImplicitUseTargetFlags: ...
     @TargetFlags.setter
@@ -393,6 +437,7 @@ class MeansImplicitUseAttribute(Attribute):
     def UseKindFlags(self) -> ImplicitUseKindFlags: ...
     @UseKindFlags.setter
     def UseKindFlags(self, value: ImplicitUseKindFlags) -> ImplicitUseKindFlags: ...
+
 
 class MustUseReturnValueAttribute(Attribute):
     @typing.overload
@@ -406,15 +451,18 @@ class MustUseReturnValueAttribute(Attribute):
     @property
     def TypeId(self) -> typing.Any: ...
 
+
 class NoEnumerationAttribute(Attribute):
     def __init__(self) -> None: ...
     @property
     def TypeId(self) -> typing.Any: ...
 
+
 class NoReorder(Attribute):
     def __init__(self) -> None: ...
     @property
     def TypeId(self) -> typing.Any: ...
+
 
 class NotifyPropertyChangedInvocatorAttribute(Attribute):
     @typing.overload
@@ -428,10 +476,12 @@ class NotifyPropertyChangedInvocatorAttribute(Attribute):
     @property
     def TypeId(self) -> typing.Any: ...
 
+
 class NotNullAttribute(Attribute):
     def __init__(self) -> None: ...
     @property
     def TypeId(self) -> typing.Any: ...
+
 
 class PathReferenceAttribute(Attribute):
     @typing.overload
@@ -445,10 +495,12 @@ class PathReferenceAttribute(Attribute):
     @property
     def TypeId(self) -> typing.Any: ...
 
+
 class ProvidesContextAttribute(Attribute):
     def __init__(self) -> None: ...
     @property
     def TypeId(self) -> typing.Any: ...
+
 
 class PublicAPIAttribute(Attribute):
     @typing.overload
@@ -462,10 +514,12 @@ class PublicAPIAttribute(Attribute):
     @property
     def TypeId(self) -> typing.Any: ...
 
+
 class PureAttribute(Attribute):
     def __init__(self) -> None: ...
     @property
     def TypeId(self) -> typing.Any: ...
+
 
 class RazorDirectiveAttribute(Attribute):
     def __init__(self, directive: str) -> None: ...
@@ -476,10 +530,12 @@ class RazorDirectiveAttribute(Attribute):
     @property
     def TypeId(self) -> typing.Any: ...
 
+
 class RazorHelperCommonAttribute(Attribute):
     def __init__(self) -> None: ...
     @property
     def TypeId(self) -> typing.Any: ...
+
 
 class RazorImportNamespaceAttribute(Attribute):
     def __init__(self, name: str) -> None: ...
@@ -489,6 +545,7 @@ class RazorImportNamespaceAttribute(Attribute):
     def Name(self, value: str) -> str: ...
     @property
     def TypeId(self) -> typing.Any: ...
+
 
 class RazorInjectionAttribute(Attribute):
     def __init__(self, type: str, fieldName: str) -> None: ...
@@ -503,40 +560,48 @@ class RazorInjectionAttribute(Attribute):
     @property
     def TypeId(self) -> typing.Any: ...
 
+
 class RazorLayoutAttribute(Attribute):
     def __init__(self) -> None: ...
     @property
     def TypeId(self) -> typing.Any: ...
+
 
 class RazorSectionAttribute(Attribute):
     def __init__(self) -> None: ...
     @property
     def TypeId(self) -> typing.Any: ...
 
+
 class RazorWriteLiteralMethodAttribute(Attribute):
     def __init__(self) -> None: ...
     @property
     def TypeId(self) -> typing.Any: ...
+
 
 class RazorWriteMethodAttribute(Attribute):
     def __init__(self) -> None: ...
     @property
     def TypeId(self) -> typing.Any: ...
 
+
 class RazorWriteMethodParameterAttribute(Attribute):
     def __init__(self) -> None: ...
     @property
     def TypeId(self) -> typing.Any: ...
+
 
 class RegexPatternAttribute(Attribute):
     def __init__(self) -> None: ...
     @property
     def TypeId(self) -> typing.Any: ...
 
+
 class SourceTemplateAttribute(Attribute):
     def __init__(self) -> None: ...
     @property
     def TypeId(self) -> typing.Any: ...
+
 
 class StringFormatMethodAttribute(Attribute):
     def __init__(self, formatParameterName: str) -> None: ...
@@ -547,10 +612,12 @@ class StringFormatMethodAttribute(Attribute):
     @property
     def TypeId(self) -> typing.Any: ...
 
+
 class TerminatesProgramAttribute(Attribute):
     def __init__(self) -> None: ...
     @property
     def TypeId(self) -> typing.Any: ...
+
 
 class UsedImplicitlyAttribute(Attribute):
     @typing.overload
@@ -560,15 +627,14 @@ class UsedImplicitlyAttribute(Attribute):
     @typing.overload
     def __init__(self, useKindFlags: ImplicitUseKindFlags) -> None: ...
     @typing.overload
-    def __init__(
-        self, useKindFlags: ImplicitUseKindFlags, targetFlags: ImplicitUseTargetFlags
-    ) -> None: ...
+    def __init__(self, useKindFlags: ImplicitUseKindFlags, targetFlags: ImplicitUseTargetFlags) -> None: ...
     @property
     def TargetFlags(self) -> ImplicitUseTargetFlags: ...
     @property
     def TypeId(self) -> typing.Any: ...
     @property
     def UseKindFlags(self) -> ImplicitUseKindFlags: ...
+
 
 class ValueProviderAttribute(Attribute):
     def __init__(self, name: str) -> None: ...
@@ -579,10 +645,12 @@ class ValueProviderAttribute(Attribute):
     @property
     def TypeId(self) -> typing.Any: ...
 
+
 class XamlItemBindingOfItemsControlAttribute(Attribute):
     def __init__(self) -> None: ...
     @property
     def TypeId(self) -> typing.Any: ...
+
 
 class XamlItemsControlAttribute(Attribute):
     def __init__(self) -> None: ...

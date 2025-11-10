@@ -1,8 +1,7 @@
 import typing
-
-from PalmSens.Data import DataArray, DataArrayFunc, IDataValue
-from PalmSens.DataFiles import JsonBag
+from PalmSens.Data import DataArrayFunc, DataArray, IDataValue
 from PalmSens.Units import Unit
+from PalmSens.DataFiles import JsonBag
 from System import Version
 
 class DataArrayInverse(DataArrayFunc):
@@ -10,8 +9,8 @@ class DataArrayInverse(DataArrayFunc):
     def __init__(self, array: DataArray, title: str, unit: Unit) -> None: ...
     @typing.overload
     def __init__(self, bag: JsonBag, coreVersion: Version) -> None: ...
-    IsFinished: bool
-    OCPValue: float
+    IsFinished : bool
+    OCPValue : float
     @property
     def ArrayType(self) -> int: ...
     @property

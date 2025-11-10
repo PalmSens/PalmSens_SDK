@@ -1,59 +1,34 @@
 import typing
-
-from PalmSens import (
-    CurrentRange,
-    CurrentRanges,
-    ExtraValueMask,
-    Method,
-    MethodScript,
-    MuxMethod,
-    PolyEmStatMethodEx,
-    PotentionstatChannels,
-    Ranging,
-    RangingPotential,
-    SE2vsXChannels,
-    enumBlankType,
-    enumDetermination,
-    enumReaction,
-    enumSignal,
-    enumStandardsValues,
-    enumUsePeakValue,
-)
+from PalmSens.Techniques import OpenCircuitPotentiometry, CyclicVoltammetry, Potentiometry, LinearSweep, AmperometricDetection
 from PalmSens.Data import DataArrayType
-from PalmSens.Plottables import CurveDirection
-from PalmSens.Techniques import (
-    AmperometricDetection,
-    CyclicVoltammetry,
-    LinearSweep,
-    OpenCircuitPotentiometry,
-    Potentiometry,
-)
-from PalmSens.Units import Unit
+from PalmSens import Method, PolyEmStatMethodEx, CurrentRange, Ranging, ExtraValueMask, MuxMethod, CurrentRanges, MethodScript, RangingPotential, enumReaction, SE2vsXChannels, PotentionstatChannels, enumSignal, enumBlankType, enumDetermination, enumUsePeakValue, enumStandardsValues
 from System import Array_1
 from System.Collections import BitArray
+from PalmSens.Units import Unit
+from PalmSens.Plottables import CurveDirection
 
 class CorrosionPotential(OpenCircuitPotentiometry):
     def __init__(self) -> None: ...
-    AnalyteName: str
-    DefaultXAxis: DataArrayType
-    DefaultYAxis: DataArrayType
-    MethodID: str
-    MethodIsGalvanostatic: bool
-    MuxSett: Method.MuxSettings
-    Name: str
-    PeakOverlap: float
-    PolyEmStat: PolyEmStatMethodEx
-    RecordCE: bool
-    ShortName: str
-    SmoothLevel: int
-    Standard: Array_1[float]
-    Technique: int
-    UseMuxChannel: BitArray
-    UseStirrer: bool
-    ViewBottom: float
-    ViewLeft: float
-    ViewRight: float
-    ViewTop: float
+    AnalyteName : str
+    DefaultXAxis : DataArrayType
+    DefaultYAxis : DataArrayType
+    MethodID : str
+    MethodIsGalvanostatic : bool
+    MuxSett : Method.MuxSettings
+    Name : str
+    PeakOverlap : float
+    PolyEmStat : PolyEmStatMethodEx
+    RecordCE : bool
+    ShortName : str
+    SmoothLevel : int
+    Standard : Array_1[float]
+    Technique : int
+    UseMuxChannel : BitArray
+    UseStirrer : bool
+    ViewBottom : float
+    ViewLeft : float
+    ViewRight : float
+    ViewTop : float
     @property
     def AppliedCurrentRange(self) -> CurrentRange: ...
     @AppliedCurrentRange.setter
@@ -89,9 +64,7 @@ class CorrosionPotential(OpenCircuitPotentiometry):
     @property
     def BipotModePS(self) -> Method.EnumPalmSensBipotMode: ...
     @BipotModePS.setter
-    def BipotModePS(
-        self, value: Method.EnumPalmSensBipotMode
-    ) -> Method.EnumPalmSensBipotMode: ...
+    def BipotModePS(self, value: Method.EnumPalmSensBipotMode) -> Method.EnumPalmSensBipotMode: ...
     @property
     def BiPotPotential(self) -> float: ...
     @BiPotPotential.setter
@@ -237,9 +210,7 @@ class CorrosionPotential(OpenCircuitPotentiometry):
     @property
     def OriginalAppliedCurrentRange(self) -> typing.Optional[CurrentRanges]: ...
     @OriginalAppliedCurrentRange.setter
-    def OriginalAppliedCurrentRange(
-        self, value: typing.Optional[CurrentRanges]
-    ) -> typing.Optional[CurrentRanges]: ...
+    def OriginalAppliedCurrentRange(self, value: typing.Optional[CurrentRanges]) -> typing.Optional[CurrentRanges]: ...
     @property
     def OverrideBandwidth(self) -> bool: ...
     @OverrideBandwidth.setter
@@ -337,9 +308,7 @@ class CorrosionPotential(OpenCircuitPotentiometry):
     @property
     def SelectedPotentiostatChannel(self) -> PotentionstatChannels: ...
     @SelectedPotentiostatChannel.setter
-    def SelectedPotentiostatChannel(
-        self, value: PotentionstatChannels
-    ) -> PotentionstatChannels: ...
+    def SelectedPotentiostatChannel(self, value: PotentionstatChannels) -> PotentionstatChannels: ...
     @property
     def Signal(self) -> enumSignal: ...
     @Signal.setter
@@ -442,28 +411,29 @@ class CorrosionPotential(OpenCircuitPotentiometry):
     def ToShortString(self) -> str: ...
     def ToString(self) -> str: ...
 
+
 class CyclicPolarization(CyclicVoltammetry):
     def __init__(self) -> None: ...
-    DefaultXAxis: DataArrayType
-    DefaultYAxis: DataArrayType
-    EPretreat: Array_1[float]
-    MethodID: str
-    MethodIsGalvanostatic: bool
-    MuxSett: Method.MuxSettings
-    Name: str
-    PeakOverlap: float
-    PolyEmStat: PolyEmStatMethodEx
-    RecordCE: bool
-    ShortName: str
-    SmoothLevel: int
-    Technique: int
-    tPretreat: Array_1[float]
-    UseMuxChannel: BitArray
-    UseStirrer: bool
-    ViewBottom: float
-    ViewLeft: float
-    ViewRight: float
-    ViewTop: float
+    DefaultXAxis : DataArrayType
+    DefaultYAxis : DataArrayType
+    EPretreat : Array_1[float]
+    MethodID : str
+    MethodIsGalvanostatic : bool
+    MuxSett : Method.MuxSettings
+    Name : str
+    PeakOverlap : float
+    PolyEmStat : PolyEmStatMethodEx
+    RecordCE : bool
+    ShortName : str
+    SmoothLevel : int
+    Technique : int
+    tPretreat : Array_1[float]
+    UseMuxChannel : BitArray
+    UseStirrer : bool
+    ViewBottom : float
+    ViewLeft : float
+    ViewRight : float
+    ViewTop : float
     @property
     def AnalyteName(self) -> Array_1[str]: ...
     @AnalyteName.setter
@@ -499,9 +469,7 @@ class CyclicPolarization(CyclicVoltammetry):
     @property
     def BipotModePS(self) -> Method.EnumPalmSensBipotMode: ...
     @BipotModePS.setter
-    def BipotModePS(
-        self, value: Method.EnumPalmSensBipotMode
-    ) -> Method.EnumPalmSensBipotMode: ...
+    def BipotModePS(self, value: Method.EnumPalmSensBipotMode) -> Method.EnumPalmSensBipotMode: ...
     @property
     def BiPotPotential(self) -> float: ...
     @BiPotPotential.setter
@@ -745,9 +713,7 @@ class CyclicPolarization(CyclicVoltammetry):
     @property
     def SelectedPotentiostatChannel(self) -> PotentionstatChannels: ...
     @SelectedPotentiostatChannel.setter
-    def SelectedPotentiostatChannel(
-        self, value: PotentionstatChannels
-    ) -> PotentionstatChannels: ...
+    def SelectedPotentiostatChannel(self, value: PotentionstatChannels) -> PotentionstatChannels: ...
     @property
     def SolutionNr(self) -> Array_1[int]: ...
     @SolutionNr.setter
@@ -886,28 +852,29 @@ class CyclicPolarization(CyclicVoltammetry):
     def ToShortString(self) -> str: ...
     def ToString(self) -> str: ...
 
+
 class Galvanostatic(Potentiometry):
     def __init__(self) -> None: ...
-    AnalyteName: str
-    DefaultXAxis: DataArrayType
-    DefaultYAxis: DataArrayType
-    MethodID: str
-    MethodIsGalvanostatic: bool
-    MuxSett: Method.MuxSettings
-    Name: str
-    PeakOverlap: float
-    PolyEmStat: PolyEmStatMethodEx
-    RecordCE: bool
-    ShortName: str
-    SmoothLevel: int
-    Standard: Array_1[float]
-    Technique: int
-    UseMuxChannel: BitArray
-    UseStirrer: bool
-    ViewBottom: float
-    ViewLeft: float
-    ViewRight: float
-    ViewTop: float
+    AnalyteName : str
+    DefaultXAxis : DataArrayType
+    DefaultYAxis : DataArrayType
+    MethodID : str
+    MethodIsGalvanostatic : bool
+    MuxSett : Method.MuxSettings
+    Name : str
+    PeakOverlap : float
+    PolyEmStat : PolyEmStatMethodEx
+    RecordCE : bool
+    ShortName : str
+    SmoothLevel : int
+    Standard : Array_1[float]
+    Technique : int
+    UseMuxChannel : BitArray
+    UseStirrer : bool
+    ViewBottom : float
+    ViewLeft : float
+    ViewRight : float
+    ViewTop : float
     @property
     def AppliedCurrentRange(self) -> CurrentRange: ...
     @AppliedCurrentRange.setter
@@ -943,9 +910,7 @@ class Galvanostatic(Potentiometry):
     @property
     def BipotModePS(self) -> Method.EnumPalmSensBipotMode: ...
     @BipotModePS.setter
-    def BipotModePS(
-        self, value: Method.EnumPalmSensBipotMode
-    ) -> Method.EnumPalmSensBipotMode: ...
+    def BipotModePS(self, value: Method.EnumPalmSensBipotMode) -> Method.EnumPalmSensBipotMode: ...
     @property
     def BiPotPotential(self) -> float: ...
     @BiPotPotential.setter
@@ -1093,9 +1058,7 @@ class Galvanostatic(Potentiometry):
     @property
     def OriginalAppliedCurrentRange(self) -> typing.Optional[CurrentRanges]: ...
     @OriginalAppliedCurrentRange.setter
-    def OriginalAppliedCurrentRange(
-        self, value: typing.Optional[CurrentRanges]
-    ) -> typing.Optional[CurrentRanges]: ...
+    def OriginalAppliedCurrentRange(self, value: typing.Optional[CurrentRanges]) -> typing.Optional[CurrentRanges]: ...
     @property
     def OverrideBandwidth(self) -> bool: ...
     @OverrideBandwidth.setter
@@ -1191,9 +1154,7 @@ class Galvanostatic(Potentiometry):
     @property
     def SelectedPotentiostatChannel(self) -> PotentionstatChannels: ...
     @SelectedPotentiostatChannel.setter
-    def SelectedPotentiostatChannel(
-        self, value: PotentionstatChannels
-    ) -> PotentionstatChannels: ...
+    def SelectedPotentiostatChannel(self, value: PotentionstatChannels) -> PotentionstatChannels: ...
     @property
     def Signal(self) -> enumSignal: ...
     @Signal.setter
@@ -1296,28 +1257,29 @@ class Galvanostatic(Potentiometry):
     def ToShortString(self) -> str: ...
     def ToString(self) -> str: ...
 
+
 class LinearPolarization(LinearSweep):
     def __init__(self) -> None: ...
-    DefaultXAxis: DataArrayType
-    DefaultYAxis: DataArrayType
-    EPretreat: Array_1[float]
-    MethodID: str
-    MethodIsGalvanostatic: bool
-    MuxSett: Method.MuxSettings
-    Name: str
-    PeakOverlap: float
-    PolyEmStat: PolyEmStatMethodEx
-    RecordCE: bool
-    ShortName: str
-    SmoothLevel: int
-    Technique: int
-    tPretreat: Array_1[float]
-    UseMuxChannel: BitArray
-    UseStirrer: bool
-    ViewBottom: float
-    ViewLeft: float
-    ViewRight: float
-    ViewTop: float
+    DefaultXAxis : DataArrayType
+    DefaultYAxis : DataArrayType
+    EPretreat : Array_1[float]
+    MethodID : str
+    MethodIsGalvanostatic : bool
+    MuxSett : Method.MuxSettings
+    Name : str
+    PeakOverlap : float
+    PolyEmStat : PolyEmStatMethodEx
+    RecordCE : bool
+    ShortName : str
+    SmoothLevel : int
+    Technique : int
+    tPretreat : Array_1[float]
+    UseMuxChannel : BitArray
+    UseStirrer : bool
+    ViewBottom : float
+    ViewLeft : float
+    ViewRight : float
+    ViewTop : float
     @property
     def AnalyteName(self) -> Array_1[str]: ...
     @AnalyteName.setter
@@ -1353,9 +1315,7 @@ class LinearPolarization(LinearSweep):
     @property
     def BipotModePS(self) -> Method.EnumPalmSensBipotMode: ...
     @BipotModePS.setter
-    def BipotModePS(
-        self, value: Method.EnumPalmSensBipotMode
-    ) -> Method.EnumPalmSensBipotMode: ...
+    def BipotModePS(self, value: Method.EnumPalmSensBipotMode) -> Method.EnumPalmSensBipotMode: ...
     @property
     def BiPotPotential(self) -> float: ...
     @BiPotPotential.setter
@@ -1595,9 +1555,7 @@ class LinearPolarization(LinearSweep):
     @property
     def SelectedPotentiostatChannel(self) -> PotentionstatChannels: ...
     @SelectedPotentiostatChannel.setter
-    def SelectedPotentiostatChannel(
-        self, value: PotentionstatChannels
-    ) -> PotentionstatChannels: ...
+    def SelectedPotentiostatChannel(self, value: PotentionstatChannels) -> PotentionstatChannels: ...
     @property
     def SolutionNr(self) -> Array_1[int]: ...
     @SolutionNr.setter
@@ -1720,28 +1678,29 @@ class LinearPolarization(LinearSweep):
     def ToShortString(self) -> str: ...
     def ToString(self) -> str: ...
 
+
 class Potentiostatic(AmperometricDetection):
     def __init__(self) -> None: ...
-    AnalyteName: str
-    DefaultXAxis: DataArrayType
-    DefaultYAxis: DataArrayType
-    MethodID: str
-    MethodIsGalvanostatic: bool
-    MuxSett: Method.MuxSettings
-    Name: str
-    PeakOverlap: float
-    PolyEmStat: PolyEmStatMethodEx
-    RecordCE: bool
-    ShortName: str
-    SmoothLevel: int
-    Standard: Array_1[float]
-    Technique: int
-    UseMuxChannel: BitArray
-    UseStirrer: bool
-    ViewBottom: float
-    ViewLeft: float
-    ViewRight: float
-    ViewTop: float
+    AnalyteName : str
+    DefaultXAxis : DataArrayType
+    DefaultYAxis : DataArrayType
+    MethodID : str
+    MethodIsGalvanostatic : bool
+    MuxSett : Method.MuxSettings
+    Name : str
+    PeakOverlap : float
+    PolyEmStat : PolyEmStatMethodEx
+    RecordCE : bool
+    ShortName : str
+    SmoothLevel : int
+    Standard : Array_1[float]
+    Technique : int
+    UseMuxChannel : BitArray
+    UseStirrer : bool
+    ViewBottom : float
+    ViewLeft : float
+    ViewRight : float
+    ViewTop : float
     @property
     def Area(self) -> float: ...
     @Area.setter
@@ -1773,9 +1732,7 @@ class Potentiostatic(AmperometricDetection):
     @property
     def BipotModePS(self) -> Method.EnumPalmSensBipotMode: ...
     @BipotModePS.setter
-    def BipotModePS(
-        self, value: Method.EnumPalmSensBipotMode
-    ) -> Method.EnumPalmSensBipotMode: ...
+    def BipotModePS(self, value: Method.EnumPalmSensBipotMode) -> Method.EnumPalmSensBipotMode: ...
     @property
     def BiPotPotential(self) -> float: ...
     @BiPotPotential.setter
@@ -2013,9 +1970,7 @@ class Potentiostatic(AmperometricDetection):
     @property
     def SelectedPotentiostatChannel(self) -> PotentionstatChannels: ...
     @SelectedPotentiostatChannel.setter
-    def SelectedPotentiostatChannel(
-        self, value: PotentionstatChannels
-    ) -> PotentionstatChannels: ...
+    def SelectedPotentiostatChannel(self, value: PotentionstatChannels) -> PotentionstatChannels: ...
     @property
     def Signal(self) -> enumSignal: ...
     @Signal.setter

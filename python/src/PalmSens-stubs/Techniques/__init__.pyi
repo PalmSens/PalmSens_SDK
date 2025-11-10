@@ -1,104 +1,43 @@
-import abc
-import typing
-
-from MicroLibrary import MicroStopwatch
-from PalmSens import (
-    CurrentRange,
-    CurrentRanges,
-    CustomMeasurement,
-    EncodedMethodV1,
-    ExtraValueMask,
-    ILevelPeakSignal,
-    INPointsMethod,
-    MeasType,
-    Method,
-    MethodScript,
-    MuxMethod,
-    PolyEmStatMethodEx,
-    PotentialMethod,
-    PotentionstatChannels,
-    Ranging,
-    RangingPotential,
-    ScanMethod,
-    SE2vsXChannels,
-    SineCurve,
-    TaskBarrier,
-    TimeMethod,
-    enumBlankType,
-    enumDetermination,
-    enumReaction,
-    enumSignal,
-    enumStandardsValues,
-    enumUsePeakValue,
-)
-from PalmSens.Comm import (
-    ActiveMeasurement,
-    Buffer,
-    ClientConnection,
-    ClientConnectionMS,
-    CommMeasurement,
-    CommMeasurementMS,
-    MeasureVersusOCP,
-    enumDeviceType,
-)
-from PalmSens.Data import DataArrayTime, DataArrayType, DataSetCommon
-from PalmSens.Devices import DeviceCapabilities, EISSettingsPS3, MethodScriptDeviceCapabilities
-from PalmSens.Plottables import Curve, CurveDirection, EISData
-from PalmSens.Techniques.Impedance import (
-    DualEISModes,
-    EnumFrequencyMode,
-    enumFrequencyType,
-    enumScanType,
-)
-from PalmSens.Units import Unit
-from System import (
-    Array_1,
-    AsyncCallback,
-    Attribute,
-    DateTime,
-    Exception,
-    IAsyncResult,
-    MulticastDelegate,
-    TimeSpan,
-    ValueTuple_2,
-    ValueTuple_3,
-)
+import typing, abc
+from PalmSens import PotentialMethod, Method, PolyEmStatMethodEx, CurrentRange, Ranging, enumBlankType, enumDetermination, ExtraValueMask, MuxMethod, enumUsePeakValue, MethodScript, RangingPotential, SE2vsXChannels, PotentionstatChannels, enumStandardsValues, MeasType, TaskBarrier, TimeMethod, enumReaction, enumSignal, EncodedMethodV1, ScanMethod, CurrentRanges, CustomMeasurement, INPointsMethod, ILevelPeakSignal, SineCurve
+from PalmSens.Data import DataArrayType, DataSetCommon, DataArrayTime
+from System import Array_1, TimeSpan, DateTime, Exception, ValueTuple_2, MulticastDelegate, IAsyncResult, AsyncCallback, ValueTuple_3, Attribute
 from System.Collections import BitArray, IDictionary
-from System.Collections.Generic import (
-    Dictionary_2,
-    IEnumerable_1,
-    IList_1,
-    IReadOnlyDictionary_2,
-    List_1,
-)
-from System.ComponentModel import INotifyPropertyChanged
+from PalmSens.Units import Unit
+from PalmSens.Plottables import CurveDirection, Curve, EISData
+from PalmSens.Devices import DeviceCapabilities, MethodScriptDeviceCapabilities, EISSettingsPS3
+from PalmSens.Comm import ActiveMeasurement, ClientConnection, Buffer, ClientConnectionMS, CommMeasurement, MeasureVersusOCP, enumDeviceType, CommMeasurementMS
+from System.Threading.Tasks import Task_1, Task
 from System.IO import TextWriter
+from System.Collections.Generic import List_1, Dictionary_2, IReadOnlyDictionary_2, IEnumerable_1, IList_1
+from System.ComponentModel import INotifyPropertyChanged
+from MicroLibrary import MicroStopwatch
+from PalmSens.Techniques.Impedance import enumFrequencyType, EnumFrequencyMode, enumScanType, DualEISModes
 from System.Reflection import MethodBase, MethodInfo
-from System.Threading.Tasks import Task, Task_1
 
 class ACVoltammetry(PotentialMethod):
     def __init__(self) -> None: ...
-    DefaultXAxis: DataArrayType
-    DefaultYAxis: DataArrayType
-    EPretreat: Array_1[float]
-    MethodID: str
-    MethodIsGalvanostatic: bool
-    MuxSett: Method.MuxSettings
-    Name: str
-    PeakOverlap: float
-    PolyEmStat: PolyEmStatMethodEx
-    RecordCE: bool
-    ShortName: str
-    SmoothLevel: int
-    Technique: int
-    TechniqueNumber: int
-    tPretreat: Array_1[float]
-    UseMuxChannel: BitArray
-    UseStirrer: bool
-    ViewBottom: float
-    ViewLeft: float
-    ViewRight: float
-    ViewTop: float
+    DefaultXAxis : DataArrayType
+    DefaultYAxis : DataArrayType
+    EPretreat : Array_1[float]
+    MethodID : str
+    MethodIsGalvanostatic : bool
+    MuxSett : Method.MuxSettings
+    Name : str
+    PeakOverlap : float
+    PolyEmStat : PolyEmStatMethodEx
+    RecordCE : bool
+    ShortName : str
+    SmoothLevel : int
+    Technique : int
+    TechniqueNumber : int
+    tPretreat : Array_1[float]
+    UseMuxChannel : BitArray
+    UseStirrer : bool
+    ViewBottom : float
+    ViewLeft : float
+    ViewRight : float
+    ViewTop : float
     @property
     def AnalyteName(self) -> Array_1[str]: ...
     @AnalyteName.setter
@@ -134,9 +73,7 @@ class ACVoltammetry(PotentialMethod):
     @property
     def BipotModePS(self) -> Method.EnumPalmSensBipotMode: ...
     @BipotModePS.setter
-    def BipotModePS(
-        self, value: Method.EnumPalmSensBipotMode
-    ) -> Method.EnumPalmSensBipotMode: ...
+    def BipotModePS(self, value: Method.EnumPalmSensBipotMode) -> Method.EnumPalmSensBipotMode: ...
     @property
     def BiPotPotential(self) -> float: ...
     @BiPotPotential.setter
@@ -386,9 +323,7 @@ class ACVoltammetry(PotentialMethod):
     @property
     def SelectedPotentiostatChannel(self) -> PotentionstatChannels: ...
     @SelectedPotentiostatChannel.setter
-    def SelectedPotentiostatChannel(
-        self, value: PotentionstatChannels
-    ) -> PotentionstatChannels: ...
+    def SelectedPotentiostatChannel(self, value: PotentionstatChannels) -> PotentionstatChannels: ...
     @property
     def SineWaveAmplitude(self) -> float: ...
     @SineWaveAmplitude.setter
@@ -517,63 +452,41 @@ class ACVoltammetry(PotentialMethod):
     def GetMinimumEstimatedMeasurementDuration(self, capab: DeviceCapabilities) -> float: ...
     def GetPointsPerSecond(self, capabilities: DeviceCapabilities = ...) -> float: ...
     def GetRealNPoints(self, capabilities: DeviceCapabilities) -> int: ...
-    def ReceiveMeasurement(
-        self, c: ClientConnection, muxChannel: int, measType: MeasType, measBuff: Buffer = ...
-    ) -> ActiveMeasurement: ...
-    def ReceiveMeasurementAsync(
-        self,
-        c: ClientConnection,
-        muxChannel: int,
-        measType: MeasType,
-        measBuff: Buffer = ...,
-        taskBarrier: TaskBarrier = ...,
-    ) -> Task_1[ActiveMeasurement]: ...
-    def ReceiveMeasurementMS(
-        self, c: ClientConnection, muxChannel: int, measType: MeasType, measBuff: Buffer = ...
-    ) -> ActiveMeasurement: ...
-    def ReceiveMeasurementMSAsync(
-        self,
-        c: ClientConnection,
-        muxChannel: int,
-        measType: MeasType,
-        measBuff: Buffer = ...,
-        taskBarrier: TaskBarrier = ...,
-    ) -> Task_1[ActiveMeasurement]: ...
+    def ReceiveMeasurement(self, c: ClientConnection, muxChannel: int, measType: MeasType, measBuff: Buffer = ...) -> ActiveMeasurement: ...
+    def ReceiveMeasurementAsync(self, c: ClientConnection, muxChannel: int, measType: MeasType, measBuff: Buffer = ..., taskBarrier: TaskBarrier = ...) -> Task_1[ActiveMeasurement]: ...
+    def ReceiveMeasurementMS(self, c: ClientConnection, muxChannel: int, measType: MeasType, measBuff: Buffer = ...) -> ActiveMeasurement: ...
+    def ReceiveMeasurementMSAsync(self, c: ClientConnection, muxChannel: int, measType: MeasType, measBuff: Buffer = ..., taskBarrier: TaskBarrier = ...) -> Task_1[ActiveMeasurement]: ...
     def Serialize(self, tw: TextWriter) -> None: ...
     def SupportedRangingType(self, capabilities: DeviceCapabilities) -> Method.RangingTypes: ...
     def SupportsHWSync(self, capabilities: DeviceCapabilities) -> bool: ...
-    def ToMethodScript(
-        self,
-        capabilities: MethodScriptDeviceCapabilities,
-        forEditor: bool,
-        connMS: ClientConnectionMS = ...,
-    ) -> MethodScript: ...
+    def ToMethodScript(self, capabilities: MethodScriptDeviceCapabilities, forEditor: bool, connMS: ClientConnectionMS = ...) -> MethodScript: ...
     def ToShortString(self) -> str: ...
     def ToString(self) -> str: ...
 
+
 class AmperometricDetection(TimeMethod, IChargeLimits):
     def __init__(self) -> None: ...
-    AnalyteName: str
-    DefaultXAxis: DataArrayType
-    DefaultYAxis: DataArrayType
-    MethodID: str
-    MethodIsGalvanostatic: bool
-    MuxSett: Method.MuxSettings
-    Name: str
-    PeakOverlap: float
-    PolyEmStat: PolyEmStatMethodEx
-    RecordCE: bool
-    ShortName: str
-    SmoothLevel: int
-    Standard: Array_1[float]
-    Technique: int
-    TechniqueNumber: int
-    UseMuxChannel: BitArray
-    UseStirrer: bool
-    ViewBottom: float
-    ViewLeft: float
-    ViewRight: float
-    ViewTop: float
+    AnalyteName : str
+    DefaultXAxis : DataArrayType
+    DefaultYAxis : DataArrayType
+    MethodID : str
+    MethodIsGalvanostatic : bool
+    MuxSett : Method.MuxSettings
+    Name : str
+    PeakOverlap : float
+    PolyEmStat : PolyEmStatMethodEx
+    RecordCE : bool
+    ShortName : str
+    SmoothLevel : int
+    Standard : Array_1[float]
+    Technique : int
+    TechniqueNumber : int
+    UseMuxChannel : BitArray
+    UseStirrer : bool
+    ViewBottom : float
+    ViewLeft : float
+    ViewRight : float
+    ViewTop : float
     @property
     def Area(self) -> float: ...
     @Area.setter
@@ -605,9 +518,7 @@ class AmperometricDetection(TimeMethod, IChargeLimits):
     @property
     def BipotModePS(self) -> Method.EnumPalmSensBipotMode: ...
     @BipotModePS.setter
-    def BipotModePS(
-        self, value: Method.EnumPalmSensBipotMode
-    ) -> Method.EnumPalmSensBipotMode: ...
+    def BipotModePS(self, value: Method.EnumPalmSensBipotMode) -> Method.EnumPalmSensBipotMode: ...
     @property
     def BiPotPotential(self) -> float: ...
     @BiPotPotential.setter
@@ -845,9 +756,7 @@ class AmperometricDetection(TimeMethod, IChargeLimits):
     @property
     def SelectedPotentiostatChannel(self) -> PotentionstatChannels: ...
     @SelectedPotentiostatChannel.setter
-    def SelectedPotentiostatChannel(
-        self, value: PotentionstatChannels
-    ) -> PotentionstatChannels: ...
+    def SelectedPotentiostatChannel(self, value: PotentionstatChannels) -> PotentionstatChannels: ...
     @property
     def Signal(self) -> enumSignal: ...
     @Signal.setter
@@ -961,39 +870,35 @@ class AmperometricDetection(TimeMethod, IChargeLimits):
     def SerializeTechniqueSpecific(self, tw: TextWriter) -> None: ...
     def SupportsHWSync(self, capabilities: DeviceCapabilities) -> bool: ...
     def ToHex1TechniqueSpecific(self, m: EncodedMethodV1) -> None: ...
-    def ToMethodScript(
-        self,
-        capabilities: MethodScriptDeviceCapabilities,
-        forEditor: bool,
-        connMS: ClientConnectionMS = ...,
-    ) -> MethodScript: ...
+    def ToMethodScript(self, capabilities: MethodScriptDeviceCapabilities, forEditor: bool, connMS: ClientConnectionMS = ...) -> MethodScript: ...
     def ToShortString(self) -> str: ...
     def ToString(self) -> str: ...
 
+
 class Chronocoulometry(MultistepAmperometry):
     def __init__(self) -> None: ...
-    AnalyteName: str
-    DefaultXAxis: DataArrayType
-    DefaultYAxis: DataArrayType
-    Delta: float
-    MethodID: str
-    MethodIsGalvanostatic: bool
-    Mode: Multistep.EnumMode
-    MuxSett: Method.MuxSettings
-    Name: str
-    PeakOverlap: float
-    PolyEmStat: PolyEmStatMethodEx
-    RecordCE: bool
-    ShortName: str
-    SmoothLevel: int
-    Standard: Array_1[float]
-    Technique: int
-    UseMuxChannel: BitArray
-    UseStirrer: bool
-    ViewBottom: float
-    ViewLeft: float
-    ViewRight: float
-    ViewTop: float
+    AnalyteName : str
+    DefaultXAxis : DataArrayType
+    DefaultYAxis : DataArrayType
+    Delta : float
+    MethodID : str
+    MethodIsGalvanostatic : bool
+    Mode : Multistep.EnumMode
+    MuxSett : Method.MuxSettings
+    Name : str
+    PeakOverlap : float
+    PolyEmStat : PolyEmStatMethodEx
+    RecordCE : bool
+    ShortName : str
+    SmoothLevel : int
+    Standard : Array_1[float]
+    Technique : int
+    UseMuxChannel : BitArray
+    UseStirrer : bool
+    ViewBottom : float
+    ViewLeft : float
+    ViewRight : float
+    ViewTop : float
     @property
     def Area(self) -> float: ...
     @Area.setter
@@ -1025,9 +930,7 @@ class Chronocoulometry(MultistepAmperometry):
     @property
     def BipotModePS(self) -> Method.EnumPalmSensBipotMode: ...
     @BipotModePS.setter
-    def BipotModePS(
-        self, value: Method.EnumPalmSensBipotMode
-    ) -> Method.EnumPalmSensBipotMode: ...
+    def BipotModePS(self, value: Method.EnumPalmSensBipotMode) -> Method.EnumPalmSensBipotMode: ...
     @property
     def BiPotPotential(self) -> float: ...
     @BiPotPotential.setter
@@ -1283,9 +1186,7 @@ class Chronocoulometry(MultistepAmperometry):
     @property
     def SelectedPotentiostatChannel(self) -> PotentionstatChannels: ...
     @SelectedPotentiostatChannel.setter
-    def SelectedPotentiostatChannel(
-        self, value: PotentionstatChannels
-    ) -> PotentionstatChannels: ...
+    def SelectedPotentiostatChannel(self, value: PotentionstatChannels) -> PotentionstatChannels: ...
     @property
     def Signal(self) -> enumSignal: ...
     @Signal.setter
@@ -1414,29 +1315,30 @@ class Chronocoulometry(MultistepAmperometry):
     def ToShortString(self) -> str: ...
     def ToString(self) -> str: ...
 
+
 class ChronoPotStripping(ScanMethod, IPotentiometric):
     def __init__(self) -> None: ...
-    DefaultXAxis: DataArrayType
-    DefaultYAxis: DataArrayType
-    EPretreat: Array_1[float]
-    MethodID: str
-    MethodIsGalvanostatic: bool
-    MuxSett: Method.MuxSettings
-    Name: str
-    PeakOverlap: float
-    PolyEmStat: PolyEmStatMethodEx
-    RecordCE: bool
-    ShortName: str
-    SmoothLevel: int
-    Technique: int
-    TechniqueNumber: int
-    tPretreat: Array_1[float]
-    UseMuxChannel: BitArray
-    UseStirrer: bool
-    ViewBottom: float
-    ViewLeft: float
-    ViewRight: float
-    ViewTop: float
+    DefaultXAxis : DataArrayType
+    DefaultYAxis : DataArrayType
+    EPretreat : Array_1[float]
+    MethodID : str
+    MethodIsGalvanostatic : bool
+    MuxSett : Method.MuxSettings
+    Name : str
+    PeakOverlap : float
+    PolyEmStat : PolyEmStatMethodEx
+    RecordCE : bool
+    ShortName : str
+    SmoothLevel : int
+    Technique : int
+    TechniqueNumber : int
+    tPretreat : Array_1[float]
+    UseMuxChannel : BitArray
+    UseStirrer : bool
+    ViewBottom : float
+    ViewLeft : float
+    ViewRight : float
+    ViewTop : float
     @property
     def AnalyteName(self) -> Array_1[str]: ...
     @AnalyteName.setter
@@ -1476,9 +1378,7 @@ class ChronoPotStripping(ScanMethod, IPotentiometric):
     @property
     def BipotModePS(self) -> Method.EnumPalmSensBipotMode: ...
     @BipotModePS.setter
-    def BipotModePS(
-        self, value: Method.EnumPalmSensBipotMode
-    ) -> Method.EnumPalmSensBipotMode: ...
+    def BipotModePS(self, value: Method.EnumPalmSensBipotMode) -> Method.EnumPalmSensBipotMode: ...
     @property
     def BiPotPotential(self) -> float: ...
     @BiPotPotential.setter
@@ -1646,9 +1546,7 @@ class ChronoPotStripping(ScanMethod, IPotentiometric):
     @property
     def OriginalAppliedCurrentRange(self) -> typing.Optional[CurrentRanges]: ...
     @OriginalAppliedCurrentRange.setter
-    def OriginalAppliedCurrentRange(
-        self, value: typing.Optional[CurrentRanges]
-    ) -> typing.Optional[CurrentRanges]: ...
+    def OriginalAppliedCurrentRange(self, value: typing.Optional[CurrentRanges]) -> typing.Optional[CurrentRanges]: ...
     @property
     def OverrideBandwidth(self) -> bool: ...
     @OverrideBandwidth.setter
@@ -1734,9 +1632,7 @@ class ChronoPotStripping(ScanMethod, IPotentiometric):
     @property
     def SelectedPotentiostatChannel(self) -> PotentionstatChannels: ...
     @SelectedPotentiostatChannel.setter
-    def SelectedPotentiostatChannel(
-        self, value: PotentionstatChannels
-    ) -> PotentionstatChannels: ...
+    def SelectedPotentiostatChannel(self, value: PotentionstatChannels) -> PotentionstatChannels: ...
     @property
     def SolutionNr(self) -> Array_1[int]: ...
     @SolutionNr.setter
@@ -1840,53 +1736,29 @@ class ChronoPotStripping(ScanMethod, IPotentiometric):
     @property
     def YTop(self) -> float: ...
     def Deserialize(self, contents: str) -> None: ...
-    def GetMaximumEstimatedMeasurementDuration(
-        self, capab: DeviceCapabilities, withLevelStageOverhead: bool = ...
-    ) -> float: ...
+    def GetMaximumEstimatedMeasurementDuration(self, capab: DeviceCapabilities, withLevelStageOverhead: bool = ...) -> float: ...
     def GetMethodID(self) -> str: ...
     def GetMinimumEstimatedMeasurementDuration(self, capab: DeviceCapabilities) -> float: ...
     def GetPointsPerSecond(self, deviceCapabilities: DeviceCapabilities = ...) -> float: ...
-    def ReceiveMeasurement(
-        self, c: ClientConnection, muxChannel: int, measType: MeasType, measBuff: Buffer = ...
-    ) -> ActiveMeasurement: ...
-    def ReceiveMeasurementAsync(
-        self,
-        c: ClientConnection,
-        muxChannel: int,
-        measType: MeasType,
-        measBuff: Buffer = ...,
-        taskBarrier: TaskBarrier = ...,
-    ) -> Task_1[ActiveMeasurement]: ...
-    def ReceiveMeasurementMS(
-        self, c: ClientConnection, muxChannel: int, measType: MeasType, measBuff: Buffer = ...
-    ) -> ActiveMeasurement: ...
-    def ReceiveMeasurementMSAsync(
-        self,
-        c: ClientConnection,
-        muxChannel: int,
-        measType: MeasType,
-        measBuff: Buffer = ...,
-        taskBarrier: TaskBarrier = ...,
-    ) -> Task_1[ActiveMeasurement]: ...
+    def ReceiveMeasurement(self, c: ClientConnection, muxChannel: int, measType: MeasType, measBuff: Buffer = ...) -> ActiveMeasurement: ...
+    def ReceiveMeasurementAsync(self, c: ClientConnection, muxChannel: int, measType: MeasType, measBuff: Buffer = ..., taskBarrier: TaskBarrier = ...) -> Task_1[ActiveMeasurement]: ...
+    def ReceiveMeasurementMS(self, c: ClientConnection, muxChannel: int, measType: MeasType, measBuff: Buffer = ...) -> ActiveMeasurement: ...
+    def ReceiveMeasurementMSAsync(self, c: ClientConnection, muxChannel: int, measType: MeasType, measBuff: Buffer = ..., taskBarrier: TaskBarrier = ...) -> Task_1[ActiveMeasurement]: ...
     def Serialize(self, tw: TextWriter) -> None: ...
     def SetAppliedCurrentRangeSilent(self, range: CurrentRange) -> None: ...
     def SetCompatibleAppliedRange(self, capabilities: DeviceCapabilities) -> None: ...
     def SetCompatibleAppliedRangeSilent(self, capabilities: DeviceCapabilities) -> None: ...
     def SupportsDeviceStorage(self, deviceCapabilities: DeviceCapabilities) -> bool: ...
     def SupportsHWSync(self, capabilities: DeviceCapabilities) -> bool: ...
-    def ToMethodScript(
-        self,
-        capabilities: MethodScriptDeviceCapabilities,
-        forEditor: bool,
-        connMS: ClientConnectionMS = ...,
-    ) -> MethodScript: ...
+    def ToMethodScript(self, capabilities: MethodScriptDeviceCapabilities, forEditor: bool, connMS: ClientConnectionMS = ...) -> MethodScript: ...
     def ToShortString(self) -> str: ...
     def ToString(self) -> str: ...
 
+
 class ChronoPotStrippingMeasurement(CommMeasurement):
-    Aborted: bool
-    Channel: int
-    VsOCP: MeasureVersusOCP
+    Aborted : bool
+    Channel : int
+    VsOCP : MeasureVersusOCP
     @property
     def BlankCurve(self) -> Curve: ...
     @BlankCurve.setter
@@ -1968,29 +1840,30 @@ class ChronoPotStrippingMeasurement(CommMeasurement):
     def Abort(self) -> None: ...
     def AbortAsync(self) -> Task: ...
 
+
 class CyclicVoltammetry(PotentialMethod):
     def __init__(self) -> None: ...
-    DefaultXAxis: DataArrayType
-    DefaultYAxis: DataArrayType
-    EPretreat: Array_1[float]
-    MethodID: str
-    MethodIsGalvanostatic: bool
-    MuxSett: Method.MuxSettings
-    Name: str
-    PeakOverlap: float
-    PolyEmStat: PolyEmStatMethodEx
-    RecordCE: bool
-    ShortName: str
-    SmoothLevel: int
-    Technique: int
-    TechniqueNumber: int
-    tPretreat: Array_1[float]
-    UseMuxChannel: BitArray
-    UseStirrer: bool
-    ViewBottom: float
-    ViewLeft: float
-    ViewRight: float
-    ViewTop: float
+    DefaultXAxis : DataArrayType
+    DefaultYAxis : DataArrayType
+    EPretreat : Array_1[float]
+    MethodID : str
+    MethodIsGalvanostatic : bool
+    MuxSett : Method.MuxSettings
+    Name : str
+    PeakOverlap : float
+    PolyEmStat : PolyEmStatMethodEx
+    RecordCE : bool
+    ShortName : str
+    SmoothLevel : int
+    Technique : int
+    TechniqueNumber : int
+    tPretreat : Array_1[float]
+    UseMuxChannel : BitArray
+    UseStirrer : bool
+    ViewBottom : float
+    ViewLeft : float
+    ViewRight : float
+    ViewTop : float
     @property
     def AnalyteName(self) -> Array_1[str]: ...
     @AnalyteName.setter
@@ -2026,9 +1899,7 @@ class CyclicVoltammetry(PotentialMethod):
     @property
     def BipotModePS(self) -> Method.EnumPalmSensBipotMode: ...
     @BipotModePS.setter
-    def BipotModePS(
-        self, value: Method.EnumPalmSensBipotMode
-    ) -> Method.EnumPalmSensBipotMode: ...
+    def BipotModePS(self, value: Method.EnumPalmSensBipotMode) -> Method.EnumPalmSensBipotMode: ...
     @property
     def BiPotPotential(self) -> float: ...
     @BiPotPotential.setter
@@ -2272,9 +2143,7 @@ class CyclicVoltammetry(PotentialMethod):
     @property
     def SelectedPotentiostatChannel(self) -> PotentionstatChannels: ...
     @SelectedPotentiostatChannel.setter
-    def SelectedPotentiostatChannel(
-        self, value: PotentionstatChannels
-    ) -> PotentionstatChannels: ...
+    def SelectedPotentiostatChannel(self, value: PotentionstatChannels) -> PotentionstatChannels: ...
     @property
     def SolutionNr(self) -> Array_1[int]: ...
     @SolutionNr.setter
@@ -2415,62 +2284,40 @@ class CyclicVoltammetry(PotentialMethod):
     def GetMinimumEstimatedMeasurementDuration(self, capab: DeviceCapabilities) -> float: ...
     def GetPointsPerSecond(self, capabilities: DeviceCapabilities = ...) -> float: ...
     def GetRealNPoints(self, capabilities: DeviceCapabilities) -> int: ...
-    def ReceiveMeasurement(
-        self, c: ClientConnection, muxChannel: int, measType: MeasType, measBuff: Buffer = ...
-    ) -> ActiveMeasurement: ...
-    def ReceiveMeasurementAsync(
-        self,
-        c: ClientConnection,
-        muxChannel: int,
-        measType: MeasType,
-        measBuff: Buffer = ...,
-        taskBarrier: TaskBarrier = ...,
-    ) -> Task_1[ActiveMeasurement]: ...
-    def ReceiveMeasurementMS(
-        self, c: ClientConnection, muxChannel: int, measType: MeasType, measBuff: Buffer = ...
-    ) -> ActiveMeasurement: ...
-    def ReceiveMeasurementMSAsync(
-        self,
-        c: ClientConnection,
-        muxChannel: int,
-        measType: MeasType,
-        measBuff: Buffer = ...,
-        taskBarrier: TaskBarrier = ...,
-    ) -> Task_1[ActiveMeasurement]: ...
+    def ReceiveMeasurement(self, c: ClientConnection, muxChannel: int, measType: MeasType, measBuff: Buffer = ...) -> ActiveMeasurement: ...
+    def ReceiveMeasurementAsync(self, c: ClientConnection, muxChannel: int, measType: MeasType, measBuff: Buffer = ..., taskBarrier: TaskBarrier = ...) -> Task_1[ActiveMeasurement]: ...
+    def ReceiveMeasurementMS(self, c: ClientConnection, muxChannel: int, measType: MeasType, measBuff: Buffer = ...) -> ActiveMeasurement: ...
+    def ReceiveMeasurementMSAsync(self, c: ClientConnection, muxChannel: int, measType: MeasType, measBuff: Buffer = ..., taskBarrier: TaskBarrier = ...) -> Task_1[ActiveMeasurement]: ...
     def Serialize(self, tw: TextWriter) -> None: ...
     def SupportsHWSync(self, capabilities: DeviceCapabilities) -> bool: ...
-    def ToMethodScript(
-        self,
-        capabilities: MethodScriptDeviceCapabilities,
-        forEditor: bool,
-        connMS: ClientConnectionMS = ...,
-    ) -> MethodScript: ...
+    def ToMethodScript(self, capabilities: MethodScriptDeviceCapabilities, forEditor: bool, connMS: ClientConnectionMS = ...) -> MethodScript: ...
     def ToShortString(self) -> str: ...
     def ToString(self) -> str: ...
 
+
 class DifferentialPulse(Pulse):
     def __init__(self) -> None: ...
-    DefaultXAxis: DataArrayType
-    DefaultYAxis: DataArrayType
-    EPretreat: Array_1[float]
-    MethodID: str
-    MethodIsGalvanostatic: bool
-    MuxSett: Method.MuxSettings
-    Name: str
-    PeakOverlap: float
-    PolyEmStat: PolyEmStatMethodEx
-    RecordCE: bool
-    ShortName: str
-    SmoothLevel: int
-    Technique: int
-    TechniqueNumber: int
-    tPretreat: Array_1[float]
-    UseMuxChannel: BitArray
-    UseStirrer: bool
-    ViewBottom: float
-    ViewLeft: float
-    ViewRight: float
-    ViewTop: float
+    DefaultXAxis : DataArrayType
+    DefaultYAxis : DataArrayType
+    EPretreat : Array_1[float]
+    MethodID : str
+    MethodIsGalvanostatic : bool
+    MuxSett : Method.MuxSettings
+    Name : str
+    PeakOverlap : float
+    PolyEmStat : PolyEmStatMethodEx
+    RecordCE : bool
+    ShortName : str
+    SmoothLevel : int
+    Technique : int
+    TechniqueNumber : int
+    tPretreat : Array_1[float]
+    UseMuxChannel : BitArray
+    UseStirrer : bool
+    ViewBottom : float
+    ViewLeft : float
+    ViewRight : float
+    ViewTop : float
     @property
     def AnalyteName(self) -> Array_1[str]: ...
     @AnalyteName.setter
@@ -2506,9 +2353,7 @@ class DifferentialPulse(Pulse):
     @property
     def BipotModePS(self) -> Method.EnumPalmSensBipotMode: ...
     @BipotModePS.setter
-    def BipotModePS(
-        self, value: Method.EnumPalmSensBipotMode
-    ) -> Method.EnumPalmSensBipotMode: ...
+    def BipotModePS(self, value: Method.EnumPalmSensBipotMode) -> Method.EnumPalmSensBipotMode: ...
     @property
     def BiPotPotential(self) -> float: ...
     @BiPotPotential.setter
@@ -2756,9 +2601,7 @@ class DifferentialPulse(Pulse):
     @property
     def SelectedPotentiostatChannel(self) -> PotentionstatChannels: ...
     @SelectedPotentiostatChannel.setter
-    def SelectedPotentiostatChannel(
-        self, value: PotentionstatChannels
-    ) -> PotentionstatChannels: ...
+    def SelectedPotentiostatChannel(self, value: PotentionstatChannels) -> PotentionstatChannels: ...
     @property
     def SolutionNr(self) -> Array_1[int]: ...
     @SolutionNr.setter
@@ -2881,14 +2724,10 @@ class DifferentialPulse(Pulse):
     def GetMethodID(self) -> str: ...
     def GetMinimumEstimatedMeasurementDuration(self, capab: DeviceCapabilities) -> float: ...
     def GetPointsPerSecond(self, capabilities: DeviceCapabilities = ...) -> float: ...
-    def ToMethodScript(
-        self,
-        capabilities: MethodScriptDeviceCapabilities,
-        forEditor: bool,
-        connMS: ClientConnectionMS = ...,
-    ) -> MethodScript: ...
+    def ToMethodScript(self, capabilities: MethodScriptDeviceCapabilities, forEditor: bool, connMS: ClientConnectionMS = ...) -> MethodScript: ...
     def ToShortString(self) -> str: ...
     def ToString(self) -> str: ...
+
 
 class EILevel(INotifyPropertyChanged):
     def __init__(self, potentiometric: IPotentiometric = ...) -> None: ...
@@ -2929,6 +2768,7 @@ class EILevel(INotifyPropertyChanged):
     @UseTriggerOnStart.setter
     def UseTriggerOnStart(self, value: bool) -> bool: ...
 
+
 class ELevel(EILevel):
     def __init__(self) -> None: ...
     @property
@@ -2968,6 +2808,7 @@ class ELevel(EILevel):
     @UseTriggerOnStart.setter
     def UseTriggerOnStart(self, value: bool) -> bool: ...
 
+
 class ELevels(Levels):
     @property
     def Capacity(self) -> int: ...
@@ -2980,113 +2821,115 @@ class ELevels(Levels):
     @Item.setter
     def Item(self, value: EILevel) -> EILevel: ...
 
+
 class enumTechniqueParameter(typing.SupportsInt):
     @typing.overload
-    def __init__(self, value: int) -> None: ...
+    def __init__(self, value : int) -> None: ...
     @typing.overload
-    def __init__(self, value: int, force_if_true: bool) -> None: ...
+    def __init__(self, value : int, force_if_true: bool) -> None: ...
     def __int__(self) -> int: ...
 
     # Values:
-    Sensor: enumTechniqueParameter  # 0
-    Sample: enumTechniqueParameter  # 1
-    ConditioningPotential: enumTechniqueParameter  # 2
-    ConditioningTime: enumTechniqueParameter  # 3
-    DepositionPotential: enumTechniqueParameter  # 4
-    DepositionTime: enumTechniqueParameter  # 5
-    EquilibrationTime: enumTechniqueParameter  # 6
-    CellOnAfterMeasurement: enumTechniqueParameter  # 7
-    StandbyPotential: enumTechniqueParameter  # 8
-    StandbyTime: enumTechniqueParameter  # 9
-    BeginPotential: enumTechniqueParameter  # 10
-    EndPotential: enumTechniqueParameter  # 11
-    StepPotential: enumTechniqueParameter  # 12
-    DcPotential: enumTechniqueParameter  # 13
-    PulsePotentialAD: enumTechniqueParameter  # 14
-    PulsePotential: enumTechniqueParameter  # 15
-    PulseTime: enumTechniqueParameter  # 16
-    PulseTimeF: enumTechniqueParameter  # 17
-    Scanrate: enumTechniqueParameter  # 18
-    PulseAmplitude: enumTechniqueParameter  # 19
-    Frequency: enumTechniqueParameter  # 20
-    SineWaveAmplitude: enumTechniqueParameter  # 21
-    Vtx1Potential: enumTechniqueParameter  # 22
-    Vtx2Potential: enumTechniqueParameter  # 23
-    nScans: enumTechniqueParameter  # 24
-    nEqScans: enumTechniqueParameter  # 25
-    Istrip: enumTechniqueParameter  # 26
-    MeasurementTime: enumTechniqueParameter  # 27
-    Potential: enumTechniqueParameter  # 28
-    EqPotentialFA: enumTechniqueParameter  # 29
-    IntervalTime: enumTechniqueParameter  # 30
-    IntervalTimeF: enumTechniqueParameter  # 31
-    RunTime: enumTechniqueParameter  # 32
-    tMode: enumTechniqueParameter  # 33
-    Current: enumTechniqueParameter  # 34
-    E1: enumTechniqueParameter  # 35
-    E2: enumTechniqueParameter  # 36
-    E3: enumTechniqueParameter  # 37
-    t1: enumTechniqueParameter  # 38
-    t2: enumTechniqueParameter  # 39
-    t3: enumTechniqueParameter  # 40
-    nCycles: enumTechniqueParameter  # 41
-    nSteps: enumTechniqueParameter  # 42
-    E_levels: enumTechniqueParameter  # 43
-    i_levels: enumTechniqueParameter  # 44
-    t_levels: enumTechniqueParameter  # 45
-    OCP: enumTechniqueParameter  # 46
-    RecordAux: enumTechniqueParameter  # 47
-    RecordBiPot: enumTechniqueParameter  # 48
-    MeasureIForwardReverse: enumTechniqueParameter  # 49
-    VersusOCP: enumTechniqueParameter  # 50
-    OCPStabilityCriterion: enumTechniqueParameter  # 51
-    OCPMaxOCPTime: enumTechniqueParameter  # 52
-    ScanType: enumTechniqueParameter  # 53
-    FreqType: enumTechniqueParameter  # 54
-    Eac: enumTechniqueParameter  # 55
-    SamplingTime: enumTechniqueParameter  # 56
-    MinFrequency: enumTechniqueParameter  # 57
-    MaxFrequency: enumTechniqueParameter  # 58
-    FixedFrequency: enumTechniqueParameter  # 59
-    nFrequencies: enumTechniqueParameter  # 60
-    RecordPt1000: enumTechniqueParameter  # 61
-    PretreatEachFreqMeas: enumTechniqueParameter  # 62
-    PretreatEachScan: enumTechniqueParameter  # 63
-    MaxEqTime: enumTechniqueParameter  # 64
-    LimitMinValue: enumTechniqueParameter  # 65
-    LimitMaxValue: enumTechniqueParameter  # 66
-    UseLimits: enumTechniqueParameter  # 67
-    PolyStatMode: enumTechniqueParameter  # 68
-    BipotPotential: enumTechniqueParameter  # 69
-    nAvgScans: enumTechniqueParameter  # 70
-    None_: enumTechniqueParameter  # 71
-    Iac: enumTechniqueParameter  # 72
-    TriggerDelayPeriod: enumTechniqueParameter  # 73
-    iStep: enumTechniqueParameter  # 74
+    Sensor : enumTechniqueParameter # 0
+    Sample : enumTechniqueParameter # 1
+    ConditioningPotential : enumTechniqueParameter # 2
+    ConditioningTime : enumTechniqueParameter # 3
+    DepositionPotential : enumTechniqueParameter # 4
+    DepositionTime : enumTechniqueParameter # 5
+    EquilibrationTime : enumTechniqueParameter # 6
+    CellOnAfterMeasurement : enumTechniqueParameter # 7
+    StandbyPotential : enumTechniqueParameter # 8
+    StandbyTime : enumTechniqueParameter # 9
+    BeginPotential : enumTechniqueParameter # 10
+    EndPotential : enumTechniqueParameter # 11
+    StepPotential : enumTechniqueParameter # 12
+    DcPotential : enumTechniqueParameter # 13
+    PulsePotentialAD : enumTechniqueParameter # 14
+    PulsePotential : enumTechniqueParameter # 15
+    PulseTime : enumTechniqueParameter # 16
+    PulseTimeF : enumTechniqueParameter # 17
+    Scanrate : enumTechniqueParameter # 18
+    PulseAmplitude : enumTechniqueParameter # 19
+    Frequency : enumTechniqueParameter # 20
+    SineWaveAmplitude : enumTechniqueParameter # 21
+    Vtx1Potential : enumTechniqueParameter # 22
+    Vtx2Potential : enumTechniqueParameter # 23
+    nScans : enumTechniqueParameter # 24
+    nEqScans : enumTechniqueParameter # 25
+    Istrip : enumTechniqueParameter # 26
+    MeasurementTime : enumTechniqueParameter # 27
+    Potential : enumTechniqueParameter # 28
+    EqPotentialFA : enumTechniqueParameter # 29
+    IntervalTime : enumTechniqueParameter # 30
+    IntervalTimeF : enumTechniqueParameter # 31
+    RunTime : enumTechniqueParameter # 32
+    tMode : enumTechniqueParameter # 33
+    Current : enumTechniqueParameter # 34
+    E1 : enumTechniqueParameter # 35
+    E2 : enumTechniqueParameter # 36
+    E3 : enumTechniqueParameter # 37
+    t1 : enumTechniqueParameter # 38
+    t2 : enumTechniqueParameter # 39
+    t3 : enumTechniqueParameter # 40
+    nCycles : enumTechniqueParameter # 41
+    nSteps : enumTechniqueParameter # 42
+    E_levels : enumTechniqueParameter # 43
+    i_levels : enumTechniqueParameter # 44
+    t_levels : enumTechniqueParameter # 45
+    OCP : enumTechniqueParameter # 46
+    RecordAux : enumTechniqueParameter # 47
+    RecordBiPot : enumTechniqueParameter # 48
+    MeasureIForwardReverse : enumTechniqueParameter # 49
+    VersusOCP : enumTechniqueParameter # 50
+    OCPStabilityCriterion : enumTechniqueParameter # 51
+    OCPMaxOCPTime : enumTechniqueParameter # 52
+    ScanType : enumTechniqueParameter # 53
+    FreqType : enumTechniqueParameter # 54
+    Eac : enumTechniqueParameter # 55
+    SamplingTime : enumTechniqueParameter # 56
+    MinFrequency : enumTechniqueParameter # 57
+    MaxFrequency : enumTechniqueParameter # 58
+    FixedFrequency : enumTechniqueParameter # 59
+    nFrequencies : enumTechniqueParameter # 60
+    RecordPt1000 : enumTechniqueParameter # 61
+    PretreatEachFreqMeas : enumTechniqueParameter # 62
+    PretreatEachScan : enumTechniqueParameter # 63
+    MaxEqTime : enumTechniqueParameter # 64
+    LimitMinValue : enumTechniqueParameter # 65
+    LimitMaxValue : enumTechniqueParameter # 66
+    UseLimits : enumTechniqueParameter # 67
+    PolyStatMode : enumTechniqueParameter # 68
+    BipotPotential : enumTechniqueParameter # 69
+    nAvgScans : enumTechniqueParameter # 70
+    None_ : enumTechniqueParameter # 71
+    Iac : enumTechniqueParameter # 72
+    TriggerDelayPeriod : enumTechniqueParameter # 73
+    iStep : enumTechniqueParameter # 74
+
 
 class FastAmperometry(TimeMethod, IFastMeasurement):
     def __init__(self) -> None: ...
-    AnalyteName: str
-    DefaultXAxis: DataArrayType
-    DefaultYAxis: DataArrayType
-    MethodID: str
-    MethodIsGalvanostatic: bool
-    MuxSett: Method.MuxSettings
-    Name: str
-    PeakOverlap: float
-    PolyEmStat: PolyEmStatMethodEx
-    RecordCE: bool
-    ShortName: str
-    SmoothLevel: int
-    Standard: Array_1[float]
-    Technique: int
-    TechniqueNumber: int
-    UseMuxChannel: BitArray
-    UseStirrer: bool
-    ViewBottom: float
-    ViewLeft: float
-    ViewRight: float
-    ViewTop: float
+    AnalyteName : str
+    DefaultXAxis : DataArrayType
+    DefaultYAxis : DataArrayType
+    MethodID : str
+    MethodIsGalvanostatic : bool
+    MuxSett : Method.MuxSettings
+    Name : str
+    PeakOverlap : float
+    PolyEmStat : PolyEmStatMethodEx
+    RecordCE : bool
+    ShortName : str
+    SmoothLevel : int
+    Standard : Array_1[float]
+    Technique : int
+    TechniqueNumber : int
+    UseMuxChannel : BitArray
+    UseStirrer : bool
+    ViewBottom : float
+    ViewLeft : float
+    ViewRight : float
+    ViewTop : float
     @property
     def Area(self) -> float: ...
     @Area.setter
@@ -3118,9 +2961,7 @@ class FastAmperometry(TimeMethod, IFastMeasurement):
     @property
     def BipotModePS(self) -> Method.EnumPalmSensBipotMode: ...
     @BipotModePS.setter
-    def BipotModePS(
-        self, value: Method.EnumPalmSensBipotMode
-    ) -> Method.EnumPalmSensBipotMode: ...
+    def BipotModePS(self, value: Method.EnumPalmSensBipotMode) -> Method.EnumPalmSensBipotMode: ...
     @property
     def BiPotPotential(self) -> float: ...
     @BiPotPotential.setter
@@ -3356,9 +3197,7 @@ class FastAmperometry(TimeMethod, IFastMeasurement):
     @property
     def SelectedPotentiostatChannel(self) -> PotentionstatChannels: ...
     @SelectedPotentiostatChannel.setter
-    def SelectedPotentiostatChannel(
-        self, value: PotentionstatChannels
-    ) -> PotentionstatChannels: ...
+    def SelectedPotentiostatChannel(self, value: PotentionstatChannels) -> PotentionstatChannels: ...
     @property
     def Signal(self) -> enumSignal: ...
     @Signal.setter
@@ -3466,61 +3305,39 @@ class FastAmperometry(TimeMethod, IFastMeasurement):
     def GetMinimumEstimatedMeasurementDuration(self, capab: DeviceCapabilities) -> float: ...
     def GetPointsPerSecond(self, capabilities: DeviceCapabilities = ...) -> float: ...
     def IsFastMeasurement(self, capab: DeviceCapabilities) -> bool: ...
-    def ReceiveMeasurement(
-        self, c: ClientConnection, muxChannel: int, measType: MeasType, measBuff: Buffer = ...
-    ) -> ActiveMeasurement: ...
-    def ReceiveMeasurementAsync(
-        self,
-        c: ClientConnection,
-        muxChannel: int,
-        measType: MeasType,
-        measBuff: Buffer = ...,
-        taskBarrier: TaskBarrier = ...,
-    ) -> Task_1[ActiveMeasurement]: ...
-    def ReceiveMeasurementMS(
-        self, c: ClientConnection, muxChannel: int, measType: MeasType, measBuff: Buffer = ...
-    ) -> ActiveMeasurement: ...
-    def ReceiveMeasurementMSAsync(
-        self,
-        c: ClientConnection,
-        muxChannel: int,
-        measType: MeasType,
-        measBuff: Buffer = ...,
-        taskBarrier: TaskBarrier = ...,
-    ) -> Task_1[ActiveMeasurement]: ...
+    def ReceiveMeasurement(self, c: ClientConnection, muxChannel: int, measType: MeasType, measBuff: Buffer = ...) -> ActiveMeasurement: ...
+    def ReceiveMeasurementAsync(self, c: ClientConnection, muxChannel: int, measType: MeasType, measBuff: Buffer = ..., taskBarrier: TaskBarrier = ...) -> Task_1[ActiveMeasurement]: ...
+    def ReceiveMeasurementMS(self, c: ClientConnection, muxChannel: int, measType: MeasType, measBuff: Buffer = ...) -> ActiveMeasurement: ...
+    def ReceiveMeasurementMSAsync(self, c: ClientConnection, muxChannel: int, measType: MeasType, measBuff: Buffer = ..., taskBarrier: TaskBarrier = ...) -> Task_1[ActiveMeasurement]: ...
     def Serialize(self, tw: TextWriter) -> None: ...
     def SupportsDeviceStorage(self, deviceCapabilities: DeviceCapabilities) -> bool: ...
     def SupportsHWSync(self, capabilities: DeviceCapabilities) -> bool: ...
-    def ToMethodScript(
-        self,
-        capabilities: MethodScriptDeviceCapabilities,
-        forEditor: bool,
-        connMS: ClientConnectionMS = ...,
-    ) -> MethodScript: ...
+    def ToMethodScript(self, capabilities: MethodScriptDeviceCapabilities, forEditor: bool, connMS: ClientConnectionMS = ...) -> MethodScript: ...
     def ToShortString(self) -> str: ...
     def ToString(self) -> str: ...
 
+
 class FastCyclicVoltammetry(CyclicVoltammetry):
     def __init__(self) -> None: ...
-    DefaultXAxis: DataArrayType
-    DefaultYAxis: DataArrayType
-    EPretreat: Array_1[float]
-    MethodID: str
-    MethodIsGalvanostatic: bool
-    MuxSett: Method.MuxSettings
-    Name: str
-    PeakOverlap: float
-    PolyEmStat: PolyEmStatMethodEx
-    RecordCE: bool
-    SmoothLevel: int
-    Technique: int
-    tPretreat: Array_1[float]
-    UseMuxChannel: BitArray
-    UseStirrer: bool
-    ViewBottom: float
-    ViewLeft: float
-    ViewRight: float
-    ViewTop: float
+    DefaultXAxis : DataArrayType
+    DefaultYAxis : DataArrayType
+    EPretreat : Array_1[float]
+    MethodID : str
+    MethodIsGalvanostatic : bool
+    MuxSett : Method.MuxSettings
+    Name : str
+    PeakOverlap : float
+    PolyEmStat : PolyEmStatMethodEx
+    RecordCE : bool
+    SmoothLevel : int
+    Technique : int
+    tPretreat : Array_1[float]
+    UseMuxChannel : BitArray
+    UseStirrer : bool
+    ViewBottom : float
+    ViewLeft : float
+    ViewRight : float
+    ViewTop : float
     @property
     def AnalyteName(self) -> Array_1[str]: ...
     @AnalyteName.setter
@@ -3556,9 +3373,7 @@ class FastCyclicVoltammetry(CyclicVoltammetry):
     @property
     def BipotModePS(self) -> Method.EnumPalmSensBipotMode: ...
     @BipotModePS.setter
-    def BipotModePS(
-        self, value: Method.EnumPalmSensBipotMode
-    ) -> Method.EnumPalmSensBipotMode: ...
+    def BipotModePS(self, value: Method.EnumPalmSensBipotMode) -> Method.EnumPalmSensBipotMode: ...
     @property
     def BiPotPotential(self) -> float: ...
     @BiPotPotential.setter
@@ -3802,9 +3617,7 @@ class FastCyclicVoltammetry(CyclicVoltammetry):
     @property
     def SelectedPotentiostatChannel(self) -> PotentionstatChannels: ...
     @SelectedPotentiostatChannel.setter
-    def SelectedPotentiostatChannel(
-        self, value: PotentionstatChannels
-    ) -> PotentionstatChannels: ...
+    def SelectedPotentiostatChannel(self, value: PotentionstatChannels) -> PotentionstatChannels: ...
     @property
     def SolutionNr(self) -> Array_1[int]: ...
     @SolutionNr.setter
@@ -3941,31 +3754,18 @@ class FastCyclicVoltammetry(CyclicVoltammetry):
     def YTop(self) -> float: ...
     def GetMethodID(self) -> str: ...
     def GetMinimumEstimatedMeasurementDuration(self, capab: DeviceCapabilities) -> float: ...
-    def ReceiveMeasurementMS(
-        self, c: ClientConnection, muxChannel: int, measType: MeasType, measBuff: Buffer = ...
-    ) -> ActiveMeasurement: ...
-    def ReceiveMeasurementMSAsync(
-        self,
-        c: ClientConnection,
-        muxChannel: int,
-        measType: MeasType,
-        measBuff: Buffer = ...,
-        taskBarrier: TaskBarrier = ...,
-    ) -> Task_1[ActiveMeasurement]: ...
+    def ReceiveMeasurementMS(self, c: ClientConnection, muxChannel: int, measType: MeasType, measBuff: Buffer = ...) -> ActiveMeasurement: ...
+    def ReceiveMeasurementMSAsync(self, c: ClientConnection, muxChannel: int, measType: MeasType, measBuff: Buffer = ..., taskBarrier: TaskBarrier = ...) -> Task_1[ActiveMeasurement]: ...
     def SupportsDeviceStorage(self, deviceCapabilities: DeviceCapabilities) -> bool: ...
-    def ToMethodScript(
-        self,
-        capabilities: MethodScriptDeviceCapabilities,
-        forEditor: bool,
-        connMS: ClientConnectionMS = ...,
-    ) -> MethodScript: ...
+    def ToMethodScript(self, capabilities: MethodScriptDeviceCapabilities, forEditor: bool, connMS: ClientConnectionMS = ...) -> MethodScript: ...
     def ToShortString(self) -> str: ...
     def ToString(self) -> str: ...
 
+
 class FastMeasurement(CommMeasurement):
-    Aborted: bool
-    Channel: int
-    VsOCP: MeasureVersusOCP
+    Aborted : bool
+    Channel : int
+    VsOCP : MeasureVersusOCP
     @property
     def BlankCurve(self) -> Curve: ...
     @BlankCurve.setter
@@ -4045,27 +3845,28 @@ class FastMeasurement(CommMeasurement):
     @Visible.setter
     def Visible(self, value: bool) -> bool: ...
 
+
 class FastPotentiometry(FastAmperometry):
     def __init__(self) -> None: ...
-    AnalyteName: str
-    DefaultXAxis: DataArrayType
-    DefaultYAxis: DataArrayType
-    MethodIsGalvanostatic: bool
-    MuxSett: Method.MuxSettings
-    Name: str
-    PeakOverlap: float
-    PolyEmStat: PolyEmStatMethodEx
-    RecordCE: bool
-    ShortName: str
-    SmoothLevel: int
-    Standard: Array_1[float]
-    Technique: int
-    UseMuxChannel: BitArray
-    UseStirrer: bool
-    ViewBottom: float
-    ViewLeft: float
-    ViewRight: float
-    ViewTop: float
+    AnalyteName : str
+    DefaultXAxis : DataArrayType
+    DefaultYAxis : DataArrayType
+    MethodIsGalvanostatic : bool
+    MuxSett : Method.MuxSettings
+    Name : str
+    PeakOverlap : float
+    PolyEmStat : PolyEmStatMethodEx
+    RecordCE : bool
+    ShortName : str
+    SmoothLevel : int
+    Standard : Array_1[float]
+    Technique : int
+    UseMuxChannel : BitArray
+    UseStirrer : bool
+    ViewBottom : float
+    ViewLeft : float
+    ViewRight : float
+    ViewTop : float
     @property
     def Area(self) -> float: ...
     @Area.setter
@@ -4097,9 +3898,7 @@ class FastPotentiometry(FastAmperometry):
     @property
     def BipotModePS(self) -> Method.EnumPalmSensBipotMode: ...
     @BipotModePS.setter
-    def BipotModePS(
-        self, value: Method.EnumPalmSensBipotMode
-    ) -> Method.EnumPalmSensBipotMode: ...
+    def BipotModePS(self, value: Method.EnumPalmSensBipotMode) -> Method.EnumPalmSensBipotMode: ...
     @property
     def BiPotPotential(self) -> float: ...
     @BiPotPotential.setter
@@ -4335,9 +4134,7 @@ class FastPotentiometry(FastAmperometry):
     @property
     def SelectedPotentiostatChannel(self) -> PotentionstatChannels: ...
     @SelectedPotentiostatChannel.setter
-    def SelectedPotentiostatChannel(
-        self, value: PotentionstatChannels
-    ) -> PotentionstatChannels: ...
+    def SelectedPotentiostatChannel(self, value: PotentionstatChannels) -> PotentionstatChannels: ...
     @property
     def Signal(self) -> enumSignal: ...
     @Signal.setter
@@ -4445,6 +4242,7 @@ class FastPotentiometry(FastAmperometry):
     def ToShortString(self) -> str: ...
     def ToString(self) -> str: ...
 
+
 class IChargeLimits(typing.Protocol):
     @property
     def ChargeLimitMax(self) -> float: ...
@@ -4467,6 +4265,7 @@ class IChargeLimits(typing.Protocol):
     @UseChargeLimitMin.setter
     def UseChargeLimitMin(self, value: bool) -> bool: ...
 
+
 class ICurrentScan(IPotentiometric, typing.Protocol):
     @property
     def BeginCurrent(self) -> float: ...
@@ -4481,9 +4280,11 @@ class ICurrentScan(IPotentiometric, typing.Protocol):
     @StepCurrent.setter
     def StepCurrent(self, value: float) -> float: ...
 
+
 class IFastMeasurement(typing.Protocol):
     @abc.abstractmethod
     def IsFastMeasurement(self, capab: DeviceCapabilities) -> bool: ...
+
 
 class IImpedimetricMeasurement(typing.Protocol):
     @property
@@ -4499,14 +4300,15 @@ class IImpedimetricMeasurement(typing.Protocol):
     @Title.setter
     def Title(self, value: str) -> str: ...
 
+
 class ILevelStepOverhead(typing.Protocol):
     @abc.abstractmethod
-    def GetMinimumEstimatedDurationWithOverhead(
-        self, capabilities: DeviceCapabilities
-    ) -> float: ...
+    def GetMinimumEstimatedDurationWithOverhead(self, capabilities: DeviceCapabilities) -> float: ...
+
 
 class IMixedModeMeasurement(typing.Protocol):
     pass
+
 
 class IMixedModeStage(typing.Protocol):
     @property
@@ -4536,6 +4338,7 @@ class IMixedModeStage(typing.Protocol):
     @abc.abstractmethod
     def SetRangingPotential(self, rangingPotential: RangingPotential) -> None: ...
 
+
 class IMixedModeStageMethod(typing.Protocol):
     @property
     def VsPrevEI(self) -> bool: ...
@@ -4546,53 +4349,54 @@ class IMixedModeStageMethod(typing.Protocol):
     @abc.abstractmethod
     def SerializeTechniqueSpecific(self, tw: TextWriter) -> None: ...
 
+
 class ImpedimetricGstatIterationMethod(ImpedimetricIterationMethodBase, IPotentiometric):
-    AcCoupled: bool
-    AnalyteName: str
-    Celltype: int
-    Channel: int
-    DefaultXAxis: DataArrayType
-    DefaultYAxis: DataArrayType
-    FilterAc: int
-    FilterADC: int
-    FilterCF: int
-    FilterDAC: int
-    Frequency: float
-    HSTAB: bool
-    HSTABByte: int
-    IsLastIteration: bool
-    MaxSamplingRate: int
-    MDAC: int
-    MethodID: str
-    MethodIsGalvanostatic: bool
-    MuxSett: Method.MuxSettings
-    Nadc: int
-    NadcStart: int
-    Neqstart: int
-    nPointsac: int
-    NumEquilibrationSines: int
-    NumMeasurementSines: int
-    numsinestable: int
-    Overrides: ImpedimetricIterationMethodBase.EnumOverrides
-    PeakOverlap: float
-    PGAgain: int
-    PGAoffset: int
-    PolyEmStat: PolyEmStatMethodEx
-    realtIntac: int
-    RecordCE: bool
-    ShortName: str
-    SmoothLevel: int
-    Standard: Array_1[float]
-    Technique: int
-    tIntac: float
-    ToHex1String: str
-    UseExternalAD: bool
-    UseMuxChannel: BitArray
-    UseStirrer: bool
-    ViewBottom: float
-    ViewLeft: float
-    ViewRight: float
-    ViewTop: float
+    AcCoupled : bool
+    AnalyteName : str
+    Celltype : int
+    Channel : int
+    DefaultXAxis : DataArrayType
+    DefaultYAxis : DataArrayType
+    FilterAc : int
+    FilterADC : int
+    FilterCF : int
+    FilterDAC : int
+    Frequency : float
+    HSTAB : bool
+    HSTABByte : int
+    IsLastIteration : bool
+    MaxSamplingRate : int
+    MDAC : int
+    MethodID : str
+    MethodIsGalvanostatic : bool
+    MuxSett : Method.MuxSettings
+    Nadc : int
+    NadcStart : int
+    Neqstart : int
+    nPointsac : int
+    NumEquilibrationSines : int
+    NumMeasurementSines : int
+    numsinestable : int
+    Overrides : ImpedimetricIterationMethodBase.EnumOverrides
+    PeakOverlap : float
+    PGAgain : int
+    PGAoffset : int
+    PolyEmStat : PolyEmStatMethodEx
+    realtIntac : int
+    RecordCE : bool
+    ShortName : str
+    SmoothLevel : int
+    Standard : Array_1[float]
+    Technique : int
+    tIntac : float
+    ToHex1String : str
+    UseExternalAD : bool
+    UseMuxChannel : BitArray
+    UseStirrer : bool
+    ViewBottom : float
+    ViewLeft : float
+    ViewRight : float
+    ViewTop : float
     @property
     def AppliedCurrentRange(self) -> CurrentRange: ...
     @AppliedCurrentRange.setter
@@ -4628,9 +4432,7 @@ class ImpedimetricGstatIterationMethod(ImpedimetricIterationMethodBase, IPotenti
     @property
     def BipotModePS(self) -> Method.EnumPalmSensBipotMode: ...
     @BipotModePS.setter
-    def BipotModePS(
-        self, value: Method.EnumPalmSensBipotMode
-    ) -> Method.EnumPalmSensBipotMode: ...
+    def BipotModePS(self, value: Method.EnumPalmSensBipotMode) -> Method.EnumPalmSensBipotMode: ...
     @property
     def BiPotPotential(self) -> float: ...
     @BiPotPotential.setter
@@ -4778,9 +4580,7 @@ class ImpedimetricGstatIterationMethod(ImpedimetricIterationMethodBase, IPotenti
     @property
     def OriginalAppliedCurrentRange(self) -> typing.Optional[CurrentRanges]: ...
     @OriginalAppliedCurrentRange.setter
-    def OriginalAppliedCurrentRange(
-        self, value: typing.Optional[CurrentRanges]
-    ) -> typing.Optional[CurrentRanges]: ...
+    def OriginalAppliedCurrentRange(self, value: typing.Optional[CurrentRanges]) -> typing.Optional[CurrentRanges]: ...
     @property
     def OverrideBandwidth(self) -> bool: ...
     @OverrideBandwidth.setter
@@ -4874,9 +4674,7 @@ class ImpedimetricGstatIterationMethod(ImpedimetricIterationMethodBase, IPotenti
     @property
     def SelectedPotentiostatChannel(self) -> PotentionstatChannels: ...
     @SelectedPotentiostatChannel.setter
-    def SelectedPotentiostatChannel(
-        self, value: PotentionstatChannels
-    ) -> PotentionstatChannels: ...
+    def SelectedPotentiostatChannel(self, value: PotentionstatChannels) -> PotentionstatChannels: ...
     @property
     def Signal(self) -> enumSignal: ...
     @Signal.setter
@@ -4977,21 +4775,8 @@ class ImpedimetricGstatIterationMethod(ImpedimetricIterationMethodBase, IPotenti
     def YTop(self) -> float: ...
     def DeSerializeTechniqueSpecific(self, contents: str) -> None: ...
     def GetMethodID(self) -> str: ...
-    def ReceiveMeasurement(
-        self,
-        conn: ClientConnection,
-        muxChannel: int,
-        measType: MeasType,
-        measBuff: Buffer = ...,
-    ) -> ActiveMeasurement: ...
-    def ReceiveMeasurementAsync(
-        self,
-        conn: ClientConnection,
-        muxChannel: int,
-        measType: MeasType,
-        measBuff: Buffer = ...,
-        taskBarrier: TaskBarrier = ...,
-    ) -> Task_1[ActiveMeasurement]: ...
+    def ReceiveMeasurement(self, conn: ClientConnection, muxChannel: int, measType: MeasType, measBuff: Buffer = ...) -> ActiveMeasurement: ...
+    def ReceiveMeasurementAsync(self, conn: ClientConnection, muxChannel: int, measType: MeasType, measBuff: Buffer = ..., taskBarrier: TaskBarrier = ...) -> Task_1[ActiveMeasurement]: ...
     def SerializeTechniqueSpecific(self, tw: TextWriter) -> None: ...
     def SetAppliedCurrentRangeSilent(self, range: CurrentRange) -> None: ...
     def SetCompatibleAppliedRange(self, capabilities: DeviceCapabilities) -> None: ...
@@ -5000,18 +4785,17 @@ class ImpedimetricGstatIterationMethod(ImpedimetricIterationMethodBase, IPotenti
     def ToHexPS4(self, m: EncodedMethodV1) -> None: ...
     def ToShortString(self) -> str: ...
 
+
 class ImpedimetricGstatMeasurement(ImpedimetricMeasurementBase):
-    def __init__(
-        self, conn: ClientConnection, method: Method, muxChannel: int, measType: MeasType
-    ) -> None: ...
-    Channel: int
-    ETA: DateTime
-    LastMuxChannel: int
-    MeasTimeMilliseconds: int
-    MeasurementStarted: DateTime
-    MeasurementStarted2: DateTime
-    stopwatch: MicroStopwatch
-    VsOCP: MeasureVersusOCP
+    def __init__(self, conn: ClientConnection, method: Method, muxChannel: int, measType: MeasType) -> None: ...
+    Channel : int
+    ETA : DateTime
+    LastMuxChannel : int
+    MeasTimeMilliseconds : int
+    MeasurementStarted : DateTime
+    MeasurementStarted2 : DateTime
+    stopwatch : MicroStopwatch
+    VsOCP : MeasureVersusOCP
     @property
     def BlankCurve(self) -> Curve: ...
     @BlankCurve.setter
@@ -5095,30 +4879,31 @@ class ImpedimetricGstatMeasurement(ImpedimetricMeasurementBase):
     @Visible.setter
     def Visible(self, value: bool) -> bool: ...
 
+
 class ImpedimetricGstatMethod(ImpedimetricMethodBase, IPotentiometric):
     def __init__(self) -> None: ...
-    AnalyteName: str
-    DefaultXAxis: DataArrayType
-    DefaultYAxis: DataArrayType
-    MaxPGAgain: int
-    MethodID: str
-    MethodIsGalvanostatic: bool
-    MuxSett: Method.MuxSettings
-    Name: str
-    PeakOverlap: float
-    PolyEmStat: PolyEmStatMethodEx
-    RecordCE: bool
-    ShortName: str
-    SmoothLevel: int
-    Standard: Array_1[float]
-    Technique: int
-    TechniqueNumber: int
-    UseMuxChannel: BitArray
-    UseStirrer: bool
-    ViewBottom: float
-    ViewLeft: float
-    ViewRight: float
-    ViewTop: float
+    AnalyteName : str
+    DefaultXAxis : DataArrayType
+    DefaultYAxis : DataArrayType
+    MaxPGAgain : int
+    MethodID : str
+    MethodIsGalvanostatic : bool
+    MuxSett : Method.MuxSettings
+    Name : str
+    PeakOverlap : float
+    PolyEmStat : PolyEmStatMethodEx
+    RecordCE : bool
+    ShortName : str
+    SmoothLevel : int
+    Standard : Array_1[float]
+    Technique : int
+    TechniqueNumber : int
+    UseMuxChannel : BitArray
+    UseStirrer : bool
+    ViewBottom : float
+    ViewLeft : float
+    ViewRight : float
+    ViewTop : float
     @property
     def AppliedCurrentRange(self) -> CurrentRange: ...
     @AppliedCurrentRange.setter
@@ -5154,9 +4939,7 @@ class ImpedimetricGstatMethod(ImpedimetricMethodBase, IPotentiometric):
     @property
     def BipotModePS(self) -> Method.EnumPalmSensBipotMode: ...
     @BipotModePS.setter
-    def BipotModePS(
-        self, value: Method.EnumPalmSensBipotMode
-    ) -> Method.EnumPalmSensBipotMode: ...
+    def BipotModePS(self, value: Method.EnumPalmSensBipotMode) -> Method.EnumPalmSensBipotMode: ...
     @property
     def BiPotPotential(self) -> float: ...
     @BiPotPotential.setter
@@ -5268,9 +5051,7 @@ class ImpedimetricGstatMethod(ImpedimetricMethodBase, IPotentiometric):
     @property
     def IterationMethodOverrides(self) -> ImpedimetricIterationMethodBase: ...
     @IterationMethodOverrides.setter
-    def IterationMethodOverrides(
-        self, value: ImpedimetricIterationMethodBase
-    ) -> ImpedimetricIterationMethodBase: ...
+    def IterationMethodOverrides(self, value: ImpedimetricIterationMethodBase) -> ImpedimetricIterationMethodBase: ...
     @property
     def LimitMaxValue(self) -> float: ...
     @LimitMaxValue.setter
@@ -5356,9 +5137,7 @@ class ImpedimetricGstatMethod(ImpedimetricMethodBase, IPotentiometric):
     @property
     def OriginalAppliedCurrentRange(self) -> typing.Optional[CurrentRanges]: ...
     @OriginalAppliedCurrentRange.setter
-    def OriginalAppliedCurrentRange(
-        self, value: typing.Optional[CurrentRanges]
-    ) -> typing.Optional[CurrentRanges]: ...
+    def OriginalAppliedCurrentRange(self, value: typing.Optional[CurrentRanges]) -> typing.Optional[CurrentRanges]: ...
     @property
     def OverrideBandwidth(self) -> bool: ...
     @OverrideBandwidth.setter
@@ -5470,9 +5249,7 @@ class ImpedimetricGstatMethod(ImpedimetricMethodBase, IPotentiometric):
     @property
     def SelectedPotentiostatChannel(self) -> PotentionstatChannels: ...
     @SelectedPotentiostatChannel.setter
-    def SelectedPotentiostatChannel(
-        self, value: PotentionstatChannels
-    ) -> PotentionstatChannels: ...
+    def SelectedPotentiostatChannel(self, value: PotentionstatChannels) -> PotentionstatChannels: ...
     @property
     def ShowTDDMS(self) -> bool: ...
     @ShowTDDMS.setter
@@ -5581,91 +5358,65 @@ class ImpedimetricGstatMethod(ImpedimetricMethodBase, IPotentiometric):
     def YTop(self) -> float: ...
     def DeSerializeTechniqueSpecific(self, contents: str) -> None: ...
     def GetMethodID(self) -> str: ...
-    def ReceiveMeasurement(
-        self,
-        conn: ClientConnection,
-        muxChannel: int,
-        measType: MeasType,
-        measBuff: Buffer = ...,
-    ) -> ActiveMeasurement: ...
-    def ReceiveMeasurementAsync(
-        self,
-        conn: ClientConnection,
-        muxChannel: int,
-        measType: MeasType,
-        measBuff: Buffer = ...,
-        taskBarrier: TaskBarrier = ...,
-    ) -> Task_1[ActiveMeasurement]: ...
-    def ReceiveMeasurementMS(
-        self, c: ClientConnection, muxChannel: int, measType: MeasType, measBuff: Buffer = ...
-    ) -> ActiveMeasurement: ...
-    def ReceiveMeasurementMSAsync(
-        self,
-        c: ClientConnection,
-        muxChannel: int,
-        measType: MeasType,
-        measBuff: Buffer = ...,
-        taskBarrier: TaskBarrier = ...,
-    ) -> Task_1[ActiveMeasurement]: ...
+    def ReceiveMeasurement(self, conn: ClientConnection, muxChannel: int, measType: MeasType, measBuff: Buffer = ...) -> ActiveMeasurement: ...
+    def ReceiveMeasurementAsync(self, conn: ClientConnection, muxChannel: int, measType: MeasType, measBuff: Buffer = ..., taskBarrier: TaskBarrier = ...) -> Task_1[ActiveMeasurement]: ...
+    def ReceiveMeasurementMS(self, c: ClientConnection, muxChannel: int, measType: MeasType, measBuff: Buffer = ...) -> ActiveMeasurement: ...
+    def ReceiveMeasurementMSAsync(self, c: ClientConnection, muxChannel: int, measType: MeasType, measBuff: Buffer = ..., taskBarrier: TaskBarrier = ...) -> Task_1[ActiveMeasurement]: ...
     def SerializeTechniqueSpecific(self, tw: TextWriter) -> None: ...
     def SetAppliedCurrentRangeSilent(self, range: CurrentRange) -> None: ...
     def SetCompatibleAppliedRange(self, capabilities: DeviceCapabilities) -> None: ...
     def SetCompatibleAppliedRangeSilent(self, capabilities: DeviceCapabilities) -> None: ...
-    def ToMethodScript(
-        self,
-        capabilities: MethodScriptDeviceCapabilities,
-        forEditor: bool,
-        connMS: ClientConnectionMS = ...,
-    ) -> MethodScript: ...
+    def ToMethodScript(self, capabilities: MethodScriptDeviceCapabilities, forEditor: bool, connMS: ClientConnectionMS = ...) -> MethodScript: ...
     def ToShortString(self) -> str: ...
     def ToString(self) -> str: ...
 
+
 class ImpedimetricIterationMethod(ImpedimetricIterationMethodBase):
-    AcCoupled: bool
-    AnalyteName: str
-    Celltype: int
-    Channel: int
-    DefaultXAxis: DataArrayType
-    DefaultYAxis: DataArrayType
-    FilterAc: int
-    FilterADC: int
-    FilterCF: int
-    FilterDAC: int
-    Frequency: float
-    HSTAB: bool
-    HSTABByte: int
-    IsLastIteration: bool
-    MaxSamplingRate: int
-    MDAC: int
-    MethodID: str
-    MethodIsGalvanostatic: bool
-    MuxSett: Method.MuxSettings
-    Nadc: int
-    NadcStart: int
-    Neqstart: int
-    nPointsac: int
-    NumEquilibrationSines: int
-    NumMeasurementSines: int
-    numsinestable: int
-    Overrides: ImpedimetricIterationMethodBase.EnumOverrides
-    PeakOverlap: float
-    PGAgain: int
-    PGAoffset: int
-    PolyEmStat: PolyEmStatMethodEx
-    realtIntac: int
-    RecordCE: bool
-    SmoothLevel: int
-    Standard: Array_1[float]
-    Technique: int
-    tIntac: float
-    ToHex1String: str
-    UseExternalAD: bool
-    UseMuxChannel: BitArray
-    UseStirrer: bool
-    ViewBottom: float
-    ViewLeft: float
-    ViewRight: float
-    ViewTop: float
+    AcCoupled : bool
+    AnalyteName : str
+    Celltype : int
+    Channel : int
+    DefaultXAxis : DataArrayType
+    DefaultYAxis : DataArrayType
+    FilterAc : int
+    FilterADC : int
+    FilterCF : int
+    FilterDAC : int
+    Frequency : float
+    HSTAB : bool
+    HSTABByte : int
+    IsLastIteration : bool
+    MaxSamplingRate : int
+    MDAC : int
+    MethodID : str
+    MethodIsGalvanostatic : bool
+    MuxSett : Method.MuxSettings
+    Nadc : int
+    NadcStart : int
+    Neqstart : int
+    nPointsac : int
+    NumEquilibrationSines : int
+    NumMeasurementSines : int
+    numsinestable : int
+    Overrides : ImpedimetricIterationMethodBase.EnumOverrides
+    PeakOverlap : float
+    PGAgain : int
+    PGAoffset : int
+    PolyEmStat : PolyEmStatMethodEx
+    realtIntac : int
+    RecordCE : bool
+    SmoothLevel : int
+    Standard : Array_1[float]
+    Technique : int
+    tIntac : float
+    ToHex1String : str
+    UseExternalAD : bool
+    UseMuxChannel : BitArray
+    UseStirrer : bool
+    ViewBottom : float
+    ViewLeft : float
+    ViewRight : float
+    ViewTop : float
     @property
     def Area(self) -> float: ...
     @Area.setter
@@ -5697,9 +5448,7 @@ class ImpedimetricIterationMethod(ImpedimetricIterationMethodBase):
     @property
     def BipotModePS(self) -> Method.EnumPalmSensBipotMode: ...
     @BipotModePS.setter
-    def BipotModePS(
-        self, value: Method.EnumPalmSensBipotMode
-    ) -> Method.EnumPalmSensBipotMode: ...
+    def BipotModePS(self, value: Method.EnumPalmSensBipotMode) -> Method.EnumPalmSensBipotMode: ...
     @property
     def BiPotPotential(self) -> float: ...
     @BiPotPotential.setter
@@ -5929,9 +5678,7 @@ class ImpedimetricIterationMethod(ImpedimetricIterationMethodBase):
     @property
     def SelectedPotentiostatChannel(self) -> PotentionstatChannels: ...
     @SelectedPotentiostatChannel.setter
-    def SelectedPotentiostatChannel(
-        self, value: PotentionstatChannels
-    ) -> PotentionstatChannels: ...
+    def SelectedPotentiostatChannel(self, value: PotentionstatChannels) -> PotentionstatChannels: ...
     @property
     def Signal(self) -> enumSignal: ...
     @Signal.setter
@@ -6032,112 +5779,102 @@ class ImpedimetricIterationMethod(ImpedimetricIterationMethodBase):
     def YTop(self) -> float: ...
     def DeSerializeTechniqueSpecific(self, contents: str) -> None: ...
     def GetMethodID(self) -> str: ...
-    def ReceiveMeasurement(
-        self,
-        conn: ClientConnection,
-        muxChannel: int,
-        measType: MeasType,
-        measBuff: Buffer = ...,
-    ) -> ActiveMeasurement: ...
-    def ReceiveMeasurementAsync(
-        self,
-        conn: ClientConnection,
-        muxChannel: int,
-        measType: MeasType,
-        measBuff: Buffer = ...,
-        taskBarrier: TaskBarrier = ...,
-    ) -> Task_1[ActiveMeasurement]: ...
+    def ReceiveMeasurement(self, conn: ClientConnection, muxChannel: int, measType: MeasType, measBuff: Buffer = ...) -> ActiveMeasurement: ...
+    def ReceiveMeasurementAsync(self, conn: ClientConnection, muxChannel: int, measType: MeasType, measBuff: Buffer = ..., taskBarrier: TaskBarrier = ...) -> Task_1[ActiveMeasurement]: ...
     def SerializeTechniqueSpecific(self, tw: TextWriter) -> None: ...
     def ToHexPS3(self, m: EncodedMethodV1) -> None: ...
     def ToHexPS4(self, m: EncodedMethodV1) -> None: ...
     def ToShortString(self) -> str: ...
 
+
 class ImpedimetricIterationMethodBase(TimeMethod):
+
     class EnumInternalChannel(typing.SupportsInt):
         @typing.overload
-        def __init__(self, value: int) -> None: ...
+        def __init__(self, value : int) -> None: ...
         @typing.overload
-        def __init__(self, value: int, force_if_true: bool) -> None: ...
+        def __init__(self, value : int, force_if_true: bool) -> None: ...
         def __int__(self) -> int: ...
 
         # Values:
-        Ibipolar: ImpedimetricIterationMethodBase.EnumInternalChannel  # 34
-        Ebipolar: ImpedimetricIterationMethodBase.EnumInternalChannel  # 35
+        Ibipolar : ImpedimetricIterationMethodBase.EnumInternalChannel # 34
+        Ebipolar : ImpedimetricIterationMethodBase.EnumInternalChannel # 35
+
 
     class EnumOverrides(typing.SupportsInt):
         @typing.overload
-        def __init__(self, value: int) -> None: ...
+        def __init__(self, value : int) -> None: ...
         @typing.overload
-        def __init__(self, value: int, force_if_true: bool) -> None: ...
+        def __init__(self, value : int, force_if_true: bool) -> None: ...
         def __int__(self) -> int: ...
 
         # Values:
-        FilterCF: ImpedimetricIterationMethodBase.EnumOverrides  # 1
-        FilterAC: ImpedimetricIterationMethodBase.EnumOverrides  # 2
-        PGAgain: ImpedimetricIterationMethodBase.EnumOverrides  # 4
-        PGAoffset: ImpedimetricIterationMethodBase.EnumOverrides  # 8
-        tIntac: ImpedimetricIterationMethodBase.EnumOverrides  # 16
-        nPointsac: ImpedimetricIterationMethodBase.EnumOverrides  # 32
-        Nadc: ImpedimetricIterationMethodBase.EnumOverrides  # 64
-        MDAC: ImpedimetricIterationMethodBase.EnumOverrides  # 128
-        Neqstart: ImpedimetricIterationMethodBase.EnumOverrides  # 256
-        NumMeasurementSines: ImpedimetricIterationMethodBase.EnumOverrides  # 512
-        NumEquilibrationSines: ImpedimetricIterationMethodBase.EnumOverrides  # 1024
-        Channel: ImpedimetricIterationMethodBase.EnumOverrides  # 2048
-        ADC: ImpedimetricIterationMethodBase.EnumOverrides  # 4096
-        HSTAB: ImpedimetricIterationMethodBase.EnumOverrides  # 8192
-        AcCoupled: ImpedimetricIterationMethodBase.EnumOverrides  # 16384
-        MaxPGAgain: ImpedimetricIterationMethodBase.EnumOverrides  # 32768
-        FilterDAC: ImpedimetricIterationMethodBase.EnumOverrides  # 65536
-        FilterADC: ImpedimetricIterationMethodBase.EnumOverrides  # 131072
-        MaxSamplingRate: ImpedimetricIterationMethodBase.EnumOverrides  # 262144
-        HSTABByte: ImpedimetricIterationMethodBase.EnumOverrides  # 524288
-        Celltype: ImpedimetricIterationMethodBase.EnumOverrides  # 1048576
+        FilterCF : ImpedimetricIterationMethodBase.EnumOverrides # 1
+        FilterAC : ImpedimetricIterationMethodBase.EnumOverrides # 2
+        PGAgain : ImpedimetricIterationMethodBase.EnumOverrides # 4
+        PGAoffset : ImpedimetricIterationMethodBase.EnumOverrides # 8
+        tIntac : ImpedimetricIterationMethodBase.EnumOverrides # 16
+        nPointsac : ImpedimetricIterationMethodBase.EnumOverrides # 32
+        Nadc : ImpedimetricIterationMethodBase.EnumOverrides # 64
+        MDAC : ImpedimetricIterationMethodBase.EnumOverrides # 128
+        Neqstart : ImpedimetricIterationMethodBase.EnumOverrides # 256
+        NumMeasurementSines : ImpedimetricIterationMethodBase.EnumOverrides # 512
+        NumEquilibrationSines : ImpedimetricIterationMethodBase.EnumOverrides # 1024
+        Channel : ImpedimetricIterationMethodBase.EnumOverrides # 2048
+        ADC : ImpedimetricIterationMethodBase.EnumOverrides # 4096
+        HSTAB : ImpedimetricIterationMethodBase.EnumOverrides # 8192
+        AcCoupled : ImpedimetricIterationMethodBase.EnumOverrides # 16384
+        MaxPGAgain : ImpedimetricIterationMethodBase.EnumOverrides # 32768
+        FilterDAC : ImpedimetricIterationMethodBase.EnumOverrides # 65536
+        FilterADC : ImpedimetricIterationMethodBase.EnumOverrides # 131072
+        MaxSamplingRate : ImpedimetricIterationMethodBase.EnumOverrides # 262144
+        HSTABByte : ImpedimetricIterationMethodBase.EnumOverrides # 524288
+        Celltype : ImpedimetricIterationMethodBase.EnumOverrides # 1048576
 
-    AcCoupled: bool
-    AnalyteName: str
-    Celltype: int
-    Channel: int
-    DefaultXAxis: DataArrayType
-    DefaultYAxis: DataArrayType
-    FilterAc: int
-    FilterADC: int
-    FilterCF: int
-    FilterDAC: int
-    Frequency: float
-    HSTAB: bool
-    HSTABByte: int
-    IsLastIteration: bool
-    MaxSamplingRate: int
-    MDAC: int
-    MethodIsGalvanostatic: bool
-    MuxSett: Method.MuxSettings
-    Nadc: int
-    NadcStart: int
-    Neqstart: int
-    nPointsac: int
-    NumEquilibrationSines: int
-    NumMeasurementSines: int
-    numsinestable: int
-    Overrides: ImpedimetricIterationMethodBase.EnumOverrides
-    PeakOverlap: float
-    PGAgain: int
-    PGAoffset: int
-    PolyEmStat: PolyEmStatMethodEx
-    realtIntac: int
-    RecordCE: bool
-    SmoothLevel: int
-    Standard: Array_1[float]
-    Technique: int
-    tIntac: float
-    ToHex1String: str
-    UseExternalAD: bool
-    UseMuxChannel: BitArray
-    UseStirrer: bool
-    ViewBottom: float
-    ViewLeft: float
-    ViewRight: float
-    ViewTop: float
+    AcCoupled : bool
+    AnalyteName : str
+    Celltype : int
+    Channel : int
+    DefaultXAxis : DataArrayType
+    DefaultYAxis : DataArrayType
+    FilterAc : int
+    FilterADC : int
+    FilterCF : int
+    FilterDAC : int
+    Frequency : float
+    HSTAB : bool
+    HSTABByte : int
+    IsLastIteration : bool
+    MaxSamplingRate : int
+    MDAC : int
+    MethodIsGalvanostatic : bool
+    MuxSett : Method.MuxSettings
+    Nadc : int
+    NadcStart : int
+    Neqstart : int
+    nPointsac : int
+    NumEquilibrationSines : int
+    NumMeasurementSines : int
+    numsinestable : int
+    Overrides : ImpedimetricIterationMethodBase.EnumOverrides
+    PeakOverlap : float
+    PGAgain : int
+    PGAoffset : int
+    PolyEmStat : PolyEmStatMethodEx
+    realtIntac : int
+    RecordCE : bool
+    SmoothLevel : int
+    Standard : Array_1[float]
+    Technique : int
+    tIntac : float
+    ToHex1String : str
+    UseExternalAD : bool
+    UseMuxChannel : BitArray
+    UseStirrer : bool
+    ViewBottom : float
+    ViewLeft : float
+    ViewRight : float
+    ViewTop : float
     @property
     def Area(self) -> float: ...
     @Area.setter
@@ -6169,9 +5906,7 @@ class ImpedimetricIterationMethodBase(TimeMethod):
     @property
     def BipotModePS(self) -> Method.EnumPalmSensBipotMode: ...
     @BipotModePS.setter
-    def BipotModePS(
-        self, value: Method.EnumPalmSensBipotMode
-    ) -> Method.EnumPalmSensBipotMode: ...
+    def BipotModePS(self, value: Method.EnumPalmSensBipotMode) -> Method.EnumPalmSensBipotMode: ...
     @property
     def BiPotPotential(self) -> float: ...
     @BiPotPotential.setter
@@ -6401,9 +6136,7 @@ class ImpedimetricIterationMethodBase(TimeMethod):
     @property
     def SelectedPotentiostatChannel(self) -> PotentionstatChannels: ...
     @SelectedPotentiostatChannel.setter
-    def SelectedPotentiostatChannel(
-        self, value: PotentionstatChannels
-    ) -> PotentionstatChannels: ...
+    def SelectedPotentiostatChannel(self, value: PotentionstatChannels) -> PotentionstatChannels: ...
     @property
     def Signal(self) -> enumSignal: ...
     @Signal.setter
@@ -6505,40 +6238,28 @@ class ImpedimetricIterationMethodBase(TimeMethod):
     def DetermineSine(self, eisSettings: EISSettingsPS3) -> None: ...
     def GetMinimumEstimatedMeasurementDuration(self, capab: DeviceCapabilities) -> float: ...
     @staticmethod
-    def GetNPoints(
-        maxSamplingRate: float, frequency: float, minPoints: int, maxPoints: int
-    ) -> int: ...
+    def GetNPoints(maxSamplingRate: float, frequency: float, minPoints: int, maxPoints: int) -> int: ...
     @staticmethod
     def GetNumMeasurementSines(samplingtime: float, frequency: float) -> int: ...
     def GetPointsPerSecond(self, capabilities: DeviceCapabilities = ...) -> float: ...
-    def IsOverridden(
-        self, parameter: ImpedimetricIterationMethodBase.EnumOverrides
-    ) -> bool: ...
-    def OverrideValue(
-        self, parameter: ImpedimetricIterationMethodBase.EnumOverrides, value: typing.Any
-    ) -> None: ...
+    def IsOverridden(self, parameter: ImpedimetricIterationMethodBase.EnumOverrides) -> bool: ...
+    def OverrideValue(self, parameter: ImpedimetricIterationMethodBase.EnumOverrides, value: typing.Any) -> None: ...
     def SupportsDeviceStorage(self, deviceCapabilities: DeviceCapabilities) -> bool: ...
     def SupportsHWSync(self, capabilities: DeviceCapabilities) -> bool: ...
-    def ToMethodScript(
-        self,
-        capabilities: MethodScriptDeviceCapabilities,
-        forEditor: bool,
-        connMS: ClientConnectionMS = ...,
-    ) -> MethodScript: ...
+    def ToMethodScript(self, capabilities: MethodScriptDeviceCapabilities, forEditor: bool, connMS: ClientConnectionMS = ...) -> MethodScript: ...
     def ToString(self) -> str: ...
 
+
 class ImpedimetricMeasurement(ImpedimetricMeasurementBase):
-    def __init__(
-        self, conn: ClientConnection, method: Method, muxChannel: int, measType: MeasType
-    ) -> None: ...
-    Channel: int
-    ETA: DateTime
-    LastMuxChannel: int
-    MeasTimeMilliseconds: int
-    MeasurementStarted: DateTime
-    MeasurementStarted2: DateTime
-    stopwatch: MicroStopwatch
-    VsOCP: MeasureVersusOCP
+    def __init__(self, conn: ClientConnection, method: Method, muxChannel: int, measType: MeasType) -> None: ...
+    Channel : int
+    ETA : DateTime
+    LastMuxChannel : int
+    MeasTimeMilliseconds : int
+    MeasurementStarted : DateTime
+    MeasurementStarted2 : DateTime
+    stopwatch : MicroStopwatch
+    VsOCP : MeasureVersusOCP
     @property
     def BlankCurve(self) -> Curve: ...
     @BlankCurve.setter
@@ -6622,19 +6343,18 @@ class ImpedimetricMeasurement(ImpedimetricMeasurementBase):
     @Visible.setter
     def Visible(self, value: bool) -> bool: ...
 
+
 class ImpedimetricMeasurementBase(CustomMeasurement, IImpedimetricMeasurement):
-    def __init__(
-        self, conn: ClientConnection, method: Method, muxChannel: int, measType: MeasType
-    ) -> None: ...
-    CalibrationType: int
-    Channel: int
-    ETA: DateTime
-    LastMuxChannel: int
-    MeasTimeMilliseconds: int
-    MeasurementStarted: DateTime
-    MeasurementStarted2: DateTime
-    stopwatch: MicroStopwatch
-    VsOCP: MeasureVersusOCP
+    def __init__(self, conn: ClientConnection, method: Method, muxChannel: int, measType: MeasType) -> None: ...
+    CalibrationType : int
+    Channel : int
+    ETA : DateTime
+    LastMuxChannel : int
+    MeasTimeMilliseconds : int
+    MeasurementStarted : DateTime
+    MeasurementStarted2 : DateTime
+    stopwatch : MicroStopwatch
+    VsOCP : MeasureVersusOCP
     @property
     def BlankCurve(self) -> Curve: ...
     @BlankCurve.setter
@@ -6727,48 +6447,35 @@ class ImpedimetricMeasurementBase(CustomMeasurement, IImpedimetricMeasurement):
     def SkipPretreatmentAsync(self) -> Task: ...
     def Start(self) -> None: ...
     def StartAsync(self) -> Task: ...
-    def StartStage(
-        self,
-        timeOffsetInSec: float,
-        name: str,
-        firstStage: bool = ...,
-        resetCR: bool = ...,
-        overrideStartRange: CurrentRange = ...,
-    ) -> None: ...
-    def StartStageAsync(
-        self,
-        timeOffsetInSec: float,
-        name: str,
-        firstStage: bool = ...,
-        resetCR: bool = ...,
-        overrideStartRange: CurrentRange = ...,
-    ) -> Task: ...
+    def StartStage(self, timeOffsetInSec: float, name: str, firstStage: bool = ..., resetCR: bool = ..., overrideStartRange: CurrentRange = ...) -> None: ...
+    def StartStageAsync(self, timeOffsetInSec: float, name: str, firstStage: bool = ..., resetCR: bool = ..., overrideStartRange: CurrentRange = ...) -> Task: ...
+
 
 class ImpedimetricMethod(ImpedimetricMethodBase):
     def __init__(self) -> None: ...
-    AnalyteName: str
-    DefaultXAxis: DataArrayType
-    DefaultYAxis: DataArrayType
-    DualEISModeNames: IReadOnlyDictionary_2[int, str]
-    MaxPGAgain: int
-    MethodID: str
-    MethodIsGalvanostatic: bool
-    MuxSett: Method.MuxSettings
-    Name: str
-    PeakOverlap: float
-    PolyEmStat: PolyEmStatMethodEx
-    RecordCE: bool
-    ShortName: str
-    SmoothLevel: int
-    Standard: Array_1[float]
-    Technique: int
-    TechniqueNumber: int
-    UseMuxChannel: BitArray
-    UseStirrer: bool
-    ViewBottom: float
-    ViewLeft: float
-    ViewRight: float
-    ViewTop: float
+    AnalyteName : str
+    DefaultXAxis : DataArrayType
+    DefaultYAxis : DataArrayType
+    DualEISModeNames : IReadOnlyDictionary_2[int, str]
+    MaxPGAgain : int
+    MethodID : str
+    MethodIsGalvanostatic : bool
+    MuxSett : Method.MuxSettings
+    Name : str
+    PeakOverlap : float
+    PolyEmStat : PolyEmStatMethodEx
+    RecordCE : bool
+    ShortName : str
+    SmoothLevel : int
+    Standard : Array_1[float]
+    Technique : int
+    TechniqueNumber : int
+    UseMuxChannel : BitArray
+    UseStirrer : bool
+    ViewBottom : float
+    ViewLeft : float
+    ViewRight : float
+    ViewTop : float
     @property
     def Area(self) -> float: ...
     @Area.setter
@@ -6800,9 +6507,7 @@ class ImpedimetricMethod(ImpedimetricMethodBase):
     @property
     def BipotModePS(self) -> Method.EnumPalmSensBipotMode: ...
     @BipotModePS.setter
-    def BipotModePS(
-        self, value: Method.EnumPalmSensBipotMode
-    ) -> Method.EnumPalmSensBipotMode: ...
+    def BipotModePS(self, value: Method.EnumPalmSensBipotMode) -> Method.EnumPalmSensBipotMode: ...
     @property
     def BiPotPotential(self) -> float: ...
     @BiPotPotential.setter
@@ -6910,9 +6615,7 @@ class ImpedimetricMethod(ImpedimetricMethodBase):
     @property
     def IterationMethodOverrides(self) -> ImpedimetricIterationMethodBase: ...
     @IterationMethodOverrides.setter
-    def IterationMethodOverrides(
-        self, value: ImpedimetricIterationMethodBase
-    ) -> ImpedimetricIterationMethodBase: ...
+    def IterationMethodOverrides(self, value: ImpedimetricIterationMethodBase) -> ImpedimetricIterationMethodBase: ...
     @property
     def LimitMaxValue(self) -> float: ...
     @LimitMaxValue.setter
@@ -7112,9 +6815,7 @@ class ImpedimetricMethod(ImpedimetricMethodBase):
     @property
     def SelectedPotentiostatChannel(self) -> PotentionstatChannels: ...
     @SelectedPotentiostatChannel.setter
-    def SelectedPotentiostatChannel(
-        self, value: PotentionstatChannels
-    ) -> PotentionstatChannels: ...
+    def SelectedPotentiostatChannel(self, value: PotentionstatChannels) -> PotentionstatChannels: ...
     @property
     def ShowTDDMS(self) -> bool: ...
     @ShowTDDMS.setter
@@ -7227,63 +6928,37 @@ class ImpedimetricMethod(ImpedimetricMethodBase):
     def YTop(self) -> float: ...
     def DeSerializeTechniqueSpecific(self, contents: str) -> None: ...
     def GetMethodID(self) -> str: ...
-    def ReceiveMeasurement(
-        self,
-        conn: ClientConnection,
-        muxChannel: int,
-        measType: MeasType,
-        measBuff: Buffer = ...,
-    ) -> ActiveMeasurement: ...
-    def ReceiveMeasurementAsync(
-        self,
-        conn: ClientConnection,
-        muxChannel: int,
-        measType: MeasType,
-        measBuff: Buffer = ...,
-        taskBarrier: TaskBarrier = ...,
-    ) -> Task_1[ActiveMeasurement]: ...
-    def ReceiveMeasurementMS(
-        self, c: ClientConnection, muxChannel: int, measType: MeasType, measBuff: Buffer = ...
-    ) -> ActiveMeasurement: ...
-    def ReceiveMeasurementMSAsync(
-        self,
-        c: ClientConnection,
-        muxChannel: int,
-        measType: MeasType,
-        measBuff: Buffer = ...,
-        taskBarrier: TaskBarrier = ...,
-    ) -> Task_1[ActiveMeasurement]: ...
+    def ReceiveMeasurement(self, conn: ClientConnection, muxChannel: int, measType: MeasType, measBuff: Buffer = ...) -> ActiveMeasurement: ...
+    def ReceiveMeasurementAsync(self, conn: ClientConnection, muxChannel: int, measType: MeasType, measBuff: Buffer = ..., taskBarrier: TaskBarrier = ...) -> Task_1[ActiveMeasurement]: ...
+    def ReceiveMeasurementMS(self, c: ClientConnection, muxChannel: int, measType: MeasType, measBuff: Buffer = ...) -> ActiveMeasurement: ...
+    def ReceiveMeasurementMSAsync(self, c: ClientConnection, muxChannel: int, measType: MeasType, measBuff: Buffer = ..., taskBarrier: TaskBarrier = ...) -> Task_1[ActiveMeasurement]: ...
     def SerializeTechniqueSpecific(self, tw: TextWriter) -> None: ...
     def SupportedRangingType(self, capabilities: DeviceCapabilities) -> Method.RangingTypes: ...
-    def ToMethodScript(
-        self,
-        capabilities: MethodScriptDeviceCapabilities,
-        forEditor: bool,
-        connMS: ClientConnectionMS = ...,
-    ) -> MethodScript: ...
+    def ToMethodScript(self, capabilities: MethodScriptDeviceCapabilities, forEditor: bool, connMS: ClientConnectionMS = ...) -> MethodScript: ...
     def ToShortString(self) -> str: ...
     def ToString(self) -> str: ...
 
+
 class ImpedimetricMethodBase(TimeMethod):
     def __init__(self, technique: int) -> None: ...
-    AnalyteName: str
-    DefaultXAxis: DataArrayType
-    DefaultYAxis: DataArrayType
-    MaxPGAgain: int
-    MethodIsGalvanostatic: bool
-    MuxSett: Method.MuxSettings
-    PeakOverlap: float
-    PolyEmStat: PolyEmStatMethodEx
-    RecordCE: bool
-    SmoothLevel: int
-    Standard: Array_1[float]
-    Technique: int
-    UseMuxChannel: BitArray
-    UseStirrer: bool
-    ViewBottom: float
-    ViewLeft: float
-    ViewRight: float
-    ViewTop: float
+    AnalyteName : str
+    DefaultXAxis : DataArrayType
+    DefaultYAxis : DataArrayType
+    MaxPGAgain : int
+    MethodIsGalvanostatic : bool
+    MuxSett : Method.MuxSettings
+    PeakOverlap : float
+    PolyEmStat : PolyEmStatMethodEx
+    RecordCE : bool
+    SmoothLevel : int
+    Standard : Array_1[float]
+    Technique : int
+    UseMuxChannel : BitArray
+    UseStirrer : bool
+    ViewBottom : float
+    ViewLeft : float
+    ViewRight : float
+    ViewTop : float
     @property
     def Area(self) -> float: ...
     @Area.setter
@@ -7315,9 +6990,7 @@ class ImpedimetricMethodBase(TimeMethod):
     @property
     def BipotModePS(self) -> Method.EnumPalmSensBipotMode: ...
     @BipotModePS.setter
-    def BipotModePS(
-        self, value: Method.EnumPalmSensBipotMode
-    ) -> Method.EnumPalmSensBipotMode: ...
+    def BipotModePS(self, value: Method.EnumPalmSensBipotMode) -> Method.EnumPalmSensBipotMode: ...
     @property
     def BiPotPotential(self) -> float: ...
     @BiPotPotential.setter
@@ -7413,9 +7086,7 @@ class ImpedimetricMethodBase(TimeMethod):
     @property
     def IterationMethodOverrides(self) -> ImpedimetricIterationMethodBase: ...
     @IterationMethodOverrides.setter
-    def IterationMethodOverrides(
-        self, value: ImpedimetricIterationMethodBase
-    ) -> ImpedimetricIterationMethodBase: ...
+    def IterationMethodOverrides(self, value: ImpedimetricIterationMethodBase) -> ImpedimetricIterationMethodBase: ...
     @property
     def LimitMaxValue(self) -> float: ...
     @LimitMaxValue.setter
@@ -7611,9 +7282,7 @@ class ImpedimetricMethodBase(TimeMethod):
     @property
     def SelectedPotentiostatChannel(self) -> PotentionstatChannels: ...
     @SelectedPotentiostatChannel.setter
-    def SelectedPotentiostatChannel(
-        self, value: PotentionstatChannels
-    ) -> PotentionstatChannels: ...
+    def SelectedPotentiostatChannel(self, value: PotentionstatChannels) -> PotentionstatChannels: ...
     @property
     def ShowTDDMS(self) -> bool: ...
     @ShowTDDMS.setter
@@ -7719,9 +7388,7 @@ class ImpedimetricMethodBase(TimeMethod):
     def DeSerializeTechniqueSpecific(self, contents: str) -> None: ...
     def GetFreqsListAsString(self) -> str: ...
     def GetFreqsListString(self) -> List_1[str]: ...
-    def GetMaximumEstimatedMeasurementDuration(
-        self, capab: DeviceCapabilities, withLevelStageOverhead: bool = ...
-    ) -> float: ...
+    def GetMaximumEstimatedMeasurementDuration(self, capab: DeviceCapabilities, withLevelStageOverhead: bool = ...) -> float: ...
     def GetMinimumEstimatedMeasurementDuration(self, capab: DeviceCapabilities) -> float: ...
     def GetNPoints(self, capabilities: DeviceCapabilities) -> int: ...
     def GetPointsPerSecond(self, capabilities: DeviceCapabilities = ...) -> float: ...
@@ -7729,21 +7396,23 @@ class ImpedimetricMethodBase(TimeMethod):
     def SupportsDeviceStorage(self, deviceCapabilities: DeviceCapabilities) -> bool: ...
     def SupportsHWSync(self, capabilities: DeviceCapabilities) -> bool: ...
 
+
 class InputType(typing.SupportsInt):
     @typing.overload
-    def __init__(self, value: int) -> None: ...
+    def __init__(self, value : int) -> None: ...
     @typing.overload
-    def __init__(self, value: int, force_if_true: bool) -> None: ...
+    def __init__(self, value : int, force_if_true: bool) -> None: ...
     def __int__(self) -> int: ...
 
     # Values:
-    String: InputType  # 0
-    Bool: InputType  # 1
-    Decimal: InputType  # 2
-    Integer: InputType  # 3
-    Enum: InputType  # 4
-    Custom: InputType  # 5
-    None_: InputType  # 6
+    String : InputType # 0
+    Bool : InputType # 1
+    Decimal : InputType # 2
+    Integer : InputType # 3
+    Enum : InputType # 4
+    Custom : InputType # 5
+    None_ : InputType # 6
+
 
 class InvalidMethodScriptException(Exception):
     @property
@@ -7777,9 +7446,8 @@ class InvalidMethodScriptException(Exception):
     @staticmethod
     def GetErrorDetailsFromID(id: str) -> ValueTuple_2[str, str]: ...
     @staticmethod
-    def MethodScriptValidationError(
-        message: str, methodScript: str
-    ) -> InvalidMethodScriptException: ...
+    def MethodScriptValidationError(message: str, methodScript: str) -> InvalidMethodScriptException: ...
+
 
 class IPotentiometric(typing.Protocol):
     @property
@@ -7797,9 +7465,7 @@ class IPotentiometric(typing.Protocol):
     @property
     def OriginalAppliedCurrentRange(self) -> typing.Optional[CurrentRanges]: ...
     @OriginalAppliedCurrentRange.setter
-    def OriginalAppliedCurrentRange(
-        self, value: typing.Optional[CurrentRanges]
-    ) -> typing.Optional[CurrentRanges]: ...
+    def OriginalAppliedCurrentRange(self, value: typing.Optional[CurrentRanges]) -> typing.Optional[CurrentRanges]: ...
     @abc.abstractmethod
     def GetBandwidth(self, capabilities: DeviceCapabilities) -> float: ...
     @abc.abstractmethod
@@ -7808,6 +7474,7 @@ class IPotentiometric(typing.Protocol):
     def SetCompatibleAppliedRange(self, capabilities: DeviceCapabilities) -> None: ...
     @abc.abstractmethod
     def SetCompatibleAppliedRangeSilent(self, capabilities: DeviceCapabilities) -> None: ...
+
 
 class Levels(List_1[EILevel]):
     @property
@@ -7821,29 +7488,30 @@ class Levels(List_1[EILevel]):
     @Item.setter
     def Item(self, value: EILevel) -> EILevel: ...
 
+
 class LinearSweep(PotentialMethod):
     def __init__(self) -> None: ...
-    DefaultXAxis: DataArrayType
-    DefaultYAxis: DataArrayType
-    EPretreat: Array_1[float]
-    MethodID: str
-    MethodIsGalvanostatic: bool
-    MuxSett: Method.MuxSettings
-    Name: str
-    PeakOverlap: float
-    PolyEmStat: PolyEmStatMethodEx
-    RecordCE: bool
-    ShortName: str
-    SmoothLevel: int
-    Technique: int
-    TechniqueNumber: int
-    tPretreat: Array_1[float]
-    UseMuxChannel: BitArray
-    UseStirrer: bool
-    ViewBottom: float
-    ViewLeft: float
-    ViewRight: float
-    ViewTop: float
+    DefaultXAxis : DataArrayType
+    DefaultYAxis : DataArrayType
+    EPretreat : Array_1[float]
+    MethodID : str
+    MethodIsGalvanostatic : bool
+    MuxSett : Method.MuxSettings
+    Name : str
+    PeakOverlap : float
+    PolyEmStat : PolyEmStatMethodEx
+    RecordCE : bool
+    ShortName : str
+    SmoothLevel : int
+    Technique : int
+    TechniqueNumber : int
+    tPretreat : Array_1[float]
+    UseMuxChannel : BitArray
+    UseStirrer : bool
+    ViewBottom : float
+    ViewLeft : float
+    ViewRight : float
+    ViewTop : float
     @property
     def AnalyteName(self) -> Array_1[str]: ...
     @AnalyteName.setter
@@ -7879,9 +7547,7 @@ class LinearSweep(PotentialMethod):
     @property
     def BipotModePS(self) -> Method.EnumPalmSensBipotMode: ...
     @BipotModePS.setter
-    def BipotModePS(
-        self, value: Method.EnumPalmSensBipotMode
-    ) -> Method.EnumPalmSensBipotMode: ...
+    def BipotModePS(self, value: Method.EnumPalmSensBipotMode) -> Method.EnumPalmSensBipotMode: ...
     @property
     def BiPotPotential(self) -> float: ...
     @BiPotPotential.setter
@@ -8121,9 +7787,7 @@ class LinearSweep(PotentialMethod):
     @property
     def SelectedPotentiostatChannel(self) -> PotentionstatChannels: ...
     @SelectedPotentiostatChannel.setter
-    def SelectedPotentiostatChannel(
-        self, value: PotentionstatChannels
-    ) -> PotentionstatChannels: ...
+    def SelectedPotentiostatChannel(self, value: PotentionstatChannels) -> PotentionstatChannels: ...
     @property
     def SolutionNr(self) -> Array_1[int]: ...
     @SolutionNr.setter
@@ -8250,38 +7914,34 @@ class LinearSweep(PotentialMethod):
     def SerializeTechniqueSpecific(self, tw: TextWriter) -> None: ...
     def SupportsHWSync(self, capabilities: DeviceCapabilities) -> bool: ...
     def ToHex1TechniqueSpecific(self, m: EncodedMethodV1) -> None: ...
-    def ToMethodScript(
-        self,
-        capabilities: MethodScriptDeviceCapabilities,
-        forEditor: bool,
-        connMS: ClientConnectionMS = ...,
-    ) -> MethodScript: ...
+    def ToMethodScript(self, capabilities: MethodScriptDeviceCapabilities, forEditor: bool, connMS: ClientConnectionMS = ...) -> MethodScript: ...
     def ToShortString(self) -> str: ...
     def ToString(self) -> str: ...
 
+
 class LinearSweepPotentiometry(ScanMethod, ICurrentScan, INPointsMethod, IMixedModeStageMethod):
     def __init__(self) -> None: ...
-    DefaultXAxis: DataArrayType
-    DefaultYAxis: DataArrayType
-    EPretreat: Array_1[float]
-    MethodID: str
-    MethodIsGalvanostatic: bool
-    MuxSett: Method.MuxSettings
-    Name: str
-    PeakOverlap: float
-    PolyEmStat: PolyEmStatMethodEx
-    RecordCE: bool
-    ShortName: str
-    SmoothLevel: int
-    Technique: int
-    TechniqueNumber: int
-    tPretreat: Array_1[float]
-    UseMuxChannel: BitArray
-    UseStirrer: bool
-    ViewBottom: float
-    ViewLeft: float
-    ViewRight: float
-    ViewTop: float
+    DefaultXAxis : DataArrayType
+    DefaultYAxis : DataArrayType
+    EPretreat : Array_1[float]
+    MethodID : str
+    MethodIsGalvanostatic : bool
+    MuxSett : Method.MuxSettings
+    Name : str
+    PeakOverlap : float
+    PolyEmStat : PolyEmStatMethodEx
+    RecordCE : bool
+    ShortName : str
+    SmoothLevel : int
+    Technique : int
+    TechniqueNumber : int
+    tPretreat : Array_1[float]
+    UseMuxChannel : BitArray
+    UseStirrer : bool
+    ViewBottom : float
+    ViewLeft : float
+    ViewRight : float
+    ViewTop : float
     @property
     def AnalyteName(self) -> Array_1[str]: ...
     @AnalyteName.setter
@@ -8325,9 +7985,7 @@ class LinearSweepPotentiometry(ScanMethod, ICurrentScan, INPointsMethod, IMixedM
     @property
     def BipotModePS(self) -> Method.EnumPalmSensBipotMode: ...
     @BipotModePS.setter
-    def BipotModePS(
-        self, value: Method.EnumPalmSensBipotMode
-    ) -> Method.EnumPalmSensBipotMode: ...
+    def BipotModePS(self, value: Method.EnumPalmSensBipotMode) -> Method.EnumPalmSensBipotMode: ...
     @property
     def BiPotPotential(self) -> float: ...
     @BiPotPotential.setter
@@ -8489,9 +8147,7 @@ class LinearSweepPotentiometry(ScanMethod, ICurrentScan, INPointsMethod, IMixedM
     @property
     def OriginalAppliedCurrentRange(self) -> typing.Optional[CurrentRanges]: ...
     @OriginalAppliedCurrentRange.setter
-    def OriginalAppliedCurrentRange(
-        self, value: typing.Optional[CurrentRanges]
-    ) -> typing.Optional[CurrentRanges]: ...
+    def OriginalAppliedCurrentRange(self, value: typing.Optional[CurrentRanges]) -> typing.Optional[CurrentRanges]: ...
     @property
     def OverrideBandwidth(self) -> bool: ...
     @OverrideBandwidth.setter
@@ -8579,9 +8235,7 @@ class LinearSweepPotentiometry(ScanMethod, ICurrentScan, INPointsMethod, IMixedM
     @property
     def SelectedPotentiostatChannel(self) -> PotentionstatChannels: ...
     @SelectedPotentiostatChannel.setter
-    def SelectedPotentiostatChannel(
-        self, value: PotentionstatChannels
-    ) -> PotentionstatChannels: ...
+    def SelectedPotentiostatChannel(self, value: PotentionstatChannels) -> PotentionstatChannels: ...
     @property
     def SolutionNr(self) -> Array_1[int]: ...
     @SolutionNr.setter
@@ -8700,36 +8354,21 @@ class LinearSweepPotentiometry(ScanMethod, ICurrentScan, INPointsMethod, IMixedM
     def GetPointsPerSecond(self, capabilities: DeviceCapabilities = ...) -> float: ...
     def GetRealNPoints(self, capabilities: DeviceCapabilities) -> int: ...
     def GetRealStepCurrent(self, capabilities: DeviceCapabilities) -> float: ...
-    def ReceiveMeasurementMS(
-        self, c: ClientConnection, muxChannel: int, measType: MeasType, measBuff: Buffer = ...
-    ) -> ActiveMeasurement: ...
-    def ReceiveMeasurementMSAsync(
-        self,
-        c: ClientConnection,
-        muxChannel: int,
-        measType: MeasType,
-        measBuff: Buffer = ...,
-        taskBarrier: TaskBarrier = ...,
-    ) -> Task_1[ActiveMeasurement]: ...
+    def ReceiveMeasurementMS(self, c: ClientConnection, muxChannel: int, measType: MeasType, measBuff: Buffer = ...) -> ActiveMeasurement: ...
+    def ReceiveMeasurementMSAsync(self, c: ClientConnection, muxChannel: int, measType: MeasType, measBuff: Buffer = ..., taskBarrier: TaskBarrier = ...) -> Task_1[ActiveMeasurement]: ...
     def SerializeTechniqueSpecific(self, tw: TextWriter) -> None: ...
     def SetAppliedCurrentRangeSilent(self, range: CurrentRange) -> None: ...
     def SetCompatibleAppliedRange(self, capabilities: DeviceCapabilities) -> None: ...
     def SetCompatibleAppliedRangeSilent(self, capabilities: DeviceCapabilities) -> None: ...
     def SupportsHWSync(self, capabilities: DeviceCapabilities) -> bool: ...
     def ToHex1TechniqueSpecific(self, m: EncodedMethodV1) -> None: ...
-    def ToMethodScript(
-        self,
-        capabilities: MethodScriptDeviceCapabilities,
-        forEditor: bool,
-        connMS: ClientConnectionMS = ...,
-    ) -> MethodScript: ...
+    def ToMethodScript(self, capabilities: MethodScriptDeviceCapabilities, forEditor: bool, connMS: ClientConnectionMS = ...) -> MethodScript: ...
     def ToShortString(self) -> str: ...
     def ToString(self) -> str: ...
 
+
 class MethodError:
-    def __init__(
-        self, message: str, parameter: enumTechniqueParameter = ..., isFatal: bool = ...
-    ) -> None: ...
+    def __init__(self, message: str, parameter: enumTechniqueParameter = ..., isFatal: bool = ...) -> None: ...
     @property
     def IsFatal(self) -> bool: ...
     @IsFatal.setter
@@ -8743,6 +8382,7 @@ class MethodError:
     @Parameter.setter
     def Parameter(self, value: enumTechniqueParameter) -> enumTechniqueParameter: ...
     def ToString(self) -> str: ...
+
 
 class MethodNotSupportedError(MethodError):
     def __init__(self, capabilities: DeviceCapabilities) -> None: ...
@@ -8759,27 +8399,28 @@ class MethodNotSupportedError(MethodError):
     @Parameter.setter
     def Parameter(self, value: enumTechniqueParameter) -> enumTechniqueParameter: ...
 
+
 class MethodScriptSandbox(Method, ILevelPeakSignal):
     def __init__(self) -> None: ...
-    DefaultXAxis: DataArrayType
-    DefaultYAxis: DataArrayType
-    MethodID: str
-    MethodIsGalvanostatic: bool
-    MuxSett: Method.MuxSettings
-    Name: str
-    PeakOverlap: float
-    PolyEmStat: PolyEmStatMethodEx
-    RecordCE: bool
-    ShortName: str
-    SmoothLevel: int
-    Technique: int
-    TechniqueNumber: int
-    UseMuxChannel: BitArray
-    UseStirrer: bool
-    ViewBottom: float
-    ViewLeft: float
-    ViewRight: float
-    ViewTop: float
+    DefaultXAxis : DataArrayType
+    DefaultYAxis : DataArrayType
+    MethodID : str
+    MethodIsGalvanostatic : bool
+    MuxSett : Method.MuxSettings
+    Name : str
+    PeakOverlap : float
+    PolyEmStat : PolyEmStatMethodEx
+    RecordCE : bool
+    ShortName : str
+    SmoothLevel : int
+    Technique : int
+    TechniqueNumber : int
+    UseMuxChannel : BitArray
+    UseStirrer : bool
+    ViewBottom : float
+    ViewLeft : float
+    ViewRight : float
+    ViewTop : float
     @property
     def Area(self) -> float: ...
     @Area.setter
@@ -8807,9 +8448,7 @@ class MethodScriptSandbox(Method, ILevelPeakSignal):
     @property
     def BipotModePS(self) -> Method.EnumPalmSensBipotMode: ...
     @BipotModePS.setter
-    def BipotModePS(
-        self, value: Method.EnumPalmSensBipotMode
-    ) -> Method.EnumPalmSensBipotMode: ...
+    def BipotModePS(self, value: Method.EnumPalmSensBipotMode) -> Method.EnumPalmSensBipotMode: ...
     @property
     def BiPotPotential(self) -> float: ...
     @BiPotPotential.setter
@@ -9011,9 +8650,7 @@ class MethodScriptSandbox(Method, ILevelPeakSignal):
     @property
     def SelectedPotentiostatChannel(self) -> PotentionstatChannels: ...
     @SelectedPotentiostatChannel.setter
-    def SelectedPotentiostatChannel(
-        self, value: PotentionstatChannels
-    ) -> PotentionstatChannels: ...
+    def SelectedPotentiostatChannel(self, value: PotentionstatChannels) -> PotentionstatChannels: ...
     @property
     def Signal(self) -> enumSignal: ...
     @Signal.setter
@@ -9108,33 +8745,20 @@ class MethodScriptSandbox(Method, ILevelPeakSignal):
     def GetMethodID(self) -> str: ...
     def GetMinimumEstimatedMeasurementDuration(self, capab: DeviceCapabilities) -> float: ...
     def GetPointsPerSecond(self, capabilities: DeviceCapabilities = ...) -> float: ...
-    def ReceiveMeasurementMS(
-        self, c: ClientConnection, muxChannel: int, measType: MeasType, measBuff: Buffer = ...
-    ) -> ActiveMeasurement: ...
-    def ReceiveMeasurementMSAsync(
-        self,
-        c: ClientConnection,
-        muxChannel: int,
-        measType: MeasType,
-        measBuff: Buffer = ...,
-        taskBarrier: TaskBarrier = ...,
-    ) -> Task_1[ActiveMeasurement]: ...
+    def ReceiveMeasurementMS(self, c: ClientConnection, muxChannel: int, measType: MeasType, measBuff: Buffer = ...) -> ActiveMeasurement: ...
+    def ReceiveMeasurementMSAsync(self, c: ClientConnection, muxChannel: int, measType: MeasType, measBuff: Buffer = ..., taskBarrier: TaskBarrier = ...) -> Task_1[ActiveMeasurement]: ...
     def SerializeTechniqueSpecific(self, tw: TextWriter) -> None: ...
     def SupportsDeviceStorage(self, deviceCapabilities: DeviceCapabilities) -> bool: ...
     def SupportsHWSync(self, capabilities: DeviceCapabilities) -> bool: ...
-    def ToMethodScript(
-        self,
-        capabilities: MethodScriptDeviceCapabilities,
-        forEditor: bool,
-        connMS: ClientConnectionMS = ...,
-    ) -> MethodScript: ...
+    def ToMethodScript(self, capabilities: MethodScriptDeviceCapabilities, forEditor: bool, connMS: ClientConnectionMS = ...) -> MethodScript: ...
     def ToShortString(self) -> str: ...
     def ToString(self) -> str: ...
 
+
 class MethodScriptSandboxMeasurement(CommMeasurementMS):
-    Aborted: bool
-    Channel: int
-    VsOCP: MeasureVersusOCP
+    Aborted : bool
+    Channel : int
+    VsOCP : MeasureVersusOCP
     @property
     def BlankCurve(self) -> Curve: ...
     @BlankCurve.setter
@@ -9222,22 +8846,24 @@ class MethodScriptSandboxMeasurement(CommMeasurementMS):
     def Start(self) -> None: ...
     def StartAsync(self) -> Task: ...
 
+
 class MixedMode(TimeMethod, ILevelStepOverhead):
     def __init__(self) -> None: ...
 
     class EnumMixedModeStageType(typing.SupportsInt):
         @typing.overload
-        def __init__(self, value: int) -> None: ...
+        def __init__(self, value : int) -> None: ...
         @typing.overload
-        def __init__(self, value: int, force_if_true: bool) -> None: ...
+        def __init__(self, value : int, force_if_true: bool) -> None: ...
         def __int__(self) -> int: ...
 
         # Values:
-        ConstantE: MixedMode.EnumMixedModeStageType  # 0
-        ConstantI: MixedMode.EnumMixedModeStageType  # 1
-        SweepE: MixedMode.EnumMixedModeStageType  # 2
-        OpenCircuit: MixedMode.EnumMixedModeStageType  # 3
-        Impedance: MixedMode.EnumMixedModeStageType  # 4
+        ConstantE : MixedMode.EnumMixedModeStageType # 0
+        ConstantI : MixedMode.EnumMixedModeStageType # 1
+        SweepE : MixedMode.EnumMixedModeStageType # 2
+        OpenCircuit : MixedMode.EnumMixedModeStageType # 3
+        Impedance : MixedMode.EnumMixedModeStageType # 4
+
 
     class StageAddedEventHandler(MulticastDelegate):
         def __init__(self, object: typing.Any, method: int) -> None: ...
@@ -9245,34 +8871,32 @@ class MixedMode(TimeMethod, ILevelStepOverhead):
         def Method(self) -> MethodInfo: ...
         @property
         def Target(self) -> typing.Any: ...
-        def BeginInvoke(
-            self, sender: typing.Any, stage: Method, callback: AsyncCallback, object: typing.Any
-        ) -> IAsyncResult: ...
+        def BeginInvoke(self, sender: typing.Any, stage: Method, callback: AsyncCallback, object: typing.Any) -> IAsyncResult: ...
         def EndInvoke(self, result: IAsyncResult) -> None: ...
         def Invoke(self, sender: typing.Any, stage: Method) -> None: ...
 
-    AnalyteName: str
-    DefaultXAxis: DataArrayType
-    DefaultYAxis: DataArrayType
-    MethodID: str
-    MethodIsGalvanostatic: bool
-    MuxSett: Method.MuxSettings
-    Name: str
-    PeakOverlap: float
-    PolyEmStat: PolyEmStatMethodEx
-    RecordCE: bool
-    ShortName: str
-    SmoothLevel: int
-    Stages: List_1[Method]
-    Standard: Array_1[float]
-    Technique: int
-    TechniqueNumber: int
-    UseMuxChannel: BitArray
-    UseStirrer: bool
-    ViewBottom: float
-    ViewLeft: float
-    ViewRight: float
-    ViewTop: float
+    AnalyteName : str
+    DefaultXAxis : DataArrayType
+    DefaultYAxis : DataArrayType
+    MethodID : str
+    MethodIsGalvanostatic : bool
+    MuxSett : Method.MuxSettings
+    Name : str
+    PeakOverlap : float
+    PolyEmStat : PolyEmStatMethodEx
+    RecordCE : bool
+    ShortName : str
+    SmoothLevel : int
+    Stages : List_1[Method]
+    Standard : Array_1[float]
+    Technique : int
+    TechniqueNumber : int
+    UseMuxChannel : BitArray
+    UseStirrer : bool
+    ViewBottom : float
+    ViewLeft : float
+    ViewRight : float
+    ViewTop : float
     @property
     def AppliedCurrentRangeFactor(self) -> float: ...
     @AppliedCurrentRangeFactor.setter
@@ -9308,9 +8932,7 @@ class MixedMode(TimeMethod, ILevelStepOverhead):
     @property
     def BipotModePS(self) -> Method.EnumPalmSensBipotMode: ...
     @BipotModePS.setter
-    def BipotModePS(
-        self, value: Method.EnumPalmSensBipotMode
-    ) -> Method.EnumPalmSensBipotMode: ...
+    def BipotModePS(self, value: Method.EnumPalmSensBipotMode) -> Method.EnumPalmSensBipotMode: ...
     @property
     def BiPotPotential(self) -> float: ...
     @BiPotPotential.setter
@@ -9542,9 +9164,7 @@ class MixedMode(TimeMethod, ILevelStepOverhead):
     @property
     def SelectedPotentiostatChannel(self) -> PotentionstatChannels: ...
     @SelectedPotentiostatChannel.setter
-    def SelectedPotentiostatChannel(
-        self, value: PotentionstatChannels
-    ) -> PotentionstatChannels: ...
+    def SelectedPotentiostatChannel(self, value: PotentionstatChannels) -> PotentionstatChannels: ...
     @property
     def Signal(self) -> enumSignal: ...
     @Signal.setter
@@ -9645,69 +9265,33 @@ class MixedMode(TimeMethod, ILevelStepOverhead):
     def YTop(self) -> float: ...
     def AddStage(self, stage: MixedMode.EnumMixedModeStageType) -> Method: ...
     def Deserialize(self, contents: str) -> None: ...
-    def GetAdjustedStageDuration(
-        self, stages: IEnumerable_1[Method], capab: DeviceCapabilities
-    ) -> float: ...
+    def GetAdjustedStageDuration(self, stages: IEnumerable_1[Method], capab: DeviceCapabilities) -> float: ...
     def GetMethodID(self) -> str: ...
-    def GetMinimumEstimatedDurationWithOverhead(
-        self, capabilities: DeviceCapabilities
-    ) -> float: ...
+    def GetMinimumEstimatedDurationWithOverhead(self, capabilities: DeviceCapabilities) -> float: ...
     def GetMinimumEstimatedMeasurementDuration(self, capab: DeviceCapabilities) -> float: ...
     def GetNPoints(self, capabilities: DeviceCapabilities) -> int: ...
     def GetPointsPerSecond(self, capabilities: DeviceCapabilities = ...) -> float: ...
     def MoveStage(self, stage: Method, moveUp: bool) -> bool: ...
-    def ReceiveMeasurement(
-        self,
-        conn: ClientConnection,
-        muxChannel: int,
-        measType: MeasType,
-        measBuff: Buffer = ...,
-    ) -> ActiveMeasurement: ...
-    def ReceiveMeasurementAsync(
-        self,
-        conn: ClientConnection,
-        muxChannel: int,
-        measType: MeasType,
-        measBuff: Buffer = ...,
-        taskBarrier: TaskBarrier = ...,
-    ) -> Task_1[ActiveMeasurement]: ...
-    def ReceiveMeasurementMS(
-        self, c: ClientConnection, muxChannel: int, measType: MeasType, measBuff: Buffer = ...
-    ) -> ActiveMeasurement: ...
-    def ReceiveMeasurementMSAsync(
-        self,
-        c: ClientConnection,
-        muxChannel: int,
-        measType: MeasType,
-        measBuff: Buffer = ...,
-        taskBarrier: TaskBarrier = ...,
-    ) -> Task_1[ActiveMeasurement]: ...
+    def ReceiveMeasurement(self, conn: ClientConnection, muxChannel: int, measType: MeasType, measBuff: Buffer = ...) -> ActiveMeasurement: ...
+    def ReceiveMeasurementAsync(self, conn: ClientConnection, muxChannel: int, measType: MeasType, measBuff: Buffer = ..., taskBarrier: TaskBarrier = ...) -> Task_1[ActiveMeasurement]: ...
+    def ReceiveMeasurementMS(self, c: ClientConnection, muxChannel: int, measType: MeasType, measBuff: Buffer = ...) -> ActiveMeasurement: ...
+    def ReceiveMeasurementMSAsync(self, c: ClientConnection, muxChannel: int, measType: MeasType, measBuff: Buffer = ..., taskBarrier: TaskBarrier = ...) -> Task_1[ActiveMeasurement]: ...
     def RemoveStage(self, iStage: int) -> None: ...
     def Serialize(self, tw: TextWriter) -> None: ...
     def SetCompatibleAppliedRange(self, capabilities: DeviceCapabilities) -> None: ...
     def SupportsDeviceStorage(self, deviceCapabilities: DeviceCapabilities) -> bool: ...
     def SupportsHWSync(self, capabilities: DeviceCapabilities) -> bool: ...
-    def ToMethodScript(
-        self,
-        capabilities: MethodScriptDeviceCapabilities,
-        forEditor: bool,
-        connMS: ClientConnectionMS = ...,
-    ) -> MethodScript: ...
+    def ToMethodScript(self, capabilities: MethodScriptDeviceCapabilities, forEditor: bool, connMS: ClientConnectionMS = ...) -> MethodScript: ...
     def ToShortString(self) -> str: ...
     def ToString(self) -> str: ...
 
+
 class MixedModeMeasurement(CommMeasurement, IMixedModeMeasurement):
-    def __init__(
-        self,
-        conn: ClientConnection,
-        mixedTechniqueMethod: MixedMode,
-        muxChannel: int,
-        measType: MeasType,
-    ) -> None: ...
-    Aborted: bool
-    Channel: int
-    StageMeasurement: ActiveMeasurement
-    VsOCP: MeasureVersusOCP
+    def __init__(self, conn: ClientConnection, mixedTechniqueMethod: MixedMode, muxChannel: int, measType: MeasType) -> None: ...
+    Aborted : bool
+    Channel : int
+    StageMeasurement : ActiveMeasurement
+    VsOCP : MeasureVersusOCP
     @property
     def BlankCurve(self) -> Curve: ...
     @BlankCurve.setter
@@ -9794,25 +9378,26 @@ class MixedModeMeasurement(CommMeasurement, IMixedModeMeasurement):
     def Start(self) -> None: ...
     def StartAsync(self) -> Task: ...
 
+
 class MixedModeStageConstantE(AmperometricDetection, IMixedModeStage):
     def __init__(self) -> None: ...
-    AnalyteName: str
-    DefaultXAxis: DataArrayType
-    DefaultYAxis: DataArrayType
-    MethodIsGalvanostatic: bool
-    MuxSett: Method.MuxSettings
-    PeakOverlap: float
-    PolyEmStat: PolyEmStatMethodEx
-    RecordCE: bool
-    SmoothLevel: int
-    Standard: Array_1[float]
-    Technique: int
-    UseMuxChannel: BitArray
-    UseStirrer: bool
-    ViewBottom: float
-    ViewLeft: float
-    ViewRight: float
-    ViewTop: float
+    AnalyteName : str
+    DefaultXAxis : DataArrayType
+    DefaultYAxis : DataArrayType
+    MethodIsGalvanostatic : bool
+    MuxSett : Method.MuxSettings
+    PeakOverlap : float
+    PolyEmStat : PolyEmStatMethodEx
+    RecordCE : bool
+    SmoothLevel : int
+    Standard : Array_1[float]
+    Technique : int
+    UseMuxChannel : BitArray
+    UseStirrer : bool
+    ViewBottom : float
+    ViewLeft : float
+    ViewRight : float
+    ViewTop : float
     @property
     def AdjustNPoints(self) -> None: ...
     @AdjustNPoints.setter
@@ -9848,9 +9433,7 @@ class MixedModeStageConstantE(AmperometricDetection, IMixedModeStage):
     @property
     def BipotModePS(self) -> Method.EnumPalmSensBipotMode: ...
     @BipotModePS.setter
-    def BipotModePS(
-        self, value: Method.EnumPalmSensBipotMode
-    ) -> Method.EnumPalmSensBipotMode: ...
+    def BipotModePS(self, value: Method.EnumPalmSensBipotMode) -> Method.EnumPalmSensBipotMode: ...
     @property
     def BiPotPotential(self) -> float: ...
     @BiPotPotential.setter
@@ -10092,9 +9675,7 @@ class MixedModeStageConstantE(AmperometricDetection, IMixedModeStage):
     @property
     def SelectedPotentiostatChannel(self) -> PotentionstatChannels: ...
     @SelectedPotentiostatChannel.setter
-    def SelectedPotentiostatChannel(
-        self, value: PotentionstatChannels
-    ) -> PotentionstatChannels: ...
+    def SelectedPotentiostatChannel(self, value: PotentionstatChannels) -> PotentionstatChannels: ...
     @property
     def Signal(self) -> enumSignal: ...
     @Signal.setter
@@ -10211,25 +9792,26 @@ class MixedModeStageConstantE(AmperometricDetection, IMixedModeStage):
     def SetRanging(self, ranging: Ranging) -> None: ...
     def SetRangingPotential(self, rangingPotential: RangingPotential) -> None: ...
 
+
 class MixedModeStageConstantI(Potentiometry, IMixedModeStage):
     def __init__(self) -> None: ...
-    AnalyteName: str
-    DefaultXAxis: DataArrayType
-    DefaultYAxis: DataArrayType
-    MethodIsGalvanostatic: bool
-    MuxSett: Method.MuxSettings
-    PeakOverlap: float
-    PolyEmStat: PolyEmStatMethodEx
-    RecordCE: bool
-    SmoothLevel: int
-    Standard: Array_1[float]
-    Technique: int
-    UseMuxChannel: BitArray
-    UseStirrer: bool
-    ViewBottom: float
-    ViewLeft: float
-    ViewRight: float
-    ViewTop: float
+    AnalyteName : str
+    DefaultXAxis : DataArrayType
+    DefaultYAxis : DataArrayType
+    MethodIsGalvanostatic : bool
+    MuxSett : Method.MuxSettings
+    PeakOverlap : float
+    PolyEmStat : PolyEmStatMethodEx
+    RecordCE : bool
+    SmoothLevel : int
+    Standard : Array_1[float]
+    Technique : int
+    UseMuxChannel : BitArray
+    UseStirrer : bool
+    ViewBottom : float
+    ViewLeft : float
+    ViewRight : float
+    ViewTop : float
     @property
     def AdjustNPoints(self) -> None: ...
     @AdjustNPoints.setter
@@ -10269,9 +9851,7 @@ class MixedModeStageConstantI(Potentiometry, IMixedModeStage):
     @property
     def BipotModePS(self) -> Method.EnumPalmSensBipotMode: ...
     @BipotModePS.setter
-    def BipotModePS(
-        self, value: Method.EnumPalmSensBipotMode
-    ) -> Method.EnumPalmSensBipotMode: ...
+    def BipotModePS(self, value: Method.EnumPalmSensBipotMode) -> Method.EnumPalmSensBipotMode: ...
     @property
     def BiPotPotential(self) -> float: ...
     @BiPotPotential.setter
@@ -10423,9 +10003,7 @@ class MixedModeStageConstantI(Potentiometry, IMixedModeStage):
     @property
     def OriginalAppliedCurrentRange(self) -> typing.Optional[CurrentRanges]: ...
     @OriginalAppliedCurrentRange.setter
-    def OriginalAppliedCurrentRange(
-        self, value: typing.Optional[CurrentRanges]
-    ) -> typing.Optional[CurrentRanges]: ...
+    def OriginalAppliedCurrentRange(self, value: typing.Optional[CurrentRanges]) -> typing.Optional[CurrentRanges]: ...
     @property
     def OverrideBandwidth(self) -> bool: ...
     @OverrideBandwidth.setter
@@ -10521,9 +10099,7 @@ class MixedModeStageConstantI(Potentiometry, IMixedModeStage):
     @property
     def SelectedPotentiostatChannel(self) -> PotentionstatChannels: ...
     @SelectedPotentiostatChannel.setter
-    def SelectedPotentiostatChannel(
-        self, value: PotentionstatChannels
-    ) -> PotentionstatChannels: ...
+    def SelectedPotentiostatChannel(self, value: PotentionstatChannels) -> PotentionstatChannels: ...
     @property
     def Signal(self) -> enumSignal: ...
     @Signal.setter
@@ -10632,26 +10208,27 @@ class MixedModeStageConstantI(Potentiometry, IMixedModeStage):
     def SetRanging(self, ranging: Ranging) -> None: ...
     def SetRangingPotential(self, rangingPotential: RangingPotential) -> None: ...
 
+
 class MixedModeStageEIS(ImpedimetricMethod, IMixedModeStage):
     def __init__(self) -> None: ...
-    AnalyteName: str
-    DefaultXAxis: DataArrayType
-    DefaultYAxis: DataArrayType
-    MaxPGAgain: int
-    MethodIsGalvanostatic: bool
-    MuxSett: Method.MuxSettings
-    PeakOverlap: float
-    PolyEmStat: PolyEmStatMethodEx
-    RecordCE: bool
-    SmoothLevel: int
-    Standard: Array_1[float]
-    Technique: int
-    UseMuxChannel: BitArray
-    UseStirrer: bool
-    ViewBottom: float
-    ViewLeft: float
-    ViewRight: float
-    ViewTop: float
+    AnalyteName : str
+    DefaultXAxis : DataArrayType
+    DefaultYAxis : DataArrayType
+    MaxPGAgain : int
+    MethodIsGalvanostatic : bool
+    MuxSett : Method.MuxSettings
+    PeakOverlap : float
+    PolyEmStat : PolyEmStatMethodEx
+    RecordCE : bool
+    SmoothLevel : int
+    Standard : Array_1[float]
+    Technique : int
+    UseMuxChannel : BitArray
+    UseStirrer : bool
+    ViewBottom : float
+    ViewLeft : float
+    ViewRight : float
+    ViewTop : float
     @property
     def AdjustNPoints(self) -> None: ...
     @AdjustNPoints.setter
@@ -10687,9 +10264,7 @@ class MixedModeStageEIS(ImpedimetricMethod, IMixedModeStage):
     @property
     def BipotModePS(self) -> Method.EnumPalmSensBipotMode: ...
     @BipotModePS.setter
-    def BipotModePS(
-        self, value: Method.EnumPalmSensBipotMode
-    ) -> Method.EnumPalmSensBipotMode: ...
+    def BipotModePS(self, value: Method.EnumPalmSensBipotMode) -> Method.EnumPalmSensBipotMode: ...
     @property
     def BiPotPotential(self) -> float: ...
     @BiPotPotential.setter
@@ -10801,9 +10376,7 @@ class MixedModeStageEIS(ImpedimetricMethod, IMixedModeStage):
     @property
     def IterationMethodOverrides(self) -> ImpedimetricIterationMethodBase: ...
     @IterationMethodOverrides.setter
-    def IterationMethodOverrides(
-        self, value: ImpedimetricIterationMethodBase
-    ) -> ImpedimetricIterationMethodBase: ...
+    def IterationMethodOverrides(self, value: ImpedimetricIterationMethodBase) -> ImpedimetricIterationMethodBase: ...
     @property
     def LimitMaxValue(self) -> float: ...
     @LimitMaxValue.setter
@@ -11003,9 +10576,7 @@ class MixedModeStageEIS(ImpedimetricMethod, IMixedModeStage):
     @property
     def SelectedPotentiostatChannel(self) -> PotentionstatChannels: ...
     @SelectedPotentiostatChannel.setter
-    def SelectedPotentiostatChannel(
-        self, value: PotentionstatChannels
-    ) -> PotentionstatChannels: ...
+    def SelectedPotentiostatChannel(self, value: PotentionstatChannels) -> PotentionstatChannels: ...
     @property
     def ShowTDDMS(self) -> bool: ...
     @ShowTDDMS.setter
@@ -11126,25 +10697,26 @@ class MixedModeStageEIS(ImpedimetricMethod, IMixedModeStage):
     def SetRanging(self, ranging: Ranging) -> None: ...
     def SetRangingPotential(self, rangingPotential: RangingPotential) -> None: ...
 
+
 class MixedModeStageOcp(OpenCircuitPotentiometry, IMixedModeStage):
     def __init__(self) -> None: ...
-    AnalyteName: str
-    DefaultXAxis: DataArrayType
-    DefaultYAxis: DataArrayType
-    MethodIsGalvanostatic: bool
-    MuxSett: Method.MuxSettings
-    PeakOverlap: float
-    PolyEmStat: PolyEmStatMethodEx
-    RecordCE: bool
-    SmoothLevel: int
-    Standard: Array_1[float]
-    Technique: int
-    UseMuxChannel: BitArray
-    UseStirrer: bool
-    ViewBottom: float
-    ViewLeft: float
-    ViewRight: float
-    ViewTop: float
+    AnalyteName : str
+    DefaultXAxis : DataArrayType
+    DefaultYAxis : DataArrayType
+    MethodIsGalvanostatic : bool
+    MuxSett : Method.MuxSettings
+    PeakOverlap : float
+    PolyEmStat : PolyEmStatMethodEx
+    RecordCE : bool
+    SmoothLevel : int
+    Standard : Array_1[float]
+    Technique : int
+    UseMuxChannel : BitArray
+    UseStirrer : bool
+    ViewBottom : float
+    ViewLeft : float
+    ViewRight : float
+    ViewTop : float
     @property
     def AdjustNPoints(self) -> None: ...
     @AdjustNPoints.setter
@@ -11184,9 +10756,7 @@ class MixedModeStageOcp(OpenCircuitPotentiometry, IMixedModeStage):
     @property
     def BipotModePS(self) -> Method.EnumPalmSensBipotMode: ...
     @BipotModePS.setter
-    def BipotModePS(
-        self, value: Method.EnumPalmSensBipotMode
-    ) -> Method.EnumPalmSensBipotMode: ...
+    def BipotModePS(self, value: Method.EnumPalmSensBipotMode) -> Method.EnumPalmSensBipotMode: ...
     @property
     def BiPotPotential(self) -> float: ...
     @BiPotPotential.setter
@@ -11336,9 +10906,7 @@ class MixedModeStageOcp(OpenCircuitPotentiometry, IMixedModeStage):
     @property
     def OriginalAppliedCurrentRange(self) -> typing.Optional[CurrentRanges]: ...
     @OriginalAppliedCurrentRange.setter
-    def OriginalAppliedCurrentRange(
-        self, value: typing.Optional[CurrentRanges]
-    ) -> typing.Optional[CurrentRanges]: ...
+    def OriginalAppliedCurrentRange(self, value: typing.Optional[CurrentRanges]) -> typing.Optional[CurrentRanges]: ...
     @property
     def OverrideBandwidth(self) -> bool: ...
     @OverrideBandwidth.setter
@@ -11436,9 +11004,7 @@ class MixedModeStageOcp(OpenCircuitPotentiometry, IMixedModeStage):
     @property
     def SelectedPotentiostatChannel(self) -> PotentionstatChannels: ...
     @SelectedPotentiostatChannel.setter
-    def SelectedPotentiostatChannel(
-        self, value: PotentionstatChannels
-    ) -> PotentionstatChannels: ...
+    def SelectedPotentiostatChannel(self, value: PotentionstatChannels) -> PotentionstatChannels: ...
     @property
     def Signal(self) -> enumSignal: ...
     @Signal.setter
@@ -11547,25 +11113,26 @@ class MixedModeStageOcp(OpenCircuitPotentiometry, IMixedModeStage):
     def SetRanging(self, ranging: Ranging) -> None: ...
     def SetRangingPotential(self, rangingPotential: RangingPotential) -> None: ...
 
+
 class MixedModeStageSweepE(LinearSweep, IMixedModeStage):
     def __init__(self) -> None: ...
-    DefaultXAxis: DataArrayType
-    DefaultYAxis: DataArrayType
-    EPretreat: Array_1[float]
-    MethodIsGalvanostatic: bool
-    MuxSett: Method.MuxSettings
-    PeakOverlap: float
-    PolyEmStat: PolyEmStatMethodEx
-    RecordCE: bool
-    SmoothLevel: int
-    Technique: int
-    tPretreat: Array_1[float]
-    UseMuxChannel: BitArray
-    UseStirrer: bool
-    ViewBottom: float
-    ViewLeft: float
-    ViewRight: float
-    ViewTop: float
+    DefaultXAxis : DataArrayType
+    DefaultYAxis : DataArrayType
+    EPretreat : Array_1[float]
+    MethodIsGalvanostatic : bool
+    MuxSett : Method.MuxSettings
+    PeakOverlap : float
+    PolyEmStat : PolyEmStatMethodEx
+    RecordCE : bool
+    SmoothLevel : int
+    Technique : int
+    tPretreat : Array_1[float]
+    UseMuxChannel : BitArray
+    UseStirrer : bool
+    ViewBottom : float
+    ViewLeft : float
+    ViewRight : float
+    ViewTop : float
     @property
     def AdjustNPoints(self) -> None: ...
     @AdjustNPoints.setter
@@ -11605,9 +11172,7 @@ class MixedModeStageSweepE(LinearSweep, IMixedModeStage):
     @property
     def BipotModePS(self) -> Method.EnumPalmSensBipotMode: ...
     @BipotModePS.setter
-    def BipotModePS(
-        self, value: Method.EnumPalmSensBipotMode
-    ) -> Method.EnumPalmSensBipotMode: ...
+    def BipotModePS(self, value: Method.EnumPalmSensBipotMode) -> Method.EnumPalmSensBipotMode: ...
     @property
     def BiPotPotential(self) -> float: ...
     @BiPotPotential.setter
@@ -11855,9 +11420,7 @@ class MixedModeStageSweepE(LinearSweep, IMixedModeStage):
     @property
     def SelectedPotentiostatChannel(self) -> PotentionstatChannels: ...
     @SelectedPotentiostatChannel.setter
-    def SelectedPotentiostatChannel(
-        self, value: PotentionstatChannels
-    ) -> PotentionstatChannels: ...
+    def SelectedPotentiostatChannel(self, value: PotentionstatChannels) -> PotentionstatChannels: ...
     @property
     def SolutionNr(self) -> Array_1[int]: ...
     @SolutionNr.setter
@@ -11982,44 +11545,36 @@ class MixedModeStageSweepE(LinearSweep, IMixedModeStage):
     def YTop(self) -> float: ...
     def AdjustControlledStartValue(self, referenceValue: float) -> None: ...
     def DeSerializeTechniqueSpecific(self, contents: str) -> None: ...
-    def ReceiveMeasurement(
-        self, c: ClientConnection, muxChannel: int, measType: MeasType, measBuff: Buffer = ...
-    ) -> ActiveMeasurement: ...
-    def ReceiveMeasurementAsync(
-        self,
-        c: ClientConnection,
-        muxChannel: int,
-        measType: MeasType,
-        measBuff: Buffer = ...,
-        taskBarrier: TaskBarrier = ...,
-    ) -> Task_1[ActiveMeasurement]: ...
+    def ReceiveMeasurement(self, c: ClientConnection, muxChannel: int, measType: MeasType, measBuff: Buffer = ...) -> ActiveMeasurement: ...
+    def ReceiveMeasurementAsync(self, c: ClientConnection, muxChannel: int, measType: MeasType, measBuff: Buffer = ..., taskBarrier: TaskBarrier = ...) -> Task_1[ActiveMeasurement]: ...
     def SerializeTechniqueSpecific(self, tw: TextWriter) -> None: ...
     def SetRanging(self, ranging: Ranging) -> None: ...
     def SetRangingPotential(self, rangingPotential: RangingPotential) -> None: ...
 
+
 class MultiplePulseAmperometry(TimeMethod):
     def __init__(self) -> None: ...
-    AnalyteName: str
-    DefaultXAxis: DataArrayType
-    DefaultYAxis: DataArrayType
-    MethodID: str
-    MethodIsGalvanostatic: bool
-    MuxSett: Method.MuxSettings
-    Name: str
-    PeakOverlap: float
-    PolyEmStat: PolyEmStatMethodEx
-    RecordCE: bool
-    ShortName: str
-    SmoothLevel: int
-    Standard: Array_1[float]
-    Technique: int
-    TechniqueNumber: int
-    UseMuxChannel: BitArray
-    UseStirrer: bool
-    ViewBottom: float
-    ViewLeft: float
-    ViewRight: float
-    ViewTop: float
+    AnalyteName : str
+    DefaultXAxis : DataArrayType
+    DefaultYAxis : DataArrayType
+    MethodID : str
+    MethodIsGalvanostatic : bool
+    MuxSett : Method.MuxSettings
+    Name : str
+    PeakOverlap : float
+    PolyEmStat : PolyEmStatMethodEx
+    RecordCE : bool
+    ShortName : str
+    SmoothLevel : int
+    Standard : Array_1[float]
+    Technique : int
+    TechniqueNumber : int
+    UseMuxChannel : BitArray
+    UseStirrer : bool
+    ViewBottom : float
+    ViewLeft : float
+    ViewRight : float
+    ViewTop : float
     @property
     def Area(self) -> float: ...
     @Area.setter
@@ -12051,9 +11606,7 @@ class MultiplePulseAmperometry(TimeMethod):
     @property
     def BipotModePS(self) -> Method.EnumPalmSensBipotMode: ...
     @BipotModePS.setter
-    def BipotModePS(
-        self, value: Method.EnumPalmSensBipotMode
-    ) -> Method.EnumPalmSensBipotMode: ...
+    def BipotModePS(self, value: Method.EnumPalmSensBipotMode) -> Method.EnumPalmSensBipotMode: ...
     @property
     def BiPotPotential(self) -> float: ...
     @BiPotPotential.setter
@@ -12293,9 +11846,7 @@ class MultiplePulseAmperometry(TimeMethod):
     @property
     def SelectedPotentiostatChannel(self) -> PotentionstatChannels: ...
     @SelectedPotentiostatChannel.setter
-    def SelectedPotentiostatChannel(
-        self, value: PotentionstatChannels
-    ) -> PotentionstatChannels: ...
+    def SelectedPotentiostatChannel(self, value: PotentionstatChannels) -> PotentionstatChannels: ...
     @property
     def Signal(self) -> enumSignal: ...
     @Signal.setter
@@ -12412,46 +11963,43 @@ class MultiplePulseAmperometry(TimeMethod):
     def GetPointsPerSecond(self, capabilities: DeviceCapabilities = ...) -> float: ...
     def Serialize(self, tw: TextWriter) -> None: ...
     def SupportsHWSync(self, capabilities: DeviceCapabilities) -> bool: ...
-    def ToMethodScript(
-        self,
-        capabilities: MethodScriptDeviceCapabilities,
-        forEditor: bool,
-        connMS: ClientConnectionMS = ...,
-    ) -> MethodScript: ...
+    def ToMethodScript(self, capabilities: MethodScriptDeviceCapabilities, forEditor: bool, connMS: ClientConnectionMS = ...) -> MethodScript: ...
     def ToShortString(self) -> str: ...
     def ToString(self) -> str: ...
 
+
 class Multistep(TimeMethod, ILevelStepOverhead):
+
     class EnumMode(typing.SupportsInt):
         @typing.overload
-        def __init__(self, value: int) -> None: ...
+        def __init__(self, value : int) -> None: ...
         @typing.overload
-        def __init__(self, value: int, force_if_true: bool) -> None: ...
+        def __init__(self, value : int, force_if_true: bool) -> None: ...
         def __int__(self) -> int: ...
 
         # Values:
-        Amperometry: Multistep.EnumMode  # 0
-        Potentiometry: Multistep.EnumMode  # 1
+        Amperometry : Multistep.EnumMode # 0
+        Potentiometry : Multistep.EnumMode # 1
 
-    AnalyteName: str
-    DefaultXAxis: DataArrayType
-    DefaultYAxis: DataArrayType
-    Delta: float
-    MethodIsGalvanostatic: bool
-    Mode: Multistep.EnumMode
-    MuxSett: Method.MuxSettings
-    PeakOverlap: float
-    PolyEmStat: PolyEmStatMethodEx
-    RecordCE: bool
-    SmoothLevel: int
-    Standard: Array_1[float]
-    Technique: int
-    UseMuxChannel: BitArray
-    UseStirrer: bool
-    ViewBottom: float
-    ViewLeft: float
-    ViewRight: float
-    ViewTop: float
+    AnalyteName : str
+    DefaultXAxis : DataArrayType
+    DefaultYAxis : DataArrayType
+    Delta : float
+    MethodIsGalvanostatic : bool
+    Mode : Multistep.EnumMode
+    MuxSett : Method.MuxSettings
+    PeakOverlap : float
+    PolyEmStat : PolyEmStatMethodEx
+    RecordCE : bool
+    SmoothLevel : int
+    Standard : Array_1[float]
+    Technique : int
+    UseMuxChannel : BitArray
+    UseStirrer : bool
+    ViewBottom : float
+    ViewLeft : float
+    ViewRight : float
+    ViewTop : float
     @property
     def Area(self) -> float: ...
     @Area.setter
@@ -12483,9 +12031,7 @@ class Multistep(TimeMethod, ILevelStepOverhead):
     @property
     def BipotModePS(self) -> Method.EnumPalmSensBipotMode: ...
     @BipotModePS.setter
-    def BipotModePS(
-        self, value: Method.EnumPalmSensBipotMode
-    ) -> Method.EnumPalmSensBipotMode: ...
+    def BipotModePS(self, value: Method.EnumPalmSensBipotMode) -> Method.EnumPalmSensBipotMode: ...
     @property
     def BiPotPotential(self) -> float: ...
     @BiPotPotential.setter
@@ -12725,9 +12271,7 @@ class Multistep(TimeMethod, ILevelStepOverhead):
     @property
     def SelectedPotentiostatChannel(self) -> PotentionstatChannels: ...
     @SelectedPotentiostatChannel.setter
-    def SelectedPotentiostatChannel(
-        self, value: PotentionstatChannels
-    ) -> PotentionstatChannels: ...
+    def SelectedPotentiostatChannel(self, value: PotentionstatChannels) -> PotentionstatChannels: ...
     @property
     def Signal(self) -> enumSignal: ...
     @Signal.setter
@@ -12835,58 +12379,44 @@ class Multistep(TimeMethod, ILevelStepOverhead):
     @property
     def YTop(self) -> float: ...
     def Deserialize(self, contents: str) -> None: ...
-    def GetMinimumEstimatedDurationWithOverhead(
-        self, capabilities: DeviceCapabilities
-    ) -> float: ...
+    def GetMinimumEstimatedDurationWithOverhead(self, capabilities: DeviceCapabilities) -> float: ...
     def GetMinimumEstimatedMeasurementDuration(self, capab: DeviceCapabilities) -> float: ...
     def GetNPoints(self, capabilities: DeviceCapabilities) -> int: ...
     def GetPointsPerSecond(self, capabilities: DeviceCapabilities = ...) -> float: ...
-    def ReceiveMeasurement(
-        self,
-        conn: ClientConnection,
-        muxChannel: int,
-        measType: MeasType,
-        measBuff: Buffer = ...,
-    ) -> ActiveMeasurement: ...
-    def ReceiveMeasurementAsync(
-        self,
-        conn: ClientConnection,
-        muxChannel: int,
-        measType: MeasType,
-        measBuff: Buffer = ...,
-        taskBarrier: TaskBarrier = ...,
-    ) -> Task_1[ActiveMeasurement]: ...
+    def ReceiveMeasurement(self, conn: ClientConnection, muxChannel: int, measType: MeasType, measBuff: Buffer = ...) -> ActiveMeasurement: ...
+    def ReceiveMeasurementAsync(self, conn: ClientConnection, muxChannel: int, measType: MeasType, measBuff: Buffer = ..., taskBarrier: TaskBarrier = ...) -> Task_1[ActiveMeasurement]: ...
     def Serialize(self, tw: TextWriter) -> None: ...
     def SupportsDeviceStorage(self, deviceCapabilities: DeviceCapabilities) -> bool: ...
     def SupportsHWSync(self, capabilities: DeviceCapabilities) -> bool: ...
     def ToShortString(self) -> str: ...
     def ToString(self) -> str: ...
 
+
 class MultistepAmperometry(Multistep, IChargeLimits):
     def __init__(self) -> None: ...
-    AnalyteName: str
-    DefaultXAxis: DataArrayType
-    DefaultYAxis: DataArrayType
-    Delta: float
-    MethodID: str
-    MethodIsGalvanostatic: bool
-    Mode: Multistep.EnumMode
-    MuxSett: Method.MuxSettings
-    Name: str
-    PeakOverlap: float
-    PolyEmStat: PolyEmStatMethodEx
-    RecordCE: bool
-    ShortName: str
-    SmoothLevel: int
-    Standard: Array_1[float]
-    Technique: int
-    TechniqueNumber: int
-    UseMuxChannel: BitArray
-    UseStirrer: bool
-    ViewBottom: float
-    ViewLeft: float
-    ViewRight: float
-    ViewTop: float
+    AnalyteName : str
+    DefaultXAxis : DataArrayType
+    DefaultYAxis : DataArrayType
+    Delta : float
+    MethodID : str
+    MethodIsGalvanostatic : bool
+    Mode : Multistep.EnumMode
+    MuxSett : Method.MuxSettings
+    Name : str
+    PeakOverlap : float
+    PolyEmStat : PolyEmStatMethodEx
+    RecordCE : bool
+    ShortName : str
+    SmoothLevel : int
+    Standard : Array_1[float]
+    Technique : int
+    TechniqueNumber : int
+    UseMuxChannel : BitArray
+    UseStirrer : bool
+    ViewBottom : float
+    ViewLeft : float
+    ViewRight : float
+    ViewTop : float
     @property
     def Area(self) -> float: ...
     @Area.setter
@@ -12918,9 +12448,7 @@ class MultistepAmperometry(Multistep, IChargeLimits):
     @property
     def BipotModePS(self) -> Method.EnumPalmSensBipotMode: ...
     @BipotModePS.setter
-    def BipotModePS(
-        self, value: Method.EnumPalmSensBipotMode
-    ) -> Method.EnumPalmSensBipotMode: ...
+    def BipotModePS(self, value: Method.EnumPalmSensBipotMode) -> Method.EnumPalmSensBipotMode: ...
     @property
     def BiPotPotential(self) -> float: ...
     @BiPotPotential.setter
@@ -13168,9 +12696,7 @@ class MultistepAmperometry(Multistep, IChargeLimits):
     @property
     def SelectedPotentiostatChannel(self) -> PotentionstatChannels: ...
     @SelectedPotentiostatChannel.setter
-    def SelectedPotentiostatChannel(
-        self, value: PotentionstatChannels
-    ) -> PotentionstatChannels: ...
+    def SelectedPotentiostatChannel(self, value: PotentionstatChannels) -> PotentionstatChannels: ...
     @property
     def Signal(self) -> enumSignal: ...
     @Signal.setter
@@ -13287,52 +12813,37 @@ class MultistepAmperometry(Multistep, IChargeLimits):
     def YTop(self) -> float: ...
     def Deserialize(self, contents: str) -> None: ...
     def GetMethodID(self) -> str: ...
-    def ReceiveMeasurementMS(
-        self, c: ClientConnection, muxChannel: int, measType: MeasType, measBuff: Buffer = ...
-    ) -> ActiveMeasurement: ...
-    def ReceiveMeasurementMSAsync(
-        self,
-        c: ClientConnection,
-        muxChannel: int,
-        measType: MeasType,
-        measBuff: Buffer = ...,
-        taskBarrier: TaskBarrier = ...,
-    ) -> Task_1[ActiveMeasurement]: ...
+    def ReceiveMeasurementMS(self, c: ClientConnection, muxChannel: int, measType: MeasType, measBuff: Buffer = ...) -> ActiveMeasurement: ...
+    def ReceiveMeasurementMSAsync(self, c: ClientConnection, muxChannel: int, measType: MeasType, measBuff: Buffer = ..., taskBarrier: TaskBarrier = ...) -> Task_1[ActiveMeasurement]: ...
     def Serialize(self, tw: TextWriter) -> None: ...
-    def ToMethodScript(
-        self,
-        capabilities: MethodScriptDeviceCapabilities,
-        forEditor: bool,
-        connMS: ClientConnectionMS = ...,
-    ) -> MethodScript: ...
+    def ToMethodScript(self, capabilities: MethodScriptDeviceCapabilities, forEditor: bool, connMS: ClientConnectionMS = ...) -> MethodScript: ...
     def ToShortString(self) -> str: ...
     def ToString(self) -> str: ...
 
+
 class MultistepMeasurementMC(CustomMeasurement):
-    def __init__(
-        self, conn: ClientConnection, method: Method, muxChannel: int, measType: MeasType
-    ) -> None: ...
+    def __init__(self, conn: ClientConnection, method: Method, muxChannel: int, measType: MeasType) -> None: ...
 
     class State(typing.SupportsInt):
         @typing.overload
-        def __init__(self, value: int) -> None: ...
+        def __init__(self, value : int) -> None: ...
         @typing.overload
-        def __init__(self, value: int, force_if_true: bool) -> None: ...
+        def __init__(self, value : int, force_if_true: bool) -> None: ...
         def __int__(self) -> int: ...
 
         # Values:
-        NotStarted: MultistepMeasurementMC.State  # 0
-        Conditioning: MultistepMeasurementMC.State  # 1
-        Depositioning: MultistepMeasurementMC.State  # 2
-        Equilibrating: MultistepMeasurementMC.State  # 3
-        Measuring: MultistepMeasurementMC.State  # 4
-        Done: MultistepMeasurementMC.State  # 5
+        NotStarted : MultistepMeasurementMC.State # 0
+        Conditioning : MultistepMeasurementMC.State # 1
+        Depositioning : MultistepMeasurementMC.State # 2
+        Equilibrating : MultistepMeasurementMC.State # 3
+        Measuring : MultistepMeasurementMC.State # 4
+        Done : MultistepMeasurementMC.State # 5
 
-    Channel: int
-    ETA: DateTime
-    LastMuxChannel: int
-    MeasurementStarted: DateTime
-    VsOCP: MeasureVersusOCP
+    Channel : int
+    ETA : DateTime
+    LastMuxChannel : int
+    MeasurementStarted : DateTime
+    VsOCP : MeasureVersusOCP
     @property
     def BlankCurve(self) -> Curve: ...
     @BlankCurve.setter
@@ -13417,48 +12928,35 @@ class MultistepMeasurementMC(CustomMeasurement):
     def Visible(self, value: bool) -> bool: ...
     def Abort(self) -> None: ...
     def AbortAsync(self) -> Task: ...
-    def StartStage(
-        self,
-        timeOffsetInSec: float,
-        name: str,
-        firstStage: bool = ...,
-        resetCR: bool = ...,
-        overrideStartRange: CurrentRange = ...,
-    ) -> None: ...
-    def StartStageAsync(
-        self,
-        timeOffsetInSec: float,
-        name: str,
-        firstStage: bool = ...,
-        resetCR: bool = ...,
-        overrideStartRange: CurrentRange = ...,
-    ) -> Task: ...
+    def StartStage(self, timeOffsetInSec: float, name: str, firstStage: bool = ..., resetCR: bool = ..., overrideStartRange: CurrentRange = ...) -> None: ...
+    def StartStageAsync(self, timeOffsetInSec: float, name: str, firstStage: bool = ..., resetCR: bool = ..., overrideStartRange: CurrentRange = ...) -> Task: ...
+
 
 class MultistepPotentiometry(Multistep, IPotentiometric):
     def __init__(self) -> None: ...
-    AnalyteName: str
-    DefaultXAxis: DataArrayType
-    DefaultYAxis: DataArrayType
-    Delta: float
-    MethodID: str
-    MethodIsGalvanostatic: bool
-    Mode: Multistep.EnumMode
-    MuxSett: Method.MuxSettings
-    Name: str
-    PeakOverlap: float
-    PolyEmStat: PolyEmStatMethodEx
-    RecordCE: bool
-    ShortName: str
-    SmoothLevel: int
-    Standard: Array_1[float]
-    Technique: int
-    TechniqueNumber: int
-    UseMuxChannel: BitArray
-    UseStirrer: bool
-    ViewBottom: float
-    ViewLeft: float
-    ViewRight: float
-    ViewTop: float
+    AnalyteName : str
+    DefaultXAxis : DataArrayType
+    DefaultYAxis : DataArrayType
+    Delta : float
+    MethodID : str
+    MethodIsGalvanostatic : bool
+    Mode : Multistep.EnumMode
+    MuxSett : Method.MuxSettings
+    Name : str
+    PeakOverlap : float
+    PolyEmStat : PolyEmStatMethodEx
+    RecordCE : bool
+    ShortName : str
+    SmoothLevel : int
+    Standard : Array_1[float]
+    Technique : int
+    TechniqueNumber : int
+    UseMuxChannel : BitArray
+    UseStirrer : bool
+    ViewBottom : float
+    ViewLeft : float
+    ViewRight : float
+    ViewTop : float
     @property
     def AppliedCurrentRange(self) -> CurrentRange: ...
     @AppliedCurrentRange.setter
@@ -13494,9 +12992,7 @@ class MultistepPotentiometry(Multistep, IPotentiometric):
     @property
     def BipotModePS(self) -> Method.EnumPalmSensBipotMode: ...
     @BipotModePS.setter
-    def BipotModePS(
-        self, value: Method.EnumPalmSensBipotMode
-    ) -> Method.EnumPalmSensBipotMode: ...
+    def BipotModePS(self, value: Method.EnumPalmSensBipotMode) -> Method.EnumPalmSensBipotMode: ...
     @property
     def BiPotPotential(self) -> float: ...
     @BiPotPotential.setter
@@ -13650,9 +13146,7 @@ class MultistepPotentiometry(Multistep, IPotentiometric):
     @property
     def OriginalAppliedCurrentRange(self) -> typing.Optional[CurrentRanges]: ...
     @OriginalAppliedCurrentRange.setter
-    def OriginalAppliedCurrentRange(
-        self, value: typing.Optional[CurrentRanges]
-    ) -> typing.Optional[CurrentRanges]: ...
+    def OriginalAppliedCurrentRange(self, value: typing.Optional[CurrentRanges]) -> typing.Optional[CurrentRanges]: ...
     @property
     def OverrideBandwidth(self) -> bool: ...
     @OverrideBandwidth.setter
@@ -13744,9 +13238,7 @@ class MultistepPotentiometry(Multistep, IPotentiometric):
     @property
     def SelectedPotentiostatChannel(self) -> PotentionstatChannels: ...
     @SelectedPotentiostatChannel.setter
-    def SelectedPotentiostatChannel(
-        self, value: PotentionstatChannels
-    ) -> PotentionstatChannels: ...
+    def SelectedPotentiostatChannel(self, value: PotentionstatChannels) -> PotentionstatChannels: ...
     @property
     def Signal(self) -> enumSignal: ...
     @Signal.setter
@@ -13855,29 +13347,16 @@ class MultistepPotentiometry(Multistep, IPotentiometric):
     def YTop(self) -> float: ...
     def Deserialize(self, contents: str) -> None: ...
     def GetMethodID(self) -> str: ...
-    def ReceiveMeasurementMS(
-        self, c: ClientConnection, muxChannel: int, measType: MeasType, measBuff: Buffer = ...
-    ) -> ActiveMeasurement: ...
-    def ReceiveMeasurementMSAsync(
-        self,
-        c: ClientConnection,
-        muxChannel: int,
-        measType: MeasType,
-        measBuff: Buffer = ...,
-        taskBarrier: TaskBarrier = ...,
-    ) -> Task_1[ActiveMeasurement]: ...
+    def ReceiveMeasurementMS(self, c: ClientConnection, muxChannel: int, measType: MeasType, measBuff: Buffer = ...) -> ActiveMeasurement: ...
+    def ReceiveMeasurementMSAsync(self, c: ClientConnection, muxChannel: int, measType: MeasType, measBuff: Buffer = ..., taskBarrier: TaskBarrier = ...) -> Task_1[ActiveMeasurement]: ...
     def Serialize(self, tw: TextWriter) -> None: ...
     def SetAppliedCurrentRangeSilent(self, range: CurrentRange) -> None: ...
     def SetCompatibleAppliedRange(self, capabilities: DeviceCapabilities) -> None: ...
     def SetCompatibleAppliedRangeSilent(self, capabilities: DeviceCapabilities) -> None: ...
-    def ToMethodScript(
-        self,
-        capabilities: MethodScriptDeviceCapabilities,
-        forEditor: bool,
-        connMS: ClientConnectionMS = ...,
-    ) -> MethodScript: ...
+    def ToMethodScript(self, capabilities: MethodScriptDeviceCapabilities, forEditor: bool, connMS: ClientConnectionMS = ...) -> MethodScript: ...
     def ToShortString(self) -> str: ...
     def ToString(self) -> str: ...
+
 
 class NewFreqCurveEventHandler(MulticastDelegate):
     def __init__(self, object: typing.Any, method: int) -> None: ...
@@ -13885,11 +13364,10 @@ class NewFreqCurveEventHandler(MulticastDelegate):
     def Method(self) -> MethodInfo: ...
     @property
     def Target(self) -> typing.Any: ...
-    def BeginInvoke(
-        self, sender: typing.Any, c: SineCurve, callback: AsyncCallback, object: typing.Any
-    ) -> IAsyncResult: ...
+    def BeginInvoke(self, sender: typing.Any, c: SineCurve, callback: AsyncCallback, object: typing.Any) -> IAsyncResult: ...
     def EndInvoke(self, result: IAsyncResult) -> None: ...
     def Invoke(self, sender: typing.Any, c: SineCurve) -> None: ...
+
 
 class NewFreqCurvesEventHandler(MulticastDelegate):
     def __init__(self, object: typing.Any, method: int) -> None: ...
@@ -13897,41 +13375,34 @@ class NewFreqCurvesEventHandler(MulticastDelegate):
     def Method(self) -> MethodInfo: ...
     @property
     def Target(self) -> typing.Any: ...
-    def BeginInvoke(
-        self,
-        sender: typing.Any,
-        curves: ValueTuple_3[SineCurve, SineCurve, SineCurve],
-        callback: AsyncCallback,
-        object: typing.Any,
-    ) -> IAsyncResult: ...
+    def BeginInvoke(self, sender: typing.Any, curves: ValueTuple_3[SineCurve, SineCurve, SineCurve], callback: AsyncCallback, object: typing.Any) -> IAsyncResult: ...
     def EndInvoke(self, result: IAsyncResult) -> None: ...
-    def Invoke(
-        self, sender: typing.Any, curves: ValueTuple_3[SineCurve, SineCurve, SineCurve]
-    ) -> None: ...
+    def Invoke(self, sender: typing.Any, curves: ValueTuple_3[SineCurve, SineCurve, SineCurve]) -> None: ...
+
 
 class NormalPulse(Pulse):
     def __init__(self) -> None: ...
-    DefaultXAxis: DataArrayType
-    DefaultYAxis: DataArrayType
-    EPretreat: Array_1[float]
-    MethodID: str
-    MethodIsGalvanostatic: bool
-    MuxSett: Method.MuxSettings
-    Name: str
-    PeakOverlap: float
-    PolyEmStat: PolyEmStatMethodEx
-    RecordCE: bool
-    ShortName: str
-    SmoothLevel: int
-    Technique: int
-    TechniqueNumber: int
-    tPretreat: Array_1[float]
-    UseMuxChannel: BitArray
-    UseStirrer: bool
-    ViewBottom: float
-    ViewLeft: float
-    ViewRight: float
-    ViewTop: float
+    DefaultXAxis : DataArrayType
+    DefaultYAxis : DataArrayType
+    EPretreat : Array_1[float]
+    MethodID : str
+    MethodIsGalvanostatic : bool
+    MuxSett : Method.MuxSettings
+    Name : str
+    PeakOverlap : float
+    PolyEmStat : PolyEmStatMethodEx
+    RecordCE : bool
+    ShortName : str
+    SmoothLevel : int
+    Technique : int
+    TechniqueNumber : int
+    tPretreat : Array_1[float]
+    UseMuxChannel : BitArray
+    UseStirrer : bool
+    ViewBottom : float
+    ViewLeft : float
+    ViewRight : float
+    ViewTop : float
     @property
     def AnalyteName(self) -> Array_1[str]: ...
     @AnalyteName.setter
@@ -13967,9 +13438,7 @@ class NormalPulse(Pulse):
     @property
     def BipotModePS(self) -> Method.EnumPalmSensBipotMode: ...
     @BipotModePS.setter
-    def BipotModePS(
-        self, value: Method.EnumPalmSensBipotMode
-    ) -> Method.EnumPalmSensBipotMode: ...
+    def BipotModePS(self, value: Method.EnumPalmSensBipotMode) -> Method.EnumPalmSensBipotMode: ...
     @property
     def BiPotPotential(self) -> float: ...
     @BiPotPotential.setter
@@ -14217,9 +13686,7 @@ class NormalPulse(Pulse):
     @property
     def SelectedPotentiostatChannel(self) -> PotentionstatChannels: ...
     @SelectedPotentiostatChannel.setter
-    def SelectedPotentiostatChannel(
-        self, value: PotentionstatChannels
-    ) -> PotentionstatChannels: ...
+    def SelectedPotentiostatChannel(self, value: PotentionstatChannels) -> PotentionstatChannels: ...
     @property
     def SolutionNr(self) -> Array_1[int]: ...
     @SolutionNr.setter
@@ -14342,37 +13809,33 @@ class NormalPulse(Pulse):
     def GetMethodID(self) -> str: ...
     def GetMinimumEstimatedMeasurementDuration(self, capab: DeviceCapabilities) -> float: ...
     def GetPointsPerSecond(self, capabilities: DeviceCapabilities = ...) -> float: ...
-    def ToMethodScript(
-        self,
-        capabilities: MethodScriptDeviceCapabilities,
-        forEditor: bool,
-        connMS: ClientConnectionMS = ...,
-    ) -> MethodScript: ...
+    def ToMethodScript(self, capabilities: MethodScriptDeviceCapabilities, forEditor: bool, connMS: ClientConnectionMS = ...) -> MethodScript: ...
     def ToShortString(self) -> str: ...
     def ToString(self) -> str: ...
 
+
 class OpenCircuitPotentiometry(Potentiometry):
     def __init__(self) -> None: ...
-    AnalyteName: str
-    DefaultXAxis: DataArrayType
-    DefaultYAxis: DataArrayType
-    MethodID: str
-    MethodIsGalvanostatic: bool
-    MuxSett: Method.MuxSettings
-    Name: str
-    PeakOverlap: float
-    PolyEmStat: PolyEmStatMethodEx
-    RecordCE: bool
-    ShortName: str
-    SmoothLevel: int
-    Standard: Array_1[float]
-    Technique: int
-    UseMuxChannel: BitArray
-    UseStirrer: bool
-    ViewBottom: float
-    ViewLeft: float
-    ViewRight: float
-    ViewTop: float
+    AnalyteName : str
+    DefaultXAxis : DataArrayType
+    DefaultYAxis : DataArrayType
+    MethodID : str
+    MethodIsGalvanostatic : bool
+    MuxSett : Method.MuxSettings
+    Name : str
+    PeakOverlap : float
+    PolyEmStat : PolyEmStatMethodEx
+    RecordCE : bool
+    ShortName : str
+    SmoothLevel : int
+    Standard : Array_1[float]
+    Technique : int
+    UseMuxChannel : BitArray
+    UseStirrer : bool
+    ViewBottom : float
+    ViewLeft : float
+    ViewRight : float
+    ViewTop : float
     @property
     def AppliedCurrentRange(self) -> CurrentRange: ...
     @AppliedCurrentRange.setter
@@ -14408,9 +13871,7 @@ class OpenCircuitPotentiometry(Potentiometry):
     @property
     def BipotModePS(self) -> Method.EnumPalmSensBipotMode: ...
     @BipotModePS.setter
-    def BipotModePS(
-        self, value: Method.EnumPalmSensBipotMode
-    ) -> Method.EnumPalmSensBipotMode: ...
+    def BipotModePS(self, value: Method.EnumPalmSensBipotMode) -> Method.EnumPalmSensBipotMode: ...
     @property
     def BiPotPotential(self) -> float: ...
     @BiPotPotential.setter
@@ -14556,9 +14017,7 @@ class OpenCircuitPotentiometry(Potentiometry):
     @property
     def OriginalAppliedCurrentRange(self) -> typing.Optional[CurrentRanges]: ...
     @OriginalAppliedCurrentRange.setter
-    def OriginalAppliedCurrentRange(
-        self, value: typing.Optional[CurrentRanges]
-    ) -> typing.Optional[CurrentRanges]: ...
+    def OriginalAppliedCurrentRange(self, value: typing.Optional[CurrentRanges]) -> typing.Optional[CurrentRanges]: ...
     @property
     def OverrideBandwidth(self) -> bool: ...
     @OverrideBandwidth.setter
@@ -14656,9 +14115,7 @@ class OpenCircuitPotentiometry(Potentiometry):
     @property
     def SelectedPotentiostatChannel(self) -> PotentionstatChannels: ...
     @SelectedPotentiostatChannel.setter
-    def SelectedPotentiostatChannel(
-        self, value: PotentionstatChannels
-    ) -> PotentionstatChannels: ...
+    def SelectedPotentiostatChannel(self, value: PotentionstatChannels) -> PotentionstatChannels: ...
     @property
     def Signal(self) -> enumSignal: ...
     @Signal.setter
@@ -14758,62 +14215,44 @@ class OpenCircuitPotentiometry(Potentiometry):
     @property
     def YTop(self) -> float: ...
     def GetMethodID(self) -> str: ...
-    def ReceiveMeasurementMS(
-        self, c: ClientConnection, muxChannel: int, measType: MeasType, measBuff: Buffer = ...
-    ) -> ActiveMeasurement: ...
-    def ReceiveMeasurementMSAsync(
-        self,
-        c: ClientConnection,
-        muxChannel: int,
-        measType: MeasType,
-        measBuff: Buffer = ...,
-        taskBarrier: TaskBarrier = ...,
-    ) -> Task_1[ActiveMeasurement]: ...
+    def ReceiveMeasurementMS(self, c: ClientConnection, muxChannel: int, measType: MeasType, measBuff: Buffer = ...) -> ActiveMeasurement: ...
+    def ReceiveMeasurementMSAsync(self, c: ClientConnection, muxChannel: int, measType: MeasType, measBuff: Buffer = ..., taskBarrier: TaskBarrier = ...) -> Task_1[ActiveMeasurement]: ...
     def SetCompatibleAppliedRangeSilent(self, capabilities: DeviceCapabilities) -> None: ...
-    def ToMethodScript(
-        self,
-        capabilities: MethodScriptDeviceCapabilities,
-        forEditor: bool,
-        connMS: ClientConnectionMS = ...,
-    ) -> MethodScript: ...
+    def ToMethodScript(self, capabilities: MethodScriptDeviceCapabilities, forEditor: bool, connMS: ClientConnectionMS = ...) -> MethodScript: ...
     def ToShortString(self) -> str: ...
     def ToString(self) -> str: ...
 
+
 class PotentiometricExtensions(abc.ABC):
     @staticmethod
-    def DetermineOptimalAppliedCurrentRange(
-        potentiometric: IPotentiometric,
-        appliedCurrents: IList_1[float],
-        capabilities: DeviceCapabilities,
-    ) -> CurrentRange: ...
+    def DetermineOptimalAppliedCurrentRange(potentiometric: IPotentiometric, appliedCurrents: IList_1[float], capabilities: DeviceCapabilities) -> CurrentRange: ...
     @staticmethod
-    def ValidateAppliedRangeBandwidth(
-        potentiometric: IPotentiometric, capabilities: DeviceCapabilities
-    ) -> List_1[MethodError]: ...
+    def ValidateAppliedRangeBandwidth(potentiometric: IPotentiometric, capabilities: DeviceCapabilities) -> List_1[MethodError]: ...
+
 
 class Potentiometry(TimeMethod, IPotentiometric):
     def __init__(self) -> None: ...
-    AnalyteName: str
-    DefaultXAxis: DataArrayType
-    DefaultYAxis: DataArrayType
-    MethodID: str
-    MethodIsGalvanostatic: bool
-    MuxSett: Method.MuxSettings
-    Name: str
-    PeakOverlap: float
-    PolyEmStat: PolyEmStatMethodEx
-    RecordCE: bool
-    ShortName: str
-    SmoothLevel: int
-    Standard: Array_1[float]
-    Technique: int
-    TechniqueNumber: int
-    UseMuxChannel: BitArray
-    UseStirrer: bool
-    ViewBottom: float
-    ViewLeft: float
-    ViewRight: float
-    ViewTop: float
+    AnalyteName : str
+    DefaultXAxis : DataArrayType
+    DefaultYAxis : DataArrayType
+    MethodID : str
+    MethodIsGalvanostatic : bool
+    MuxSett : Method.MuxSettings
+    Name : str
+    PeakOverlap : float
+    PolyEmStat : PolyEmStatMethodEx
+    RecordCE : bool
+    ShortName : str
+    SmoothLevel : int
+    Standard : Array_1[float]
+    Technique : int
+    TechniqueNumber : int
+    UseMuxChannel : BitArray
+    UseStirrer : bool
+    ViewBottom : float
+    ViewLeft : float
+    ViewRight : float
+    ViewTop : float
     @property
     def AppliedCurrentRange(self) -> CurrentRange: ...
     @AppliedCurrentRange.setter
@@ -14849,9 +14288,7 @@ class Potentiometry(TimeMethod, IPotentiometric):
     @property
     def BipotModePS(self) -> Method.EnumPalmSensBipotMode: ...
     @BipotModePS.setter
-    def BipotModePS(
-        self, value: Method.EnumPalmSensBipotMode
-    ) -> Method.EnumPalmSensBipotMode: ...
+    def BipotModePS(self, value: Method.EnumPalmSensBipotMode) -> Method.EnumPalmSensBipotMode: ...
     @property
     def BiPotPotential(self) -> float: ...
     @BiPotPotential.setter
@@ -14999,9 +14436,7 @@ class Potentiometry(TimeMethod, IPotentiometric):
     @property
     def OriginalAppliedCurrentRange(self) -> typing.Optional[CurrentRanges]: ...
     @OriginalAppliedCurrentRange.setter
-    def OriginalAppliedCurrentRange(
-        self, value: typing.Optional[CurrentRanges]
-    ) -> typing.Optional[CurrentRanges]: ...
+    def OriginalAppliedCurrentRange(self, value: typing.Optional[CurrentRanges]) -> typing.Optional[CurrentRanges]: ...
     @property
     def OverrideBandwidth(self) -> bool: ...
     @OverrideBandwidth.setter
@@ -15097,9 +14532,7 @@ class Potentiometry(TimeMethod, IPotentiometric):
     @property
     def SelectedPotentiostatChannel(self) -> PotentionstatChannels: ...
     @SelectedPotentiostatChannel.setter
-    def SelectedPotentiostatChannel(
-        self, value: PotentionstatChannels
-    ) -> PotentionstatChannels: ...
+    def SelectedPotentiostatChannel(self, value: PotentionstatChannels) -> PotentionstatChannels: ...
     @property
     def Signal(self) -> enumSignal: ...
     @Signal.setter
@@ -15201,51 +14634,38 @@ class Potentiometry(TimeMethod, IPotentiometric):
     def DeSerializeTechniqueSpecific(self, contents: str) -> None: ...
     def GetMethodID(self) -> str: ...
     def GetPointsPerSecond(self, capabilities: DeviceCapabilities = ...) -> float: ...
-    def ReceiveMeasurementMS(
-        self, c: ClientConnection, muxChannel: int, measType: MeasType, measBuff: Buffer = ...
-    ) -> ActiveMeasurement: ...
-    def ReceiveMeasurementMSAsync(
-        self,
-        c: ClientConnection,
-        muxChannel: int,
-        measType: MeasType,
-        measBuff: Buffer = ...,
-        taskBarrier: TaskBarrier = ...,
-    ) -> Task_1[ActiveMeasurement]: ...
+    def ReceiveMeasurementMS(self, c: ClientConnection, muxChannel: int, measType: MeasType, measBuff: Buffer = ...) -> ActiveMeasurement: ...
+    def ReceiveMeasurementMSAsync(self, c: ClientConnection, muxChannel: int, measType: MeasType, measBuff: Buffer = ..., taskBarrier: TaskBarrier = ...) -> Task_1[ActiveMeasurement]: ...
     def SerializeTechniqueSpecific(self, tw: TextWriter) -> None: ...
     def SetAppliedCurrentRangeSilent(self, range: CurrentRange) -> None: ...
     def SetCompatibleAppliedRange(self, capabilities: DeviceCapabilities) -> None: ...
     def SetCompatibleAppliedRangeSilent(self, capabilities: DeviceCapabilities) -> None: ...
     def SupportsHWSync(self, capabilities: DeviceCapabilities) -> bool: ...
     def ToHex1TechniqueSpecific(self, m: EncodedMethodV1) -> None: ...
-    def ToMethodScript(
-        self,
-        capabilities: MethodScriptDeviceCapabilities,
-        forEditor: bool,
-        connMS: ClientConnectionMS = ...,
-    ) -> MethodScript: ...
+    def ToMethodScript(self, capabilities: MethodScriptDeviceCapabilities, forEditor: bool, connMS: ClientConnectionMS = ...) -> MethodScript: ...
     def ToShortString(self) -> str: ...
     def ToString(self) -> str: ...
 
+
 class Pulse(PotentialMethod):
     def __init__(self, t: int) -> None: ...
-    DefaultXAxis: DataArrayType
-    DefaultYAxis: DataArrayType
-    EPretreat: Array_1[float]
-    MethodIsGalvanostatic: bool
-    MuxSett: Method.MuxSettings
-    PeakOverlap: float
-    PolyEmStat: PolyEmStatMethodEx
-    RecordCE: bool
-    SmoothLevel: int
-    Technique: int
-    tPretreat: Array_1[float]
-    UseMuxChannel: BitArray
-    UseStirrer: bool
-    ViewBottom: float
-    ViewLeft: float
-    ViewRight: float
-    ViewTop: float
+    DefaultXAxis : DataArrayType
+    DefaultYAxis : DataArrayType
+    EPretreat : Array_1[float]
+    MethodIsGalvanostatic : bool
+    MuxSett : Method.MuxSettings
+    PeakOverlap : float
+    PolyEmStat : PolyEmStatMethodEx
+    RecordCE : bool
+    SmoothLevel : int
+    Technique : int
+    tPretreat : Array_1[float]
+    UseMuxChannel : BitArray
+    UseStirrer : bool
+    ViewBottom : float
+    ViewLeft : float
+    ViewRight : float
+    ViewTop : float
     @property
     def AnalyteName(self) -> Array_1[str]: ...
     @AnalyteName.setter
@@ -15281,9 +14701,7 @@ class Pulse(PotentialMethod):
     @property
     def BipotModePS(self) -> Method.EnumPalmSensBipotMode: ...
     @BipotModePS.setter
-    def BipotModePS(
-        self, value: Method.EnumPalmSensBipotMode
-    ) -> Method.EnumPalmSensBipotMode: ...
+    def BipotModePS(self, value: Method.EnumPalmSensBipotMode) -> Method.EnumPalmSensBipotMode: ...
     @property
     def BiPotPotential(self) -> float: ...
     @BiPotPotential.setter
@@ -15531,9 +14949,7 @@ class Pulse(PotentialMethod):
     @property
     def SelectedPotentiostatChannel(self) -> PotentionstatChannels: ...
     @SelectedPotentiostatChannel.setter
-    def SelectedPotentiostatChannel(
-        self, value: PotentionstatChannels
-    ) -> PotentionstatChannels: ...
+    def SelectedPotentiostatChannel(self, value: PotentionstatChannels) -> PotentionstatChannels: ...
     @property
     def SolutionNr(self) -> Array_1[int]: ...
     @SolutionNr.setter
@@ -15658,42 +15074,43 @@ class Pulse(PotentialMethod):
     def ToShortString(self) -> str: ...
     def ToString(self) -> str: ...
 
+
 class PulsedAmpDetection(TimeMethod):
     def __init__(self) -> None: ...
 
     class enumMode(typing.SupportsInt):
         @typing.overload
-        def __init__(self, value: int) -> None: ...
+        def __init__(self, value : int) -> None: ...
         @typing.overload
-        def __init__(self, value: int, force_if_true: bool) -> None: ...
+        def __init__(self, value : int, force_if_true: bool) -> None: ...
         def __int__(self) -> int: ...
 
         # Values:
-        dc: PulsedAmpDetection.enumMode  # 1
-        Pulse: PulsedAmpDetection.enumMode  # 2
-        Differential: PulsedAmpDetection.enumMode  # 3
+        dc : PulsedAmpDetection.enumMode # 1
+        Pulse : PulsedAmpDetection.enumMode # 2
+        Differential : PulsedAmpDetection.enumMode # 3
 
-    AnalyteName: str
-    DefaultXAxis: DataArrayType
-    DefaultYAxis: DataArrayType
-    MethodID: str
-    MethodIsGalvanostatic: bool
-    MuxSett: Method.MuxSettings
-    Name: str
-    PeakOverlap: float
-    PolyEmStat: PolyEmStatMethodEx
-    RecordCE: bool
-    ShortName: str
-    SmoothLevel: int
-    Standard: Array_1[float]
-    Technique: int
-    TechniqueNumber: int
-    UseMuxChannel: BitArray
-    UseStirrer: bool
-    ViewBottom: float
-    ViewLeft: float
-    ViewRight: float
-    ViewTop: float
+    AnalyteName : str
+    DefaultXAxis : DataArrayType
+    DefaultYAxis : DataArrayType
+    MethodID : str
+    MethodIsGalvanostatic : bool
+    MuxSett : Method.MuxSettings
+    Name : str
+    PeakOverlap : float
+    PolyEmStat : PolyEmStatMethodEx
+    RecordCE : bool
+    ShortName : str
+    SmoothLevel : int
+    Standard : Array_1[float]
+    Technique : int
+    TechniqueNumber : int
+    UseMuxChannel : BitArray
+    UseStirrer : bool
+    ViewBottom : float
+    ViewLeft : float
+    ViewRight : float
+    ViewTop : float
     @property
     def Area(self) -> float: ...
     @Area.setter
@@ -15725,9 +15142,7 @@ class PulsedAmpDetection(TimeMethod):
     @property
     def BipotModePS(self) -> Method.EnumPalmSensBipotMode: ...
     @BipotModePS.setter
-    def BipotModePS(
-        self, value: Method.EnumPalmSensBipotMode
-    ) -> Method.EnumPalmSensBipotMode: ...
+    def BipotModePS(self, value: Method.EnumPalmSensBipotMode) -> Method.EnumPalmSensBipotMode: ...
     @property
     def BiPotPotential(self) -> float: ...
     @BiPotPotential.setter
@@ -15969,9 +15384,7 @@ class PulsedAmpDetection(TimeMethod):
     @property
     def SelectedPotentiostatChannel(self) -> PotentionstatChannels: ...
     @SelectedPotentiostatChannel.setter
-    def SelectedPotentiostatChannel(
-        self, value: PotentionstatChannels
-    ) -> PotentionstatChannels: ...
+    def SelectedPotentiostatChannel(self, value: PotentionstatChannels) -> PotentionstatChannels: ...
     @property
     def Signal(self) -> enumSignal: ...
     @Signal.setter
@@ -16079,14 +15492,10 @@ class PulsedAmpDetection(TimeMethod):
     def GetPointsPerSecond(self, capabilities: DeviceCapabilities = ...) -> float: ...
     def Serialize(self, tw: TextWriter) -> None: ...
     def SupportsHWSync(self, capabilities: DeviceCapabilities) -> bool: ...
-    def ToMethodScript(
-        self,
-        capabilities: MethodScriptDeviceCapabilities,
-        forEditor: bool,
-        connMS: ClientConnectionMS = ...,
-    ) -> MethodScript: ...
+    def ToMethodScript(self, capabilities: MethodScriptDeviceCapabilities, forEditor: bool, connMS: ClientConnectionMS = ...) -> MethodScript: ...
     def ToShortString(self) -> str: ...
     def ToString(self) -> str: ...
+
 
 class ScriptOverridable(Attribute):
     @typing.overload
@@ -16108,29 +15517,30 @@ class ScriptOverridable(Attribute):
     @Unit.setter
     def Unit(self, value: str) -> str: ...
 
+
 class SquareWave(PotentialMethod):
     def __init__(self) -> None: ...
-    DefaultXAxis: DataArrayType
-    DefaultYAxis: DataArrayType
-    EPretreat: Array_1[float]
-    MethodID: str
-    MethodIsGalvanostatic: bool
-    MuxSett: Method.MuxSettings
-    Name: str
-    PeakOverlap: float
-    PolyEmStat: PolyEmStatMethodEx
-    RecordCE: bool
-    ShortName: str
-    SmoothLevel: int
-    Technique: int
-    TechniqueNumber: int
-    tPretreat: Array_1[float]
-    UseMuxChannel: BitArray
-    UseStirrer: bool
-    ViewBottom: float
-    ViewLeft: float
-    ViewRight: float
-    ViewTop: float
+    DefaultXAxis : DataArrayType
+    DefaultYAxis : DataArrayType
+    EPretreat : Array_1[float]
+    MethodID : str
+    MethodIsGalvanostatic : bool
+    MuxSett : Method.MuxSettings
+    Name : str
+    PeakOverlap : float
+    PolyEmStat : PolyEmStatMethodEx
+    RecordCE : bool
+    ShortName : str
+    SmoothLevel : int
+    Technique : int
+    TechniqueNumber : int
+    tPretreat : Array_1[float]
+    UseMuxChannel : BitArray
+    UseStirrer : bool
+    ViewBottom : float
+    ViewLeft : float
+    ViewRight : float
+    ViewTop : float
     @property
     def AnalyteName(self) -> Array_1[str]: ...
     @AnalyteName.setter
@@ -16166,9 +15576,7 @@ class SquareWave(PotentialMethod):
     @property
     def BipotModePS(self) -> Method.EnumPalmSensBipotMode: ...
     @BipotModePS.setter
-    def BipotModePS(
-        self, value: Method.EnumPalmSensBipotMode
-    ) -> Method.EnumPalmSensBipotMode: ...
+    def BipotModePS(self, value: Method.EnumPalmSensBipotMode) -> Method.EnumPalmSensBipotMode: ...
     @property
     def BiPotPotential(self) -> float: ...
     @BiPotPotential.setter
@@ -16416,9 +15824,7 @@ class SquareWave(PotentialMethod):
     @property
     def SelectedPotentiostatChannel(self) -> PotentionstatChannels: ...
     @SelectedPotentiostatChannel.setter
-    def SelectedPotentiostatChannel(
-        self, value: PotentionstatChannels
-    ) -> PotentionstatChannels: ...
+    def SelectedPotentiostatChannel(self, value: PotentionstatChannels) -> PotentionstatChannels: ...
     @property
     def SolutionNr(self) -> Array_1[int]: ...
     @SolutionNr.setter
@@ -16542,52 +15948,30 @@ class SquareWave(PotentialMethod):
     def GetMethodID(self) -> str: ...
     def GetMinimumEstimatedMeasurementDuration(self, capab: DeviceCapabilities) -> float: ...
     def GetPointsPerSecond(self, capabilities: DeviceCapabilities = ...) -> float: ...
-    def ReceiveMeasurementMS(
-        self, c: ClientConnection, muxChannel: int, measType: MeasType, measBuff: Buffer = ...
-    ) -> ActiveMeasurement: ...
-    def ReceiveMeasurementMSAsync(
-        self,
-        c: ClientConnection,
-        muxChannel: int,
-        measType: MeasType,
-        measBuff: Buffer = ...,
-        taskBarrier: TaskBarrier = ...,
-    ) -> Task_1[ActiveMeasurement]: ...
+    def ReceiveMeasurementMS(self, c: ClientConnection, muxChannel: int, measType: MeasType, measBuff: Buffer = ...) -> ActiveMeasurement: ...
+    def ReceiveMeasurementMSAsync(self, c: ClientConnection, muxChannel: int, measType: MeasType, measBuff: Buffer = ..., taskBarrier: TaskBarrier = ...) -> Task_1[ActiveMeasurement]: ...
     def Serialize(self, tw: TextWriter) -> None: ...
     def SupportsHWSync(self, capabilities: DeviceCapabilities) -> bool: ...
-    def ToMethodScript(
-        self,
-        capabilities: MethodScriptDeviceCapabilities,
-        forEditor: bool,
-        connMS: ClientConnectionMS = ...,
-    ) -> MethodScript: ...
+    def ToMethodScript(self, capabilities: MethodScriptDeviceCapabilities, forEditor: bool, connMS: ClientConnectionMS = ...) -> MethodScript: ...
     def ToShortString(self) -> str: ...
     def ToString(self) -> str: ...
+
 
 class TechniqueParameter:
     @typing.overload
     def __init__(self) -> None: ...
     @typing.overload
-    def __init__(
-        self,
-        parameter: enumTechniqueParameter,
-        label: str,
-        unit: str,
-        min: str,
-        max: str,
-        defaultValue: str,
-        dataType: InputType,
-        toolTip: str,
-    ) -> None: ...
-    DataType: InputType
-    DefaultValue: str
-    Label: str
-    Max: str
-    Min: str
-    Parameter: enumTechniqueParameter
-    ToolTip: str
-    Unit: str
+    def __init__(self, parameter: enumTechniqueParameter, label: str, unit: str, min: str, max: str, defaultValue: str, dataType: InputType, toolTip: str) -> None: ...
+    DataType : InputType
+    DefaultValue : str
+    Label : str
+    Max : str
+    Min : str
+    Parameter : enumTechniqueParameter
+    ToolTip : str
+    Unit : str
+
 
 class TechniqueParameters:
     def __init__(self) -> None: ...
-    Inputs: List_1[TechniqueParameter]
+    Inputs : List_1[TechniqueParameter]

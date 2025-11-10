@@ -1,232 +1,216 @@
-import abc
-import typing
-
-from MathNet.Numerics.LinearAlgebra import Matrix_1, Vector_1
-from PalmSens.Fitting.Models.Circuits import ElementGroup
-from PalmSens.Fitting.Models.Circuits.Elements import ElementTypes
-from PalmSens.Plottables import EISData
+import typing, abc
 from System import Array_1, Progress_1
 from System.Collections.Generic import List_1
 from System.Threading.Tasks import Task_1
+from PalmSens.Plottables import EISData
+from MathNet.Numerics.LinearAlgebra import Matrix_1, Vector_1
+from PalmSens.Fitting.Models.Circuits import ElementGroup
+from PalmSens.Fitting.Models.Circuits.Elements import ElementTypes
 
 class Algorithm(typing.SupportsInt):
     @typing.overload
-    def __init__(self, value: int) -> None: ...
+    def __init__(self, value : int) -> None: ...
     @typing.overload
-    def __init__(self, value: int, force_if_true: bool) -> None: ...
+    def __init__(self, value : int, force_if_true: bool) -> None: ...
     def __int__(self) -> int: ...
 
     # Values:
-    LevenbergMarquardt: Algorithm  # 0
-    NelderMead: Algorithm  # 1
+    LevenbergMarquardt : Algorithm # 0
+    NelderMead : Algorithm # 1
+
 
 class BVModel(IModelBase):
     def __init__(self) -> None: ...
-    Begin: int
-    End: int
+    Begin : int
+    End : int
     @property
     def Name(self) -> str: ...
     @property
     def NParameters(self) -> int: ...
-    def GetResidualValues(
-        self, parameters: Array_1[float], x: Array_1[float], y: Array_1[float]
-    ) -> Array_1[float]: ...
+    def GetResidualValues(self, parameters: Array_1[float], x: Array_1[float], y: Array_1[float]) -> Array_1[float]: ...
     def GetValues(self, parameters: Array_1[float], x: Array_1[float]) -> Array_1[float]: ...
     # Skipped EvaluatePointError due to it being static, abstract and generic.
 
-    EvaluatePointError: EvaluatePointError_MethodGroup
+    EvaluatePointError : EvaluatePointError_MethodGroup
     class EvaluatePointError_MethodGroup:
         @typing.overload
-        def __call__(self, parameters: Array_1[float]) -> float: ...
+        def __call__(self, parameters: Array_1[float]) -> float:...
         @typing.overload
-        def __call__(
-            self, parameters: Array_1[float], fitOptionsCircuit: FitOptionsCircuit
-        ) -> float: ...
+        def __call__(self, parameters: Array_1[float], fitOptionsCircuit: FitOptionsCircuit) -> float:...
+
+
 
 class BVModelICorr(IModelBase):
     def __init__(self, eCorr: float, bA: float, bC: float) -> None: ...
-    Begin: int
-    End: int
+    Begin : int
+    End : int
     @property
     def Name(self) -> str: ...
     @property
     def NParameters(self) -> int: ...
-    def GetResidualValues(
-        self, parameters: Array_1[float], x: Array_1[float], y: Array_1[float]
-    ) -> Array_1[float]: ...
+    def GetResidualValues(self, parameters: Array_1[float], x: Array_1[float], y: Array_1[float]) -> Array_1[float]: ...
     def GetValues(self, parameters: Array_1[float], x: Array_1[float]) -> Array_1[float]: ...
     # Skipped EvaluatePointError due to it being static, abstract and generic.
 
-    EvaluatePointError: EvaluatePointError_MethodGroup
+    EvaluatePointError : EvaluatePointError_MethodGroup
     class EvaluatePointError_MethodGroup:
         @typing.overload
-        def __call__(self, parameters: Array_1[float]) -> float: ...
+        def __call__(self, parameters: Array_1[float]) -> float:...
         @typing.overload
-        def __call__(
-            self, parameters: Array_1[float], fitOptionsCircuit: FitOptionsCircuit
-        ) -> float: ...
+        def __call__(self, parameters: Array_1[float], fitOptionsCircuit: FitOptionsCircuit) -> float:...
+
+
 
 class BVModelICorrSimplex(IModelBase):
-    def __init__(
-        self, eCorr: float, ba: float, bc: float, x: Array_1[float], y: Array_1[float]
-    ) -> None: ...
-    Begin: int
-    End: int
+    def __init__(self, eCorr: float, ba: float, bc: float, x: Array_1[float], y: Array_1[float]) -> None: ...
+    Begin : int
+    End : int
     @property
     def Name(self) -> str: ...
     @property
     def NParameters(self) -> int: ...
-    def GetResidualValues(
-        self, parameters: Array_1[float], x: Array_1[float], y: Array_1[float]
-    ) -> Array_1[float]: ...
+    def GetResidualValues(self, parameters: Array_1[float], x: Array_1[float], y: Array_1[float]) -> Array_1[float]: ...
     def GetValues(self, parameters: Array_1[float], x: Array_1[float]) -> Array_1[float]: ...
     # Skipped EvaluatePointError due to it being static, abstract and generic.
 
-    EvaluatePointError: EvaluatePointError_MethodGroup
+    EvaluatePointError : EvaluatePointError_MethodGroup
     class EvaluatePointError_MethodGroup:
         @typing.overload
-        def __call__(self, parameters: Array_1[float]) -> float: ...
+        def __call__(self, parameters: Array_1[float]) -> float:...
         @typing.overload
-        def __call__(
-            self, parameters: Array_1[float], fitOptionsCircuit: FitOptionsCircuit
-        ) -> float: ...
+        def __call__(self, parameters: Array_1[float], fitOptionsCircuit: FitOptionsCircuit) -> float:...
+
+
 
 class BVModelSimplex(IModelBase):
     def __init__(self, x: Array_1[float], y: Array_1[float], eCorr: float) -> None: ...
-    Begin: int
-    End: int
+    Begin : int
+    End : int
     @property
     def Name(self) -> str: ...
     @property
     def NParameters(self) -> int: ...
-    def GetResidualValues(
-        self, parameters: Array_1[float], x: Array_1[float], y: Array_1[float]
-    ) -> Array_1[float]: ...
+    def GetResidualValues(self, parameters: Array_1[float], x: Array_1[float], y: Array_1[float]) -> Array_1[float]: ...
     def GetValues(self, parameters: Array_1[float], x: Array_1[float]) -> Array_1[float]: ...
     # Skipped EvaluatePointError due to it being static, abstract and generic.
 
-    EvaluatePointError: EvaluatePointError_MethodGroup
+    EvaluatePointError : EvaluatePointError_MethodGroup
     class EvaluatePointError_MethodGroup:
         @typing.overload
-        def __call__(self, parameters: Array_1[float]) -> float: ...
+        def __call__(self, parameters: Array_1[float]) -> float:...
         @typing.overload
-        def __call__(
-            self, parameters: Array_1[float], fitOptionsCircuit: FitOptionsCircuit
-        ) -> float: ...
+        def __call__(self, parameters: Array_1[float], fitOptionsCircuit: FitOptionsCircuit) -> float:...
+
+
 
 class BVModelSlopeAn(IModelBase):
     def __init__(self, eCorr: float, bC: float) -> None: ...
-    Begin: int
-    End: int
+    Begin : int
+    End : int
     @property
     def Name(self) -> str: ...
     @property
     def NParameters(self) -> int: ...
-    def GetResidualValues(
-        self, parameters: Array_1[float], x: Array_1[float], y: Array_1[float]
-    ) -> Array_1[float]: ...
+    def GetResidualValues(self, parameters: Array_1[float], x: Array_1[float], y: Array_1[float]) -> Array_1[float]: ...
     def GetValues(self, parameters: Array_1[float], x: Array_1[float]) -> Array_1[float]: ...
     # Skipped EvaluatePointError due to it being static, abstract and generic.
 
-    EvaluatePointError: EvaluatePointError_MethodGroup
+    EvaluatePointError : EvaluatePointError_MethodGroup
     class EvaluatePointError_MethodGroup:
         @typing.overload
-        def __call__(self, parameters: Array_1[float]) -> float: ...
+        def __call__(self, parameters: Array_1[float]) -> float:...
         @typing.overload
-        def __call__(
-            self, parameters: Array_1[float], fitOptionsCircuit: FitOptionsCircuit
-        ) -> float: ...
+        def __call__(self, parameters: Array_1[float], fitOptionsCircuit: FitOptionsCircuit) -> float:...
+
+
 
 class BVModelSlopeCath(IModelBase):
     def __init__(self, eCorr: float, bA: float) -> None: ...
-    Begin: int
-    End: int
+    Begin : int
+    End : int
     @property
     def Name(self) -> str: ...
     @property
     def NParameters(self) -> int: ...
-    def GetResidualValues(
-        self, parameters: Array_1[float], x: Array_1[float], y: Array_1[float]
-    ) -> Array_1[float]: ...
+    def GetResidualValues(self, parameters: Array_1[float], x: Array_1[float], y: Array_1[float]) -> Array_1[float]: ...
     def GetValues(self, parameters: Array_1[float], x: Array_1[float]) -> Array_1[float]: ...
     # Skipped EvaluatePointError due to it being static, abstract and generic.
 
-    EvaluatePointError: EvaluatePointError_MethodGroup
+    EvaluatePointError : EvaluatePointError_MethodGroup
     class EvaluatePointError_MethodGroup:
         @typing.overload
-        def __call__(self, parameters: Array_1[float]) -> float: ...
+        def __call__(self, parameters: Array_1[float]) -> float:...
         @typing.overload
-        def __call__(
-            self, parameters: Array_1[float], fitOptionsCircuit: FitOptionsCircuit
-        ) -> float: ...
+        def __call__(self, parameters: Array_1[float], fitOptionsCircuit: FitOptionsCircuit) -> float:...
+
+
 
 class BVModelSlopesSimplex(IModelBase):
-    def __init__(
-        self, eCorr: float, iCorr: float, x: Array_1[float], y: Array_1[float]
-    ) -> None: ...
-    Begin: int
-    End: int
+    def __init__(self, eCorr: float, iCorr: float, x: Array_1[float], y: Array_1[float]) -> None: ...
+    Begin : int
+    End : int
     @property
     def Name(self) -> str: ...
     @property
     def NParameters(self) -> int: ...
-    def GetResidualValues(
-        self, parameters: Array_1[float], x: Array_1[float], y: Array_1[float]
-    ) -> Array_1[float]: ...
+    def GetResidualValues(self, parameters: Array_1[float], x: Array_1[float], y: Array_1[float]) -> Array_1[float]: ...
     def GetValues(self, parameters: Array_1[float], x: Array_1[float]) -> Array_1[float]: ...
     # Skipped EvaluatePointError due to it being static, abstract and generic.
 
-    EvaluatePointError: EvaluatePointError_MethodGroup
+    EvaluatePointError : EvaluatePointError_MethodGroup
     class EvaluatePointError_MethodGroup:
         @typing.overload
-        def __call__(self, parameters: Array_1[float]) -> float: ...
+        def __call__(self, parameters: Array_1[float]) -> float:...
         @typing.overload
-        def __call__(
-            self, parameters: Array_1[float], fitOptionsCircuit: FitOptionsCircuit
-        ) -> float: ...
+        def __call__(self, parameters: Array_1[float], fitOptionsCircuit: FitOptionsCircuit) -> float:...
+
+
 
 class EnumFitProgress(typing.SupportsInt):
     @typing.overload
-    def __init__(self, value: int) -> None: ...
+    def __init__(self, value : int) -> None: ...
     @typing.overload
-    def __init__(self, value: int, force_if_true: bool) -> None: ...
+    def __init__(self, value : int, force_if_true: bool) -> None: ...
     def __int__(self) -> int: ...
 
     # Values:
-    Started: EnumFitProgress  # 0
-    FitIterated: EnumFitProgress  # 1
-    Cancelled: EnumFitProgress  # 2
-    Finished: EnumFitProgress  # 3
+    Started : EnumFitProgress # 0
+    FitIterated : EnumFitProgress # 1
+    Cancelled : EnumFitProgress # 2
+    Finished : EnumFitProgress # 3
+
 
 class ExitCodes(typing.SupportsInt):
     @typing.overload
-    def __init__(self, value: int) -> None: ...
+    def __init__(self, value : int) -> None: ...
     @typing.overload
-    def __init__(self, value: int, force_if_true: bool) -> None: ...
+    def __init__(self, value : int, force_if_true: bool) -> None: ...
     def __int__(self) -> int: ...
 
     # Values:
-    MinimumDeltaErrorTerm: ExitCodes  # 1
-    MinimumDeltaParameters: ExitCodes  # 2
-    MaxIterations: ExitCodes  # 3
-    HessianNonPositive: ExitCodes  # 4
+    MinimumDeltaErrorTerm : ExitCodes # 1
+    MinimumDeltaParameters : ExitCodes # 2
+    MaxIterations : ExitCodes # 3
+    HessianNonPositive : ExitCodes # 4
+
 
 class ExitCondition(typing.SupportsInt):
     @typing.overload
-    def __init__(self, value: int) -> None: ...
+    def __init__(self, value : int) -> None: ...
     @typing.overload
-    def __init__(self, value: int, force_if_true: bool) -> None: ...
+    def __init__(self, value : int, force_if_true: bool) -> None: ...
     def __int__(self) -> int: ...
 
     # Values:
-    None_: ExitCondition  # 0
-    RelativeGradient: ExitCondition  # 1
-    LackOfProgress: ExitCondition  # 2
-    AbsoluteGradient: ExitCondition  # 3
-    WeakWolfeCriteria: ExitCondition  # 4
-    BoundTolerance: ExitCondition  # 5
-    StrongWolfeCriteria: ExitCondition  # 6
-    Converged: ExitCondition  # 7
+    None_ : ExitCondition # 0
+    RelativeGradient : ExitCondition # 1
+    LackOfProgress : ExitCondition # 2
+    AbsoluteGradient : ExitCondition # 3
+    WeakWolfeCriteria : ExitCondition # 4
+    BoundTolerance : ExitCondition # 5
+    StrongWolfeCriteria : ExitCondition # 6
+    Converged : ExitCondition # 7
+
 
 class FitAlgorithm(abc.ABC):
     @typing.overload
@@ -246,21 +230,17 @@ class FitAlgorithm(abc.ABC):
     def FromAlgorithm(fitOptions: FitOptionsCircuit) -> FitAlgorithm: ...
     # Skipped ApplyFitCircuit due to it being static, abstract and generic.
 
-    ApplyFitCircuit: ApplyFitCircuit_MethodGroup
+    ApplyFitCircuit : ApplyFitCircuit_MethodGroup
     class ApplyFitCircuit_MethodGroup:
         @typing.overload
-        def __call__(self) -> None: ...
+        def __call__(self) -> None:...
         @typing.overload
-        def __call__(self, fitProgress: FitProgress) -> None: ...
+        def __call__(self, fitProgress: FitProgress) -> None:...
+
+
 
 class FitOptions:
-    def __init__(
-        self,
-        xData: Array_1[float],
-        yData: Array_1[float],
-        model: IModelBase,
-        initialParameters: Array_1[float],
-    ) -> None: ...
+    def __init__(self, xData: Array_1[float], yData: Array_1[float], model: IModelBase, initialParameters: Array_1[float]) -> None: ...
     @property
     def ConvergenceTolerance(self) -> float: ...
     @ConvergenceTolerance.setter
@@ -310,32 +290,34 @@ class FitOptions:
     @property
     def YData(self) -> Array_1[float]: ...
 
+
 class FitOptionsCircuit(FitOptions):
     def __init__(self) -> None: ...
 
     class FitTypes(typing.SupportsInt):
         @typing.overload
-        def __init__(self, value: int) -> None: ...
+        def __init__(self, value : int) -> None: ...
         @typing.overload
-        def __init__(self, value: int, force_if_true: bool) -> None: ...
+        def __init__(self, value : int, force_if_true: bool) -> None: ...
         def __int__(self) -> int: ...
 
         # Values:
-        Real: FitOptionsCircuit.FitTypes  # 0
-        Imaginary: FitOptionsCircuit.FitTypes  # 1
-        Complex: FitOptionsCircuit.FitTypes  # 2
+        Real : FitOptionsCircuit.FitTypes # 0
+        Imaginary : FitOptionsCircuit.FitTypes # 1
+        Complex : FitOptionsCircuit.FitTypes # 2
+
 
     class Weighting(typing.SupportsInt):
         @typing.overload
-        def __init__(self, value: int) -> None: ...
+        def __init__(self, value : int) -> None: ...
         @typing.overload
-        def __init__(self, value: int, force_if_true: bool) -> None: ...
+        def __init__(self, value : int, force_if_true: bool) -> None: ...
         def __int__(self) -> int: ...
 
         # Values:
-        Unit: FitOptionsCircuit.Weighting  # 0
-        Modulus: FitOptionsCircuit.Weighting  # 1
-        Proportional: FitOptionsCircuit.Weighting  # 2
+        Unit : FitOptionsCircuit.Weighting # 0
+        Modulus : FitOptionsCircuit.Weighting # 1
+        Proportional : FitOptionsCircuit.Weighting # 2
 
     @property
     def AllDataPoints(self) -> bool: ...
@@ -406,45 +388,27 @@ class FitOptionsCircuit(FitOptions):
     @property
     def YData(self) -> Array_1[float]: ...
 
+
 class FitProgress(Progress_1[FitProgressUpdate]):
     def __init__(self) -> None: ...
-    FitAlgorithm: FitAlgorithm
-    FitOptions: FitOptionsCircuit
+    FitAlgorithm : FitAlgorithm
+    FitOptions : FitOptionsCircuit
     def Cancel(self) -> None: ...
 
+
 class FitProgressUpdate:
-    NIterations: int
-    Progress: EnumFitProgress
-    Result: FitResult
+    NIterations : int
+    Progress : EnumFitProgress
+    Result : FitResult
+
 
 class FitResult:
     @typing.overload
-    def __init__(
-        self,
-        iterations: List_1[Array_1[float]],
-        alphaCNLS: Matrix_1[float],
-        residualSS: float,
-        nSamples: int,
-        exitCode: int,
-    ) -> None: ...
+    def __init__(self, iterations: List_1[Array_1[float]], alphaCNLS: Matrix_1[float], residualSS: float, nSamples: int, exitCode: int) -> None: ...
     @typing.overload
-    def __init__(
-        self,
-        iterations: List_1[Array_1[float]],
-        residualSS: float,
-        nSamples: int,
-        exitCode: int,
-    ) -> None: ...
+    def __init__(self, iterations: List_1[Array_1[float]], residualSS: float, nSamples: int, exitCode: int) -> None: ...
     @typing.overload
-    def __init__(
-        self,
-        parameters: Parameters,
-        iterations: List_1[Array_1[float]],
-        alphaCNLS: Matrix_1[float],
-        residualSS: float,
-        nSamples: int,
-        exitCode: int,
-    ) -> None: ...
+    def __init__(self, parameters: Parameters, iterations: List_1[Array_1[float]], alphaCNLS: Matrix_1[float], residualSS: float, nSamples: int, exitCode: int) -> None: ...
     @property
     def ChiSq(self) -> float: ...
     @property
@@ -458,27 +422,26 @@ class FitResult:
     @property
     def ParameterSDs(self) -> Array_1[float]: ...
 
+
 class IModelBase(typing.Protocol):
     @property
     def Name(self) -> str: ...
     @property
     def NParameters(self) -> int: ...
     @abc.abstractmethod
-    def GetResidualValues(
-        self, parameters: Array_1[float], x: Array_1[float], y: Array_1[float]
-    ) -> Array_1[float]: ...
+    def GetResidualValues(self, parameters: Array_1[float], x: Array_1[float], y: Array_1[float]) -> Array_1[float]: ...
     @abc.abstractmethod
     def GetValues(self, parameters: Array_1[float], x: Array_1[float]) -> Array_1[float]: ...
     # Skipped EvaluatePointError due to it being static, abstract and generic.
 
-    EvaluatePointError: EvaluatePointError_MethodGroup
+    EvaluatePointError : EvaluatePointError_MethodGroup
     class EvaluatePointError_MethodGroup:
         @typing.overload
-        def __call__(self, parameters: Array_1[float]) -> float: ...
+        def __call__(self, parameters: Array_1[float]) -> float:...
         @typing.overload
-        def __call__(
-            self, parameters: Array_1[float], fitOptionsCircuit: FitOptionsCircuit
-        ) -> float: ...
+        def __call__(self, parameters: Array_1[float], fitOptionsCircuit: FitOptionsCircuit) -> float:...
+
+
 
 class LevenbergMarquardt(FitAlgorithm):
     def __init__(self, fitOptions: FitOptions) -> None: ...
@@ -490,6 +453,7 @@ class LevenbergMarquardt(FitAlgorithm):
     def Iterations(self) -> List_1[Array_1[float]]: ...
     def ApplyFit(self) -> FitResult: ...
     def ApplyFitCircuit(self) -> None: ...
+
 
 class NelderMead(FitAlgorithm):
     @typing.overload
@@ -506,41 +470,30 @@ class NelderMead(FitAlgorithm):
     def ApplyFitCircuit(self) -> None: ...
     # Skipped FindMinimum due to it being static, abstract and generic.
 
-    FindMinimum: FindMinimum_MethodGroup
+    FindMinimum : FindMinimum_MethodGroup
     class FindMinimum_MethodGroup:
         @typing.overload
-        def __call__(self, initialGuess: Vector_1[float]) -> FitResult: ...
+        def __call__(self, initialGuess: Vector_1[float]) -> FitResult:...
         @typing.overload
-        def __call__(
-            self, initialGuess: Vector_1[float], initalPertubation: Vector_1[float]
-        ) -> FitResult: ...
+        def __call__(self, initialGuess: Vector_1[float], initalPertubation: Vector_1[float]) -> FitResult:...
 
     # Skipped Minimum due to it being static, abstract and generic.
 
-    Minimum: Minimum_MethodGroup
+    Minimum : Minimum_MethodGroup
     class Minimum_MethodGroup:
         @typing.overload
-        def __call__(
-            self,
-            initialGuess: Vector_1[float],
-            convergenceTolerance: float = ...,
-            maximumIterations: int = ...,
-        ) -> FitResult: ...
+        def __call__(self, initialGuess: Vector_1[float], convergenceTolerance: float = ..., maximumIterations: int = ...) -> FitResult:...
         @typing.overload
-        def __call__(
-            self,
-            initialGuess: Vector_1[float],
-            initalPertubation: Vector_1[float],
-            convergenceTolerance: float = ...,
-            maximumIterations: int = ...,
-        ) -> FitResult: ...
+        def __call__(self, initialGuess: Vector_1[float], initalPertubation: Vector_1[float], convergenceTolerance: float = ..., maximumIterations: int = ...) -> FitResult:...
+
+
 
 class Parameter:
     @typing.overload
     def __init__(self, _grp: ElementGroup) -> None: ...
     @typing.overload
     def __init__(self, _grp: ElementGroup, _npar: int) -> None: ...
-    Fixed: bool
+    Fixed : bool
     @property
     def MaxValue(self) -> float: ...
     @MaxValue.setter
@@ -570,9 +523,10 @@ class Parameter:
     @Value.setter
     def Value(self, value: float) -> float: ...
 
+
 class Parameters(List_1[Parameter]):
     def __init__(self) -> None: ...
-    FixedParameterCount: int
+    FixedParameterCount : int
     @property
     def Capacity(self) -> int: ...
     @Capacity.setter

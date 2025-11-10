@@ -1,32 +1,21 @@
-import abc
-import typing
-
-import clr
+import typing, clr, abc
+from PalmSens.Plottables import Curve
+from PalmSens.Data import EnumDirection
+from System import DateTime, Array_1, Progress_1, IDisposable, Exception
+from PalmSens.DataFiles import JsonBag
+from System.Collections.Generic import IList_1, List_1, Dictionary_2, IEnumerator_1, IEnumerable_1
+from System.Threading.Tasks import Task_1, Task
+from System.Threading import CancellationToken
+from PalmSens.Calculations import PolyCurve
 from Newtonsoft.Json import JsonReader
 from PalmSens import ScanMethod
-from PalmSens.Calculations import PolyCurve
-from PalmSens.Data import EnumDirection
-from PalmSens.DataFiles import JsonBag
-from PalmSens.Plottables import Curve
-from System import Array_1, DateTime, Exception, IDisposable, Progress_1
-from System.Collections.Generic import (
-    Dictionary_2,
-    IEnumerable_1,
-    IEnumerator_1,
-    IList_1,
-    List_1,
-)
-from System.Threading import CancellationToken
-from System.Threading.Tasks import Task, Task_1
 
 class AutoPeak(Peak):
     @typing.overload
     def __init__(self, curve: Curve, index: int, notes: str) -> None: ...
     @typing.overload
-    def __init__(
-        self, curve: Curve, left: int, peak: int, right: int, isign: EnumDirection
-    ) -> None: ...
-    Direction: EnumDirection
+    def __init__(self, curve: Curve, left: int, peak: int, right: int, isign: EnumDirection) -> None: ...
+    Direction : EnumDirection
     @property
     def AnalyteName(self) -> str: ...
     @AnalyteName.setter
@@ -78,11 +67,11 @@ class AutoPeak(Peak):
     @property
     def Width(self) -> float: ...
 
+
 class BaselineCorrection(abc.ABC):
     @staticmethod
-    def GetMovingAverageBaselineCorrected(
-        curve: Curve, nWindowSize: int, maxNSweeps: int, baseline: bool
-    ) -> Curve: ...
+    def GetMovingAverageBaselineCorrected(curve: Curve, nWindowSize: int, maxNSweeps: int, baseline: bool) -> Curve: ...
+
 
 class CFALevelList(IList_1[Level]):
     @typing.overload
@@ -107,86 +96,61 @@ class CFALevelList(IList_1[Level]):
     def Clear(self) -> None: ...
     def Contains(self, item: Level) -> bool: ...
     def CopyTo(self, array: Array_1[Level], arrayIndex: int) -> None: ...
-    def FindLevels(
-        self, pxmin: float, pymin: float, levelDetectProgress: LevelDetectProgress
-    ) -> List_1[Level]: ...
-    def FindLevelsAsync(
-        self, pxmin: float, pymin: float, levelDetectProgress: LevelDetectProgress = ...
-    ) -> Task_1[List_1[Level]]: ...
-    def FindLevelsInCurves(
-        self,
-        curves: Dictionary_2[Curve, Array_1[float]],
-        levelDetectProgress: LevelDetectProgress,
-    ) -> None: ...
+    def FindLevels(self, pxmin: float, pymin: float, levelDetectProgress: LevelDetectProgress) -> List_1[Level]: ...
+    def FindLevelsAsync(self, pxmin: float, pymin: float, levelDetectProgress: LevelDetectProgress = ...) -> Task_1[List_1[Level]]: ...
+    def FindLevelsInCurves(self, curves: Dictionary_2[Curve, Array_1[float]], levelDetectProgress: LevelDetectProgress) -> None: ...
     def GetEnumerator(self) -> IEnumerator_1[Level]: ...
     def IndexOf(self, item: Level) -> int: ...
     def Insert(self, index: int, item: Level) -> None: ...
     def Remove(self, level: Level) -> None: ...
     def RemoveAt(self, index: int) -> None: ...
     def ToJsonBag(self) -> Array_1[JsonBag]: ...
-    def ToJsonBagAsync(
-        self, cancellationToken: CancellationToken
-    ) -> Task_1[Array_1[JsonBag]]: ...
+    def ToJsonBagAsync(self, cancellationToken: CancellationToken) -> Task_1[Array_1[JsonBag]]: ...
+
 
 class EnumLevelDetectProgress(typing.SupportsInt):
     @typing.overload
-    def __init__(self, value: int) -> None: ...
+    def __init__(self, value : int) -> None: ...
     @typing.overload
-    def __init__(self, value: int, force_if_true: bool) -> None: ...
+    def __init__(self, value : int, force_if_true: bool) -> None: ...
     def __int__(self) -> int: ...
 
     # Values:
-    Started: EnumLevelDetectProgress  # 0
-    InitialisedBins: EnumLevelDetectProgress  # 1
-    ProcessingCurve: EnumLevelDetectProgress  # 2
-    CurveProcessed: EnumLevelDetectProgress  # 3
-    MergingPossibleLevels: EnumLevelDetectProgress  # 4
-    PossibleLevelDetected: EnumLevelDetectProgress  # 5
-    Cancelled: EnumLevelDetectProgress  # 6
-    Finished: EnumLevelDetectProgress  # 7
-    Error: EnumLevelDetectProgress  # 8
+    Started : EnumLevelDetectProgress # 0
+    InitialisedBins : EnumLevelDetectProgress # 1
+    ProcessingCurve : EnumLevelDetectProgress # 2
+    CurveProcessed : EnumLevelDetectProgress # 3
+    MergingPossibleLevels : EnumLevelDetectProgress # 4
+    PossibleLevelDetected : EnumLevelDetectProgress # 5
+    Cancelled : EnumLevelDetectProgress # 6
+    Finished : EnumLevelDetectProgress # 7
+    Error : EnumLevelDetectProgress # 8
+
 
 class EnumPeakDetectProgress(typing.SupportsInt):
     @typing.overload
-    def __init__(self, value: int) -> None: ...
+    def __init__(self, value : int) -> None: ...
     @typing.overload
-    def __init__(self, value: int, force_if_true: bool) -> None: ...
+    def __init__(self, value : int, force_if_true: bool) -> None: ...
     def __int__(self) -> int: ...
 
     # Values:
-    Started: EnumPeakDetectProgress  # 0
-    PeakDetected: EnumPeakDetectProgress  # 1
-    ProcessingCurve: EnumPeakDetectProgress  # 2
-    CurveProcessed: EnumPeakDetectProgress  # 3
-    Cancelled: EnumPeakDetectProgress  # 4
-    Finished: EnumPeakDetectProgress  # 5
+    Started : EnumPeakDetectProgress # 0
+    PeakDetected : EnumPeakDetectProgress # 1
+    ProcessingCurve : EnumPeakDetectProgress # 2
+    CurveProcessed : EnumPeakDetectProgress # 3
+    Cancelled : EnumPeakDetectProgress # 4
+    Finished : EnumPeakDetectProgress # 5
+
 
 class GetManualPeak(abc.ABC):
     @staticmethod
-    def GetNearestIndex(
-        curve: Curve,
-        x: float,
-        y: float,
-        anodicCurve: typing.Optional[bool],
-        index: clr.Reference[int],
-    ) -> Curve: ...
+    def GetNearestIndex(curve: Curve, x: float, y: float, anodicCurve: typing.Optional[bool], index: clr.Reference[int]) -> Curve: ...
     @staticmethod
-    def GetNearestXandY(
-        curve: Curve,
-        x: clr.Reference[float],
-        y: clr.Reference[float],
-        anodicCurve: typing.Optional[bool],
-    ) -> Curve: ...
+    def GetNearestXandY(curve: Curve, x: clr.Reference[float], y: clr.Reference[float], anodicCurve: typing.Optional[bool]) -> Curve: ...
     @staticmethod
-    def GetPeak(
-        Curve: Curve,
-        xleft: float,
-        yleft: float,
-        xright: float,
-        yright: float,
-        hasarea: bool,
-        anodicCurve: typing.Optional[bool] = ...,
-    ) -> ManualPeak: ...
+    def GetPeak(Curve: Curve, xleft: float, yleft: float, xright: float, yright: float, hasarea: bool, anodicCurve: typing.Optional[bool] = ...) -> ManualPeak: ...
+
 
 class Level:
     @typing.overload
@@ -194,9 +158,7 @@ class Level:
     @typing.overload
     def __init__(self, curve: Curve, l: int, p: int, r: int, val: float) -> None: ...
     @typing.overload
-    def __init__(
-        self, curve: Curve, p: int, concentration: float, unit: str, notes: str
-    ) -> None: ...
+    def __init__(self, curve: Curve, p: int, concentration: float, unit: str, notes: str) -> None: ...
     @property
     def Concentration(self) -> float: ...
     @property
@@ -228,6 +190,7 @@ class Level:
     @property
     def Unit(self) -> str: ...
 
+
 class LevelDetectProgress(Progress_1[LevelDetectProgressUpdate], IDisposable):
     def __init__(self) -> None: ...
     @property
@@ -235,50 +198,25 @@ class LevelDetectProgress(Progress_1[LevelDetectProgressUpdate], IDisposable):
     def Cancel(self) -> None: ...
     def Dispose(self) -> None: ...
 
+
 class LevelDetectProgressUpdate:
-    CurveTitle: str
-    LevelsFound: int
-    NCurves: int
-    NRemainingCurves: int
-    Progress: EnumLevelDetectProgress
+    CurveTitle : str
+    LevelsFound : int
+    NCurves : int
+    NRemainingCurves : int
+    Progress : EnumLevelDetectProgress
     @property
     def Error(self) -> Exception: ...
 
+
 class ManualPeak(Peak):
     @typing.overload
-    def __init__(
-        self,
-        curve: Curve,
-        ileft: int,
-        ipeak: int,
-        iright: int,
-        hasArea: bool = ...,
-        isign: EnumDirection = ...,
-    ) -> None: ...
+    def __init__(self, curve: Curve, ileft: int, ipeak: int, iright: int, hasArea: bool = ..., isign: EnumDirection = ...) -> None: ...
     @typing.overload
-    def __init__(
-        self,
-        curve: Curve,
-        leftx: float,
-        lefty: float,
-        peak: int,
-        rightx: float,
-        righty: float,
-        HasArea: bool,
-    ) -> None: ...
+    def __init__(self, curve: Curve, leftx: float, lefty: float, peak: int, rightx: float, righty: float, HasArea: bool) -> None: ...
     @typing.overload
-    def __init__(
-        self,
-        curve: Curve,
-        leftx: float,
-        lefty: float,
-        peakx: float,
-        peaky: float,
-        rightx: float,
-        righty: float,
-        hasArea: bool,
-    ) -> None: ...
-    Direction: EnumDirection
+    def __init__(self, curve: Curve, leftx: float, lefty: float, peakx: float, peaky: float, rightx: float, righty: float, hasArea: bool) -> None: ...
+    Direction : EnumDirection
     @property
     def AnalyteName(self) -> str: ...
     @AnalyteName.setter
@@ -330,19 +268,11 @@ class ManualPeak(Peak):
     @property
     def Width(self) -> float: ...
 
+
 class NonLinearBaseLinePeak(Peak):
-    def __init__(
-        self,
-        curveWithPeak: Curve,
-        polyBaseline: PolyCurve,
-        x1: float,
-        x2: float,
-        iStart: int,
-        iEnd: int,
-        reindexedCopy: Curve = ...,
-    ) -> None: ...
-    NlBlineX: Array_1[float]
-    NlBlineY: Array_1[float]
+    def __init__(self, curveWithPeak: Curve, polyBaseline: PolyCurve, x1: float, x2: float, iStart: int, iEnd: int, reindexedCopy: Curve = ...) -> None: ...
+    NlBlineX : Array_1[float]
+    NlBlineY : Array_1[float]
     @property
     def AnalyteName(self) -> str: ...
     @AnalyteName.setter
@@ -393,6 +323,7 @@ class NonLinearBaseLinePeak(Peak):
     def ToJsonBag(self) -> JsonBag: ...
     @property
     def Width(self) -> float: ...
+
 
 class Peak(typing.Protocol):
     @property
@@ -446,16 +377,19 @@ class Peak(typing.Protocol):
     @property
     def Width(self) -> float: ...
 
+
 class PeakDetectProgress(Progress_1[PeakDetectProgressUpdate]):
     def __init__(self) -> None: ...
     def Cancel(self) -> None: ...
 
+
 class PeakDetectProgressUpdate:
-    CurveTitle: str
-    NCurves: int
-    NPeaksFound: int
-    NRemainingCurves: int
-    Progress: EnumPeakDetectProgress
+    CurveTitle : str
+    NCurves : int
+    NPeaksFound : int
+    NRemainingCurves : int
+    Progress : EnumPeakDetectProgress
+
 
 class PeakList(IEnumerable_1[Peak]):
     @typing.overload
@@ -463,95 +397,64 @@ class PeakList(IEnumerable_1[Peak]):
     @typing.overload
     def __init__(self, c: Curve, MinPeakWidth: float, MinPeakHeight: float) -> None: ...
     @typing.overload
-    def __init__(
-        self,
-        c: Curve,
-        MinPeakWidth: float,
-        MinPeakHeight: float,
-        peakdir: EnumDirection,
-        peakShoulders: bool = ...,
-        mergeOverlappingPeaks: bool = ...,
-    ) -> None: ...
+    def __init__(self, c: Curve, MinPeakWidth: float, MinPeakHeight: float, peakdir: EnumDirection, peakShoulders: bool = ..., mergeOverlappingPeaks: bool = ...) -> None: ...
     @typing.overload
-    def __init__(
-        self,
-        c: Curve,
-        MinPeakWidth: float,
-        MinPeakHeight: float,
-        Start: int,
-        End: int,
-        peakShoulders: bool = ...,
-        mergeOverlappingPeaks: bool = ...,
-    ) -> None: ...
+    def __init__(self, c: Curve, MinPeakWidth: float, MinPeakHeight: float, Start: int, End: int, peakShoulders: bool = ..., mergeOverlappingPeaks: bool = ...) -> None: ...
 
     class enumAnalytePeakType(typing.SupportsInt):
         @typing.overload
-        def __init__(self, value: int) -> None: ...
+        def __init__(self, value : int) -> None: ...
         @typing.overload
-        def __init__(self, value: int, force_if_true: bool) -> None: ...
+        def __init__(self, value : int, force_if_true: bool) -> None: ...
         def __int__(self) -> int: ...
 
         # Values:
-        auto: PeakList.enumAnalytePeakType  # 0
-        fix: PeakList.enumAnalytePeakType  # 1
-        manual: PeakList.enumAnalytePeakType  # 2
+        auto : PeakList.enumAnalytePeakType # 0
+        fix : PeakList.enumAnalytePeakType # 1
+        manual : PeakList.enumAnalytePeakType # 2
+
 
     class JsonFields(typing.SupportsInt):
         @typing.overload
-        def __init__(self, value: int) -> None: ...
+        def __init__(self, value : int) -> None: ...
         @typing.overload
-        def __init__(self, value: int, force_if_true: bool) -> None: ...
+        def __init__(self, value : int, force_if_true: bool) -> None: ...
         def __int__(self) -> int: ...
 
         # Values:
-        peaktype: PeakList.JsonFields  # 0
-        left: PeakList.JsonFields  # 1
-        peak: PeakList.JsonFields  # 2
-        right: PeakList.JsonFields  # 3
-        isign: PeakList.JsonFields  # 4
-        AnalyteName: PeakList.JsonFields  # 5
-        leftx: PeakList.JsonFields  # 6
-        lefty: PeakList.JsonFields  # 7
-        rightx: PeakList.JsonFields  # 8
-        righty: PeakList.JsonFields  # 9
-        hasarea: PeakList.JsonFields  # 10
-        iStart: PeakList.JsonFields  # 11
-        iEnd: PeakList.JsonFields  # 12
-        pointsx: PeakList.JsonFields  # 13
-        pointsy: PeakList.JsonFields  # 14
-        pointsi: PeakList.JsonFields  # 15
-        x1: PeakList.JsonFields  # 16
-        x2: PeakList.JsonFields  # 17
-        globalo: PeakList.JsonFields  # 18
-        notes: PeakList.JsonFields  # 19
-        datetime: PeakList.JsonFields  # 20
+        peaktype : PeakList.JsonFields # 0
+        left : PeakList.JsonFields # 1
+        peak : PeakList.JsonFields # 2
+        right : PeakList.JsonFields # 3
+        isign : PeakList.JsonFields # 4
+        AnalyteName : PeakList.JsonFields # 5
+        leftx : PeakList.JsonFields # 6
+        lefty : PeakList.JsonFields # 7
+        rightx : PeakList.JsonFields # 8
+        righty : PeakList.JsonFields # 9
+        hasarea : PeakList.JsonFields # 10
+        iStart : PeakList.JsonFields # 11
+        iEnd : PeakList.JsonFields # 12
+        pointsx : PeakList.JsonFields # 13
+        pointsy : PeakList.JsonFields # 14
+        pointsi : PeakList.JsonFields # 15
+        x1 : PeakList.JsonFields # 16
+        x2 : PeakList.JsonFields # 17
+        globalo : PeakList.JsonFields # 18
+        notes : PeakList.JsonFields # 19
+        datetime : PeakList.JsonFields # 20
 
-    Curve: Curve
-    MinPeakHeight: float
-    MinPeakWidth: float
+    Curve : Curve
+    MinPeakHeight : float
+    MinPeakWidth : float
     @property
     def Item(self) -> Peak: ...
     @Item.setter
     def Item(self, value: Peak) -> Peak: ...
     @property
     def nPeaks(self) -> int: ...
-    def AddManualPeak(
-        self,
-        xleft: float,
-        yleft: float,
-        xright: float,
-        yright: float,
-        anodicCurve: typing.Optional[bool] = ...,
-    ) -> ManualPeak: ...
-    def AddManualPeakFree(
-        self,
-        xleft: float,
-        yleft: float,
-        xright: float,
-        yright: float,
-        HasArea: bool,
-        anodicCurve: typing.Optional[bool] = ...,
-    ) -> ManualPeak: ...
+    def AddManualPeak(self, xleft: float, yleft: float, xright: float, yright: float, anodicCurve: typing.Optional[bool] = ...) -> ManualPeak: ...
+    def AddManualPeakFree(self, xleft: float, yleft: float, xright: float, yright: float, HasArea: bool, anodicCurve: typing.Optional[bool] = ...) -> ManualPeak: ...
     def Clear(self) -> None: ...
     @staticmethod
     def FromJsonBag(bags: Array_1[JsonBag], c: Curve) -> PeakList: ...
@@ -564,48 +467,32 @@ class PeakList(IEnumerable_1[Peak]):
     def Remove(self, p: Peak) -> None: ...
     def SortPeaksByXValue(self) -> None: ...
     def ToJsonBag(self) -> Array_1[JsonBag]: ...
-    def ToJsonBagAsync(
-        self, cancellationToken: CancellationToken
-    ) -> Task_1[Array_1[JsonBag]]: ...
+    def ToJsonBagAsync(self, cancellationToken: CancellationToken) -> Task_1[Array_1[JsonBag]]: ...
     # Skipped AddPeak due to it being static, abstract and generic.
 
-    AddPeak: AddPeak_MethodGroup
+    AddPeak : AddPeak_MethodGroup
     class AddPeak_MethodGroup:
         @typing.overload
-        def __call__(self, p: Peak) -> None: ...
+        def __call__(self, p: Peak) -> None:...
         @typing.overload
-        def __call__(
-            self,
-            xleft: float,
-            yleft: float,
-            iymax: int,
-            xright: float,
-            yright: float,
-            HasArea: bool,
-        ) -> ManualPeak: ...
+        def __call__(self, xleft: float, yleft: float, iymax: int, xright: float, yright: float, HasArea: bool) -> ManualPeak:...
         @typing.overload
-        def __call__(
-            self,
-            xleft: float,
-            yleft: float,
-            xmax: float,
-            ymax: float,
-            xright: float,
-            yright: float,
-            HasArea: bool,
-        ) -> None: ...
+        def __call__(self, xleft: float, yleft: float, xmax: float, ymax: float, xright: float, yright: float, HasArea: bool) -> None:...
+
+
 
 class PeakType(typing.SupportsInt):
     @typing.overload
-    def __init__(self, value: int) -> None: ...
+    def __init__(self, value : int) -> None: ...
     @typing.overload
-    def __init__(self, value: int, force_if_true: bool) -> None: ...
+    def __init__(self, value : int, force_if_true: bool) -> None: ...
     def __int__(self) -> int: ...
 
     # Values:
-    AutoPeak: PeakType  # 0
-    ManualPeak: PeakType  # 1
-    NonLinearBaselinePeak: PeakType  # 2
+    AutoPeak : PeakType # 0
+    ManualPeak : PeakType # 1
+    NonLinearBaselinePeak : PeakType # 2
+
 
 class SemiDerivativePeakDetection(IDisposable):
     @typing.overload
@@ -614,48 +501,31 @@ class SemiDerivativePeakDetection(IDisposable):
     def __init__(self, c: Curve, minPeakHeight: float) -> None: ...
     def Dispose(self) -> None: ...
     @staticmethod
-    def GetMovingAverage(
-        c: Curve, windowSize: int, cancellationToken: CancellationToken
-    ) -> Curve: ...
-    def GetNonOverlappingPeaksAsync(
-        self, curves: Dictionary_2[Curve, float], peakDetectProgress: PeakDetectProgress = ...
-    ) -> Task: ...
+    def GetMovingAverage(c: Curve, windowSize: int, cancellationToken: CancellationToken) -> Curve: ...
+    def GetNonOverlappingPeaksAsync(self, curves: Dictionary_2[Curve, float], peakDetectProgress: PeakDetectProgress = ...) -> Task: ...
     # Skipped GetNonOverlappingPeaks due to it being static, abstract and generic.
 
-    GetNonOverlappingPeaks: GetNonOverlappingPeaks_MethodGroup
+    GetNonOverlappingPeaks : GetNonOverlappingPeaks_MethodGroup
     class GetNonOverlappingPeaks_MethodGroup:
         @typing.overload
-        def __call__(self, curves: Dictionary_2[Curve, float]) -> None: ...
+        def __call__(self, curves: Dictionary_2[Curve, float]) -> None:...
         @typing.overload
-        def __call__(
-            self, curves: Dictionary_2[Curve, float], peakDetectProgress: PeakDetectProgress
-        ) -> None: ...
+        def __call__(self, curves: Dictionary_2[Curve, float], peakDetectProgress: PeakDetectProgress) -> None:...
 
     # Skipped GetSemiDerivative due to it being static, abstract and generic.
 
-    GetSemiDerivative: GetSemiDerivative_MethodGroup
+    GetSemiDerivative : GetSemiDerivative_MethodGroup
     class GetSemiDerivative_MethodGroup:
         @typing.overload
-        def __call__(self, c: Curve, order: float) -> Curve: ...
+        def __call__(self, c: Curve, order: float) -> Curve:...
         @typing.overload
-        def __call__(
-            self, c: Curve, order: float, cancellationToken: CancellationToken
-        ) -> Curve: ...
+        def __call__(self, c: Curve, order: float, cancellationToken: CancellationToken) -> Curve:...
 
     # Skipped SeparateCurves due to it being static, abstract and generic.
 
-    SeparateCurves: SeparateCurves_MethodGroup
+    SeparateCurves : SeparateCurves_MethodGroup
     class SeparateCurves_MethodGroup:
         @typing.overload
-        def __call__(
-            self, peaks: List_1[int], order: float, windowSize: int, reversible: bool
-        ) -> Array_1[Curve]: ...
+        def __call__(self, peaks: List_1[int], order: float, windowSize: int, reversible: bool) -> Array_1[Curve]:...
         @typing.overload
-        def __call__(
-            self,
-            peaks: List_1[int],
-            order: float,
-            windowSize: int,
-            reversible: bool,
-            cancellationToken: CancellationToken,
-        ) -> Array_1[Curve]: ...
+        def __call__(self, peaks: List_1[int], order: float, windowSize: int, reversible: bool, cancellationToken: CancellationToken) -> Array_1[Curve]:...

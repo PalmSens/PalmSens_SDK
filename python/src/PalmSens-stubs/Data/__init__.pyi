@@ -1,44 +1,24 @@
-import abc
-import typing
-
-from Newtonsoft.Json import JsonReader, JsonWriter
-from PalmSens import CurrentRange, MeasType, Measurement, Method, PotentialRange
-from PalmSens.Analysis import LevelDetectProgress, PeakDetectProgress
-from PalmSens.Comm import ReadingStatus, TimingStatus
+import typing, abc
+from System import EventArgs, Version, MulticastDelegate, IAsyncResult, AsyncCallback, Array_1, IDisposable, Func_2, Exception, Func_3, DateTime, IProgress_1
 from PalmSens.DataFiles import JsonBag, SessionFile
-from PalmSens.Plottables import Curve, EISData
-from PalmSens.Units import Unit
-from System import (
-    Array_1,
-    AsyncCallback,
-    DateTime,
-    EventArgs,
-    Exception,
-    Func_2,
-    Func_3,
-    IAsyncResult,
-    IDisposable,
-    IProgress_1,
-    MulticastDelegate,
-    Version,
-)
-from System.Collections import IDictionary, IEnumerator
-from System.Collections.Generic import (
-    Dictionary_2,
-    IEnumerable_1,
-    IEnumerator_1,
-    IList_1,
-    List_1,
-)
-from System.IO import Stream
-from System.Reflection import MethodBase, MethodInfo
-from System.Threading import CancellationToken
+from PalmSens.Comm import ReadingStatus, TimingStatus
+from PalmSens import CurrentRange, Method, Measurement, MeasType, PotentialRange
 from System.Threading.Tasks import Task, Task_1
+from Newtonsoft.Json import JsonWriter, JsonReader
+from System.Threading import CancellationToken
+from System.Reflection import MethodInfo, MethodBase
+from PalmSens.Plottables import Curve, EISData
+from System.Collections.Generic import IList_1, IEnumerable_1, List_1, Dictionary_2, IEnumerator_1
+from PalmSens.Units import Unit
+from System.Collections import IEnumerator, IDictionary
+from PalmSens.Analysis import LevelDetectProgress, PeakDetectProgress
+from System.IO import Stream
 
 class ArrayDataAddedEventArgs(EventArgs):
     def __init__(self, iStart: int, count: int) -> None: ...
-    Count: int
-    StartIndex: int
+    Count : int
+    StartIndex : int
+
 
 class CurrentReading(IDataValue):
     @typing.overload
@@ -46,16 +26,10 @@ class CurrentReading(IDataValue):
     @typing.overload
     def __init__(self, status: ReadingStatus, timingStatus: TimingStatus = ...) -> None: ...
     @typing.overload
-    def __init__(
-        self,
-        value: float,
-        range: CurrentRange,
-        status: ReadingStatus,
-        timingStatus: TimingStatus = ...,
-    ) -> None: ...
-    CurrentRange: CurrentRange
-    ReadingStatus: ReadingStatus
-    TimingStatus: TimingStatus
+    def __init__(self, value: float, range: CurrentRange, status: ReadingStatus, timingStatus: TimingStatus = ...) -> None: ...
+    CurrentRange : CurrentRange
+    ReadingStatus : ReadingStatus
+    TimingStatus : TimingStatus
     @property
     def Text(self) -> str: ...
     @Text.setter
@@ -72,37 +46,30 @@ class CurrentReading(IDataValue):
     def ToJsonBag(self) -> JsonBag: ...
     def ToJsonWriter(self, jw: JsonWriter, cancellationToken: CancellationToken) -> Task: ...
 
+
 class CurveHandler(MulticastDelegate):
     def __init__(self, object: typing.Any, method: int) -> None: ...
     @property
     def Method(self) -> MethodInfo: ...
     @property
     def Target(self) -> typing.Any: ...
-    def BeginInvoke(
-        self,
-        sender: typing.Any,
-        e: CurvesChangedEventArgs,
-        callback: AsyncCallback,
-        object: typing.Any,
-    ) -> IAsyncResult: ...
+    def BeginInvoke(self, sender: typing.Any, e: CurvesChangedEventArgs, callback: AsyncCallback, object: typing.Any) -> IAsyncResult: ...
     def EndInvoke(self, result: IAsyncResult) -> None: ...
     def Invoke(self, sender: typing.Any, e: CurvesChangedEventArgs) -> None: ...
 
+
 class CurvesChangedEventArgs(EventArgs):
     def __init__(self, curves: Array_1[Curve]) -> None: ...
-    ChangedCurves: Array_1[Curve]
+    ChangedCurves : Array_1[Curve]
+
 
 class DataArray(IList_1[IDataValue], IDisposable):
     @typing.overload
     def __init__(self, bag: JsonBag, coreVersion: Version) -> None: ...
     @typing.overload
-    def __init__(
-        self, description: str, unit: Unit, dataValueTypeStr: str, type: DataArrayType
-    ) -> None: ...
+    def __init__(self, description: str, unit: Unit, dataValueTypeStr: str, type: DataArrayType) -> None: ...
     @typing.overload
-    def __init__(
-        self, description: str, unit: Unit, dataValueTypeStr: str, type: int
-    ) -> None: ...
+    def __init__(self, description: str, unit: Unit, dataValueTypeStr: str, type: int) -> None: ...
     @typing.overload
     def __init__(self, description: str, unit: Unit, type: DataArrayType) -> None: ...
     @typing.overload
@@ -110,11 +77,10 @@ class DataArray(IList_1[IDataValue], IDisposable):
 
     class JsonValueParser:
         def __init__(self) -> None: ...
-        ParseValue: Func_2[JsonReader, Task_1[IDataValue]]
+        ParseValue : Func_2[JsonReader, Task_1[IDataValue]]
         @staticmethod
-        def Factory(
-            parseValueFunc: Func_2[JsonReader, Task_1[IDataValue]] = ...,
-        ) -> DataArray.JsonValueParser: ...
+        def Factory(parseValueFunc: Func_2[JsonReader, Task_1[IDataValue]] = ...) -> DataArray.JsonValueParser: ...
+
 
     class NewDataAddedEventHandler(MulticastDelegate):
         def __init__(self, object: typing.Any, method: int) -> None: ...
@@ -122,24 +88,18 @@ class DataArray(IList_1[IDataValue], IDisposable):
         def Method(self) -> MethodInfo: ...
         @property
         def Target(self) -> typing.Any: ...
-        def BeginInvoke(
-            self,
-            sender: typing.Any,
-            e: ArrayDataAddedEventArgs,
-            callback: AsyncCallback,
-            object: typing.Any,
-        ) -> IAsyncResult: ...
+        def BeginInvoke(self, sender: typing.Any, e: ArrayDataAddedEventArgs, callback: AsyncCallback, object: typing.Any) -> IAsyncResult: ...
         def EndInvoke(self, result: IAsyncResult) -> None: ...
         def Invoke(self, sender: typing.Any, e: ArrayDataAddedEventArgs) -> None: ...
 
-    AUX_DESCRIPTION: str
-    CURRENT_DESCRIPTION: str
-    IsFinished: bool
-    LOG_CURRENT_DESCRIPTION: str
-    OCPValue: float
-    POTENTIAL_DESCRIPTION: str
-    TEMPERATURE_DESCRIPTION: str
-    TIME_DESCRIPTION: str
+    AUX_DESCRIPTION : str
+    CURRENT_DESCRIPTION : str
+    IsFinished : bool
+    LOG_CURRENT_DESCRIPTION : str
+    OCPValue : float
+    POTENTIAL_DESCRIPTION : str
+    TEMPERATURE_DESCRIPTION : str
+    TIME_DESCRIPTION : str
     @property
     def ArrayType(self) -> int: ...
     @property
@@ -171,15 +131,11 @@ class DataArray(IList_1[IDataValue], IDisposable):
     def Clone(self, includingData: bool = ...) -> DataArray: ...
     def Contains(self, item: IDataValue) -> bool: ...
     @staticmethod
-    def DataArrayTypeFromJsonBag(
-        typeStr: str, arrayType: typing.Optional[int], index: typing.Optional[int]
-    ) -> str: ...
+    def DataArrayTypeFromJsonBag(typeStr: str, arrayType: typing.Optional[int], index: typing.Optional[int]) -> str: ...
     def Dispose(self) -> None: ...
     def Finish(self) -> None: ...
     @staticmethod
-    def FromJsonBagAsync(
-        jr: JsonReader, coreVersion: Version, cancellationToken: CancellationToken
-    ) -> Task_1[DataArray]: ...
+    def FromJsonBagAsync(jr: JsonReader, coreVersion: Version, cancellationToken: CancellationToken) -> Task_1[DataArray]: ...
     @staticmethod
     def GetDefaultUnit(type: DataArrayType) -> Unit: ...
     def GetDirection(self, index: int) -> EnumDirection: ...
@@ -196,65 +152,57 @@ class DataArray(IList_1[IDataValue], IDisposable):
     @staticmethod
     def SupportedDefaultUnit(type: DataArrayType) -> bool: ...
     def ToJsonBag(self) -> JsonBag: ...
-    def ToJsonWriterAsync(
-        self, jw: JsonWriter, cancellationToken: CancellationToken
-    ) -> Task: ...
+    def ToJsonWriterAsync(self, jw: JsonWriter, cancellationToken: CancellationToken) -> Task: ...
     # Skipped AddRange due to it being static, abstract and generic.
 
-    AddRange: AddRange_MethodGroup
+    AddRange : AddRange_MethodGroup
     class AddRange_MethodGroup:
         @typing.overload
-        def __call__(self, values: Array_1[float]) -> None: ...
+        def __call__(self, values: Array_1[float]) -> None:...
         @typing.overload
-        def __call__(self, values: IEnumerable_1[IDataValue]) -> None: ...
+        def __call__(self, values: IEnumerable_1[IDataValue]) -> None:...
 
     # Skipped CopyTo due to it being static, abstract and generic.
 
-    CopyTo: CopyTo_MethodGroup
+    CopyTo : CopyTo_MethodGroup
     class CopyTo_MethodGroup:
         @typing.overload
-        def __call__(self, array: Array_1[IDataValue], arrayIndex: int) -> None: ...
+        def __call__(self, array: Array_1[IDataValue], arrayIndex: int) -> None:...
         @typing.overload
-        def __call__(
-            self, index: int, array: DataArray, arrayIndex: int, count: int
-        ) -> None: ...
+        def __call__(self, index: int, array: DataArray, arrayIndex: int, count: int) -> None:...
 
     # Skipped FromJsonBag due to it being static, abstract and generic.
 
-    FromJsonBag: FromJsonBag_MethodGroup
+    FromJsonBag : FromJsonBag_MethodGroup
     class FromJsonBag_MethodGroup:
         @typing.overload
-        def __call__(self, bag: JsonBag, coreVersion: Version) -> DataArray: ...
+        def __call__(self, bag: JsonBag, coreVersion: Version) -> DataArray:...
         @typing.overload
-        def __call__(
-            self, bag: JsonBag, coreVersion: Version, type: DataArrayType
-        ) -> DataArray: ...
+        def __call__(self, bag: JsonBag, coreVersion: Version, type: DataArrayType) -> DataArray:...
 
     # Skipped GetValues due to it being static, abstract and generic.
 
-    GetValues: GetValues_MethodGroup
+    GetValues : GetValues_MethodGroup
     class GetValues_MethodGroup:
         @typing.overload
-        def __call__(self) -> Array_1[float]: ...
+        def __call__(self) -> Array_1[float]:...
         @typing.overload
-        def __call__(self, offset: float) -> Array_1[float]: ...
+        def __call__(self, offset: float) -> Array_1[float]:...
         # Method GetValues(inverse : Boolean) was skipped since it collides with above method
         @typing.overload
-        def __call__(self, offset: float, startIndex: int) -> Array_1[float]: ...
+        def __call__(self, offset: float, startIndex: int) -> Array_1[float]:...
         @typing.overload
-        def __call__(
-            self, offset: float, startIndex: int, count: int, inverse: bool = ...
-        ) -> Array_1[float]: ...
+        def __call__(self, offset: float, startIndex: int, count: int, inverse: bool = ...) -> Array_1[float]:...
+
+
 
 class DataArrayAdmittance(DataArrayFunc):
     @typing.overload
     def __init__(self, bag: JsonBag, coreVersion: Version) -> None: ...
     @typing.overload
-    def __init__(
-        self, zRe: DataArray, zIm: DataArray, type: DataArrayType, unit: Unit
-    ) -> None: ...
-    IsFinished: bool
-    OCPValue: float
+    def __init__(self, zRe: DataArray, zIm: DataArray, type: DataArrayType, unit: Unit) -> None: ...
+    IsFinished : bool
+    OCPValue : float
     @property
     def ArrayType(self) -> int: ...
     @property
@@ -285,6 +233,7 @@ class DataArrayAdmittance(DataArrayFunc):
     def Unit(self) -> Unit: ...
     def Dispose(self) -> None: ...
 
+
 class DataArrayAlreadyExistsException(Exception):
     def __init__(self, message: str) -> None: ...
     @property
@@ -310,15 +259,14 @@ class DataArrayAlreadyExistsException(Exception):
     @property
     def TargetSite(self) -> MethodBase: ...
 
+
 class DataArrayCharge(DataArrayIntegrate):
     @typing.overload
-    def __init__(
-        self, arrayTime: DataArray, arrayCurrent: DataArray, title: str = ...
-    ) -> None: ...
+    def __init__(self, arrayTime: DataArray, arrayCurrent: DataArray, title: str = ...) -> None: ...
     @typing.overload
     def __init__(self, bag: JsonBag, coreVersion: Version) -> None: ...
-    IsFinished: bool
-    OCPValue: float
+    IsFinished : bool
+    OCPValue : float
     @property
     def ArrayType(self) -> int: ...
     @property
@@ -350,13 +298,14 @@ class DataArrayCharge(DataArrayIntegrate):
     @property
     def Unit(self) -> Unit: ...
 
+
 class DataArrayCurrents(DataArray):
     @typing.overload
     def __init__(self, bag: JsonBag, coreVersion: Version) -> None: ...
     @typing.overload
     def __init__(self, description: str = ..., arrayType: DataArrayType = ...) -> None: ...
-    IsFinished: bool
-    OCPValue: float
+    IsFinished : bool
+    OCPValue : float
     @property
     def ArrayType(self) -> int: ...
     @property
@@ -394,29 +343,16 @@ class DataArrayCurrents(DataArray):
     def Clear(self) -> None: ...
     def GetValue(self, index: int) -> CurrentReading: ...
 
+
 class DataArrayCustomFunc(DataArrayFunc):
     @typing.overload
     def __init__(self, bag: JsonBag, coreVersion: Version) -> None: ...
     @typing.overload
-    def __init__(
-        self,
-        description: str,
-        convertPoint: Func_3[Array_1[DataArray], int, IDataValue],
-        baseArrays: Array_1[DataArray],
-        unit: Unit,
-        arrayType: DataArrayType,
-    ) -> None: ...
+    def __init__(self, description: str, convertPoint: Func_3[Array_1[DataArray], int, IDataValue], baseArrays: Array_1[DataArray], unit: Unit, arrayType: DataArrayType) -> None: ...
     @typing.overload
-    def __init__(
-        self,
-        description: str,
-        sourceArray: DataArray,
-        convertPoint: Func_3[Array_1[DataArray], int, IDataValue],
-        baseArrays: Array_1[DataArray],
-        unit: Unit,
-    ) -> None: ...
-    IsFinished: bool
-    OCPValue: float
+    def __init__(self, description: str, sourceArray: DataArray, convertPoint: Func_3[Array_1[DataArray], int, IDataValue], baseArrays: Array_1[DataArray], unit: Unit) -> None: ...
+    IsFinished : bool
+    OCPValue : float
     @property
     def ArrayType(self) -> int: ...
     @property
@@ -446,16 +382,13 @@ class DataArrayCustomFunc(DataArrayFunc):
     @property
     def Unit(self) -> Unit: ...
     def Dispose(self) -> None: ...
-    def Init(
-        self,
-        convertPoint: Func_3[Array_1[DataArray], int, IDataValue],
-        baseArrays: Array_1[DataArray],
-    ) -> None: ...
+    def Init(self, convertPoint: Func_3[Array_1[DataArray], int, IDataValue], baseArrays: Array_1[DataArray]) -> None: ...
+
 
 class DataArrayDerivative(DataArrayFunc):
     def __init__(self, bag: JsonBag, coreVersion: Version) -> None: ...
-    IsFinished: bool
-    OCPValue: float
+    IsFinished : bool
+    OCPValue : float
     @property
     def ArrayType(self) -> int: ...
     @property
@@ -489,13 +422,14 @@ class DataArrayDerivative(DataArrayFunc):
     @staticmethod
     def GetDataArrayDerivative(xDataArray: DataArray, yDataArray: DataArray) -> DataArray: ...
 
+
 class DataArrayFunc(DataArray, abc.ABC):
     @typing.overload
     def __init__(self, bag: JsonBag, coreVersion: Version) -> None: ...
     @typing.overload
     def __init__(self, orgDataArray: DataArray, newUnit: Unit) -> None: ...
-    IsFinished: bool
-    OCPValue: float
+    IsFinished : bool
+    OCPValue : float
     @property
     def ArrayType(self) -> int: ...
     @property
@@ -527,13 +461,14 @@ class DataArrayFunc(DataArray, abc.ABC):
     def OnFuncDataAdded(self, startIndex: int, nNewValuesAdded: int) -> None: ...
     def OnNewDataAdded(self, nNewValuesAdded: int) -> None: ...
 
+
 class DataArrayIntegrate(DataArrayFunc):
     @typing.overload
     def __init__(self, arrayX: DataArray, arrayY: DataArray, unit: Unit) -> None: ...
     @typing.overload
     def __init__(self, bag: JsonBag, coreVersion: Version) -> None: ...
-    IsFinished: bool
-    OCPValue: float
+    IsFinished : bool
+    OCPValue : float
     @property
     def ArrayType(self) -> int: ...
     @property
@@ -566,10 +501,11 @@ class DataArrayIntegrate(DataArrayFunc):
     @staticmethod
     def GetDataArrayIntegrate(dataArrayX: DataArray, dataArrayY: DataArray) -> DataArray: ...
 
+
 class DataArrayLog(DataArrayFunc):
     def __init__(self, bag: JsonBag, coreVersion: Version) -> None: ...
-    IsFinished: bool
-    OCPValue: float
+    IsFinished : bool
+    OCPValue : float
     @property
     def ArrayType(self) -> int: ...
     @property
@@ -602,13 +538,14 @@ class DataArrayLog(DataArrayFunc):
     @staticmethod
     def GetDataArrayLog(sourceArray: DataArray) -> DataArray: ...
 
+
 class DataArrayPotentials(DataArray):
     @typing.overload
     def __init__(self, bag: JsonBag, coreVersion: Version) -> None: ...
     @typing.overload
     def __init__(self, description: str = ..., arrayType: DataArrayType = ...) -> None: ...
-    IsFinished: bool
-    OCPValue: float
+    IsFinished : bool
+    OCPValue : float
     @property
     def ArrayType(self) -> int: ...
     @property
@@ -644,9 +581,10 @@ class DataArrayPotentials(DataArray):
     def Add(self, value: IDataValue) -> None: ...
     def AddRange(self, values: IEnumerable_1[IDataValue]) -> None: ...
 
+
 class DataArraySecondDerivative(DataArrayFunc):
-    IsFinished: bool
-    OCPValue: float
+    IsFinished : bool
+    OCPValue : float
     @property
     def ArrayType(self) -> int: ...
     @property
@@ -678,17 +616,16 @@ class DataArraySecondDerivative(DataArrayFunc):
     def Dispose(self) -> None: ...
     def Finish(self) -> None: ...
     @staticmethod
-    def GetDataArraySecondDerivative(
-        xDataArray: DataArray, yDataArray: DataArray
-    ) -> DataArray: ...
+    def GetDataArraySecondDerivative(xDataArray: DataArray, yDataArray: DataArray) -> DataArray: ...
+
 
 class DataArrayTime(DataArray):
     @typing.overload
     def __init__(self, bag: JsonBag, coreVersion: Version) -> None: ...
     @typing.overload
     def __init__(self, description: str = ...) -> None: ...
-    IsFinished: bool
-    OCPValue: float
+    IsFinished : bool
+    OCPValue : float
     @property
     def ArrayType(self) -> int: ...
     @property
@@ -720,58 +657,60 @@ class DataArrayTime(DataArray):
     @property
     def Unit(self) -> Unit: ...
 
+
 class DataArrayType(typing.SupportsInt):
     @typing.overload
-    def __init__(self, value: int) -> None: ...
+    def __init__(self, value : int) -> None: ...
     @typing.overload
-    def __init__(self, value: int, force_if_true: bool) -> None: ...
+    def __init__(self, value : int, force_if_true: bool) -> None: ...
     def __int__(self) -> int: ...
 
     # Values:
-    Time: DataArrayType  # 0
-    Potential: DataArrayType  # 1
-    Current: DataArrayType  # 2
-    Charge: DataArrayType  # 3
-    ExtraValue: DataArrayType  # 4
-    Frequency: DataArrayType  # 5
-    Phase: DataArrayType  # 6
-    ZRe: DataArrayType  # 7
-    ZIm: DataArrayType  # 8
-    Iac: DataArrayType  # 9
-    Z: DataArrayType  # 10
-    Y: DataArrayType  # 11
-    YRe: DataArrayType  # 12
-    YIm: DataArrayType  # 13
-    Cs: DataArrayType  # 14
-    CsRe: DataArrayType  # 15
-    CsIm: DataArrayType  # 16
-    Index: DataArrayType  # 17
-    Admittance: DataArrayType  # 18
-    Concentration: DataArrayType  # 19
-    Signal: DataArrayType  # 20
-    Func: DataArrayType  # 21
-    Integral: DataArrayType  # 22
-    AuxInput: DataArrayType  # 23
-    BipotCurrent: DataArrayType  # 24
-    BipotPotential: DataArrayType  # 25
-    ReverseCurrent: DataArrayType  # 26
-    CEPotential: DataArrayType  # 27
-    DCCurrent: DataArrayType  # 28
-    ForwardCurrent: DataArrayType  # 29
-    PotentialExtraRE: DataArrayType  # 30
-    CurrentExtraWE: DataArrayType  # 31
-    InverseDerative_dtdE: DataArrayType  # 32
-    mEdc: DataArrayType  # 33
-    Eac: DataArrayType  # 34
-    MeasuredStepStartIndex: DataArrayType  # 35
-    miDC: DataArrayType  # 36
-    SE2vsXPotential: DataArrayType  # 37
-    nPointsAC: DataArrayType  # 16383
-    realtintac: DataArrayType  # 16384
-    ymean: DataArrayType  # 16385
-    debugtext: DataArrayType  # 16386
-    Generic: DataArrayType  # 32767
-    None_: DataArrayType  # -1
+    Time : DataArrayType # 0
+    Potential : DataArrayType # 1
+    Current : DataArrayType # 2
+    Charge : DataArrayType # 3
+    ExtraValue : DataArrayType # 4
+    Frequency : DataArrayType # 5
+    Phase : DataArrayType # 6
+    ZRe : DataArrayType # 7
+    ZIm : DataArrayType # 8
+    Iac : DataArrayType # 9
+    Z : DataArrayType # 10
+    Y : DataArrayType # 11
+    YRe : DataArrayType # 12
+    YIm : DataArrayType # 13
+    Cs : DataArrayType # 14
+    CsRe : DataArrayType # 15
+    CsIm : DataArrayType # 16
+    Index : DataArrayType # 17
+    Admittance : DataArrayType # 18
+    Concentration : DataArrayType # 19
+    Signal : DataArrayType # 20
+    Func : DataArrayType # 21
+    Integral : DataArrayType # 22
+    AuxInput : DataArrayType # 23
+    BipotCurrent : DataArrayType # 24
+    BipotPotential : DataArrayType # 25
+    ReverseCurrent : DataArrayType # 26
+    CEPotential : DataArrayType # 27
+    DCCurrent : DataArrayType # 28
+    ForwardCurrent : DataArrayType # 29
+    PotentialExtraRE : DataArrayType # 30
+    CurrentExtraWE : DataArrayType # 31
+    InverseDerative_dtdE : DataArrayType # 32
+    mEdc : DataArrayType # 33
+    Eac : DataArrayType # 34
+    MeasuredStepStartIndex : DataArrayType # 35
+    miDC : DataArrayType # 36
+    SE2vsXPotential : DataArrayType # 37
+    nPointsAC : DataArrayType # 16383
+    realtintac : DataArrayType # 16384
+    ymean : DataArrayType # 16385
+    debugtext : DataArrayType # 16386
+    Generic : DataArrayType # 32767
+    None_ : DataArrayType # -1
+
 
 class DataSet(IEnumerable_1[DataArray], IDisposable):
     @typing.overload
@@ -795,64 +734,62 @@ class DataSet(IEnumerable_1[DataArray], IDisposable):
     @staticmethod
     def FromJsonBag(bag: JsonBag, coreVersion: Version) -> DataSet: ...
     @staticmethod
-    def FromJsonBagAsync(
-        jr: JsonReader, coreVersion: Version, cancellationToken: CancellationToken
-    ) -> Task_1[DataSet]: ...
+    def FromJsonBagAsync(jr: JsonReader, coreVersion: Version, cancellationToken: CancellationToken) -> Task_1[DataSet]: ...
     def IndexOf(self, item: DataArray) -> int: ...
     def Insert(self, index: int, item: DataArray) -> None: ...
     def Remove(self, item: DataArray) -> bool: ...
     def RemoveAt(self, index: int) -> None: ...
     def RemoveDataPointFromAllArrays(self, index: int) -> None: ...
     def ToJsonBag(self) -> JsonBag: ...
-    def ToJsonWriterAsync(
-        self, jw: JsonWriter, cancellationToken: CancellationToken
-    ) -> Task: ...
+    def ToJsonWriterAsync(self, jw: JsonWriter, cancellationToken: CancellationToken) -> Task: ...
     # Skipped ContainsArrayType due to it being static, abstract and generic.
 
-    ContainsArrayType: ContainsArrayType_MethodGroup
+    ContainsArrayType : ContainsArrayType_MethodGroup
     class ContainsArrayType_MethodGroup:
         @typing.overload
-        def __call__(self, arrayType: int) -> bool: ...
+        def __call__(self, arrayType: int) -> bool:...
         @typing.overload
-        def __call__(self, arrayType: DataArrayType) -> bool: ...
+        def __call__(self, arrayType: DataArrayType) -> bool:...
 
     # Skipped GetDataArrays due to it being static, abstract and generic.
 
-    GetDataArrays: GetDataArrays_MethodGroup
+    GetDataArrays : GetDataArrays_MethodGroup
     class GetDataArrays_MethodGroup:
         @typing.overload
-        def __call__(self) -> Array_1[DataArray]: ...
+        def __call__(self) -> Array_1[DataArray]:...
         @typing.overload
-        def __call__(self, arrayType: int) -> Array_1[DataArray]: ...
+        def __call__(self, arrayType: int) -> Array_1[DataArray]:...
         @typing.overload
-        def __call__(self, arrayType: DataArrayType) -> Array_1[DataArray]: ...
+        def __call__(self, arrayType: DataArrayType) -> Array_1[DataArray]:...
 
     # Skipped GetLastOfType due to it being static, abstract and generic.
 
-    GetLastOfType: GetLastOfType_MethodGroup
+    GetLastOfType : GetLastOfType_MethodGroup
     class GetLastOfType_MethodGroup:
         @typing.overload
-        def __call__(self, arrayType: int) -> DataArray: ...
+        def __call__(self, arrayType: int) -> DataArray:...
         @typing.overload
-        def __call__(self, arrayType: DataArrayType) -> DataArray: ...
+        def __call__(self, arrayType: DataArrayType) -> DataArray:...
 
     # Skipped OnNewDataAdded due to it being static, abstract and generic.
 
-    OnNewDataAdded: OnNewDataAdded_MethodGroup
+    OnNewDataAdded : OnNewDataAdded_MethodGroup
     class OnNewDataAdded_MethodGroup:
         @typing.overload
-        def __call__(self, nNewValues: int) -> None: ...
+        def __call__(self, nNewValues: int) -> None:...
         @typing.overload
-        def __call__(self, nNewValues: int, arrays: List_1[DataArray]) -> None: ...
+        def __call__(self, nNewValues: int, arrays: List_1[DataArray]) -> None:...
 
     # Skipped RemoveType due to it being static, abstract and generic.
 
-    RemoveType: RemoveType_MethodGroup
+    RemoveType : RemoveType_MethodGroup
     class RemoveType_MethodGroup:
         @typing.overload
-        def __call__(self, arrayType: int) -> None: ...
+        def __call__(self, arrayType: int) -> None:...
         @typing.overload
-        def __call__(self, arrayType: DataArrayType) -> None: ...
+        def __call__(self, arrayType: DataArrayType) -> None:...
+
+
 
 class DataSetCommon(DataSet):
     @typing.overload
@@ -875,6 +812,7 @@ class DataSetCommon(DataSet):
     def GetLastTimeDataArray(self) -> DataArrayTime: ...
     def ToJsonBag(self) -> JsonBag: ...
 
+
 class DataSetEIS(DataSetCommon):
     @typing.overload
     def __init__(self) -> None: ...
@@ -890,13 +828,13 @@ class DataSetEIS(DataSetCommon):
     def NPoints(self) -> int: ...
     def AddDerivedDataArrays(self) -> None: ...
     @staticmethod
-    def DataSetEISFromJson(
-        jr: JsonReader, coreVersion: Version, cancellationToken: CancellationToken
-    ) -> Task_1[DataSet]: ...
+    def DataSetEISFromJson(jr: JsonReader, coreVersion: Version, cancellationToken: CancellationToken) -> Task_1[DataSet]: ...
+
 
 class DataValueFactory(abc.ABC):
     @staticmethod
     def FromJsonBag(bag: JsonBag, coreVersion: Version, typeStr: str) -> IDataValue: ...
+
 
 class DeviceFile:
     @typing.overload
@@ -905,50 +843,54 @@ class DeviceFile:
     def __init__(self, dir: str, rawStr: str, formatVersion: int, utc: bool = ...) -> None: ...
     @typing.overload
     def __init__(self, path: str, formatVersion: int) -> None: ...
-    Dir: str
-    Name: str
-    Root: DeviceFile
-    Size: int
-    Timestamp: DateTime
-    Type: DeviceFileType
+    Dir : str
+    Name : str
+    Root : DeviceFile
+    Size : int
+    Timestamp : DateTime
+    Type : DeviceFileType
     @property
     def Content(self) -> str: ...
     @Content.setter
     def Content(self, value: str) -> str: ...
 
+
 class DeviceFileType(typing.SupportsInt):
     @typing.overload
-    def __init__(self, value: int) -> None: ...
+    def __init__(self, value : int) -> None: ...
     @typing.overload
-    def __init__(self, value: int, force_if_true: bool) -> None: ...
+    def __init__(self, value : int, force_if_true: bool) -> None: ...
     def __int__(self) -> int: ...
 
     # Values:
-    Measurement: DeviceFileType  # 0
-    Folder: DeviceFileType  # 1
+    Measurement : DeviceFileType # 0
+    Folder : DeviceFileType # 1
+
 
 class EnumAxes(typing.SupportsInt):
     @typing.overload
-    def __init__(self, value: int) -> None: ...
+    def __init__(self, value : int) -> None: ...
     @typing.overload
-    def __init__(self, value: int, force_if_true: bool) -> None: ...
+    def __init__(self, value : int, force_if_true: bool) -> None: ...
     def __int__(self) -> int: ...
 
     # Values:
-    Xaxis: EnumAxes  # 0
-    Yaxis: EnumAxes  # 1
-    Zaxis: EnumAxes  # 2
+    Xaxis : EnumAxes # 0
+    Yaxis : EnumAxes # 1
+    Zaxis : EnumAxes # 2
+
 
 class EnumDirection(typing.SupportsInt):
     @typing.overload
-    def __init__(self, value: int) -> None: ...
+    def __init__(self, value : int) -> None: ...
     @typing.overload
-    def __init__(self, value: int, force_if_true: bool) -> None: ...
+    def __init__(self, value : int, force_if_true: bool) -> None: ...
     def __int__(self) -> int: ...
 
     # Values:
-    Ascending: EnumDirection  # 1
-    Descending: EnumDirection  # -1
+    Ascending : EnumDirection # 1
+    Descending : EnumDirection # -1
+
 
 class GenericValue(IDataValue):
     @typing.overload
@@ -972,6 +914,7 @@ class GenericValue(IDataValue):
     def ToJsonBag(self) -> JsonBag: ...
     def ToJsonWriter(self, jw: JsonWriter, cancellationToken: CancellationToken) -> Task: ...
 
+
 class IDataValue(typing.Protocol):
     @property
     def Text(self) -> str: ...
@@ -989,6 +932,7 @@ class IDataValue(typing.Protocol):
     def ToJsonBag(self) -> JsonBag: ...
     @abc.abstractmethod
     def ToJsonWriter(self, jw: JsonWriter, cancellationToken: CancellationToken) -> Task: ...
+
 
 class IncompatibleDataArrayException(Exception):
     def __init__(self, message: str) -> None: ...
@@ -1015,21 +959,22 @@ class IncompatibleDataArrayException(Exception):
     @property
     def TargetSite(self) -> MethodBase: ...
 
+
 class ISessionManager(typing.Protocol):
     @property
     def MethodForEditor(self) -> Method: ...
     @MethodForEditor.setter
     def MethodForEditor(self, value: Method) -> Method: ...
     @abc.abstractmethod
-    def AddMeasurement(
-        self, loadAnalysisFile: Measurement, silent: bool = ..., noPeaks: bool = ...
-    ) -> None: ...
+    def AddMeasurement(self, loadAnalysisFile: Measurement, silent: bool = ..., noPeaks: bool = ...) -> None: ...
     @abc.abstractmethod
     def Load(self, curveFile: SessionFile, filePath: str, add: bool) -> None: ...
 
+
 class LevelDetectEventArgs(EventArgs):
     def __init__(self, levelDetectProgress: LevelDetectProgress) -> None: ...
-    LevelDetectProgress: LevelDetectProgress
+    LevelDetectProgress : LevelDetectProgress
+
 
 class LevelDetectHandler(MulticastDelegate):
     def __init__(self, object: typing.Any, method: int) -> None: ...
@@ -1037,27 +982,23 @@ class LevelDetectHandler(MulticastDelegate):
     def Method(self) -> MethodInfo: ...
     @property
     def Target(self) -> typing.Any: ...
-    def BeginInvoke(
-        self,
-        sender: typing.Any,
-        e: LevelDetectEventArgs,
-        callback: AsyncCallback,
-        object: typing.Any,
-    ) -> IAsyncResult: ...
+    def BeginInvoke(self, sender: typing.Any, e: LevelDetectEventArgs, callback: AsyncCallback, object: typing.Any) -> IAsyncResult: ...
     def EndInvoke(self, result: IAsyncResult) -> None: ...
     def Invoke(self, sender: typing.Any, e: LevelDetectEventArgs) -> None: ...
 
+
 class LoadCurveColorAssignement(typing.SupportsInt):
     @typing.overload
-    def __init__(self, value: int) -> None: ...
+    def __init__(self, value : int) -> None: ...
     @typing.overload
-    def __init__(self, value: int, force_if_true: bool) -> None: ...
+    def __init__(self, value : int, force_if_true: bool) -> None: ...
     def __int__(self) -> int: ...
 
     # Values:
-    Default: LoadCurveColorAssignement  # 0
-    Force: LoadCurveColorAssignement  # 1
-    Ignore: LoadCurveColorAssignement  # 2
+    Default : LoadCurveColorAssignement # 0
+    Force : LoadCurveColorAssignement # 1
+    Ignore : LoadCurveColorAssignement # 2
+
 
 class MeasurementHandler(MulticastDelegate):
     def __init__(self, object: typing.Any, method: int) -> None: ...
@@ -1065,23 +1006,20 @@ class MeasurementHandler(MulticastDelegate):
     def Method(self) -> MethodInfo: ...
     @property
     def Target(self) -> typing.Any: ...
-    def BeginInvoke(
-        self,
-        sender: typing.Any,
-        e: MeasurementsChangedEventArgs,
-        callback: AsyncCallback,
-        object: typing.Any,
-    ) -> IAsyncResult: ...
+    def BeginInvoke(self, sender: typing.Any, e: MeasurementsChangedEventArgs, callback: AsyncCallback, object: typing.Any) -> IAsyncResult: ...
     def EndInvoke(self, result: IAsyncResult) -> None: ...
     def Invoke(self, sender: typing.Any, e: MeasurementsChangedEventArgs) -> None: ...
 
+
 class MeasurementsChangedEventArgs(EventArgs):
     def __init__(self, measurements: Array_1[Measurement]) -> None: ...
-    ChangedMeasurements: Array_1[Measurement]
+    ChangedMeasurements : Array_1[Measurement]
+
 
 class PeakDetectEventArgs(EventArgs):
     def __init__(self, peakDetectProgress: PeakDetectProgress) -> None: ...
-    PeakDetectProgress: PeakDetectProgress
+    PeakDetectProgress : PeakDetectProgress
+
 
 class PeakDetectHandler(MulticastDelegate):
     def __init__(self, object: typing.Any, method: int) -> None: ...
@@ -1089,15 +1027,10 @@ class PeakDetectHandler(MulticastDelegate):
     def Method(self) -> MethodInfo: ...
     @property
     def Target(self) -> typing.Any: ...
-    def BeginInvoke(
-        self,
-        sender: typing.Any,
-        e: PeakDetectEventArgs,
-        callback: AsyncCallback,
-        object: typing.Any,
-    ) -> IAsyncResult: ...
+    def BeginInvoke(self, sender: typing.Any, e: PeakDetectEventArgs, callback: AsyncCallback, object: typing.Any) -> IAsyncResult: ...
     def EndInvoke(self, result: IAsyncResult) -> None: ...
     def Invoke(self, sender: typing.Any, e: PeakDetectEventArgs) -> None: ...
+
 
 class SessionManager(IEnumerable_1[Measurement], IDisposable, ISessionManager):
     def __init__(self) -> None: ...
@@ -1108,43 +1041,43 @@ class SessionManager(IEnumerable_1[Measurement], IDisposable, ISessionManager):
         def Method(self) -> MethodInfo: ...
         @property
         def Target(self) -> typing.Any: ...
-        def BeginInvoke(
-            self, c: Curve, measType: MeasType, callback: AsyncCallback, object: typing.Any
-        ) -> IAsyncResult: ...
+        def BeginInvoke(self, c: Curve, measType: MeasType, callback: AsyncCallback, object: typing.Any) -> IAsyncResult: ...
         def EndInvoke(self, result: IAsyncResult) -> None: ...
         def Invoke(self, c: Curve, measType: MeasType) -> None: ...
 
+
     class ModesPSTrace(typing.SupportsInt):
         @typing.overload
-        def __init__(self, value: int) -> None: ...
+        def __init__(self, value : int) -> None: ...
         @typing.overload
-        def __init__(self, value: int, force_if_true: bool) -> None: ...
+        def __init__(self, value : int, force_if_true: bool) -> None: ...
         def __int__(self) -> int: ...
 
         # Values:
-        Scientific: SessionManager.ModesPSTrace  # 0
-        Analytical: SessionManager.ModesPSTrace  # 1
-        Corrosion: SessionManager.ModesPSTrace  # 2
+        Scientific : SessionManager.ModesPSTrace # 0
+        Analytical : SessionManager.ModesPSTrace # 1
+        Corrosion : SessionManager.ModesPSTrace # 2
+
 
     class SelectableDataTypes(typing.SupportsInt):
         @typing.overload
-        def __init__(self, value: int) -> None: ...
+        def __init__(self, value : int) -> None: ...
         @typing.overload
-        def __init__(self, value: int, force_if_true: bool) -> None: ...
+        def __init__(self, value : int, force_if_true: bool) -> None: ...
         def __int__(self) -> int: ...
 
         # Values:
-        CurveData: SessionManager.SelectableDataTypes  # 0
-        EisData: SessionManager.SelectableDataTypes  # 1
-        MeasurementData: SessionManager.SelectableDataTypes  # 2
+        CurveData : SessionManager.SelectableDataTypes # 0
+        EisData : SessionManager.SelectableDataTypes # 1
+        MeasurementData : SessionManager.SelectableDataTypes # 2
 
-    CurveCollection: Dictionary_2[Curve, Measurement]
-    EISDataCollection: Dictionary_2[EISData, Measurement]
-    FindPeakShoulders: bool
-    MergeOverlappingPeaks: bool
-    PSTraceMode: SessionManager.ModesPSTrace
-    UseBlankIfAvailable: bool
-    UserSelectedDataType: SessionManager.SelectableDataTypes
+    CurveCollection : Dictionary_2[Curve, Measurement]
+    EISDataCollection : Dictionary_2[EISData, Measurement]
+    FindPeakShoulders : bool
+    MergeOverlappingPeaks : bool
+    PSTraceMode : SessionManager.ModesPSTrace
+    UseBlankIfAvailable : bool
+    UserSelectedDataType : SessionManager.SelectableDataTypes
     @property
     def AppendDateTimeToMeasurementTitleOnLoad(self) -> bool: ...
     @AppendDateTimeToMeasurementTitleOnLoad.setter
@@ -1156,9 +1089,7 @@ class SessionManager(IEnumerable_1[Measurement], IDisposable, ISessionManager):
     @property
     def ColorAssignementOnLoad(self) -> LoadCurveColorAssignement: ...
     @ColorAssignementOnLoad.setter
-    def ColorAssignementOnLoad(
-        self, value: LoadCurveColorAssignement
-    ) -> LoadCurveColorAssignement: ...
+    def ColorAssignementOnLoad(self, value: LoadCurveColorAssignement) -> LoadCurveColorAssignement: ...
     @property
     def Count(self) -> int: ...
     @property
@@ -1189,12 +1120,8 @@ class SessionManager(IEnumerable_1[Measurement], IDisposable, ISessionManager):
     def SelectedMeasurement(self) -> Measurement: ...
     @SelectedMeasurement.setter
     def SelectedMeasurement(self, value: Measurement) -> Measurement: ...
-    def AddMeasurement(
-        self, m: Measurement, silent: bool = ..., noPeaks: bool = ...
-    ) -> None: ...
-    def AddMeasurements(
-        self, measurements: Array_1[Measurement], silent: bool = ...
-    ) -> None: ...
+    def AddMeasurement(self, m: Measurement, silent: bool = ..., noPeaks: bool = ...) -> None: ...
+    def AddMeasurements(self, measurements: Array_1[Measurement], silent: bool = ...) -> None: ...
     @staticmethod
     def AppendDateTimeToMeasurementTitle(measurements: Array_1[Measurement]) -> None: ...
     def ClearMeasurements(self) -> None: ...
@@ -1209,50 +1136,32 @@ class SessionManager(IEnumerable_1[Measurement], IDisposable, ISessionManager):
     def GetEnumerator(self) -> IEnumerator_1[Measurement]: ...
     def GetMeasurementForCurve(self, c: Curve) -> Measurement: ...
     def GetMeasurementForEISData(self, eisData: EISData) -> Measurement: ...
-    def LoadAsync(
-        self,
-        fileStream: Stream,
-        filepath: str,
-        cancellationToken: CancellationToken,
-        add: bool = ...,
-    ) -> Task: ...
-    def LoadFilesAsync(
-        self, filepath: str, cancellationToken: CancellationToken
-    ) -> Task_1[SessionFile]: ...
+    def LoadAsync(self, fileStream: Stream, filepath: str, cancellationToken: CancellationToken, add: bool = ...) -> Task: ...
+    def LoadFilesAsync(self, filepath: str, cancellationToken: CancellationToken) -> Task_1[SessionFile]: ...
     def OrderMeasurements(self) -> None: ...
     def RemoveAllMeasurementsWithCurves(self) -> None: ...
     def RemoveAllMeasurementsWithEIS(self) -> None: ...
     def RemoveAllPeaksOrLevels(self) -> None: ...
     def RemoveAllPeaksOrLevelsSelectedCurve(self) -> None: ...
     def RemoveCurves(self, curves: Array_1[Curve], deleteEmptyMeasurement: bool) -> None: ...
-    def RemoveEISData(
-        self, eisDatas: Array_1[EISData], deleteEmptyMeasurement: bool
-    ) -> None: ...
-    def RemoveMeasurement(
-        self, m: Measurement, triggerAvailableDataChanged: bool = ...
-    ) -> None: ...
-    def RemoveMeasurements(
-        self, measurements: IEnumerable_1[Measurement], triggerAvailableDataChanged: bool = ...
-    ) -> None: ...
+    def RemoveEISData(self, eisDatas: Array_1[EISData], deleteEmptyMeasurement: bool) -> None: ...
+    def RemoveMeasurement(self, m: Measurement, triggerAvailableDataChanged: bool = ...) -> None: ...
+    def RemoveMeasurements(self, measurements: IEnumerable_1[Measurement], triggerAvailableDataChanged: bool = ...) -> None: ...
     def Save(self, fileStream: Stream, filepath: str) -> None: ...
-    def SaveAsync(
-        self,
-        fileStream: Stream,
-        filepath: str,
-        cancellationToken: CancellationToken,
-        progress: IProgress_1[bool],
-    ) -> Task: ...
+    def SaveAsync(self, fileStream: Stream, filepath: str, cancellationToken: CancellationToken, progress: IProgress_1[bool]) -> Task: ...
     def SetCurveMeasType(self, measType: MeasType, curve: Curve) -> None: ...
     def SetCurveTitle(self, c: Curve) -> None: ...
     def SetEISDataTitle(self, eisData: EISData) -> None: ...
     # Skipped Load due to it being static, abstract and generic.
 
-    Load: Load_MethodGroup
+    Load : Load_MethodGroup
     class Load_MethodGroup:
         @typing.overload
-        def __call__(self, fileStream: Stream, filepath: str, add: bool = ...) -> None: ...
+        def __call__(self, fileStream: Stream, filepath: str, add: bool = ...) -> None:...
         @typing.overload
-        def __call__(self, file: SessionFile, filepath: str, add: bool) -> None: ...
+        def __call__(self, file: SessionFile, filepath: str, add: bool) -> None:...
+
+
 
 class VoltageReading(IDataValue):
     @typing.overload
@@ -1260,16 +1169,10 @@ class VoltageReading(IDataValue):
     @typing.overload
     def __init__(self, status: ReadingStatus, timingStatus: TimingStatus = ...) -> None: ...
     @typing.overload
-    def __init__(
-        self,
-        value: float,
-        status: ReadingStatus,
-        range: PotentialRange = ...,
-        timingStatus: TimingStatus = ...,
-    ) -> None: ...
-    Range: PotentialRange
-    ReadingStatus: ReadingStatus
-    TimingStatus: TimingStatus
+    def __init__(self, value: float, status: ReadingStatus, range: PotentialRange = ..., timingStatus: TimingStatus = ...) -> None: ...
+    Range : PotentialRange
+    ReadingStatus : ReadingStatus
+    TimingStatus : TimingStatus
     @property
     def Text(self) -> str: ...
     @Text.setter

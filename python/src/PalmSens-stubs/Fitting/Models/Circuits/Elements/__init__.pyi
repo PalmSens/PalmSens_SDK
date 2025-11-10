@@ -1,6 +1,4 @@
-import abc
-import typing
-
+import typing, abc
 from PalmSens.Fitting.Models.Circuits import ISubGroup
 
 class ElementBase(IElementBase, abc.ABC):
@@ -22,6 +20,7 @@ class ElementBase(IElementBase, abc.ABC):
     def Name(self) -> str: ...
     @property
     def Symbol(self) -> str: ...
+
 
 class ElementBisquertOpen(ElementBase):
     @typing.overload
@@ -47,6 +46,7 @@ class ElementBisquertOpen(ElementBase):
     @property
     def Symbol(self) -> str: ...
 
+
 class ElementBisquertShort(ElementBase):
     @typing.overload
     def __init__(self) -> None: ...
@@ -70,6 +70,7 @@ class ElementBisquertShort(ElementBase):
     def Name(self) -> str: ...
     @property
     def Symbol(self) -> str: ...
+
 
 class ElementCapacitance(ElementBase):
     @typing.overload
@@ -95,6 +96,7 @@ class ElementCapacitance(ElementBase):
     @property
     def Symbol(self) -> str: ...
 
+
 class ElementConnector(ElementBase):
     @typing.overload
     def __init__(self) -> None: ...
@@ -118,6 +120,7 @@ class ElementConnector(ElementBase):
     def Name(self) -> str: ...
     @property
     def Symbol(self) -> str: ...
+
 
 class ElementCPE(ElementBase):
     @typing.overload
@@ -143,6 +146,7 @@ class ElementCPE(ElementBase):
     @property
     def Symbol(self) -> str: ...
 
+
 class ElementGerischer(ElementBase):
     @typing.overload
     def __init__(self) -> None: ...
@@ -166,6 +170,7 @@ class ElementGerischer(ElementBase):
     def Name(self) -> str: ...
     @property
     def Symbol(self) -> str: ...
+
 
 class ElementInductance(ElementBase):
     @typing.overload
@@ -191,6 +196,7 @@ class ElementInductance(ElementBase):
     @property
     def Symbol(self) -> str: ...
 
+
 class ElementResistance(ElementBase):
     @typing.overload
     def __init__(self) -> None: ...
@@ -215,38 +221,41 @@ class ElementResistance(ElementBase):
     @property
     def Symbol(self) -> str: ...
 
+
 class ElementStat(typing.SupportsInt):
     @typing.overload
-    def __init__(self, value: int) -> None: ...
+    def __init__(self, value : int) -> None: ...
     @typing.overload
-    def __init__(self, value: int, force_if_true: bool) -> None: ...
+    def __init__(self, value : int, force_if_true: bool) -> None: ...
     def __int__(self) -> int: ...
 
     # Values:
-    Unconnected: ElementStat  # 0
-    Connected: ElementStat  # 1
+    Unconnected : ElementStat # 0
+    Connected : ElementStat # 1
+
 
 class ElementTypes(typing.SupportsInt):
     @typing.overload
-    def __init__(self, value: int) -> None: ...
+    def __init__(self, value : int) -> None: ...
     @typing.overload
-    def __init__(self, value: int, force_if_true: bool) -> None: ...
+    def __init__(self, value : int, force_if_true: bool) -> None: ...
     def __int__(self) -> int: ...
 
     # Values:
-    Resistance: ElementTypes  # 0
-    Capacitance: ElementTypes  # 1
-    Inductance: ElementTypes  # 2
-    ConstantPhaseElement: ElementTypes  # 3
-    WarburgComponent: ElementTypes  # 4
-    WarburgShort: ElementTypes  # 5
-    WarburgOpen: ElementTypes  # 6
-    Gerischer: ElementTypes  # 7
-    BisquertShort: ElementTypes  # 8
-    BisquertOpen: ElementTypes  # 9
-    Eraser: ElementTypes  # 10
-    Connector: ElementTypes  # 11
-    Empty: ElementTypes  # 12
+    Resistance : ElementTypes # 0
+    Capacitance : ElementTypes # 1
+    Inductance : ElementTypes # 2
+    ConstantPhaseElement : ElementTypes # 3
+    WarburgComponent : ElementTypes # 4
+    WarburgShort : ElementTypes # 5
+    WarburgOpen : ElementTypes # 6
+    Gerischer : ElementTypes # 7
+    BisquertShort : ElementTypes # 8
+    BisquertOpen : ElementTypes # 9
+    Eraser : ElementTypes # 10
+    Connector : ElementTypes # 11
+    Empty : ElementTypes # 12
+
 
 class ElementWarburg(ElementBase):
     @typing.overload
@@ -272,6 +281,7 @@ class ElementWarburg(ElementBase):
     @property
     def Symbol(self) -> str: ...
 
+
 class ElementWarburgOpen(ElementBase):
     @typing.overload
     def __init__(self) -> None: ...
@@ -296,6 +306,7 @@ class ElementWarburgOpen(ElementBase):
     @property
     def Symbol(self) -> str: ...
 
+
 class ElementWarburgShort(ElementBase):
     @typing.overload
     def __init__(self) -> None: ...
@@ -319,6 +330,7 @@ class ElementWarburgShort(ElementBase):
     def Name(self) -> str: ...
     @property
     def Symbol(self) -> str: ...
+
 
 class IElementBase(typing.Protocol):
     @property

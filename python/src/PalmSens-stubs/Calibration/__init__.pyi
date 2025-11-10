@@ -1,26 +1,16 @@
-import abc
-import typing
-
-import clr
-from PalmSens import CurrentRange, PotentialRange, PotentialRanges
-from PalmSens.Comm import ClientConnection, ClientConnectionNexus
-from PalmSens.Data import DataArrayType
-from PalmSens.Devices import DeviceCapabilities, EISSettings, EISSettingsPS3, EISSettingsPS4
-from PalmSens.Plottables import EISData
-from PalmSens.Techniques import ImpedimetricIterationMethodBase
+import typing, clr, abc
+from System.Collections.Generic import IDictionary_2, ICollection_1, KeyValuePair_2, IEnumerator_1, List_1, Dictionary_2
 from System import Array_1
-from System.Collections.Generic import (
-    Dictionary_2,
-    ICollection_1,
-    IDictionary_2,
-    IEnumerator_1,
-    KeyValuePair_2,
-    List_1,
-)
+from PalmSens.Devices import EISSettings, DeviceCapabilities, EISSettingsPS3, EISSettingsPS4
+from PalmSens.Techniques import ImpedimetricIterationMethodBase
+from PalmSens.Plottables import EISData
+from PalmSens.Comm import ClientConnection, ClientConnectionNexus
 from System.Threading.Tasks import Task, Task_1
+from PalmSens import PotentialRanges, CurrentRange, PotentialRange
+from PalmSens.Data import DataArrayType
 
 class CalibrationSteps(IDictionary_2[int, str], abc.ABC):
-    NoCalibration: int
+    NoCalibration : int
     @property
     def Count(self) -> int: ...
     @property
@@ -54,21 +44,23 @@ class CalibrationSteps(IDictionary_2[int, str], abc.ABC):
     def TryGetValue(self, key: int, value: clr.Reference[str]) -> bool: ...
     # Skipped Add due to it being static, abstract and generic.
 
-    Add: Add_MethodGroup
+    Add : Add_MethodGroup
     class Add_MethodGroup:
         @typing.overload
-        def __call__(self, item: KeyValuePair_2[int, str]) -> None: ...
+        def __call__(self, item: KeyValuePair_2[int, str]) -> None:...
         @typing.overload
-        def __call__(self, key: int, value: str) -> None: ...
+        def __call__(self, key: int, value: str) -> None:...
 
     # Skipped Remove due to it being static, abstract and generic.
 
-    Remove: Remove_MethodGroup
+    Remove : Remove_MethodGroup
     class Remove_MethodGroup:
         @typing.overload
-        def __call__(self, key: int) -> bool: ...
+        def __call__(self, key: int) -> bool:...
         @typing.overload
-        def __call__(self, item: KeyValuePair_2[int, str]) -> bool: ...
+        def __call__(self, item: KeyValuePair_2[int, str]) -> bool:...
+
+
 
 class CalibrationStepsNexus(CalibrationSteps):
     def __init__(self) -> None: ...
@@ -92,26 +84,27 @@ class CalibrationStepsNexus(CalibrationSteps):
     def Values(self) -> ICollection_1[str]: ...
     def GetMethodFile(self, calibrationStep: int) -> str: ...
 
+
 class CalibrationStepsPS3(CalibrationSteps):
     def __init__(self, diagnosticsMode: bool) -> None: ...
-    ACCoupled: int
-    CFfilter2: int
-    CFfilter3: int
-    CFfilter4: int
-    CFfilter5: int
-    FilterAc0: int
-    FilterAc1: int
-    FilterAc2: int
-    HSTAB: int
-    PGA1: int
-    PGA2: int
-    PGA3: int
-    PGAoffsetACstep1: int
-    PGAoffsetACstep2: int
-    PGAoffsetDCstep1: int
-    PGAoffsetDCstep2: int
-    PhaseDelay12: int
-    PhaseDelay16: int
+    ACCoupled : int
+    CFfilter2 : int
+    CFfilter3 : int
+    CFfilter4 : int
+    CFfilter5 : int
+    FilterAc0 : int
+    FilterAc1 : int
+    FilterAc2 : int
+    HSTAB : int
+    PGA1 : int
+    PGA2 : int
+    PGA3 : int
+    PGAoffsetACstep1 : int
+    PGAoffsetACstep2 : int
+    PGAoffsetDCstep1 : int
+    PGAoffsetDCstep2 : int
+    PhaseDelay12 : int
+    PhaseDelay16 : int
     @property
     def Count(self) -> int: ...
     @property
@@ -132,13 +125,14 @@ class CalibrationStepsPS3(CalibrationSteps):
     def Values(self) -> ICollection_1[str]: ...
     def GetMethodFile(self, calibrationStep: int) -> str: ...
 
+
 class CalibrationStepsPS4(CalibrationSteps):
     def __init__(self) -> None: ...
-    CABLE: int
-    CR4: int
-    CR5: int
-    CR6: int
-    CR7: int
+    CABLE : int
+    CR4 : int
+    CR5 : int
+    CR6 : int
+    CR7 : int
     @property
     def Count(self) -> int: ...
     @property
@@ -158,35 +152,18 @@ class CalibrationStepsPS4(CalibrationSteps):
     @property
     def Values(self) -> ICollection_1[str]: ...
     def GetMethodFile(self, calibrationStep: int) -> str: ...
+
 
 class EISCalibration(abc.ABC):
     def __init__(self, eisSettings: EISSettings) -> None: ...
     @abc.abstractmethod
-    def CorrectMeasuredValue(
-        self,
-        method: ImpedimetricIterationMethodBase,
-        hwRevision: int,
-        Zre: clr.Reference[float],
-        Zim: clr.Reference[float],
-        URe: float,
-        UIm: float,
-        IRe: float,
-        IIm: float,
-        phase: clr.Reference[float],
-        Z: clr.Reference[float],
-    ) -> None: ...
+    def CorrectMeasuredValue(self, method: ImpedimetricIterationMethodBase, hwRevision: int, Zre: clr.Reference[float], Zim: clr.Reference[float], URe: float, UIm: float, IRe: float, IIm: float, phase: clr.Reference[float], Z: clr.Reference[float]) -> None: ...
     @abc.abstractmethod
     def GetDefaultValues(self, capabilities: DeviceCapabilities) -> EISCalibration: ...
     @abc.abstractmethod
     def GetValuesAsString(self) -> str: ...
     @abc.abstractmethod
-    def ParseResult(
-        self,
-        eisData: EISData,
-        calibrationStep: int,
-        result: clr.Reference[float],
-        message: clr.Reference[str],
-    ) -> bool: ...
+    def ParseResult(self, eisData: EISData, calibrationStep: int, result: clr.Reference[float], message: clr.Reference[str]) -> bool: ...
     @abc.abstractmethod
     def ReadValuesFromEEPROM(self, clientConnection: ClientConnection) -> None: ...
     def ReadValuesFromEEPROMAsync(self, clientConnection: ClientConnection) -> Task: ...
@@ -196,77 +173,47 @@ class EISCalibration(abc.ABC):
     def WriteAllValuesToEEPROM(self, clientConnection: ClientConnection) -> None: ...
     def WriteAllValuesToEEPROMAsync(self, clientConnection: ClientConnection) -> Task: ...
 
+
 class EISCalibrationNexus(EISCalibration):
     def __init__(self, eisSettings: EISSettings) -> None: ...
 
     class CompModes(typing.SupportsInt):
         @typing.overload
-        def __init__(self, value: int) -> None: ...
+        def __init__(self, value : int) -> None: ...
         @typing.overload
-        def __init__(self, value: int, force_if_true: bool) -> None: ...
+        def __init__(self, value : int, force_if_true: bool) -> None: ...
         def __int__(self) -> int: ...
 
         # Values:
-        Comp_None: EISCalibrationNexus.CompModes  # 0
-        Comp_Tau_lp: EISCalibrationNexus.CompModes  # 1
-        Comp_Tau_Tau: EISCalibrationNexus.CompModes  # 2
-        Comp_Polynomial: EISCalibrationNexus.CompModes  # 3
-        Comp_EquCircuit: EISCalibrationNexus.CompModes  # 4
+        Comp_None : EISCalibrationNexus.CompModes # 0
+        Comp_Tau_lp : EISCalibrationNexus.CompModes # 1
+        Comp_Tau_Tau : EISCalibrationNexus.CompModes # 2
+        Comp_Polynomial : EISCalibrationNexus.CompModes # 3
+        Comp_EquCircuit : EISCalibrationNexus.CompModes # 4
+
 
     class NexusEISComp:
         def __init__(self) -> None: ...
-        Coefs: Array_1[float]
-        mode: EISCalibrationNexus.CompModes
+        Coefs : Array_1[float]
+        mode : EISCalibrationNexus.CompModes
 
-    _eisdata: List_1[EISData]
-    _frequency_arr: Array_1[float]
-    _modulus_arr: Array_1[float]
-    _phase_arr: Array_1[float]
-    CrToReg: Dictionary_2[int, ClientConnectionNexus.NexusReg]
-    ModulusComp: EISCalibrationNexus.NexusEISComp
-    PrToReg: Dictionary_2[PotentialRanges, ClientConnectionNexus.NexusReg]
+    _eisdata : List_1[EISData]
+    _frequency_arr : Array_1[float]
+    _modulus_arr : Array_1[float]
+    _phase_arr : Array_1[float]
+    CrToReg : Dictionary_2[int, ClientConnectionNexus.NexusReg]
+    ModulusComp : EISCalibrationNexus.NexusEISComp
+    PrToReg : Dictionary_2[PotentialRanges, ClientConnectionNexus.NexusReg]
     @property
     def ClientConnection(self) -> ClientConnectionNexus: ...
     @ClientConnection.setter
     def ClientConnection(self, value: ClientConnectionNexus) -> ClientConnectionNexus: ...
-    def CompensateEIS_CR_Polynomial(
-        self,
-        CR: CurrentRange,
-        frequency: Array_1[float],
-        modulus: Array_1[float],
-        phase: Array_1[float],
-        modulus_order: int,
-        phase_order: int,
-    ) -> bool: ...
-    def CompensateEIS_PR_Polynomial(
-        self,
-        PR: PotentialRange,
-        frequency: Array_1[float],
-        modulus: Array_1[float],
-        phase: Array_1[float],
-        modulus_order: int,
-        phase_order: int,
-    ) -> bool: ...
-    def CorrectMeasuredValue(
-        self,
-        method: ImpedimetricIterationMethodBase,
-        hwRevision: int,
-        Zre: clr.Reference[float],
-        Zim: clr.Reference[float],
-        URe: float,
-        UIm: float,
-        IRe: float,
-        IIm: float,
-        phase: clr.Reference[float],
-        Z: clr.Reference[float],
-    ) -> None: ...
+    def CompensateEIS_CR_Polynomial(self, CR: CurrentRange, frequency: Array_1[float], modulus: Array_1[float], phase: Array_1[float], modulus_order: int, phase_order: int) -> bool: ...
+    def CompensateEIS_PR_Polynomial(self, PR: PotentialRange, frequency: Array_1[float], modulus: Array_1[float], phase: Array_1[float], modulus_order: int, phase_order: int) -> bool: ...
+    def CorrectMeasuredValue(self, method: ImpedimetricIterationMethodBase, hwRevision: int, Zre: clr.Reference[float], Zim: clr.Reference[float], URe: float, UIm: float, IRe: float, IIm: float, phase: clr.Reference[float], Z: clr.Reference[float]) -> None: ...
     def DisableEISCompensation(self, clientConnection: ClientConnectionNexus) -> None: ...
-    def eis_comp_reg_to_bytes(
-        self, mode: EISCalibrationNexus.CompModes, coefs: Array_1[float], invert: bool = ...
-    ) -> Array_1[int]: ...
-    def eis_comp_reg_to_string(
-        self, mode: EISCalibrationNexus.CompModes, coefs: Array_1[float]
-    ) -> str: ...
+    def eis_comp_reg_to_bytes(self, mode: EISCalibrationNexus.CompModes, coefs: Array_1[float], invert: bool = ...) -> Array_1[int]: ...
+    def eis_comp_reg_to_string(self, mode: EISCalibrationNexus.CompModes, coefs: Array_1[float]) -> str: ...
     def EnableEISCompensation(self, clientConnection: ClientConnectionNexus) -> None: ...
     def float_to_bytes(self, val: float) -> Array_1[int]: ...
     def float_to_reg_string(self, value: float) -> str: ...
@@ -274,113 +221,57 @@ class EISCalibrationNexus(EISCalibration):
     def GetValuesAsString(self) -> str: ...
     def int_to_bytes(self, val: int) -> Array_1[int]: ...
     def long_to_bytes(self, val: int) -> Array_1[int]: ...
-    def ParseResult(
-        self,
-        eisData: EISData,
-        calibrationStep: int,
-        result: clr.Reference[float],
-        message: clr.Reference[str],
-    ) -> bool: ...
+    def ParseResult(self, eisData: EISData, calibrationStep: int, result: clr.Reference[float], message: clr.Reference[str]) -> bool: ...
     def ProcessEISData(self, eisdata: List_1[EISData]) -> bool: ...
     def ReadValuesFromEEPROM(self, clientConnection: ClientConnection) -> None: ...
     def SetEISData(self, eisdata: List_1[EISData]) -> None: ...
     def ValidateAllValues(self, clientConnection: ClientConnection) -> bool: ...
     def WriteAllValuesToEEPROM(self, clientConnection: ClientConnection) -> None: ...
-    def WriteEISCompReg(
-        self,
-        clientConnection: ClientConnectionNexus,
-        reg: ClientConnectionNexus.NexusReg,
-        modulus_mode: EISCalibrationNexus.CompModes,
-        modulus_coefs: Array_1[float],
-        phase_mode: EISCalibrationNexus.CompModes,
-        phase_coefs: Array_1[float],
-    ) -> None: ...
+    def WriteEISCompReg(self, clientConnection: ClientConnectionNexus, reg: ClientConnectionNexus.NexusReg, modulus_mode: EISCalibrationNexus.CompModes, modulus_coefs: Array_1[float], phase_mode: EISCalibrationNexus.CompModes, phase_coefs: Array_1[float]) -> None: ...
+
 
 class EISCalibrationPS3(EISCalibration):
     def __init__(self, eisSettings: EISSettings) -> None: ...
-    acCoupledFreq0: float
-    FilterAcFreq0: Array_1[float]
-    FilterCFFreq0: Array_1[float]
-    HSTABFreq0: float
-    PGAGainFreq0: Array_1[float]
-    PGAoffsetCorrectionAcCoupled: int
-    PGAoffsetCorrectionDcCoupled: int
+    acCoupledFreq0 : float
+    FilterAcFreq0 : Array_1[float]
+    FilterCFFreq0 : Array_1[float]
+    HSTABFreq0 : float
+    PGAGainFreq0 : Array_1[float]
+    PGAoffsetCorrectionAcCoupled : int
+    PGAoffsetCorrectionDcCoupled : int
     @property
     def AcCoupledIsEnabled(self) -> bool: ...
     @property
     def EISSettingsPS3(self) -> EISSettingsPS3: ...
     @staticmethod
     def CheckWithinRegion(defaultValue: float, result: float) -> bool: ...
-    def ConvertValuesForEEPROM(
-        self, values: Array_1[float], magnitudes: Array_1[int]
-    ) -> Array_1[int]: ...
-    def CorrectMeasuredValue(
-        self,
-        method: ImpedimetricIterationMethodBase,
-        hwRevision: int,
-        Zre: clr.Reference[float],
-        Zim: clr.Reference[float],
-        URe: float,
-        UIm: float,
-        IRe: float,
-        IIm: float,
-        phase: clr.Reference[float],
-        Z: clr.Reference[float],
-    ) -> None: ...
+    def ConvertValuesForEEPROM(self, values: Array_1[float], magnitudes: Array_1[int]) -> Array_1[int]: ...
+    def CorrectMeasuredValue(self, method: ImpedimetricIterationMethodBase, hwRevision: int, Zre: clr.Reference[float], Zim: clr.Reference[float], URe: float, UIm: float, IRe: float, IIm: float, phase: clr.Reference[float], Z: clr.Reference[float]) -> None: ...
     def GetDefaultValues(self, capab: DeviceCapabilities) -> EISCalibration: ...
     def GetValuesAsString(self) -> str: ...
-    def ParseResult(
-        self,
-        freqScan: EISData,
-        calibrationStep: int,
-        result: clr.Reference[float],
-        message: clr.Reference[str],
-    ) -> bool: ...
+    def ParseResult(self, freqScan: EISData, calibrationStep: int, result: clr.Reference[float], message: clr.Reference[str]) -> bool: ...
     def ReadValuesFromEEPROM(self, conn: ClientConnection) -> None: ...
     def ReadValuesFromEEPROMAsync(self, conn: ClientConnection) -> Task: ...
     def ValidateAllValues(self, conn: ClientConnection) -> bool: ...
     def WriteAllValuesToEEPROM(self, clientConnection: ClientConnection) -> None: ...
     def WriteAllValuesToEEPROMAsync(self, clientConnection: ClientConnection) -> Task: ...
 
+
 class EISCalibrationPS4(EISCalibration):
     def __init__(self, eisSettings: EISSettings) -> None: ...
-    CableFreq0: float
-    CRCaps: Array_1[float]
-    CRFreq0: Dictionary_2[int, float]
-    CRResistances: Array_1[float]
-    PS4EISCALIBRATION: bool
-    PS4EISCALIBRATION2: bool
+    CableFreq0 : float
+    CRCaps : Array_1[float]
+    CRFreq0 : Dictionary_2[int, float]
+    CRResistances : Array_1[float]
+    PS4EISCALIBRATION : bool
+    PS4EISCALIBRATION2 : bool
     @property
     def EISSettingsPS4(self) -> EISSettingsPS4: ...
-    def CorrectMeasuredValue(
-        self,
-        method: ImpedimetricIterationMethodBase,
-        hwRevision: int,
-        Zre: clr.Reference[float],
-        Zim: clr.Reference[float],
-        URe: float,
-        UIm: float,
-        IRe: float,
-        IIm: float,
-        phase: clr.Reference[float],
-        Z: clr.Reference[float],
-    ) -> None: ...
-    def DoubleToUInt16(
-        self,
-        val: float,
-        valHigh: clr.Reference[int],
-        valLow: clr.Reference[int],
-        magnitude: clr.Reference[int],
-    ) -> None: ...
+    def CorrectMeasuredValue(self, method: ImpedimetricIterationMethodBase, hwRevision: int, Zre: clr.Reference[float], Zim: clr.Reference[float], URe: float, UIm: float, IRe: float, IIm: float, phase: clr.Reference[float], Z: clr.Reference[float]) -> None: ...
+    def DoubleToUInt16(self, val: float, valHigh: clr.Reference[int], valLow: clr.Reference[int], magnitude: clr.Reference[int]) -> None: ...
     def GetDefaultValues(self, capabilities: DeviceCapabilities) -> EISCalibration: ...
     def GetValuesAsString(self) -> str: ...
-    def ParseResult(
-        self,
-        eisData: EISData,
-        calibrationStep: int,
-        result: clr.Reference[float],
-        message: clr.Reference[str],
-    ) -> bool: ...
+    def ParseResult(self, eisData: EISData, calibrationStep: int, result: clr.Reference[float], message: clr.Reference[str]) -> bool: ...
     def ReadValuesFromEEPROM(self, clientConnection: ClientConnection) -> None: ...
     def ReadValuesFromEEPROMAsync(self, clientConnection: ClientConnection) -> Task: ...
     def UInt16ToDouble(self, valHigh: int, valLow: int, magnitude: int) -> float: ...
@@ -388,26 +279,24 @@ class EISCalibrationPS4(EISCalibration):
     def WriteAllValuesToEEPROM(self, clientConnection: ClientConnection) -> None: ...
     def WriteAllValuesToEEPROMAsync(self, clientConnection: ClientConnection) -> Task: ...
 
+
 class EISDataExtenstions(abc.ABC):
     @staticmethod
     def GetEISValuesOfType(eisData: EISData, type: DataArrayType) -> Array_1[float]: ...
 
+
 class PalmSensBiPotCalibration:
     def __init__(self) -> None: ...
-    ADCFactor: float
-    ADCOffset: float
-    DACFactor: float
-    DACOffset: float
+    ADCFactor : float
+    ADCOffset : float
+    DACFactor : float
+    DACOffset : float
     def GetCorrectedPSBiPotCurrent(self, value: float) -> float: ...
     def GetCorrectedPSBiPotPotential(self, value: float) -> float: ...
     @staticmethod
-    def GetPalmSensBiPotCalibration(
-        clientConnection: ClientConnection,
-    ) -> PalmSensBiPotCalibration: ...
+    def GetPalmSensBiPotCalibration(clientConnection: ClientConnection) -> PalmSensBiPotCalibration: ...
     @staticmethod
-    def GetPalmSensBiPotCalibrationAsync(
-        clientConnection: ClientConnection,
-    ) -> Task_1[PalmSensBiPotCalibration]: ...
+    def GetPalmSensBiPotCalibrationAsync(clientConnection: ClientConnection) -> Task_1[PalmSensBiPotCalibration]: ...
     def ReadValues(self, conn: ClientConnection) -> None: ...
     def ReadValuesAsync(self, conn: ClientConnection) -> Task: ...
     def ReadValuesFromSettings(self) -> None: ...

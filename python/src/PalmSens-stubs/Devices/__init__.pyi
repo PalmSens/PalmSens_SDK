@@ -1,46 +1,18 @@
-import abc
-import typing
-
-import clr
-from PalmSens import (
-    CurrentRange,
-    ExtraValueMask,
-    Method,
-    MethodScript,
-    MuxModel,
-    PotentialRange,
-    PotentialRanges,
-    PotentionstatChannels,
-)
-from PalmSens.Calibration import EISCalibration, PalmSensBiPotCalibration
-from PalmSens.Comm import EnumMode, FirmwareUploader, MuxType, ReadingStatus, enumDeviceType
-from PalmSens.Techniques import ImpedimetricMethodBase
-from PalmSens.Techniques.Impedance import DualEISModes
-from System import (
-    Action_1,
-    Array_1,
-    AsyncCallback,
-    DateTime,
-    Exception,
-    IAsyncResult,
-    MulticastDelegate,
-    ValueTuple_2,
-)
-from System.Collections import IDictionary
-from System.Collections.Generic import Dictionary_2, IReadOnlyList_1, List_1
-from System.Reflection import MethodBase, MethodInfo
-from System.Threading import SemaphoreSlim, Thread
+import typing, clr, abc
+from PalmSens.Comm import ReadingStatus, MuxType, enumDeviceType, EnumMode, FirmwareUploader
+from PalmSens.Calibration import PalmSensBiPotCalibration, EISCalibration
+from PalmSens import MuxModel, MethodScript, CurrentRange, PotentialRange, PotentionstatChannels, PotentialRanges, ExtraValueMask, Method
+from System import Array_1, DateTime, MulticastDelegate, IAsyncResult, AsyncCallback, ValueTuple_2, Exception, Action_1
+from System.Collections.Generic import List_1, IReadOnlyList_1, Dictionary_2
+from System.Threading import Thread, SemaphoreSlim
 from System.Threading.Tasks import Task, Task_1
+from PalmSens.Techniques import ImpedimetricMethodBase
+from System.Reflection import MethodInfo, MethodBase
+from System.Collections import IDictionary
+from PalmSens.Techniques.Impedance import DualEISModes
 
 class AnalogComponent:
-    def __init__(
-        self,
-        bits: int,
-        vRange: float,
-        offset: float,
-        gain: float,
-        isMethodSCRIPTInstrument: bool = ...,
-    ) -> None: ...
+    def __init__(self, bits: int, vRange: float, offset: float, gain: float, isMethodSCRIPTInstrument: bool = ...) -> None: ...
     @property
     def Bits(self) -> int: ...
     @property
@@ -68,35 +40,35 @@ class AnalogComponent:
     def ToRawBiPolar(self, val: float) -> int: ...
     # Skipped FromRaw due to it being static, abstract and generic.
 
-    FromRaw: FromRaw_MethodGroup
+    FromRaw : FromRaw_MethodGroup
     class FromRaw_MethodGroup:
-        def __call__(self, val: float, useOffset: bool = ...) -> float: ...
+        def __call__(self, val: float, useOffset: bool = ...) -> float:...
         # Method FromRaw(val : Single, useOffset : Boolean) was skipped since it collides with above method
         # Method FromRaw(val : Int32, useOffset : Boolean) was skipped since it collides with above method
 
+
+
 class DefaultCapabilities(DeviceCapabilities):
     def __init__(self) -> None: ...
-    BiPotCalibration: PalmSensBiPotCalibration
-    CustomDeviceID: str
-    EISCalibration: EISCalibration
-    EISsettings: EISSettings
-    EmStatBiPotMode: DeviceCapabilities.EnumEmStatBipotMode
-    FirmwareIsBeta: bool
-    FirmwareTimeStamp: str
-    IsEmStatBipotBoard: bool
-    IsWireless: bool
-    MaxMuxChannels: int
-    MuxModel: MuxModel
-    MuxType: MuxType
-    NumMuxChannels: int
-    SpecialFirmwareDescription: str
-    SupportsAuxiliary: bool
+    BiPotCalibration : PalmSensBiPotCalibration
+    CustomDeviceID : str
+    EISCalibration : EISCalibration
+    EISsettings : EISSettings
+    EmStatBiPotMode : DeviceCapabilities.EnumEmStatBipotMode
+    FirmwareIsBeta : bool
+    FirmwareTimeStamp : str
+    IsEmStatBipotBoard : bool
+    IsWireless : bool
+    MaxMuxChannels : int
+    MuxModel : MuxModel
+    MuxType : MuxType
+    NumMuxChannels : int
+    SpecialFirmwareDescription : str
+    SupportsAuxiliary : bool
     @property
     def ActiveSignalTrainConfiguration(self) -> MethodScript.PGStatModes: ...
     @ActiveSignalTrainConfiguration.setter
-    def ActiveSignalTrainConfiguration(
-        self, value: MethodScript.PGStatModes
-    ) -> MethodScript.PGStatModes: ...
+    def ActiveSignalTrainConfiguration(self, value: MethodScript.PGStatModes) -> MethodScript.PGStatModes: ...
     @property
     def ADCAuxiliary(self) -> AnalogComponent: ...
     @property
@@ -134,9 +106,7 @@ class DefaultCapabilities(DeviceCapabilities):
     @property
     def DefaultSignalTrainConfiguration(self) -> MethodScript.PGStatModes: ...
     @DefaultSignalTrainConfiguration.setter
-    def DefaultSignalTrainConfiguration(
-        self, value: MethodScript.PGStatModes
-    ) -> MethodScript.PGStatModes: ...
+    def DefaultSignalTrainConfiguration(self, value: MethodScript.PGStatModes) -> MethodScript.PGStatModes: ...
     @property
     def DeviceType(self) -> enumDeviceType: ...
     @property
@@ -238,9 +208,7 @@ class DefaultCapabilities(DeviceCapabilities):
     @property
     def SupportedPotentialRanges(self) -> List_1[PotentialRange]: ...
     @SupportedPotentialRanges.setter
-    def SupportedPotentialRanges(
-        self, value: List_1[PotentialRange]
-    ) -> List_1[PotentialRange]: ...
+    def SupportedPotentialRanges(self, value: List_1[PotentialRange]) -> List_1[PotentialRange]: ...
     @property
     def SupportedPotentiostatChannels(self) -> PotentionstatChannels: ...
     @property
@@ -283,27 +251,28 @@ class DefaultCapabilities(DeviceCapabilities):
     def PotentialRangeToGainSetting(self, range: PotentialRanges) -> int: ...
     def ToString(self) -> str: ...
 
+
 class Device(abc.ABC):
     def __init__(self) -> None: ...
 
     class PossibleBaudRates(typing.SupportsInt):
         @typing.overload
-        def __init__(self, value: int) -> None: ...
+        def __init__(self, value : int) -> None: ...
         @typing.overload
-        def __init__(self, value: int, force_if_true: bool) -> None: ...
+        def __init__(self, value : int, force_if_true: bool) -> None: ...
         def __int__(self) -> int: ...
 
         # Values:
-        BAUD_9600: Device.PossibleBaudRates  # 9600
-        BAUD_19200: Device.PossibleBaudRates  # 19200
-        BAUD_38400: Device.PossibleBaudRates  # 38400
-        BAUD_57600: Device.PossibleBaudRates  # 57600
-        BAUD_230400: Device.PossibleBaudRates  # 230400
-        BAUD_460800: Device.PossibleBaudRates  # 460800
-        BAUD_921600: Device.PossibleBaudRates  # 921600
-        BAUD_2000000: Device.PossibleBaudRates  # 2000000
+        BAUD_9600 : Device.PossibleBaudRates # 9600
+        BAUD_19200 : Device.PossibleBaudRates # 19200
+        BAUD_38400 : Device.PossibleBaudRates # 38400
+        BAUD_57600 : Device.PossibleBaudRates # 57600
+        BAUD_230400 : Device.PossibleBaudRates # 230400
+        BAUD_460800 : Device.PossibleBaudRates # 460800
+        BAUD_921600 : Device.PossibleBaudRates # 921600
+        BAUD_2000000 : Device.PossibleBaudRates # 2000000
 
-    _queueThread: Thread
+    _queueThread : Thread
     @property
     def Baudrate(self) -> int: ...
     @property
@@ -347,9 +316,7 @@ class Device(abc.ABC):
     def GetFirmwareUploader(self) -> FirmwareUploader: ...
     def GetLicenseInfo(self) -> DeviceLicenseInfo: ...
     def GetVersionString(self, timeOutInMilliSeconds: int = ...) -> Array_1[str]: ...
-    def GetVersionStringAsync(
-        self, timeOutInMilliSeconds: int = ...
-    ) -> Task_1[Array_1[str]]: ...
+    def GetVersionStringAsync(self, timeOutInMilliSeconds: int = ...) -> Task_1[Array_1[str]]: ...
     @staticmethod
     def InitAsyncQueues() -> None: ...
     def LeaveDownloadMode(self) -> None: ...
@@ -360,77 +327,78 @@ class Device(abc.ABC):
     def ReconnectAsync(self, timeout: int = ..., semaphore: SemaphoreSlim = ...) -> Task: ...
     # Skipped Open due to it being static, abstract and generic.
 
-    Open: Open_MethodGroup
+    Open : Open_MethodGroup
     class Open_MethodGroup:
         @typing.overload
-        def __call__(self) -> None: ...
+        def __call__(self) -> None:...
         @typing.overload
-        def __call__(self, baudrate: int) -> None: ...
+        def __call__(self, baudrate: int) -> None:...
 
     # Skipped OpenAsync due to it being static, abstract and generic.
 
-    OpenAsync: OpenAsync_MethodGroup
+    OpenAsync : OpenAsync_MethodGroup
     class OpenAsync_MethodGroup:
         @typing.overload
-        def __call__(self) -> Task: ...
+        def __call__(self) -> Task:...
         @typing.overload
-        def __call__(self, baudrate: int) -> Task: ...
+        def __call__(self, baudrate: int) -> Task:...
 
     # Skipped Write due to it being static, abstract and generic.
 
-    Write: Write_MethodGroup
+    Write : Write_MethodGroup
     class Write_MethodGroup:
         @typing.overload
-        def __call__(self, s: str) -> None: ...
+        def __call__(self, s: str) -> None:...
         @typing.overload
-        def __call__(self, s: str, delayBetweenBlocks: int) -> None: ...
+        def __call__(self, s: str, delayBetweenBlocks: int) -> None:...
 
     # Skipped WriteAsync due to it being static, abstract and generic.
 
-    WriteAsync: WriteAsync_MethodGroup
+    WriteAsync : WriteAsync_MethodGroup
     class WriteAsync_MethodGroup:
         @typing.overload
-        def __call__(self, s: str) -> Task: ...
+        def __call__(self, s: str) -> Task:...
         @typing.overload
-        def __call__(self, s: str, delayBetweenBlocks: int) -> Task: ...
+        def __call__(self, s: str, delayBetweenBlocks: int) -> Task:...
+
+
 
 class DeviceCapabilities(abc.ABC):
+
     class EnumEmStatBipotMode(typing.SupportsInt):
         @typing.overload
-        def __init__(self, value: int) -> None: ...
+        def __init__(self, value : int) -> None: ...
         @typing.overload
-        def __init__(self, value: int, force_if_true: bool) -> None: ...
+        def __init__(self, value : int, force_if_true: bool) -> None: ...
         def __int__(self) -> int: ...
 
         # Values:
-        constant: DeviceCapabilities.EnumEmStatBipotMode  # 0
-        offset: DeviceCapabilities.EnumEmStatBipotMode  # 1
-        control: DeviceCapabilities.EnumEmStatBipotMode  # 2
-        none: DeviceCapabilities.EnumEmStatBipotMode  # 3
-        undefined: DeviceCapabilities.EnumEmStatBipotMode  # 255
+        constant : DeviceCapabilities.EnumEmStatBipotMode # 0
+        offset : DeviceCapabilities.EnumEmStatBipotMode # 1
+        control : DeviceCapabilities.EnumEmStatBipotMode # 2
+        none : DeviceCapabilities.EnumEmStatBipotMode # 3
+        undefined : DeviceCapabilities.EnumEmStatBipotMode # 255
 
-    BiPotCalibration: PalmSensBiPotCalibration
-    CustomDeviceID: str
-    DefaultSupportedBipotRanges: List_1[CurrentRange]
-    EISCalibration: EISCalibration
-    EISsettings: EISSettings
-    EmStatBiPotMode: DeviceCapabilities.EnumEmStatBipotMode
-    FirmwareIsBeta: bool
-    FirmwareTimeStamp: str
-    IsEmStatBipotBoard: bool
-    IsWireless: bool
-    MaxMuxChannels: int
-    MuxModel: MuxModel
-    MuxType: MuxType
-    NumMuxChannels: int
-    SpecialFirmwareDescription: str
-    SupportsAuxiliary: bool
+    BiPotCalibration : PalmSensBiPotCalibration
+    CustomDeviceID : str
+    DefaultSupportedBipotRanges : List_1[CurrentRange]
+    EISCalibration : EISCalibration
+    EISsettings : EISSettings
+    EmStatBiPotMode : DeviceCapabilities.EnumEmStatBipotMode
+    FirmwareIsBeta : bool
+    FirmwareTimeStamp : str
+    IsEmStatBipotBoard : bool
+    IsWireless : bool
+    MaxMuxChannels : int
+    MuxModel : MuxModel
+    MuxType : MuxType
+    NumMuxChannels : int
+    SpecialFirmwareDescription : str
+    SupportsAuxiliary : bool
     @property
     def ActiveSignalTrainConfiguration(self) -> MethodScript.PGStatModes: ...
     @ActiveSignalTrainConfiguration.setter
-    def ActiveSignalTrainConfiguration(
-        self, value: MethodScript.PGStatModes
-    ) -> MethodScript.PGStatModes: ...
+    def ActiveSignalTrainConfiguration(self, value: MethodScript.PGStatModes) -> MethodScript.PGStatModes: ...
     @property
     def ADCAuxiliary(self) -> AnalogComponent: ...
     @property
@@ -468,9 +436,7 @@ class DeviceCapabilities(abc.ABC):
     @property
     def DefaultSignalTrainConfiguration(self) -> MethodScript.PGStatModes: ...
     @DefaultSignalTrainConfiguration.setter
-    def DefaultSignalTrainConfiguration(
-        self, value: MethodScript.PGStatModes
-    ) -> MethodScript.PGStatModes: ...
+    def DefaultSignalTrainConfiguration(self, value: MethodScript.PGStatModes) -> MethodScript.PGStatModes: ...
     @property
     def DeviceType(self) -> enumDeviceType: ...
     @property
@@ -572,9 +538,7 @@ class DeviceCapabilities(abc.ABC):
     @property
     def SupportedPotentialRanges(self) -> List_1[PotentialRange]: ...
     @SupportedPotentialRanges.setter
-    def SupportedPotentialRanges(
-        self, value: List_1[PotentialRange]
-    ) -> List_1[PotentialRange]: ...
+    def SupportedPotentialRanges(self, value: List_1[PotentialRange]) -> List_1[PotentialRange]: ...
     @property
     def SupportedPotentiostatChannels(self) -> PotentionstatChannels: ...
     @property
@@ -615,9 +579,7 @@ class DeviceCapabilities(abc.ABC):
     def SupportsStorage(self) -> bool: ...
     @abc.abstractmethod
     def CanSendDuringMeasurement(self, f: float) -> bool: ...
-    def GetEstimatedFrequencyDuration(
-        self, frequency: float, method: ImpedimetricMethodBase
-    ) -> float: ...
+    def GetEstimatedFrequencyDuration(self, frequency: float, method: ImpedimetricMethodBase) -> float: ...
     def GetEstimatedFrequencyScanDuration(self, method: ImpedimetricMethodBase) -> float: ...
     def GetRangeFromCRByte(self, crByte: int) -> CurrentRange: ...
     def GetSupportedExtraValues(self, method: Method) -> ExtraValueMask: ...
@@ -627,29 +589,30 @@ class DeviceCapabilities(abc.ABC):
     def SupportsRangePotential(self, range: PotentialRange) -> bool: ...
     # Skipped SupportsMethod due to it being static, abstract and generic.
 
-    SupportsMethod: SupportsMethod_MethodGroup
+    SupportsMethod : SupportsMethod_MethodGroup
     class SupportsMethod_MethodGroup:
         @typing.overload
-        def __call__(self, technique: int) -> bool: ...
+        def __call__(self, technique: int) -> bool:...
         @typing.overload
-        def __call__(self, method: Method) -> bool: ...
+        def __call__(self, method: Method) -> bool:...
+
+
 
 class DeviceLicenseInfo(typing.SupportsInt):
     @typing.overload
-    def __init__(self, value: int) -> None: ...
+    def __init__(self, value : int) -> None: ...
     @typing.overload
-    def __init__(self, value: int, force_if_true: bool) -> None: ...
+    def __init__(self, value : int, force_if_true: bool) -> None: ...
     def __int__(self) -> int: ...
 
     # Values:
-    SDK: DeviceLicenseInfo  # 1
-    AnalyticalMode: DeviceLicenseInfo  # 2
+    SDK : DeviceLicenseInfo # 1
+    AnalyticalMode : DeviceLicenseInfo # 2
+
 
 class DeviceList:
     @typing.overload
-    def __init__(
-        self, discoverDevicesFuncs: List_1[DeviceList.DiscoverDevicesFunc]
-    ) -> None: ...
+    def __init__(self, discoverDevicesFuncs: List_1[DeviceList.DiscoverDevicesFunc]) -> None: ...
     @typing.overload
     def __init__(self, discoverDevicesFuncsAsync: List_1[Task_1[List_1[Device]]]) -> None: ...
 
@@ -659,37 +622,28 @@ class DeviceList:
         def Method(self) -> MethodInfo: ...
         @property
         def Target(self) -> typing.Any: ...
-        def BeginInvoke(
-            self, errors: clr.Reference[str], callback: AsyncCallback, object: typing.Any
-        ) -> IAsyncResult: ...
-        def EndInvoke(
-            self, errors: clr.Reference[str], result: IAsyncResult
-        ) -> List_1[Device]: ...
+        def BeginInvoke(self, errors: clr.Reference[str], callback: AsyncCallback, object: typing.Any) -> IAsyncResult: ...
+        def EndInvoke(self, errors: clr.Reference[str], result: IAsyncResult) -> List_1[Device]: ...
         def Invoke(self, errors: clr.Reference[str]) -> List_1[Device]: ...
 
-    DiscoverDevicesFuncAsync: Task_1[List_1[Device]]
-    def GetAvailableDevices(
-        self,
-        errors: clr.Reference[str],
-        includeWireless: bool = ...,
-        includeProgramPort: bool = ...,
-    ) -> Array_1[Device]: ...
-    def GetAvailableDevicesAsync(
-        self, includeWireless: bool = ..., includeProgramPort: bool = ...
-    ) -> Task_1[Array_1[Device]]: ...
+    DiscoverDevicesFuncAsync : Task_1[List_1[Device]]
+    def GetAvailableDevices(self, errors: clr.Reference[str], includeWireless: bool = ..., includeProgramPort: bool = ...) -> Array_1[Device]: ...
+    def GetAvailableDevicesAsync(self, includeWireless: bool = ..., includeProgramPort: bool = ...) -> Task_1[Array_1[Device]]: ...
+
 
 class DeviceProtocol(typing.SupportsInt):
     @typing.overload
-    def __init__(self, value: int) -> None: ...
+    def __init__(self, value : int) -> None: ...
     @typing.overload
-    def __init__(self, value: int, force_if_true: bool) -> None: ...
+    def __init__(self, value : int, force_if_true: bool) -> None: ...
     def __int__(self) -> int: ...
 
     # Values:
-    PalmSens: DeviceProtocol  # 0
-    MethodSCRIPT: DeviceProtocol  # 1
-    SAMBA: DeviceProtocol  # 2
-    HVGA: DeviceProtocol  # 3
+    PalmSens : DeviceProtocol # 0
+    MethodSCRIPT : DeviceProtocol # 1
+    SAMBA : DeviceProtocol # 2
+    HVGA : DeviceProtocol # 3
+
 
 class EISSettings(abc.ABC):
     @property
@@ -734,6 +688,7 @@ class EISSettings(abc.ABC):
     def GetSamplingRate(self, frequency: float) -> int: ...
     @abc.abstractmethod
     def UseHSTAB(self, frequency: float, CRbyte: int) -> bool: ...
+
 
 class EISSettingsPS3(EISSettings):
     def __init__(self) -> None: ...
@@ -860,6 +815,7 @@ class EISSettingsPS3(EISSettings):
     def GettSingleADConversion(self, frequency: float) -> float: ...
     def UseHSTAB(self, frequency: float, CRbyte: int) -> bool: ...
 
+
 class EISSettingsPS4(EISSettings):
     def __init__(self) -> None: ...
     @property
@@ -907,30 +863,29 @@ class EISSettingsPS4(EISSettings):
     def GetSamplingRate(self, frequency: float) -> int: ...
     def UseHSTAB(self, frequency: float, CRbyte: int) -> bool: ...
 
+
 class Emstat2Capabilities(EmstatCapabilities):
     def __init__(self) -> None: ...
-    BiPotCalibration: PalmSensBiPotCalibration
-    CustomDeviceID: str
-    EISCalibration: EISCalibration
-    EISsettings: EISSettings
-    EmStatBiPotMode: DeviceCapabilities.EnumEmStatBipotMode
-    FirmwareIsBeta: bool
-    FirmwareTimeStamp: str
-    IsEmStatBipotBoard: bool
-    IsWireless: bool
-    MaxMuxChannels: int
-    MIN_FIRMWARE_REQUIRED: float
-    MuxModel: MuxModel
-    MuxType: MuxType
-    NumMuxChannels: int
-    SpecialFirmwareDescription: str
-    SupportsAuxiliary: bool
+    BiPotCalibration : PalmSensBiPotCalibration
+    CustomDeviceID : str
+    EISCalibration : EISCalibration
+    EISsettings : EISSettings
+    EmStatBiPotMode : DeviceCapabilities.EnumEmStatBipotMode
+    FirmwareIsBeta : bool
+    FirmwareTimeStamp : str
+    IsEmStatBipotBoard : bool
+    IsWireless : bool
+    MaxMuxChannels : int
+    MIN_FIRMWARE_REQUIRED : float
+    MuxModel : MuxModel
+    MuxType : MuxType
+    NumMuxChannels : int
+    SpecialFirmwareDescription : str
+    SupportsAuxiliary : bool
     @property
     def ActiveSignalTrainConfiguration(self) -> MethodScript.PGStatModes: ...
     @ActiveSignalTrainConfiguration.setter
-    def ActiveSignalTrainConfiguration(
-        self, value: MethodScript.PGStatModes
-    ) -> MethodScript.PGStatModes: ...
+    def ActiveSignalTrainConfiguration(self, value: MethodScript.PGStatModes) -> MethodScript.PGStatModes: ...
     @property
     def ADCAuxiliary(self) -> AnalogComponent: ...
     @property
@@ -968,9 +923,7 @@ class Emstat2Capabilities(EmstatCapabilities):
     @property
     def DefaultSignalTrainConfiguration(self) -> MethodScript.PGStatModes: ...
     @DefaultSignalTrainConfiguration.setter
-    def DefaultSignalTrainConfiguration(
-        self, value: MethodScript.PGStatModes
-    ) -> MethodScript.PGStatModes: ...
+    def DefaultSignalTrainConfiguration(self, value: MethodScript.PGStatModes) -> MethodScript.PGStatModes: ...
     @property
     def DeviceType(self) -> enumDeviceType: ...
     @property
@@ -1072,9 +1025,7 @@ class Emstat2Capabilities(EmstatCapabilities):
     @property
     def SupportedPotentialRanges(self) -> List_1[PotentialRange]: ...
     @SupportedPotentialRanges.setter
-    def SupportedPotentialRanges(
-        self, value: List_1[PotentialRange]
-    ) -> List_1[PotentialRange]: ...
+    def SupportedPotentialRanges(self, value: List_1[PotentialRange]) -> List_1[PotentialRange]: ...
     @property
     def SupportedPotentiostatChannels(self) -> PotentionstatChannels: ...
     @property
@@ -1114,30 +1065,29 @@ class Emstat2Capabilities(EmstatCapabilities):
     @property
     def SupportsStorage(self) -> bool: ...
     def ToString(self) -> str: ...
+
 
 class Emstat3BPCapabilities(Emstat3Capabilities):
     def __init__(self) -> None: ...
-    BiPotCalibration: PalmSensBiPotCalibration
-    CustomDeviceID: str
-    EISCalibration: EISCalibration
-    EISsettings: EISSettings
-    EmStatBiPotMode: DeviceCapabilities.EnumEmStatBipotMode
-    FirmwareIsBeta: bool
-    FirmwareTimeStamp: str
-    IsEmStatBipotBoard: bool
-    IsWireless: bool
-    MaxMuxChannels: int
-    MuxModel: MuxModel
-    MuxType: MuxType
-    NumMuxChannels: int
-    SpecialFirmwareDescription: str
-    SupportsAuxiliary: bool
+    BiPotCalibration : PalmSensBiPotCalibration
+    CustomDeviceID : str
+    EISCalibration : EISCalibration
+    EISsettings : EISSettings
+    EmStatBiPotMode : DeviceCapabilities.EnumEmStatBipotMode
+    FirmwareIsBeta : bool
+    FirmwareTimeStamp : str
+    IsEmStatBipotBoard : bool
+    IsWireless : bool
+    MaxMuxChannels : int
+    MuxModel : MuxModel
+    MuxType : MuxType
+    NumMuxChannels : int
+    SpecialFirmwareDescription : str
+    SupportsAuxiliary : bool
     @property
     def ActiveSignalTrainConfiguration(self) -> MethodScript.PGStatModes: ...
     @ActiveSignalTrainConfiguration.setter
-    def ActiveSignalTrainConfiguration(
-        self, value: MethodScript.PGStatModes
-    ) -> MethodScript.PGStatModes: ...
+    def ActiveSignalTrainConfiguration(self, value: MethodScript.PGStatModes) -> MethodScript.PGStatModes: ...
     @property
     def ADCAuxiliary(self) -> AnalogComponent: ...
     @property
@@ -1175,9 +1125,7 @@ class Emstat3BPCapabilities(Emstat3Capabilities):
     @property
     def DefaultSignalTrainConfiguration(self) -> MethodScript.PGStatModes: ...
     @DefaultSignalTrainConfiguration.setter
-    def DefaultSignalTrainConfiguration(
-        self, value: MethodScript.PGStatModes
-    ) -> MethodScript.PGStatModes: ...
+    def DefaultSignalTrainConfiguration(self, value: MethodScript.PGStatModes) -> MethodScript.PGStatModes: ...
     @property
     def DeviceType(self) -> enumDeviceType: ...
     @property
@@ -1279,9 +1227,7 @@ class Emstat3BPCapabilities(Emstat3Capabilities):
     @property
     def SupportedPotentialRanges(self) -> List_1[PotentialRange]: ...
     @SupportedPotentialRanges.setter
-    def SupportedPotentialRanges(
-        self, value: List_1[PotentialRange]
-    ) -> List_1[PotentialRange]: ...
+    def SupportedPotentialRanges(self, value: List_1[PotentialRange]) -> List_1[PotentialRange]: ...
     @property
     def SupportedPotentiostatChannels(self) -> PotentionstatChannels: ...
     @property
@@ -1321,31 +1267,30 @@ class Emstat3BPCapabilities(Emstat3Capabilities):
     @property
     def SupportsStorage(self) -> bool: ...
     def ToString(self) -> str: ...
+
 
 class Emstat3Capabilities(Emstat2Capabilities):
     def __init__(self) -> None: ...
-    BiPotCalibration: PalmSensBiPotCalibration
-    CustomDeviceID: str
-    EISCalibration: EISCalibration
-    EISsettings: EISSettings
-    EmStatBiPotMode: DeviceCapabilities.EnumEmStatBipotMode
-    FirmwareIsBeta: bool
-    FirmwareTimeStamp: str
-    IsEmStatBipotBoard: bool
-    IsWireless: bool
-    MaxMuxChannels: int
-    MIN_FIRMWARE_DATE: DateTime
-    MuxModel: MuxModel
-    MuxType: MuxType
-    NumMuxChannels: int
-    SpecialFirmwareDescription: str
-    SupportsAuxiliary: bool
+    BiPotCalibration : PalmSensBiPotCalibration
+    CustomDeviceID : str
+    EISCalibration : EISCalibration
+    EISsettings : EISSettings
+    EmStatBiPotMode : DeviceCapabilities.EnumEmStatBipotMode
+    FirmwareIsBeta : bool
+    FirmwareTimeStamp : str
+    IsEmStatBipotBoard : bool
+    IsWireless : bool
+    MaxMuxChannels : int
+    MIN_FIRMWARE_DATE : DateTime
+    MuxModel : MuxModel
+    MuxType : MuxType
+    NumMuxChannels : int
+    SpecialFirmwareDescription : str
+    SupportsAuxiliary : bool
     @property
     def ActiveSignalTrainConfiguration(self) -> MethodScript.PGStatModes: ...
     @ActiveSignalTrainConfiguration.setter
-    def ActiveSignalTrainConfiguration(
-        self, value: MethodScript.PGStatModes
-    ) -> MethodScript.PGStatModes: ...
+    def ActiveSignalTrainConfiguration(self, value: MethodScript.PGStatModes) -> MethodScript.PGStatModes: ...
     @property
     def ADCAuxiliary(self) -> AnalogComponent: ...
     @property
@@ -1383,9 +1328,7 @@ class Emstat3Capabilities(Emstat2Capabilities):
     @property
     def DefaultSignalTrainConfiguration(self) -> MethodScript.PGStatModes: ...
     @DefaultSignalTrainConfiguration.setter
-    def DefaultSignalTrainConfiguration(
-        self, value: MethodScript.PGStatModes
-    ) -> MethodScript.PGStatModes: ...
+    def DefaultSignalTrainConfiguration(self, value: MethodScript.PGStatModes) -> MethodScript.PGStatModes: ...
     @property
     def DeviceType(self) -> enumDeviceType: ...
     @property
@@ -1487,9 +1430,7 @@ class Emstat3Capabilities(Emstat2Capabilities):
     @property
     def SupportedPotentialRanges(self) -> List_1[PotentialRange]: ...
     @SupportedPotentialRanges.setter
-    def SupportedPotentialRanges(
-        self, value: List_1[PotentialRange]
-    ) -> List_1[PotentialRange]: ...
+    def SupportedPotentialRanges(self, value: List_1[PotentialRange]) -> List_1[PotentialRange]: ...
     @property
     def SupportedPotentiostatChannels(self) -> PotentionstatChannels: ...
     @property
@@ -1529,31 +1470,30 @@ class Emstat3Capabilities(Emstat2Capabilities):
     @property
     def SupportsStorage(self) -> bool: ...
     def ToString(self) -> str: ...
+
 
 class Emstat3PCapabilities(Emstat2Capabilities):
     def __init__(self) -> None: ...
-    BiPotCalibration: PalmSensBiPotCalibration
-    CustomDeviceID: str
-    EISCalibration: EISCalibration
-    EISsettings: EISSettings
-    EmStatBiPotMode: DeviceCapabilities.EnumEmStatBipotMode
-    FirmwareIsBeta: bool
-    FirmwareTimeStamp: str
-    IsEmStatBipotBoard: bool
-    IsWireless: bool
-    MaxMuxChannels: int
-    MIN_FIRMWARE_DATE: DateTime
-    MuxModel: MuxModel
-    MuxType: MuxType
-    NumMuxChannels: int
-    SpecialFirmwareDescription: str
-    SupportsAuxiliary: bool
+    BiPotCalibration : PalmSensBiPotCalibration
+    CustomDeviceID : str
+    EISCalibration : EISCalibration
+    EISsettings : EISSettings
+    EmStatBiPotMode : DeviceCapabilities.EnumEmStatBipotMode
+    FirmwareIsBeta : bool
+    FirmwareTimeStamp : str
+    IsEmStatBipotBoard : bool
+    IsWireless : bool
+    MaxMuxChannels : int
+    MIN_FIRMWARE_DATE : DateTime
+    MuxModel : MuxModel
+    MuxType : MuxType
+    NumMuxChannels : int
+    SpecialFirmwareDescription : str
+    SupportsAuxiliary : bool
     @property
     def ActiveSignalTrainConfiguration(self) -> MethodScript.PGStatModes: ...
     @ActiveSignalTrainConfiguration.setter
-    def ActiveSignalTrainConfiguration(
-        self, value: MethodScript.PGStatModes
-    ) -> MethodScript.PGStatModes: ...
+    def ActiveSignalTrainConfiguration(self, value: MethodScript.PGStatModes) -> MethodScript.PGStatModes: ...
     @property
     def ADCAuxiliary(self) -> AnalogComponent: ...
     @property
@@ -1591,9 +1531,7 @@ class Emstat3PCapabilities(Emstat2Capabilities):
     @property
     def DefaultSignalTrainConfiguration(self) -> MethodScript.PGStatModes: ...
     @DefaultSignalTrainConfiguration.setter
-    def DefaultSignalTrainConfiguration(
-        self, value: MethodScript.PGStatModes
-    ) -> MethodScript.PGStatModes: ...
+    def DefaultSignalTrainConfiguration(self, value: MethodScript.PGStatModes) -> MethodScript.PGStatModes: ...
     @property
     def DeviceType(self) -> enumDeviceType: ...
     @property
@@ -1695,9 +1633,7 @@ class Emstat3PCapabilities(Emstat2Capabilities):
     @property
     def SupportedPotentialRanges(self) -> List_1[PotentialRange]: ...
     @SupportedPotentialRanges.setter
-    def SupportedPotentialRanges(
-        self, value: List_1[PotentialRange]
-    ) -> List_1[PotentialRange]: ...
+    def SupportedPotentialRanges(self, value: List_1[PotentialRange]) -> List_1[PotentialRange]: ...
     @property
     def SupportedPotentiostatChannels(self) -> PotentionstatChannels: ...
     @property
@@ -1737,30 +1673,29 @@ class Emstat3PCapabilities(Emstat2Capabilities):
     @property
     def SupportsStorage(self) -> bool: ...
     def ToString(self) -> str: ...
+
 
 class Emstat3TSCapabilities(Emstat3Capabilities):
     def __init__(self) -> None: ...
-    BiPotCalibration: PalmSensBiPotCalibration
-    CustomDeviceID: str
-    EISCalibration: EISCalibration
-    EISsettings: EISSettings
-    EmStatBiPotMode: DeviceCapabilities.EnumEmStatBipotMode
-    FirmwareIsBeta: bool
-    FirmwareTimeStamp: str
-    IsEmStatBipotBoard: bool
-    IsWireless: bool
-    MaxMuxChannels: int
-    MuxModel: MuxModel
-    MuxType: MuxType
-    NumMuxChannels: int
-    SpecialFirmwareDescription: str
-    SupportsAuxiliary: bool
+    BiPotCalibration : PalmSensBiPotCalibration
+    CustomDeviceID : str
+    EISCalibration : EISCalibration
+    EISsettings : EISSettings
+    EmStatBiPotMode : DeviceCapabilities.EnumEmStatBipotMode
+    FirmwareIsBeta : bool
+    FirmwareTimeStamp : str
+    IsEmStatBipotBoard : bool
+    IsWireless : bool
+    MaxMuxChannels : int
+    MuxModel : MuxModel
+    MuxType : MuxType
+    NumMuxChannels : int
+    SpecialFirmwareDescription : str
+    SupportsAuxiliary : bool
     @property
     def ActiveSignalTrainConfiguration(self) -> MethodScript.PGStatModes: ...
     @ActiveSignalTrainConfiguration.setter
-    def ActiveSignalTrainConfiguration(
-        self, value: MethodScript.PGStatModes
-    ) -> MethodScript.PGStatModes: ...
+    def ActiveSignalTrainConfiguration(self, value: MethodScript.PGStatModes) -> MethodScript.PGStatModes: ...
     @property
     def ADCAuxiliary(self) -> AnalogComponent: ...
     @property
@@ -1798,9 +1733,7 @@ class Emstat3TSCapabilities(Emstat3Capabilities):
     @property
     def DefaultSignalTrainConfiguration(self) -> MethodScript.PGStatModes: ...
     @DefaultSignalTrainConfiguration.setter
-    def DefaultSignalTrainConfiguration(
-        self, value: MethodScript.PGStatModes
-    ) -> MethodScript.PGStatModes: ...
+    def DefaultSignalTrainConfiguration(self, value: MethodScript.PGStatModes) -> MethodScript.PGStatModes: ...
     @property
     def DeviceType(self) -> enumDeviceType: ...
     @property
@@ -1902,9 +1835,7 @@ class Emstat3TSCapabilities(Emstat3Capabilities):
     @property
     def SupportedPotentialRanges(self) -> List_1[PotentialRange]: ...
     @SupportedPotentialRanges.setter
-    def SupportedPotentialRanges(
-        self, value: List_1[PotentialRange]
-    ) -> List_1[PotentialRange]: ...
+    def SupportedPotentialRanges(self, value: List_1[PotentialRange]) -> List_1[PotentialRange]: ...
     @property
     def SupportedPotentiostatChannels(self) -> PotentionstatChannels: ...
     @property
@@ -1945,30 +1876,29 @@ class Emstat3TSCapabilities(Emstat3Capabilities):
     def SupportsStorage(self) -> bool: ...
     def ToString(self) -> str: ...
 
+
 class EmStat4BLCapabilities(EmStat4CommonCapabilities):
     def __init__(self) -> None: ...
-    BiPotCalibration: PalmSensBiPotCalibration
-    CustomDeviceID: str
-    EISCalibration: EISCalibration
-    EISsettings: EISSettings
-    EmStatBiPotMode: DeviceCapabilities.EnumEmStatBipotMode
-    FirmwareIsBeta: bool
-    FirmwareTimeStamp: str
-    IsEmStatBipotBoard: bool
-    IsWireless: bool
-    MaxMuxChannels: int
-    MSSupportedCommands: List_1[MethodScriptDeviceCapabilities.MSCommands]
-    MuxModel: MuxModel
-    MuxType: MuxType
-    NumMuxChannels: int
-    SpecialFirmwareDescription: str
-    SupportsAuxiliary: bool
+    BiPotCalibration : PalmSensBiPotCalibration
+    CustomDeviceID : str
+    EISCalibration : EISCalibration
+    EISsettings : EISSettings
+    EmStatBiPotMode : DeviceCapabilities.EnumEmStatBipotMode
+    FirmwareIsBeta : bool
+    FirmwareTimeStamp : str
+    IsEmStatBipotBoard : bool
+    IsWireless : bool
+    MaxMuxChannels : int
+    MSSupportedCommands : List_1[MethodScriptDeviceCapabilities.MSCommands]
+    MuxModel : MuxModel
+    MuxType : MuxType
+    NumMuxChannels : int
+    SpecialFirmwareDescription : str
+    SupportsAuxiliary : bool
     @property
     def ActiveSignalTrainConfiguration(self) -> MethodScript.PGStatModes: ...
     @ActiveSignalTrainConfiguration.setter
-    def ActiveSignalTrainConfiguration(
-        self, value: MethodScript.PGStatModes
-    ) -> MethodScript.PGStatModes: ...
+    def ActiveSignalTrainConfiguration(self, value: MethodScript.PGStatModes) -> MethodScript.PGStatModes: ...
     @property
     def ADCAuxiliary(self) -> AnalogComponent: ...
     @property
@@ -2118,9 +2048,7 @@ class EmStat4BLCapabilities(EmStat4CommonCapabilities):
     @property
     def SupportedPotentialRanges(self) -> List_1[PotentialRange]: ...
     @SupportedPotentialRanges.setter
-    def SupportedPotentialRanges(
-        self, value: List_1[PotentialRange]
-    ) -> List_1[PotentialRange]: ...
+    def SupportedPotentialRanges(self, value: List_1[PotentialRange]) -> List_1[PotentialRange]: ...
     @property
     def SupportedPotentiostatChannels(self) -> PotentionstatChannels: ...
     @property
@@ -2169,32 +2097,31 @@ class EmStat4BLCapabilities(EmStat4CommonCapabilities):
     def TechniqueNumberMethodSCRIPTCommandMapping(self) -> Dictionary_2[int, int]: ...
     def RangeToInputRange(self, pr: PotentialRange) -> float: ...
 
+
 class EmStat4CommonCapabilities(MethodScriptDeviceCapabilities):
     def __init__(self) -> None: ...
-    BiPotCalibration: PalmSensBiPotCalibration
-    CustomDeviceID: str
-    EISCalibration: EISCalibration
-    EISsettings: EISSettings
-    EmStatBiPotMode: DeviceCapabilities.EnumEmStatBipotMode
-    FirmwareIsBeta: bool
-    FirmwareTimeStamp: str
-    IsEmStatBipotBoard: bool
-    IsWireless: bool
-    MaxMuxChannels: int
-    MIN_FIRMWARE_DATE: DateTime
-    MIN_FIRMWARE_REQUIRED: float
-    MSSupportedCommands: List_1[MethodScriptDeviceCapabilities.MSCommands]
-    MuxModel: MuxModel
-    MuxType: MuxType
-    NumMuxChannels: int
-    SpecialFirmwareDescription: str
-    SupportsAuxiliary: bool
+    BiPotCalibration : PalmSensBiPotCalibration
+    CustomDeviceID : str
+    EISCalibration : EISCalibration
+    EISsettings : EISSettings
+    EmStatBiPotMode : DeviceCapabilities.EnumEmStatBipotMode
+    FirmwareIsBeta : bool
+    FirmwareTimeStamp : str
+    IsEmStatBipotBoard : bool
+    IsWireless : bool
+    MaxMuxChannels : int
+    MIN_FIRMWARE_DATE : DateTime
+    MIN_FIRMWARE_REQUIRED : float
+    MSSupportedCommands : List_1[MethodScriptDeviceCapabilities.MSCommands]
+    MuxModel : MuxModel
+    MuxType : MuxType
+    NumMuxChannels : int
+    SpecialFirmwareDescription : str
+    SupportsAuxiliary : bool
     @property
     def ActiveSignalTrainConfiguration(self) -> MethodScript.PGStatModes: ...
     @ActiveSignalTrainConfiguration.setter
-    def ActiveSignalTrainConfiguration(
-        self, value: MethodScript.PGStatModes
-    ) -> MethodScript.PGStatModes: ...
+    def ActiveSignalTrainConfiguration(self, value: MethodScript.PGStatModes) -> MethodScript.PGStatModes: ...
     @property
     def ADCAuxiliary(self) -> AnalogComponent: ...
     @property
@@ -2344,9 +2271,7 @@ class EmStat4CommonCapabilities(MethodScriptDeviceCapabilities):
     @property
     def SupportedPotentialRanges(self) -> List_1[PotentialRange]: ...
     @SupportedPotentialRanges.setter
-    def SupportedPotentialRanges(
-        self, value: List_1[PotentialRange]
-    ) -> List_1[PotentialRange]: ...
+    def SupportedPotentialRanges(self, value: List_1[PotentialRange]) -> List_1[PotentialRange]: ...
     @property
     def SupportedPotentiostatChannels(self) -> PotentionstatChannels: ...
     @property
@@ -2394,9 +2319,7 @@ class EmStat4CommonCapabilities(MethodScriptDeviceCapabilities):
     @property
     def TechniqueNumberMethodSCRIPTCommandMapping(self) -> Dictionary_2[int, int]: ...
     def CanSendDuringMeasurement(self, tbase: float) -> bool: ...
-    def GetEstimatedFrequencyDuration(
-        self, frequency: float, method: ImpedimetricMethodBase
-    ) -> float: ...
+    def GetEstimatedFrequencyDuration(self, frequency: float, method: ImpedimetricMethodBase) -> float: ...
     def GetEstimatedFrequencyScanDuration(self, method: ImpedimetricMethodBase) -> float: ...
     def MinSampleProcessingWindow(self, nVars: int) -> ValueTuple_2[float, float]: ...
     def MinSampleProcessingWindowInternalStorage(self, nVars: int) -> float: ...
@@ -2404,30 +2327,29 @@ class EmStat4CommonCapabilities(MethodScriptDeviceCapabilities):
     def RangeToInputRange(self, cr: CurrentRange) -> float: ...
     def ToString(self) -> str: ...
 
+
 class EmStat4HRCapabilities(EmStat4CommonCapabilities):
     def __init__(self) -> None: ...
-    BiPotCalibration: PalmSensBiPotCalibration
-    CustomDeviceID: str
-    EISCalibration: EISCalibration
-    EISsettings: EISSettings
-    EmStatBiPotMode: DeviceCapabilities.EnumEmStatBipotMode
-    FirmwareIsBeta: bool
-    FirmwareTimeStamp: str
-    IsEmStatBipotBoard: bool
-    IsWireless: bool
-    MaxMuxChannels: int
-    MSSupportedCommands: List_1[MethodScriptDeviceCapabilities.MSCommands]
-    MuxModel: MuxModel
-    MuxType: MuxType
-    NumMuxChannels: int
-    SpecialFirmwareDescription: str
-    SupportsAuxiliary: bool
+    BiPotCalibration : PalmSensBiPotCalibration
+    CustomDeviceID : str
+    EISCalibration : EISCalibration
+    EISsettings : EISSettings
+    EmStatBiPotMode : DeviceCapabilities.EnumEmStatBipotMode
+    FirmwareIsBeta : bool
+    FirmwareTimeStamp : str
+    IsEmStatBipotBoard : bool
+    IsWireless : bool
+    MaxMuxChannels : int
+    MSSupportedCommands : List_1[MethodScriptDeviceCapabilities.MSCommands]
+    MuxModel : MuxModel
+    MuxType : MuxType
+    NumMuxChannels : int
+    SpecialFirmwareDescription : str
+    SupportsAuxiliary : bool
     @property
     def ActiveSignalTrainConfiguration(self) -> MethodScript.PGStatModes: ...
     @ActiveSignalTrainConfiguration.setter
-    def ActiveSignalTrainConfiguration(
-        self, value: MethodScript.PGStatModes
-    ) -> MethodScript.PGStatModes: ...
+    def ActiveSignalTrainConfiguration(self, value: MethodScript.PGStatModes) -> MethodScript.PGStatModes: ...
     @property
     def ADCAuxiliary(self) -> AnalogComponent: ...
     @property
@@ -2577,9 +2499,7 @@ class EmStat4HRCapabilities(EmStat4CommonCapabilities):
     @property
     def SupportedPotentialRanges(self) -> List_1[PotentialRange]: ...
     @SupportedPotentialRanges.setter
-    def SupportedPotentialRanges(
-        self, value: List_1[PotentialRange]
-    ) -> List_1[PotentialRange]: ...
+    def SupportedPotentialRanges(self, value: List_1[PotentialRange]) -> List_1[PotentialRange]: ...
     @property
     def SupportedPotentiostatChannels(self) -> PotentionstatChannels: ...
     @property
@@ -2627,31 +2547,30 @@ class EmStat4HRCapabilities(EmStat4CommonCapabilities):
     @property
     def TechniqueNumberMethodSCRIPTCommandMapping(self) -> Dictionary_2[int, int]: ...
     def RangeToInputRange(self, pr: PotentialRange) -> float: ...
+
 
 class EmStat4LRCapabilities(EmStat4CommonCapabilities):
     def __init__(self) -> None: ...
-    BiPotCalibration: PalmSensBiPotCalibration
-    CustomDeviceID: str
-    EISCalibration: EISCalibration
-    EISsettings: EISSettings
-    EmStatBiPotMode: DeviceCapabilities.EnumEmStatBipotMode
-    FirmwareIsBeta: bool
-    FirmwareTimeStamp: str
-    IsEmStatBipotBoard: bool
-    IsWireless: bool
-    MaxMuxChannels: int
-    MSSupportedCommands: List_1[MethodScriptDeviceCapabilities.MSCommands]
-    MuxModel: MuxModel
-    MuxType: MuxType
-    NumMuxChannels: int
-    SpecialFirmwareDescription: str
-    SupportsAuxiliary: bool
+    BiPotCalibration : PalmSensBiPotCalibration
+    CustomDeviceID : str
+    EISCalibration : EISCalibration
+    EISsettings : EISSettings
+    EmStatBiPotMode : DeviceCapabilities.EnumEmStatBipotMode
+    FirmwareIsBeta : bool
+    FirmwareTimeStamp : str
+    IsEmStatBipotBoard : bool
+    IsWireless : bool
+    MaxMuxChannels : int
+    MSSupportedCommands : List_1[MethodScriptDeviceCapabilities.MSCommands]
+    MuxModel : MuxModel
+    MuxType : MuxType
+    NumMuxChannels : int
+    SpecialFirmwareDescription : str
+    SupportsAuxiliary : bool
     @property
     def ActiveSignalTrainConfiguration(self) -> MethodScript.PGStatModes: ...
     @ActiveSignalTrainConfiguration.setter
-    def ActiveSignalTrainConfiguration(
-        self, value: MethodScript.PGStatModes
-    ) -> MethodScript.PGStatModes: ...
+    def ActiveSignalTrainConfiguration(self, value: MethodScript.PGStatModes) -> MethodScript.PGStatModes: ...
     @property
     def ADCAuxiliary(self) -> AnalogComponent: ...
     @property
@@ -2801,9 +2720,7 @@ class EmStat4LRCapabilities(EmStat4CommonCapabilities):
     @property
     def SupportedPotentialRanges(self) -> List_1[PotentialRange]: ...
     @SupportedPotentialRanges.setter
-    def SupportedPotentialRanges(
-        self, value: List_1[PotentialRange]
-    ) -> List_1[PotentialRange]: ...
+    def SupportedPotentialRanges(self, value: List_1[PotentialRange]) -> List_1[PotentialRange]: ...
     @property
     def SupportedPotentiostatChannels(self) -> PotentionstatChannels: ...
     @property
@@ -2852,31 +2769,30 @@ class EmStat4LRCapabilities(EmStat4CommonCapabilities):
     def TechniqueNumberMethodSCRIPTCommandMapping(self) -> Dictionary_2[int, int]: ...
     def RangeToInputRange(self, pr: PotentialRange) -> float: ...
 
+
 class EmstatCapabilities(DeviceCapabilities):
     def __init__(self) -> None: ...
-    BiPotCalibration: PalmSensBiPotCalibration
-    CustomDeviceID: str
-    EISCalibration: EISCalibration
-    EISsettings: EISSettings
-    EmStatBiPotMode: DeviceCapabilities.EnumEmStatBipotMode
-    FirmwareIsBeta: bool
-    FirmwareTimeStamp: str
-    IsEmStatBipotBoard: bool
-    IsWireless: bool
-    MaxMuxChannels: int
-    MIN_FIRMWARE_DATE: DateTime
-    MIN_FIRMWARE_REQUIRED: float
-    MuxModel: MuxModel
-    MuxType: MuxType
-    NumMuxChannels: int
-    SpecialFirmwareDescription: str
-    SupportsAuxiliary: bool
+    BiPotCalibration : PalmSensBiPotCalibration
+    CustomDeviceID : str
+    EISCalibration : EISCalibration
+    EISsettings : EISSettings
+    EmStatBiPotMode : DeviceCapabilities.EnumEmStatBipotMode
+    FirmwareIsBeta : bool
+    FirmwareTimeStamp : str
+    IsEmStatBipotBoard : bool
+    IsWireless : bool
+    MaxMuxChannels : int
+    MIN_FIRMWARE_DATE : DateTime
+    MIN_FIRMWARE_REQUIRED : float
+    MuxModel : MuxModel
+    MuxType : MuxType
+    NumMuxChannels : int
+    SpecialFirmwareDescription : str
+    SupportsAuxiliary : bool
     @property
     def ActiveSignalTrainConfiguration(self) -> MethodScript.PGStatModes: ...
     @ActiveSignalTrainConfiguration.setter
-    def ActiveSignalTrainConfiguration(
-        self, value: MethodScript.PGStatModes
-    ) -> MethodScript.PGStatModes: ...
+    def ActiveSignalTrainConfiguration(self, value: MethodScript.PGStatModes) -> MethodScript.PGStatModes: ...
     @property
     def ADCAuxiliary(self) -> AnalogComponent: ...
     @property
@@ -2914,9 +2830,7 @@ class EmstatCapabilities(DeviceCapabilities):
     @property
     def DefaultSignalTrainConfiguration(self) -> MethodScript.PGStatModes: ...
     @DefaultSignalTrainConfiguration.setter
-    def DefaultSignalTrainConfiguration(
-        self, value: MethodScript.PGStatModes
-    ) -> MethodScript.PGStatModes: ...
+    def DefaultSignalTrainConfiguration(self, value: MethodScript.PGStatModes) -> MethodScript.PGStatModes: ...
     @property
     def DeviceType(self) -> enumDeviceType: ...
     @property
@@ -3018,9 +2932,7 @@ class EmstatCapabilities(DeviceCapabilities):
     @property
     def SupportedPotentialRanges(self) -> List_1[PotentialRange]: ...
     @SupportedPotentialRanges.setter
-    def SupportedPotentialRanges(
-        self, value: List_1[PotentialRange]
-    ) -> List_1[PotentialRange]: ...
+    def SupportedPotentialRanges(self, value: List_1[PotentialRange]) -> List_1[PotentialRange]: ...
     @property
     def SupportedPotentiostatChannels(self) -> PotentionstatChannels: ...
     @property
@@ -3063,37 +2975,32 @@ class EmstatCapabilities(DeviceCapabilities):
     def PotentialRangeToGainSetting(self, range: PotentialRanges) -> int: ...
     def ToString(self) -> str: ...
 
-class EmStatPicoCapabilities(
-    MethodScriptDeviceCapabilities,
-    IHibernationCapabilities,
-    INonVolatileMemoryMETHODScriptCapabilities,
-):
+
+class EmStatPicoCapabilities(MethodScriptDeviceCapabilities, IHibernationCapabilities, INonVolatileMemoryMETHODScriptCapabilities):
     def __init__(self) -> None: ...
-    BiPotCalibration: PalmSensBiPotCalibration
-    CustomDeviceID: str
-    EISCalibration: EISCalibration
-    EISsettings: EISSettings
-    EmStatBiPotMode: DeviceCapabilities.EnumEmStatBipotMode
-    FirmwareIsBeta: bool
-    FirmwareTimeStamp: str
-    IsEmStatBipotBoard: bool
-    IsWireless: bool
-    MaxMuxChannels: int
-    MIN_FIRMWARE_DATE: DateTime
-    MIN_FIRMWARE_REQUIRED: float
-    MSSupportedCommands: List_1[MethodScriptDeviceCapabilities.MSCommands]
-    MuxModel: MuxModel
-    MuxType: MuxType
-    NumMuxChannels: int
-    SpecialFirmwareDescription: str
-    SupportsAuxiliary: bool
-    SupportsStorageSetter: bool
+    BiPotCalibration : PalmSensBiPotCalibration
+    CustomDeviceID : str
+    EISCalibration : EISCalibration
+    EISsettings : EISSettings
+    EmStatBiPotMode : DeviceCapabilities.EnumEmStatBipotMode
+    FirmwareIsBeta : bool
+    FirmwareTimeStamp : str
+    IsEmStatBipotBoard : bool
+    IsWireless : bool
+    MaxMuxChannels : int
+    MIN_FIRMWARE_DATE : DateTime
+    MIN_FIRMWARE_REQUIRED : float
+    MSSupportedCommands : List_1[MethodScriptDeviceCapabilities.MSCommands]
+    MuxModel : MuxModel
+    MuxType : MuxType
+    NumMuxChannels : int
+    SpecialFirmwareDescription : str
+    SupportsAuxiliary : bool
+    SupportsStorageSetter : bool
     @property
     def ActiveSignalTrainConfiguration(self) -> MethodScript.PGStatModes: ...
     @ActiveSignalTrainConfiguration.setter
-    def ActiveSignalTrainConfiguration(
-        self, value: MethodScript.PGStatModes
-    ) -> MethodScript.PGStatModes: ...
+    def ActiveSignalTrainConfiguration(self, value: MethodScript.PGStatModes) -> MethodScript.PGStatModes: ...
     @property
     def ADCAuxiliary(self) -> AnalogComponent: ...
     @property
@@ -3243,9 +3150,7 @@ class EmStatPicoCapabilities(
     @property
     def SupportedPotentialRanges(self) -> List_1[PotentialRange]: ...
     @SupportedPotentialRanges.setter
-    def SupportedPotentialRanges(
-        self, value: List_1[PotentialRange]
-    ) -> List_1[PotentialRange]: ...
+    def SupportedPotentialRanges(self, value: List_1[PotentialRange]) -> List_1[PotentialRange]: ...
     @property
     def SupportedPotentiostatChannels(self) -> PotentionstatChannels: ...
     @property
@@ -3293,51 +3198,47 @@ class EmStatPicoCapabilities(
     @property
     def TechniqueNumberMethodSCRIPTCommandMapping(self) -> Dictionary_2[int, int]: ...
     def CanSendDuringMeasurement(self, tbase: float) -> bool: ...
-    def GetEstimatedFrequencyDuration(
-        self, frequency: float, method: ImpedimetricMethodBase
-    ) -> float: ...
+    def GetEstimatedFrequencyDuration(self, frequency: float, method: ImpedimetricMethodBase) -> float: ...
     def GetEstimatedFrequencyScanDuration(self, method: ImpedimetricMethodBase) -> float: ...
-    def GetModeSignalTrainCapabilities(
-        self, mode: MethodScript.PGStatModes
-    ) -> SignalTrainCapabilities: ...
+    def GetModeSignalTrainCapabilities(self, mode: MethodScript.PGStatModes) -> SignalTrainCapabilities: ...
     def MinSampleProcessingWindow(self, nVars: int) -> ValueTuple_2[float, float]: ...
     def MinSampleProcessingWindowInternalStorage(self, nVars: int) -> float: ...
     def PotentialRangeToGainSetting(self, range: PotentialRanges) -> int: ...
     def ToString(self) -> str: ...
     # Skipped RangeToInputRange due to it being static, abstract and generic.
 
-    RangeToInputRange: RangeToInputRange_MethodGroup
+    RangeToInputRange : RangeToInputRange_MethodGroup
     class RangeToInputRange_MethodGroup:
         @typing.overload
-        def __call__(self, cr: CurrentRange) -> float: ...
+        def __call__(self, cr: CurrentRange) -> float:...
         @typing.overload
-        def __call__(self, pr: PotentialRange) -> float: ...
+        def __call__(self, pr: PotentialRange) -> float:...
+
+
 
 class EmStatPicoCapabilitiesSim(EmStatPicoCapabilities):
     def __init__(self) -> None: ...
-    BiPotCalibration: PalmSensBiPotCalibration
-    CustomDeviceID: str
-    EISCalibration: EISCalibration
-    EISsettings: EISSettings
-    EmStatBiPotMode: DeviceCapabilities.EnumEmStatBipotMode
-    FirmwareIsBeta: bool
-    FirmwareTimeStamp: str
-    IsEmStatBipotBoard: bool
-    IsWireless: bool
-    MaxMuxChannels: int
-    MSSupportedCommands: List_1[MethodScriptDeviceCapabilities.MSCommands]
-    MuxModel: MuxModel
-    MuxType: MuxType
-    NumMuxChannels: int
-    SpecialFirmwareDescription: str
-    SupportsAuxiliary: bool
-    SupportsStorageSetter: bool
+    BiPotCalibration : PalmSensBiPotCalibration
+    CustomDeviceID : str
+    EISCalibration : EISCalibration
+    EISsettings : EISSettings
+    EmStatBiPotMode : DeviceCapabilities.EnumEmStatBipotMode
+    FirmwareIsBeta : bool
+    FirmwareTimeStamp : str
+    IsEmStatBipotBoard : bool
+    IsWireless : bool
+    MaxMuxChannels : int
+    MSSupportedCommands : List_1[MethodScriptDeviceCapabilities.MSCommands]
+    MuxModel : MuxModel
+    MuxType : MuxType
+    NumMuxChannels : int
+    SpecialFirmwareDescription : str
+    SupportsAuxiliary : bool
+    SupportsStorageSetter : bool
     @property
     def ActiveSignalTrainConfiguration(self) -> MethodScript.PGStatModes: ...
     @ActiveSignalTrainConfiguration.setter
-    def ActiveSignalTrainConfiguration(
-        self, value: MethodScript.PGStatModes
-    ) -> MethodScript.PGStatModes: ...
+    def ActiveSignalTrainConfiguration(self, value: MethodScript.PGStatModes) -> MethodScript.PGStatModes: ...
     @property
     def ADCAuxiliary(self) -> AnalogComponent: ...
     @property
@@ -3487,9 +3388,7 @@ class EmStatPicoCapabilitiesSim(EmStatPicoCapabilities):
     @property
     def SupportedPotentialRanges(self) -> List_1[PotentialRange]: ...
     @SupportedPotentialRanges.setter
-    def SupportedPotentialRanges(
-        self, value: List_1[PotentialRange]
-    ) -> List_1[PotentialRange]: ...
+    def SupportedPotentialRanges(self, value: List_1[PotentialRange]) -> List_1[PotentialRange]: ...
     @property
     def SupportedPotentiostatChannels(self) -> PotentionstatChannels: ...
     @property
@@ -3538,7 +3437,9 @@ class EmStatPicoCapabilitiesSim(EmStatPicoCapabilities):
     def TechniqueNumberMethodSCRIPTCommandMapping(self) -> Dictionary_2[int, int]: ...
     def ToString(self) -> str: ...
 
+
 class GetDeviceCapabilities(abc.ABC):
+
     class UnknownCapabilitiesException(Exception):
         @property
         def Data(self) -> IDictionary: ...
@@ -3565,18 +3466,19 @@ class GetDeviceCapabilities(abc.ABC):
 
     # Skipped GetCapabilities due to it being static, abstract and generic.
 
-    GetCapabilities: GetCapabilities_MethodGroup
+    GetCapabilities : GetCapabilities_MethodGroup
     class GetCapabilities_MethodGroup:
         @typing.overload
-        def __call__(
-            self, deviceType: enumDeviceType, device: Device
-        ) -> DeviceCapabilities: ...
+        def __call__(self, deviceType: enumDeviceType, device: Device) -> DeviceCapabilities:...
         @typing.overload
-        def __call__(self, versionString: str, device: Device) -> DeviceCapabilities: ...
+        def __call__(self, versionString: str, device: Device) -> DeviceCapabilities:...
+
+
 
 class IAndroidDevice(typing.Protocol):
     @abc.abstractmethod
     def ClearBuffer(self) -> None: ...
+
 
 class IBLEDevice(typing.Protocol):
     @property
@@ -3584,221 +3486,220 @@ class IBLEDevice(typing.Protocol):
     @ThrowCommError.setter
     def ThrowCommError(self, value: Action_1[Exception]) -> None: ...
 
+
 class IDualEISCapabilities(typing.Protocol):
     @property
     def SupportedDualEisModes(self) -> DualEISModes: ...
+
 
 class IHibernationCapabilities(typing.Protocol):
     @property
     def SupportedWakeOnTriggers(self) -> WakeOnTriggers: ...
 
+
 class INonVolatileMemoryMETHODScriptCapabilities(typing.Protocol):
     pass
+
 
 class MethodScriptDeviceCapabilities(DeviceCapabilities):
     def __init__(self) -> None: ...
 
     class MSCommands(typing.SupportsInt):
         @typing.overload
-        def __init__(self, value: int) -> None: ...
+        def __init__(self, value : int) -> None: ...
         @typing.overload
-        def __init__(self, value: int, force_if_true: bool) -> None: ...
+        def __init__(self, value : int, force_if_true: bool) -> None: ...
         def __int__(self) -> int: ...
 
         # Values:
-        FileOpen: MethodScriptDeviceCapabilities.MSCommands  # 0
-        FileClose: MethodScriptDeviceCapabilities.MSCommands  # 1
-        SetScriptOutput: MethodScriptDeviceCapabilities.MSCommands  # 2
-        BeginScript: MethodScriptDeviceCapabilities.MSCommands  # 3
-        LoadScript: MethodScriptDeviceCapabilities.MSCommands  # 4
-        RunScript: MethodScriptDeviceCapabilities.MSCommands  # 5
-        DeclareVariable: MethodScriptDeviceCapabilities.MSCommands  # 6
-        SetVariableValue: MethodScriptDeviceCapabilities.MSCommands  # 7
-        AddVariable: MethodScriptDeviceCapabilities.MSCommands  # 8
-        SubtractVariable: MethodScriptDeviceCapabilities.MSCommands  # 9
-        MultiplyVariable: MethodScriptDeviceCapabilities.MSCommands  # 10
-        DivideVariable: MethodScriptDeviceCapabilities.MSCommands  # 11
-        CopyVariable: MethodScriptDeviceCapabilities.MSCommands  # 12
-        SetPGStatMode: MethodScriptDeviceCapabilities.MSCommands  # 13
-        SetPGStatChannel: MethodScriptDeviceCapabilities.MSCommands  # 14
-        SetMaxBandwidth: MethodScriptDeviceCapabilities.MSCommands  # 15
-        SetCellCurrent: MethodScriptDeviceCapabilities.MSCommands  # 16
-        SetAutoRanging: MethodScriptDeviceCapabilities.MSCommands  # 17
-        SetRangeMinMax: MethodScriptDeviceCapabilities.MSCommands  # 18
-        SetCellPotential: MethodScriptDeviceCapabilities.MSCommands  # 19
-        SetCellOn: MethodScriptDeviceCapabilities.MSCommands  # 20
-        SetCellOff: MethodScriptDeviceCapabilities.MSCommands  # 21
-        SetBiPotModeOld: MethodScriptDeviceCapabilities.MSCommands  # 22
-        SetBiPotMode: MethodScriptDeviceCapabilities.MSCommands  # 23
-        SetBipotPotential: MethodScriptDeviceCapabilities.MSCommands  # 24
-        SetGPIO: MethodScriptDeviceCapabilities.MSCommands  # 25
-        Wait: MethodScriptDeviceCapabilities.MSCommands  # 26
-        MeasureDataPoint: MethodScriptDeviceCapabilities.MSCommands  # 27
-        ChronoAmperometry: MethodScriptDeviceCapabilities.MSCommands  # 28
-        ChronoPotentiometry: MethodScriptDeviceCapabilities.MSCommands  # 29
-        LinearSweepVoltammetry: MethodScriptDeviceCapabilities.MSCommands  # 30
-        LinearSweepPotentiometry: MethodScriptDeviceCapabilities.MSCommands  # 31
-        CyclicVoltammetry: MethodScriptDeviceCapabilities.MSCommands  # 32
-        ACVoltammetry: MethodScriptDeviceCapabilities.MSCommands  # 33
-        SquareWaveVoltammetry: MethodScriptDeviceCapabilities.MSCommands  # 34
-        DifferentialPulseVoltammetry: MethodScriptDeviceCapabilities.MSCommands  # 35
-        NormalPulseVoltammetry: MethodScriptDeviceCapabilities.MSCommands  # 36
-        PulsedAmperometricDetection: MethodScriptDeviceCapabilities.MSCommands  # 37
-        OpenCircuitPotentiometry: MethodScriptDeviceCapabilities.MSCommands  # 38
-        ElectrochemicalImpedanceSpectroscopy: MethodScriptDeviceCapabilities.MSCommands  # 39
-        DualElectrochemicalImpedanceSpectroscopy: (
-            MethodScriptDeviceCapabilities.MSCommands
-        )  # 40
-        GalvanostaticElectrochemicalImpedanceSpectroscopy: (
-            MethodScriptDeviceCapabilities.MSCommands
-        )  # 41
-        SaveOnDevice: MethodScriptDeviceCapabilities.MSCommands  # 42
-        SendPacketHeader: MethodScriptDeviceCapabilities.MSCommands  # 43
-        SendPacketTrailer: MethodScriptDeviceCapabilities.MSCommands  # 44
-        SendPacketVariable: MethodScriptDeviceCapabilities.MSCommands  # 45
-        BeginLoop: MethodScriptDeviceCapabilities.MSCommands  # 46
-        EndLoop: MethodScriptDeviceCapabilities.MSCommands  # 47
-        BreakLoop: MethodScriptDeviceCapabilities.MSCommands  # 48
-        EndScript: MethodScriptDeviceCapabilities.MSCommands  # 49
-        If: MethodScriptDeviceCapabilities.MSCommands  # 50
-        Else: MethodScriptDeviceCapabilities.MSCommands  # 51
-        ElseIf: MethodScriptDeviceCapabilities.MSCommands  # 52
-        EndIf: MethodScriptDeviceCapabilities.MSCommands  # 53
-        SendString: MethodScriptDeviceCapabilities.MSCommands  # 54
-        OnFinished: MethodScriptDeviceCapabilities.MSCommands  # 55
-        Calibrate: MethodScriptDeviceCapabilities.MSCommands  # 56
-        ConfigGPIO: MethodScriptDeviceCapabilities.MSCommands  # 57
-        GetGPIO: MethodScriptDeviceCapabilities.MSCommands  # 58
-        GetTime: MethodScriptDeviceCapabilities.MSCommands  # 59
-        TimerStart: MethodScriptDeviceCapabilities.MSCommands  # 60
-        TimerGet: MethodScriptDeviceCapabilities.MSCommands  # 61
-        SetInterval: MethodScriptDeviceCapabilities.MSCommands  # 62
-        SetRange: MethodScriptDeviceCapabilities.MSCommands  # 63
-        AwaitInterval: MethodScriptDeviceCapabilities.MSCommands  # 64
-        Abort: MethodScriptDeviceCapabilities.MSCommands  # 65
-        SetChannelSync: MethodScriptDeviceCapabilities.MSCommands  # 66
-        FastCyclicVoltammetry: MethodScriptDeviceCapabilities.MSCommands  # 67
-        DeclareArray: MethodScriptDeviceCapabilities.MSCommands  # 68
-        ArrayGet: MethodScriptDeviceCapabilities.MSCommands  # 69
-        ArraySet: MethodScriptDeviceCapabilities.MSCommands  # 70
-        SendPacketHeaderWithMask: MethodScriptDeviceCapabilities.MSCommands  # 71
-        SetScanDir: MethodScriptDeviceCapabilities.MSCommands  # 72
-        FastAmperometry: MethodScriptDeviceCapabilities.MSCommands  # 73
-        SetiRCompensation: MethodScriptDeviceCapabilities.MSCommands  # 74
-        SetAuxilliaryAnalogPotential: MethodScriptDeviceCapabilities.MSCommands  # 75
-        SetAcquisitionFracAutoAdjust: MethodScriptDeviceCapabilities.MSCommands  # 76
-        GetMuxChannelCount: MethodScriptDeviceCapabilities.MSCommands  # 77
-        MuxConfig: MethodScriptDeviceCapabilities.MSCommands  # 78
-        SetMuxChannel: MethodScriptDeviceCapabilities.MSCommands  # 79
-        ChronoAmperometryAlternatingMux: MethodScriptDeviceCapabilities.MSCommands  # 80
-        ChronoPotentiometryAlternatingMux: MethodScriptDeviceCapabilities.MSCommands  # 81
-        OpenCircuitPotentiometryAlternatingMux: MethodScriptDeviceCapabilities.MSCommands  # 82
-        LoadScriptToNVM: MethodScriptDeviceCapabilities.MSCommands  # 83
-        Hibernate: MethodScriptDeviceCapabilities.MSCommands  # 84
+        FileOpen : MethodScriptDeviceCapabilities.MSCommands # 0
+        FileClose : MethodScriptDeviceCapabilities.MSCommands # 1
+        SetScriptOutput : MethodScriptDeviceCapabilities.MSCommands # 2
+        BeginScript : MethodScriptDeviceCapabilities.MSCommands # 3
+        LoadScript : MethodScriptDeviceCapabilities.MSCommands # 4
+        RunScript : MethodScriptDeviceCapabilities.MSCommands # 5
+        DeclareVariable : MethodScriptDeviceCapabilities.MSCommands # 6
+        SetVariableValue : MethodScriptDeviceCapabilities.MSCommands # 7
+        AddVariable : MethodScriptDeviceCapabilities.MSCommands # 8
+        SubtractVariable : MethodScriptDeviceCapabilities.MSCommands # 9
+        MultiplyVariable : MethodScriptDeviceCapabilities.MSCommands # 10
+        DivideVariable : MethodScriptDeviceCapabilities.MSCommands # 11
+        CopyVariable : MethodScriptDeviceCapabilities.MSCommands # 12
+        SetPGStatMode : MethodScriptDeviceCapabilities.MSCommands # 13
+        SetPGStatChannel : MethodScriptDeviceCapabilities.MSCommands # 14
+        SetMaxBandwidth : MethodScriptDeviceCapabilities.MSCommands # 15
+        SetCellCurrent : MethodScriptDeviceCapabilities.MSCommands # 16
+        SetAutoRanging : MethodScriptDeviceCapabilities.MSCommands # 17
+        SetRangeMinMax : MethodScriptDeviceCapabilities.MSCommands # 18
+        SetCellPotential : MethodScriptDeviceCapabilities.MSCommands # 19
+        SetCellOn : MethodScriptDeviceCapabilities.MSCommands # 20
+        SetCellOff : MethodScriptDeviceCapabilities.MSCommands # 21
+        SetBiPotModeOld : MethodScriptDeviceCapabilities.MSCommands # 22
+        SetBiPotMode : MethodScriptDeviceCapabilities.MSCommands # 23
+        SetBipotPotential : MethodScriptDeviceCapabilities.MSCommands # 24
+        SetGPIO : MethodScriptDeviceCapabilities.MSCommands # 25
+        Wait : MethodScriptDeviceCapabilities.MSCommands # 26
+        MeasureDataPoint : MethodScriptDeviceCapabilities.MSCommands # 27
+        ChronoAmperometry : MethodScriptDeviceCapabilities.MSCommands # 28
+        ChronoPotentiometry : MethodScriptDeviceCapabilities.MSCommands # 29
+        LinearSweepVoltammetry : MethodScriptDeviceCapabilities.MSCommands # 30
+        LinearSweepPotentiometry : MethodScriptDeviceCapabilities.MSCommands # 31
+        CyclicVoltammetry : MethodScriptDeviceCapabilities.MSCommands # 32
+        ACVoltammetry : MethodScriptDeviceCapabilities.MSCommands # 33
+        SquareWaveVoltammetry : MethodScriptDeviceCapabilities.MSCommands # 34
+        DifferentialPulseVoltammetry : MethodScriptDeviceCapabilities.MSCommands # 35
+        NormalPulseVoltammetry : MethodScriptDeviceCapabilities.MSCommands # 36
+        PulsedAmperometricDetection : MethodScriptDeviceCapabilities.MSCommands # 37
+        OpenCircuitPotentiometry : MethodScriptDeviceCapabilities.MSCommands # 38
+        ElectrochemicalImpedanceSpectroscopy : MethodScriptDeviceCapabilities.MSCommands # 39
+        DualElectrochemicalImpedanceSpectroscopy : MethodScriptDeviceCapabilities.MSCommands # 40
+        GalvanostaticElectrochemicalImpedanceSpectroscopy : MethodScriptDeviceCapabilities.MSCommands # 41
+        SaveOnDevice : MethodScriptDeviceCapabilities.MSCommands # 42
+        SendPacketHeader : MethodScriptDeviceCapabilities.MSCommands # 43
+        SendPacketTrailer : MethodScriptDeviceCapabilities.MSCommands # 44
+        SendPacketVariable : MethodScriptDeviceCapabilities.MSCommands # 45
+        BeginLoop : MethodScriptDeviceCapabilities.MSCommands # 46
+        EndLoop : MethodScriptDeviceCapabilities.MSCommands # 47
+        BreakLoop : MethodScriptDeviceCapabilities.MSCommands # 48
+        EndScript : MethodScriptDeviceCapabilities.MSCommands # 49
+        If : MethodScriptDeviceCapabilities.MSCommands # 50
+        Else : MethodScriptDeviceCapabilities.MSCommands # 51
+        ElseIf : MethodScriptDeviceCapabilities.MSCommands # 52
+        EndIf : MethodScriptDeviceCapabilities.MSCommands # 53
+        SendString : MethodScriptDeviceCapabilities.MSCommands # 54
+        OnFinished : MethodScriptDeviceCapabilities.MSCommands # 55
+        Calibrate : MethodScriptDeviceCapabilities.MSCommands # 56
+        ConfigGPIO : MethodScriptDeviceCapabilities.MSCommands # 57
+        GetGPIO : MethodScriptDeviceCapabilities.MSCommands # 58
+        GetTime : MethodScriptDeviceCapabilities.MSCommands # 59
+        TimerStart : MethodScriptDeviceCapabilities.MSCommands # 60
+        TimerGet : MethodScriptDeviceCapabilities.MSCommands # 61
+        SetInterval : MethodScriptDeviceCapabilities.MSCommands # 62
+        SetRange : MethodScriptDeviceCapabilities.MSCommands # 63
+        AwaitInterval : MethodScriptDeviceCapabilities.MSCommands # 64
+        Abort : MethodScriptDeviceCapabilities.MSCommands # 65
+        SetChannelSync : MethodScriptDeviceCapabilities.MSCommands # 66
+        FastCyclicVoltammetry : MethodScriptDeviceCapabilities.MSCommands # 67
+        DeclareArray : MethodScriptDeviceCapabilities.MSCommands # 68
+        ArrayGet : MethodScriptDeviceCapabilities.MSCommands # 69
+        ArraySet : MethodScriptDeviceCapabilities.MSCommands # 70
+        SendPacketHeaderWithMask : MethodScriptDeviceCapabilities.MSCommands # 71
+        SetScanDir : MethodScriptDeviceCapabilities.MSCommands # 72
+        FastAmperometry : MethodScriptDeviceCapabilities.MSCommands # 73
+        SetiRCompensation : MethodScriptDeviceCapabilities.MSCommands # 74
+        SetAuxilliaryAnalogPotential : MethodScriptDeviceCapabilities.MSCommands # 75
+        SetAcquisitionFracAutoAdjust : MethodScriptDeviceCapabilities.MSCommands # 76
+        GetMuxChannelCount : MethodScriptDeviceCapabilities.MSCommands # 77
+        MuxConfig : MethodScriptDeviceCapabilities.MSCommands # 78
+        SetMuxChannel : MethodScriptDeviceCapabilities.MSCommands # 79
+        ChronoAmperometryAlternatingMux : MethodScriptDeviceCapabilities.MSCommands # 80
+        ChronoPotentiometryAlternatingMux : MethodScriptDeviceCapabilities.MSCommands # 81
+        OpenCircuitPotentiometryAlternatingMux : MethodScriptDeviceCapabilities.MSCommands # 82
+        LoadScriptToNVM : MethodScriptDeviceCapabilities.MSCommands # 83
+        Hibernate : MethodScriptDeviceCapabilities.MSCommands # 84
+
 
     class PckIDs(typing.SupportsInt):
         @typing.overload
-        def __init__(self, value: int) -> None: ...
+        def __init__(self, value : int) -> None: ...
         @typing.overload
-        def __init__(self, value: int, force_if_true: bool) -> None: ...
+        def __init__(self, value : int, force_if_true: bool) -> None: ...
         def __int__(self) -> int: ...
 
         # Values:
-        UNKNOWN: MethodScriptDeviceCapabilities.PckIDs  # 0
-        POTENTIAL_WE_RE: MethodScriptDeviceCapabilities.PckIDs  # 1
-        POTENTIAL_CE_GND: MethodScriptDeviceCapabilities.PckIDs  # 2
-        POTENTIAL_SE_GND: MethodScriptDeviceCapabilities.PckIDs  # 3
-        POTENTIAL_RE_GND: MethodScriptDeviceCapabilities.PckIDs  # 4
-        POTENTIAL_WE_GND: MethodScriptDeviceCapabilities.PckIDs  # 5
-        POTENTIAL_WE_CE: MethodScriptDeviceCapabilities.PckIDs  # 6
-        POTENTIAL_RE_SE2: MethodScriptDeviceCapabilities.PckIDs  # 7
-        POTENTIAL_SE_SE2: MethodScriptDeviceCapabilities.PckIDs  # 8
-        AIN0: MethodScriptDeviceCapabilities.PckIDs  # 9
-        AIN1: MethodScriptDeviceCapabilities.PckIDs  # 10
-        AIN2: MethodScriptDeviceCapabilities.PckIDs  # 11
-        CURRENT: MethodScriptDeviceCapabilities.PckIDs  # 12
-        CURRENT_BIPOT_OLD: MethodScriptDeviceCapabilities.PckIDs  # 13
-        CURRENT_FORWARD: MethodScriptDeviceCapabilities.PckIDs  # 14
-        CURRENT_REVERSE: MethodScriptDeviceCapabilities.PckIDs  # 15
-        CURRENT_BIPOT_NEW: MethodScriptDeviceCapabilities.PckIDs  # 16
-        CURRENT_BIPOT: MethodScriptDeviceCapabilities.PckIDs  # 17
-        PHASE: MethodScriptDeviceCapabilities.PckIDs  # 18
-        Z: MethodScriptDeviceCapabilities.PckIDs  # 19
-        ZREAL: MethodScriptDeviceCapabilities.PckIDs  # 20
-        ZIMAG: MethodScriptDeviceCapabilities.PckIDs  # 21
-        POTENTIAL_EIS_TDD: MethodScriptDeviceCapabilities.PckIDs  # 22
-        CURRENT_EIS_TDD: MethodScriptDeviceCapabilities.PckIDs  # 23
-        SAMPLING_RATE_TDD: MethodScriptDeviceCapabilities.PckIDs  # 24
-        POTENTIAL_EIS_AC: MethodScriptDeviceCapabilities.PckIDs  # 25
-        POTENTIAL_EIS_DC: MethodScriptDeviceCapabilities.PckIDs  # 26
-        CURRENT_EIS_AC: MethodScriptDeviceCapabilities.PckIDs  # 27
-        CURRENT_EIS_DC: MethodScriptDeviceCapabilities.PckIDs  # 28
-        BIPOT_ZREAL: MethodScriptDeviceCapabilities.PckIDs  # 29
-        BIPOT_ZIMAG: MethodScriptDeviceCapabilities.PckIDs  # 30
-        REVSE2_ZREAL: MethodScriptDeviceCapabilities.PckIDs  # 31
-        REVSE2_ZIMAG: MethodScriptDeviceCapabilities.PckIDs  # 32
-        SEVSE2_ZREAL: MethodScriptDeviceCapabilities.PckIDs  # 33
-        SEVSE2_ZIMAG: MethodScriptDeviceCapabilities.PckIDs  # 34
-        BIPOT_EIS_TDD: MethodScriptDeviceCapabilities.PckIDs  # 35
-        REVSE2_EIS_TDD: MethodScriptDeviceCapabilities.PckIDs  # 36
-        SEVSE2_EIS_TDD: MethodScriptDeviceCapabilities.PckIDs  # 37
-        BIPOT_CURRENT_EIS_AC: MethodScriptDeviceCapabilities.PckIDs  # 38
-        BIPOT_CURRENT_EIS_DC: MethodScriptDeviceCapabilities.PckIDs  # 39
-        REVSE2_POTENTIAL_EIS_AC: MethodScriptDeviceCapabilities.PckIDs  # 40
-        REVSE2_POTENTIAL_EIS_DC: MethodScriptDeviceCapabilities.PckIDs  # 41
-        SEVSE2_POTENTIAL_EIS_AC: MethodScriptDeviceCapabilities.PckIDs  # 42
-        SEVSE2_POTENTIAL_EIS_DC: MethodScriptDeviceCapabilities.PckIDs  # 43
-        APPLIED_POTENTIAL: MethodScriptDeviceCapabilities.PckIDs  # 44
-        APPLIED_CURRENT: MethodScriptDeviceCapabilities.PckIDs  # 45
-        CELL_FREQUENCY: MethodScriptDeviceCapabilities.PckIDs  # 46
-        CELL_AMPLITUDE: MethodScriptDeviceCapabilities.PckIDs  # 47
-        CHANNEL: MethodScriptDeviceCapabilities.PckIDs  # 48
-        TIME: MethodScriptDeviceCapabilities.PckIDs  # 49
-        PIN_MSK: MethodScriptDeviceCapabilities.PckIDs  # 50
-        TEMPERATURE: MethodScriptDeviceCapabilities.PckIDs  # 51
-        COUNT: MethodScriptDeviceCapabilities.PckIDs  # 52
-        TEMPERATURE_BOARD: MethodScriptDeviceCapabilities.PckIDs  # 53
-        CURRENT_GENERIC1: MethodScriptDeviceCapabilities.PckIDs  # 54
-        CURRENT_GENERIC2: MethodScriptDeviceCapabilities.PckIDs  # 55
-        CURRENT_GENERIC3: MethodScriptDeviceCapabilities.PckIDs  # 56
-        CURRENT_GENERIC4: MethodScriptDeviceCapabilities.PckIDs  # 57
-        POTENTIAL_GENERIC1: MethodScriptDeviceCapabilities.PckIDs  # 58
-        POTENTIAL_GENERIC2: MethodScriptDeviceCapabilities.PckIDs  # 59
-        POTENTIAL_GENERIC3: MethodScriptDeviceCapabilities.PckIDs  # 60
-        POTENTIAL_GENERIC4: MethodScriptDeviceCapabilities.PckIDs  # 61
-        MISC_GENERIC1: MethodScriptDeviceCapabilities.PckIDs  # 62
-        LOOPINDEX: MethodScriptDeviceCapabilities.PckIDs  # 63
-        MISC_GENERIC2: MethodScriptDeviceCapabilities.PckIDs  # 64
-        MISC_GENERIC3: MethodScriptDeviceCapabilities.PckIDs  # 65
-        MISC_GENERIC4: MethodScriptDeviceCapabilities.PckIDs  # 66
-        DEV_DC_DAC_ON_I: MethodScriptDeviceCapabilities.PckIDs  # 67
-        DEV_DC_DAC_ON_E: MethodScriptDeviceCapabilities.PckIDs  # 68
-        DEV_DC_DAC_ON_3: MethodScriptDeviceCapabilities.PckIDs  # 69
-        DEV_I_OUT: MethodScriptDeviceCapabilities.PckIDs  # 70
-        DEV_E_OUT: MethodScriptDeviceCapabilities.PckIDs  # 71
+        UNKNOWN : MethodScriptDeviceCapabilities.PckIDs # 0
+        POTENTIAL_WE_RE : MethodScriptDeviceCapabilities.PckIDs # 1
+        POTENTIAL_CE_GND : MethodScriptDeviceCapabilities.PckIDs # 2
+        POTENTIAL_SE_GND : MethodScriptDeviceCapabilities.PckIDs # 3
+        POTENTIAL_RE_GND : MethodScriptDeviceCapabilities.PckIDs # 4
+        POTENTIAL_WE_GND : MethodScriptDeviceCapabilities.PckIDs # 5
+        POTENTIAL_WE_CE : MethodScriptDeviceCapabilities.PckIDs # 6
+        POTENTIAL_RE_SE2 : MethodScriptDeviceCapabilities.PckIDs # 7
+        POTENTIAL_SE_SE2 : MethodScriptDeviceCapabilities.PckIDs # 8
+        AIN0 : MethodScriptDeviceCapabilities.PckIDs # 9
+        AIN1 : MethodScriptDeviceCapabilities.PckIDs # 10
+        AIN2 : MethodScriptDeviceCapabilities.PckIDs # 11
+        CURRENT : MethodScriptDeviceCapabilities.PckIDs # 12
+        CURRENT_BIPOT_OLD : MethodScriptDeviceCapabilities.PckIDs # 13
+        CURRENT_FORWARD : MethodScriptDeviceCapabilities.PckIDs # 14
+        CURRENT_REVERSE : MethodScriptDeviceCapabilities.PckIDs # 15
+        CURRENT_BIPOT_NEW : MethodScriptDeviceCapabilities.PckIDs # 16
+        CURRENT_BIPOT : MethodScriptDeviceCapabilities.PckIDs # 17
+        PHASE : MethodScriptDeviceCapabilities.PckIDs # 18
+        Z : MethodScriptDeviceCapabilities.PckIDs # 19
+        ZREAL : MethodScriptDeviceCapabilities.PckIDs # 20
+        ZIMAG : MethodScriptDeviceCapabilities.PckIDs # 21
+        POTENTIAL_EIS_TDD : MethodScriptDeviceCapabilities.PckIDs # 22
+        CURRENT_EIS_TDD : MethodScriptDeviceCapabilities.PckIDs # 23
+        SAMPLING_RATE_TDD : MethodScriptDeviceCapabilities.PckIDs # 24
+        POTENTIAL_EIS_AC : MethodScriptDeviceCapabilities.PckIDs # 25
+        POTENTIAL_EIS_DC : MethodScriptDeviceCapabilities.PckIDs # 26
+        CURRENT_EIS_AC : MethodScriptDeviceCapabilities.PckIDs # 27
+        CURRENT_EIS_DC : MethodScriptDeviceCapabilities.PckIDs # 28
+        BIPOT_ZREAL : MethodScriptDeviceCapabilities.PckIDs # 29
+        BIPOT_ZIMAG : MethodScriptDeviceCapabilities.PckIDs # 30
+        REVSE2_ZREAL : MethodScriptDeviceCapabilities.PckIDs # 31
+        REVSE2_ZIMAG : MethodScriptDeviceCapabilities.PckIDs # 32
+        SEVSE2_ZREAL : MethodScriptDeviceCapabilities.PckIDs # 33
+        SEVSE2_ZIMAG : MethodScriptDeviceCapabilities.PckIDs # 34
+        BIPOT_EIS_TDD : MethodScriptDeviceCapabilities.PckIDs # 35
+        REVSE2_EIS_TDD : MethodScriptDeviceCapabilities.PckIDs # 36
+        SEVSE2_EIS_TDD : MethodScriptDeviceCapabilities.PckIDs # 37
+        BIPOT_CURRENT_EIS_AC : MethodScriptDeviceCapabilities.PckIDs # 38
+        BIPOT_CURRENT_EIS_DC : MethodScriptDeviceCapabilities.PckIDs # 39
+        REVSE2_POTENTIAL_EIS_AC : MethodScriptDeviceCapabilities.PckIDs # 40
+        REVSE2_POTENTIAL_EIS_DC : MethodScriptDeviceCapabilities.PckIDs # 41
+        SEVSE2_POTENTIAL_EIS_AC : MethodScriptDeviceCapabilities.PckIDs # 42
+        SEVSE2_POTENTIAL_EIS_DC : MethodScriptDeviceCapabilities.PckIDs # 43
+        APPLIED_POTENTIAL : MethodScriptDeviceCapabilities.PckIDs # 44
+        APPLIED_CURRENT : MethodScriptDeviceCapabilities.PckIDs # 45
+        CELL_FREQUENCY : MethodScriptDeviceCapabilities.PckIDs # 46
+        CELL_AMPLITUDE : MethodScriptDeviceCapabilities.PckIDs # 47
+        CHANNEL : MethodScriptDeviceCapabilities.PckIDs # 48
+        TIME : MethodScriptDeviceCapabilities.PckIDs # 49
+        PIN_MSK : MethodScriptDeviceCapabilities.PckIDs # 50
+        TEMPERATURE : MethodScriptDeviceCapabilities.PckIDs # 51
+        COUNT : MethodScriptDeviceCapabilities.PckIDs # 52
+        TEMPERATURE_BOARD : MethodScriptDeviceCapabilities.PckIDs # 53
+        CURRENT_GENERIC1 : MethodScriptDeviceCapabilities.PckIDs # 54
+        CURRENT_GENERIC2 : MethodScriptDeviceCapabilities.PckIDs # 55
+        CURRENT_GENERIC3 : MethodScriptDeviceCapabilities.PckIDs # 56
+        CURRENT_GENERIC4 : MethodScriptDeviceCapabilities.PckIDs # 57
+        POTENTIAL_GENERIC1 : MethodScriptDeviceCapabilities.PckIDs # 58
+        POTENTIAL_GENERIC2 : MethodScriptDeviceCapabilities.PckIDs # 59
+        POTENTIAL_GENERIC3 : MethodScriptDeviceCapabilities.PckIDs # 60
+        POTENTIAL_GENERIC4 : MethodScriptDeviceCapabilities.PckIDs # 61
+        MISC_GENERIC1 : MethodScriptDeviceCapabilities.PckIDs # 62
+        LOOPINDEX : MethodScriptDeviceCapabilities.PckIDs # 63
+        MISC_GENERIC2 : MethodScriptDeviceCapabilities.PckIDs # 64
+        MISC_GENERIC3 : MethodScriptDeviceCapabilities.PckIDs # 65
+        MISC_GENERIC4 : MethodScriptDeviceCapabilities.PckIDs # 66
+        DEV_DC_DAC_ON_I : MethodScriptDeviceCapabilities.PckIDs # 67
+        DEV_DC_DAC_ON_E : MethodScriptDeviceCapabilities.PckIDs # 68
+        DEV_DC_DAC_ON_3 : MethodScriptDeviceCapabilities.PckIDs # 69
+        DEV_I_OUT : MethodScriptDeviceCapabilities.PckIDs # 70
+        DEV_E_OUT : MethodScriptDeviceCapabilities.PckIDs # 71
 
-    BiPotCalibration: PalmSensBiPotCalibration
-    CustomDeviceID: str
-    EISCalibration: EISCalibration
-    EISsettings: EISSettings
-    EmStatBiPotMode: DeviceCapabilities.EnumEmStatBipotMode
-    FirmwareIsBeta: bool
-    FirmwareTimeStamp: str
-    IsEmStatBipotBoard: bool
-    IsWireless: bool
-    MaxMuxChannels: int
-    MSSupportedCommands: List_1[MethodScriptDeviceCapabilities.MSCommands]
-    MuxModel: MuxModel
-    MuxType: MuxType
-    NumMuxChannels: int
-    SpecialFirmwareDescription: str
-    SupportsAuxiliary: bool
+    BiPotCalibration : PalmSensBiPotCalibration
+    CustomDeviceID : str
+    EISCalibration : EISCalibration
+    EISsettings : EISSettings
+    EmStatBiPotMode : DeviceCapabilities.EnumEmStatBipotMode
+    FirmwareIsBeta : bool
+    FirmwareTimeStamp : str
+    IsEmStatBipotBoard : bool
+    IsWireless : bool
+    MaxMuxChannels : int
+    MSSupportedCommands : List_1[MethodScriptDeviceCapabilities.MSCommands]
+    MuxModel : MuxModel
+    MuxType : MuxType
+    NumMuxChannels : int
+    SpecialFirmwareDescription : str
+    SupportsAuxiliary : bool
     @property
     def ActiveSignalTrainConfiguration(self) -> MethodScript.PGStatModes: ...
     @ActiveSignalTrainConfiguration.setter
-    def ActiveSignalTrainConfiguration(
-        self, value: MethodScript.PGStatModes
-    ) -> MethodScript.PGStatModes: ...
+    def ActiveSignalTrainConfiguration(self, value: MethodScript.PGStatModes) -> MethodScript.PGStatModes: ...
     @property
     def ADCAuxiliary(self) -> AnalogComponent: ...
     @property
@@ -3838,9 +3739,7 @@ class MethodScriptDeviceCapabilities(DeviceCapabilities):
     @property
     def DefaultSignalTrainConfiguration(self) -> MethodScript.PGStatModes: ...
     @DefaultSignalTrainConfiguration.setter
-    def DefaultSignalTrainConfiguration(
-        self, value: MethodScript.PGStatModes
-    ) -> MethodScript.PGStatModes: ...
+    def DefaultSignalTrainConfiguration(self, value: MethodScript.PGStatModes) -> MethodScript.PGStatModes: ...
     @property
     def DeviceType(self) -> enumDeviceType: ...
     @property
@@ -3952,9 +3851,7 @@ class MethodScriptDeviceCapabilities(DeviceCapabilities):
     @property
     def SupportedPotentialRanges(self) -> List_1[PotentialRange]: ...
     @SupportedPotentialRanges.setter
-    def SupportedPotentialRanges(
-        self, value: List_1[PotentialRange]
-    ) -> List_1[PotentialRange]: ...
+    def SupportedPotentialRanges(self, value: List_1[PotentialRange]) -> List_1[PotentialRange]: ...
     @property
     def SupportedPotentiostatChannels(self) -> PotentionstatChannels: ...
     @property
@@ -4009,39 +3906,39 @@ class MethodScriptDeviceCapabilities(DeviceCapabilities):
     def SupportsConcurrentSamplingOfExtraValues(self, extraValues: ExtraValueMask) -> bool: ...
     # Skipped RangeToInputRange due to it being static, abstract and generic.
 
-    RangeToInputRange: RangeToInputRange_MethodGroup
+    RangeToInputRange : RangeToInputRange_MethodGroup
     class RangeToInputRange_MethodGroup:
         @typing.overload
-        def __call__(self, cr: CurrentRange) -> float: ...
+        def __call__(self, cr: CurrentRange) -> float:...
         @typing.overload
-        def __call__(self, pr: PotentialRange) -> float: ...
+        def __call__(self, pr: PotentialRange) -> float:...
+
+
 
 class NexusCapabilities(MethodScriptDeviceCapabilities, IDualEISCapabilities):
     def __init__(self) -> None: ...
-    BiPotCalibration: PalmSensBiPotCalibration
-    CustomDeviceID: str
-    EISCalibration: EISCalibration
-    EISsettings: EISSettings
-    EmStatBiPotMode: DeviceCapabilities.EnumEmStatBipotMode
-    FirmwareIsBeta: bool
-    FirmwareTimeStamp: str
-    IsEmStatBipotBoard: bool
-    IsWireless: bool
-    MaxMuxChannels: int
-    MIN_FIRMWARE_DATE: DateTime
-    MIN_FIRMWARE_REQUIRED: float
-    MSSupportedCommands: List_1[MethodScriptDeviceCapabilities.MSCommands]
-    MuxModel: MuxModel
-    MuxType: MuxType
-    NumMuxChannels: int
-    SpecialFirmwareDescription: str
-    SupportsAuxiliary: bool
+    BiPotCalibration : PalmSensBiPotCalibration
+    CustomDeviceID : str
+    EISCalibration : EISCalibration
+    EISsettings : EISSettings
+    EmStatBiPotMode : DeviceCapabilities.EnumEmStatBipotMode
+    FirmwareIsBeta : bool
+    FirmwareTimeStamp : str
+    IsEmStatBipotBoard : bool
+    IsWireless : bool
+    MaxMuxChannels : int
+    MIN_FIRMWARE_DATE : DateTime
+    MIN_FIRMWARE_REQUIRED : float
+    MSSupportedCommands : List_1[MethodScriptDeviceCapabilities.MSCommands]
+    MuxModel : MuxModel
+    MuxType : MuxType
+    NumMuxChannels : int
+    SpecialFirmwareDescription : str
+    SupportsAuxiliary : bool
     @property
     def ActiveSignalTrainConfiguration(self) -> MethodScript.PGStatModes: ...
     @ActiveSignalTrainConfiguration.setter
-    def ActiveSignalTrainConfiguration(
-        self, value: MethodScript.PGStatModes
-    ) -> MethodScript.PGStatModes: ...
+    def ActiveSignalTrainConfiguration(self, value: MethodScript.PGStatModes) -> MethodScript.PGStatModes: ...
     @property
     def ADCAuxiliary(self) -> AnalogComponent: ...
     @property
@@ -4193,9 +4090,7 @@ class NexusCapabilities(MethodScriptDeviceCapabilities, IDualEISCapabilities):
     @property
     def SupportedPotentialRanges(self) -> List_1[PotentialRange]: ...
     @SupportedPotentialRanges.setter
-    def SupportedPotentialRanges(
-        self, value: List_1[PotentialRange]
-    ) -> List_1[PotentialRange]: ...
+    def SupportedPotentialRanges(self, value: List_1[PotentialRange]) -> List_1[PotentialRange]: ...
     @property
     def SupportedPotentiostatChannels(self) -> PotentionstatChannels: ...
     @property
@@ -4243,9 +4138,7 @@ class NexusCapabilities(MethodScriptDeviceCapabilities, IDualEISCapabilities):
     @property
     def TechniqueNumberMethodSCRIPTCommandMapping(self) -> Dictionary_2[int, int]: ...
     def CanSendDuringMeasurement(self, tbase: float) -> bool: ...
-    def GetEstimatedFrequencyDuration(
-        self, frequency: float, method: ImpedimetricMethodBase
-    ) -> float: ...
+    def GetEstimatedFrequencyDuration(self, frequency: float, method: ImpedimetricMethodBase) -> float: ...
     def GetEstimatedFrequencyScanDuration(self, method: ImpedimetricMethodBase) -> float: ...
     def MinSampleProcessingWindow(self, nVars: int) -> ValueTuple_2[float, float]: ...
     def MinSampleProcessingWindowInternalStorage(self, nVars: int) -> float: ...
@@ -4254,12 +4147,14 @@ class NexusCapabilities(MethodScriptDeviceCapabilities, IDualEISCapabilities):
     def ToString(self) -> str: ...
     # Skipped RangeToInputRange due to it being static, abstract and generic.
 
-    RangeToInputRange: RangeToInputRange_MethodGroup
+    RangeToInputRange : RangeToInputRange_MethodGroup
     class RangeToInputRange_MethodGroup:
         @typing.overload
-        def __call__(self, cr: CurrentRange) -> float: ...
+        def __call__(self, cr: CurrentRange) -> float:...
         @typing.overload
-        def __call__(self, pr: PotentialRange) -> float: ...
+        def __call__(self, pr: PotentialRange) -> float:...
+
+
 
 class NoLicenseInfo(Exception):
     def __init__(self) -> None: ...
@@ -4286,53 +4181,53 @@ class NoLicenseInfo(Exception):
     @property
     def TargetSite(self) -> MethodBase: ...
 
+
 class PalmSens3Capabilities(DeviceCapabilities):
     def __init__(self, device: Device = ...) -> None: ...
 
     class EEPROM:
-        BiPotFactorDAC: int
-        BiPotOffsetADC: int
-        BiPotOffsetDAC: int
-        EISCalibrationAddress: int
-        EReadOffset: int
-        HardwareSettings: int
+        BiPotFactorDAC : int
+        BiPotOffsetADC : int
+        BiPotOffsetDAC : int
+        EISCalibrationAddress : int
+        EReadOffset : int
+        HardwareSettings : int
         @classmethod
         @property
         def BiPotFactorADC(cls) -> int: ...
 
+
     class EnumHardwareSettings(typing.SupportsInt):
         @typing.overload
-        def __init__(self, value: int) -> None: ...
+        def __init__(self, value : int) -> None: ...
         @typing.overload
-        def __init__(self, value: int, force_if_true: bool) -> None: ...
+        def __init__(self, value : int, force_if_true: bool) -> None: ...
         def __int__(self) -> int: ...
 
         # Values:
-        BiPotInstalled: PalmSens3Capabilities.EnumHardwareSettings  # 1
+        BiPotInstalled : PalmSens3Capabilities.EnumHardwareSettings # 1
 
-    BiPotCalibration: PalmSensBiPotCalibration
-    CustomDeviceID: str
-    EISCalibration: EISCalibration
-    EISsettings: EISSettings
-    EmStatBiPotMode: DeviceCapabilities.EnumEmStatBipotMode
-    FirmwareIsBeta: bool
-    FirmwareTimeStamp: str
-    IsEmStatBipotBoard: bool
-    IsWireless: bool
-    MaxMuxChannels: int
-    MIN_FIRMWARE_DATE: DateTime
-    MIN_FIRMWARE_REQUIRED: float
-    MuxModel: MuxModel
-    MuxType: MuxType
-    NumMuxChannels: int
-    SpecialFirmwareDescription: str
-    SupportsAuxiliary: bool
+    BiPotCalibration : PalmSensBiPotCalibration
+    CustomDeviceID : str
+    EISCalibration : EISCalibration
+    EISsettings : EISSettings
+    EmStatBiPotMode : DeviceCapabilities.EnumEmStatBipotMode
+    FirmwareIsBeta : bool
+    FirmwareTimeStamp : str
+    IsEmStatBipotBoard : bool
+    IsWireless : bool
+    MaxMuxChannels : int
+    MIN_FIRMWARE_DATE : DateTime
+    MIN_FIRMWARE_REQUIRED : float
+    MuxModel : MuxModel
+    MuxType : MuxType
+    NumMuxChannels : int
+    SpecialFirmwareDescription : str
+    SupportsAuxiliary : bool
     @property
     def ActiveSignalTrainConfiguration(self) -> MethodScript.PGStatModes: ...
     @ActiveSignalTrainConfiguration.setter
-    def ActiveSignalTrainConfiguration(
-        self, value: MethodScript.PGStatModes
-    ) -> MethodScript.PGStatModes: ...
+    def ActiveSignalTrainConfiguration(self, value: MethodScript.PGStatModes) -> MethodScript.PGStatModes: ...
     @property
     def ADCAuxiliary(self) -> AnalogComponent: ...
     @property
@@ -4372,9 +4267,7 @@ class PalmSens3Capabilities(DeviceCapabilities):
     @property
     def DefaultSignalTrainConfiguration(self) -> MethodScript.PGStatModes: ...
     @DefaultSignalTrainConfiguration.setter
-    def DefaultSignalTrainConfiguration(
-        self, value: MethodScript.PGStatModes
-    ) -> MethodScript.PGStatModes: ...
+    def DefaultSignalTrainConfiguration(self, value: MethodScript.PGStatModes) -> MethodScript.PGStatModes: ...
     @property
     def DeviceType(self) -> enumDeviceType: ...
     @property
@@ -4476,9 +4369,7 @@ class PalmSens3Capabilities(DeviceCapabilities):
     @property
     def SupportedPotentialRanges(self) -> List_1[PotentialRange]: ...
     @SupportedPotentialRanges.setter
-    def SupportedPotentialRanges(
-        self, value: List_1[PotentialRange]
-    ) -> List_1[PotentialRange]: ...
+    def SupportedPotentialRanges(self, value: List_1[PotentialRange]) -> List_1[PotentialRange]: ...
     @property
     def SupportedPotentiostatChannels(self) -> PotentionstatChannels: ...
     @property
@@ -4524,10 +4415,9 @@ class PalmSens3Capabilities(DeviceCapabilities):
     def GetHardwareSettings(self) -> PalmSens3Capabilities.EnumHardwareSettings: ...
     def GetRangeFromCRByte(self, crByte: int) -> CurrentRange: ...
     def PotentialRangeToGainSetting(self, range: PotentialRanges) -> int: ...
-    def SetHardwareSettings(
-        self, hardwareSettings: PalmSens3Capabilities.EnumHardwareSettings
-    ) -> None: ...
+    def SetHardwareSettings(self, hardwareSettings: PalmSens3Capabilities.EnumHardwareSettings) -> None: ...
     def ToString(self) -> str: ...
+
 
 class PalmSens4Capabilities(DeviceCapabilities):
     def __init__(self) -> None: ...
@@ -4535,50 +4425,50 @@ class PalmSens4Capabilities(DeviceCapabilities):
     class EEPROM:
         pass
 
+
     class EnumHardwareSettings(typing.SupportsInt):
         @typing.overload
-        def __init__(self, value: int) -> None: ...
+        def __init__(self, value : int) -> None: ...
         @typing.overload
-        def __init__(self, value: int, force_if_true: bool) -> None: ...
+        def __init__(self, value : int, force_if_true: bool) -> None: ...
         def __int__(self) -> int: ...
 
         # Values:
+
 
     class HWRevision(typing.SupportsInt):
         @typing.overload
-        def __init__(self, value: int) -> None: ...
+        def __init__(self, value : int) -> None: ...
         @typing.overload
-        def __init__(self, value: int, force_if_true: bool) -> None: ...
+        def __init__(self, value : int, force_if_true: bool) -> None: ...
         def __int__(self) -> int: ...
 
         # Values:
-        HW_REV_1_1: PalmSens4Capabilities.HWRevision  # 1
-        HW_REV_1_2: PalmSens4Capabilities.HWRevision  # 2
+        HW_REV_1_1 : PalmSens4Capabilities.HWRevision # 1
+        HW_REV_1_2 : PalmSens4Capabilities.HWRevision # 2
 
-    BiPotCalibration: PalmSensBiPotCalibration
-    CustomDeviceID: str
-    EISCalibration: EISCalibration
-    EISsettings: EISSettings
-    EmStatBiPotMode: DeviceCapabilities.EnumEmStatBipotMode
-    FirmwareIsBeta: bool
-    FirmwareTimeStamp: str
-    IsEmStatBipotBoard: bool
-    IsWireless: bool
-    MaxMuxChannels: int
-    MIN_FIRMWARE_DATE: DateTime
-    MIN_FIRMWARE_REQUIRED: float
-    MuxModel: MuxModel
-    MuxType: MuxType
-    NumMuxChannels: int
-    PS4BipotGain: float
-    SpecialFirmwareDescription: str
-    SupportsAuxiliary: bool
+    BiPotCalibration : PalmSensBiPotCalibration
+    CustomDeviceID : str
+    EISCalibration : EISCalibration
+    EISsettings : EISSettings
+    EmStatBiPotMode : DeviceCapabilities.EnumEmStatBipotMode
+    FirmwareIsBeta : bool
+    FirmwareTimeStamp : str
+    IsEmStatBipotBoard : bool
+    IsWireless : bool
+    MaxMuxChannels : int
+    MIN_FIRMWARE_DATE : DateTime
+    MIN_FIRMWARE_REQUIRED : float
+    MuxModel : MuxModel
+    MuxType : MuxType
+    NumMuxChannels : int
+    PS4BipotGain : float
+    SpecialFirmwareDescription : str
+    SupportsAuxiliary : bool
     @property
     def ActiveSignalTrainConfiguration(self) -> MethodScript.PGStatModes: ...
     @ActiveSignalTrainConfiguration.setter
-    def ActiveSignalTrainConfiguration(
-        self, value: MethodScript.PGStatModes
-    ) -> MethodScript.PGStatModes: ...
+    def ActiveSignalTrainConfiguration(self, value: MethodScript.PGStatModes) -> MethodScript.PGStatModes: ...
     @property
     def ADCAuxiliary(self) -> AnalogComponent: ...
     @property
@@ -4616,9 +4506,7 @@ class PalmSens4Capabilities(DeviceCapabilities):
     @property
     def DefaultSignalTrainConfiguration(self) -> MethodScript.PGStatModes: ...
     @DefaultSignalTrainConfiguration.setter
-    def DefaultSignalTrainConfiguration(
-        self, value: MethodScript.PGStatModes
-    ) -> MethodScript.PGStatModes: ...
+    def DefaultSignalTrainConfiguration(self, value: MethodScript.PGStatModes) -> MethodScript.PGStatModes: ...
     @property
     def DeviceType(self) -> enumDeviceType: ...
     @property
@@ -4720,9 +4608,7 @@ class PalmSens4Capabilities(DeviceCapabilities):
     @property
     def SupportedPotentialRanges(self) -> List_1[PotentialRange]: ...
     @SupportedPotentialRanges.setter
-    def SupportedPotentialRanges(
-        self, value: List_1[PotentialRange]
-    ) -> List_1[PotentialRange]: ...
+    def SupportedPotentialRanges(self, value: List_1[PotentialRange]) -> List_1[PotentialRange]: ...
     @property
     def SupportedPotentiostatChannels(self) -> PotentionstatChannels: ...
     @property
@@ -4766,37 +4652,34 @@ class PalmSens4Capabilities(DeviceCapabilities):
     def GetCutoffFrequency(range: CurrentRange, filter: int) -> float: ...
     def GetHardwareSettings(self) -> PalmSens4Capabilities.EnumHardwareSettings: ...
     def PotentialRangeToGainSetting(self, range: PotentialRanges) -> int: ...
-    def SetHardwareSettings(
-        self, hardwareSettings: PalmSens4Capabilities.EnumHardwareSettings
-    ) -> None: ...
+    def SetHardwareSettings(self, hardwareSettings: PalmSens4Capabilities.EnumHardwareSettings) -> None: ...
     def ToString(self) -> str: ...
+
 
 class PalmSensCapabilities(DeviceCapabilities):
     def __init__(self) -> None: ...
-    BiPotCalibration: PalmSensBiPotCalibration
-    CustomDeviceID: str
-    DeviceID: str
-    EISCalibration: EISCalibration
-    EISsettings: EISSettings
-    EmStatBiPotMode: DeviceCapabilities.EnumEmStatBipotMode
-    FirmwareIsBeta: bool
-    FirmwareTimeStamp: str
-    IsEmStatBipotBoard: bool
-    IsWireless: bool
-    MaxMuxChannels: int
-    MIN_FIRMWARE_DATE: DateTime
-    MIN_FIRMWARE_REQUIRED: float
-    MuxModel: MuxModel
-    MuxType: MuxType
-    NumMuxChannels: int
-    SpecialFirmwareDescription: str
-    SupportsAuxiliary: bool
+    BiPotCalibration : PalmSensBiPotCalibration
+    CustomDeviceID : str
+    DeviceID : str
+    EISCalibration : EISCalibration
+    EISsettings : EISSettings
+    EmStatBiPotMode : DeviceCapabilities.EnumEmStatBipotMode
+    FirmwareIsBeta : bool
+    FirmwareTimeStamp : str
+    IsEmStatBipotBoard : bool
+    IsWireless : bool
+    MaxMuxChannels : int
+    MIN_FIRMWARE_DATE : DateTime
+    MIN_FIRMWARE_REQUIRED : float
+    MuxModel : MuxModel
+    MuxType : MuxType
+    NumMuxChannels : int
+    SpecialFirmwareDescription : str
+    SupportsAuxiliary : bool
     @property
     def ActiveSignalTrainConfiguration(self) -> MethodScript.PGStatModes: ...
     @ActiveSignalTrainConfiguration.setter
-    def ActiveSignalTrainConfiguration(
-        self, value: MethodScript.PGStatModes
-    ) -> MethodScript.PGStatModes: ...
+    def ActiveSignalTrainConfiguration(self, value: MethodScript.PGStatModes) -> MethodScript.PGStatModes: ...
     @property
     def ADCAuxiliary(self) -> AnalogComponent: ...
     @property
@@ -4836,9 +4719,7 @@ class PalmSensCapabilities(DeviceCapabilities):
     @property
     def DefaultSignalTrainConfiguration(self) -> MethodScript.PGStatModes: ...
     @DefaultSignalTrainConfiguration.setter
-    def DefaultSignalTrainConfiguration(
-        self, value: MethodScript.PGStatModes
-    ) -> MethodScript.PGStatModes: ...
+    def DefaultSignalTrainConfiguration(self, value: MethodScript.PGStatModes) -> MethodScript.PGStatModes: ...
     @property
     def DeviceType(self) -> enumDeviceType: ...
     @property
@@ -4940,9 +4821,7 @@ class PalmSensCapabilities(DeviceCapabilities):
     @property
     def SupportedPotentialRanges(self) -> List_1[PotentialRange]: ...
     @SupportedPotentialRanges.setter
-    def SupportedPotentialRanges(
-        self, value: List_1[PotentialRange]
-    ) -> List_1[PotentialRange]: ...
+    def SupportedPotentialRanges(self, value: List_1[PotentialRange]) -> List_1[PotentialRange]: ...
     @property
     def SupportedPotentiostatChannels(self) -> PotentionstatChannels: ...
     @property
@@ -4985,29 +4864,28 @@ class PalmSensCapabilities(DeviceCapabilities):
     def PotentialRangeToGainSetting(self, range: PotentialRanges) -> int: ...
     def ToString(self) -> str: ...
 
+
 class SambaProgramPortCabalities(DeviceCapabilities):
     def __init__(self) -> None: ...
-    BiPotCalibration: PalmSensBiPotCalibration
-    CustomDeviceID: str
-    EISCalibration: EISCalibration
-    EISsettings: EISSettings
-    EmStatBiPotMode: DeviceCapabilities.EnumEmStatBipotMode
-    FirmwareIsBeta: bool
-    FirmwareTimeStamp: str
-    IsEmStatBipotBoard: bool
-    IsWireless: bool
-    MaxMuxChannels: int
-    MuxModel: MuxModel
-    MuxType: MuxType
-    NumMuxChannels: int
-    SpecialFirmwareDescription: str
-    SupportsAuxiliary: bool
+    BiPotCalibration : PalmSensBiPotCalibration
+    CustomDeviceID : str
+    EISCalibration : EISCalibration
+    EISsettings : EISSettings
+    EmStatBiPotMode : DeviceCapabilities.EnumEmStatBipotMode
+    FirmwareIsBeta : bool
+    FirmwareTimeStamp : str
+    IsEmStatBipotBoard : bool
+    IsWireless : bool
+    MaxMuxChannels : int
+    MuxModel : MuxModel
+    MuxType : MuxType
+    NumMuxChannels : int
+    SpecialFirmwareDescription : str
+    SupportsAuxiliary : bool
     @property
     def ActiveSignalTrainConfiguration(self) -> MethodScript.PGStatModes: ...
     @ActiveSignalTrainConfiguration.setter
-    def ActiveSignalTrainConfiguration(
-        self, value: MethodScript.PGStatModes
-    ) -> MethodScript.PGStatModes: ...
+    def ActiveSignalTrainConfiguration(self, value: MethodScript.PGStatModes) -> MethodScript.PGStatModes: ...
     @property
     def ADCAuxiliary(self) -> AnalogComponent: ...
     @property
@@ -5045,9 +4923,7 @@ class SambaProgramPortCabalities(DeviceCapabilities):
     @property
     def DefaultSignalTrainConfiguration(self) -> MethodScript.PGStatModes: ...
     @DefaultSignalTrainConfiguration.setter
-    def DefaultSignalTrainConfiguration(
-        self, value: MethodScript.PGStatModes
-    ) -> MethodScript.PGStatModes: ...
+    def DefaultSignalTrainConfiguration(self, value: MethodScript.PGStatModes) -> MethodScript.PGStatModes: ...
     @property
     def DeviceType(self) -> enumDeviceType: ...
     @property
@@ -5149,9 +5025,7 @@ class SambaProgramPortCabalities(DeviceCapabilities):
     @property
     def SupportedPotentialRanges(self) -> List_1[PotentialRange]: ...
     @SupportedPotentialRanges.setter
-    def SupportedPotentialRanges(
-        self, value: List_1[PotentialRange]
-    ) -> List_1[PotentialRange]: ...
+    def SupportedPotentialRanges(self, value: List_1[PotentialRange]) -> List_1[PotentialRange]: ...
     @property
     def SupportedPotentiostatChannels(self) -> PotentionstatChannels: ...
     @property
@@ -5192,32 +5066,31 @@ class SambaProgramPortCabalities(DeviceCapabilities):
     def PotentialRangeToGainSetting(self, range: PotentialRanges) -> int: ...
     def ToString(self) -> str: ...
 
+
 class SensitWearableCapabilities(EmStatPicoCapabilities):
     def __init__(self) -> None: ...
-    BiPotCalibration: PalmSensBiPotCalibration
-    CustomDeviceID: str
-    EISCalibration: EISCalibration
-    EISsettings: EISSettings
-    EmStatBiPotMode: DeviceCapabilities.EnumEmStatBipotMode
-    FirmwareIsBeta: bool
-    FirmwareTimeStamp: str
-    IsEmStatBipotBoard: bool
-    IsWireless: bool
-    MaxMuxChannels: int
-    MIN_FIRMWARE_REQUIRED: float
-    MSSupportedCommands: List_1[MethodScriptDeviceCapabilities.MSCommands]
-    MuxModel: MuxModel
-    MuxType: MuxType
-    NumMuxChannels: int
-    SpecialFirmwareDescription: str
-    SupportsAuxiliary: bool
-    SupportsStorageSetter: bool
+    BiPotCalibration : PalmSensBiPotCalibration
+    CustomDeviceID : str
+    EISCalibration : EISCalibration
+    EISsettings : EISSettings
+    EmStatBiPotMode : DeviceCapabilities.EnumEmStatBipotMode
+    FirmwareIsBeta : bool
+    FirmwareTimeStamp : str
+    IsEmStatBipotBoard : bool
+    IsWireless : bool
+    MaxMuxChannels : int
+    MIN_FIRMWARE_REQUIRED : float
+    MSSupportedCommands : List_1[MethodScriptDeviceCapabilities.MSCommands]
+    MuxModel : MuxModel
+    MuxType : MuxType
+    NumMuxChannels : int
+    SpecialFirmwareDescription : str
+    SupportsAuxiliary : bool
+    SupportsStorageSetter : bool
     @property
     def ActiveSignalTrainConfiguration(self) -> MethodScript.PGStatModes: ...
     @ActiveSignalTrainConfiguration.setter
-    def ActiveSignalTrainConfiguration(
-        self, value: MethodScript.PGStatModes
-    ) -> MethodScript.PGStatModes: ...
+    def ActiveSignalTrainConfiguration(self, value: MethodScript.PGStatModes) -> MethodScript.PGStatModes: ...
     @property
     def ADCAuxiliary(self) -> AnalogComponent: ...
     @property
@@ -5367,9 +5240,7 @@ class SensitWearableCapabilities(EmStatPicoCapabilities):
     @property
     def SupportedPotentialRanges(self) -> List_1[PotentialRange]: ...
     @SupportedPotentialRanges.setter
-    def SupportedPotentialRanges(
-        self, value: List_1[PotentialRange]
-    ) -> List_1[PotentialRange]: ...
+    def SupportedPotentialRanges(self, value: List_1[PotentialRange]) -> List_1[PotentialRange]: ...
     @property
     def SupportedPotentiostatChannels(self) -> PotentionstatChannels: ...
     @property
@@ -5419,6 +5290,7 @@ class SensitWearableCapabilities(EmStatPicoCapabilities):
     def RangeToInputRange(self, cr: CurrentRange) -> float: ...
     def ToString(self) -> str: ...
 
+
 class SignalTrainCapabilities(abc.ABC):
     @property
     def DACPotential(self) -> AnalogComponent: ...
@@ -5430,20 +5302,19 @@ class SignalTrainCapabilities(abc.ABC):
     def MinOnlineIntervalTime(self) -> float: ...
     @property
     def MinPotential(self) -> float: ...
-    def GetSupportedCurrentRanges(
-        self, availableCurrentRanges: Dictionary_2[int, CurrentRange]
-    ) -> List_1[CurrentRange]: ...
+    def GetSupportedCurrentRanges(self, availableCurrentRanges: Dictionary_2[int, CurrentRange]) -> List_1[CurrentRange]: ...
+
 
 class WakeOnTriggers(typing.SupportsInt):
     @typing.overload
-    def __init__(self, value: int) -> None: ...
+    def __init__(self, value : int) -> None: ...
     @typing.overload
-    def __init__(self, value: int, force_if_true: bool) -> None: ...
+    def __init__(self, value : int, force_if_true: bool) -> None: ...
     def __int__(self) -> int: ...
 
     # Values:
-    None_: WakeOnTriggers  # 0
-    Communication: WakeOnTriggers  # 1
-    GPIO: WakeOnTriggers  # 2
-    Timer: WakeOnTriggers  # 4
-    DoubleTap: WakeOnTriggers  # 8
+    None_ : WakeOnTriggers # 0
+    Communication : WakeOnTriggers # 1
+    GPIO : WakeOnTriggers # 2
+    Timer : WakeOnTriggers # 4
+    DoubleTap : WakeOnTriggers # 8

@@ -1,48 +1,48 @@
-import abc
-import typing
-
-from Newtonsoft.Json import JsonReader
+import typing, abc
 from PalmSens.DataFiles import JsonBag
 from System import Version
-from System.Threading import CancellationToken
 from System.Threading.Tasks import Task_1
+from Newtonsoft.Json import JsonReader
+from System.Threading import CancellationToken
 
 class AdjustedSIPrefixUnit(Unit):
     @typing.overload
     def __init__(self, bag: JsonBag, coreVersion: Version) -> None: ...
     @typing.overload
     def __init__(self, s: str, q: str, a: str) -> None: ...
-    Abbreviation: str
-    IsLogarithmic: bool
-    Quantity: str
-    Symbol: str
+    Abbreviation : str
+    IsLogarithmic : bool
+    Quantity : str
+    Symbol : str
     @property
     def ZeroPrefix(self) -> Prefix: ...
     def ToJsonBag(self) -> JsonBag: ...
+
 
 class Ampere(SIPrefixUnit):
     @typing.overload
     def __init__(self) -> None: ...
     @typing.overload
     def __init__(self, bag: JsonBag, version: Version) -> None: ...
-    Abbreviation: str
-    IsLogarithmic: bool
-    Quantity: str
-    Symbol: str
+    Abbreviation : str
+    IsLogarithmic : bool
+    Quantity : str
+    Symbol : str
     @property
     def ZeroPrefix(self) -> Prefix: ...
     def Clone(self) -> Unit: ...
     def ToJsonBag(self) -> JsonBag: ...
+
 
 class DerivativeUnit(FixedUnit, IDerivedUnit):
     @typing.overload
     def __init__(self, bag: JsonBag, coreVersion: Version) -> None: ...
     @typing.overload
     def __init__(self, xUnit: Unit, yUnit: Unit) -> None: ...
-    Abbreviation: str
-    IsLogarithmic: bool
-    Quantity: str
-    Symbol: str
+    Abbreviation : str
+    IsLogarithmic : bool
+    Quantity : str
+    Symbol : str
     @property
     def OriginalUnit(self) -> Unit: ...
     @property
@@ -52,49 +52,53 @@ class DerivativeUnit(FixedUnit, IDerivedUnit):
     def DerivativeUnitFromJson(jr: JsonReader) -> Task_1[DerivativeUnit]: ...
     def ToJsonBag(self) -> JsonBag: ...
 
+
 class FahradImaginary(SIPrefixUnit):
     @typing.overload
     def __init__(self) -> None: ...
     @typing.overload
     def __init__(self, bag: JsonBag, version: Version) -> None: ...
-    Abbreviation: str
-    IsLogarithmic: bool
-    Quantity: str
-    Symbol: str
+    Abbreviation : str
+    IsLogarithmic : bool
+    Quantity : str
+    Symbol : str
     @property
     def ZeroPrefix(self) -> Prefix: ...
     def Clone(self) -> Unit: ...
     def Format(self, f: float) -> str: ...
     def ToJsonBag(self) -> JsonBag: ...
+
 
 class FahradReal(SIPrefixUnit):
     @typing.overload
     def __init__(self) -> None: ...
     @typing.overload
     def __init__(self, bag: JsonBag, version: Version) -> None: ...
-    Abbreviation: str
-    IsLogarithmic: bool
-    Quantity: str
-    Symbol: str
+    Abbreviation : str
+    IsLogarithmic : bool
+    Quantity : str
+    Symbol : str
     @property
     def ZeroPrefix(self) -> Prefix: ...
     def Clone(self) -> Unit: ...
     def Format(self, f: float) -> str: ...
     def ToJsonBag(self) -> JsonBag: ...
 
+
 class Farad(SIPrefixUnit):
     @typing.overload
     def __init__(self) -> None: ...
     @typing.overload
     def __init__(self, bag: JsonBag, version: Version) -> None: ...
-    Abbreviation: str
-    IsLogarithmic: bool
-    Quantity: str
-    Symbol: str
+    Abbreviation : str
+    IsLogarithmic : bool
+    Quantity : str
+    Symbol : str
     @property
     def ZeroPrefix(self) -> Prefix: ...
     def Clone(self) -> Unit: ...
     def ToJsonBag(self) -> JsonBag: ...
+
 
 class FixedUnit(Unit):
     @typing.overload
@@ -103,24 +107,25 @@ class FixedUnit(Unit):
     def __init__(self, s: str, q: str, a: str) -> None: ...
     @typing.overload
     def __init__(self, serializedString: str) -> None: ...
-    Abbreviation: str
-    IsLogarithmic: bool
-    Quantity: str
-    Symbol: str
+    Abbreviation : str
+    IsLogarithmic : bool
+    Quantity : str
+    Symbol : str
     @property
     def ZeroPrefix(self) -> Prefix: ...
     def Clone(self) -> Unit: ...
     def ToJsonBag(self) -> JsonBag: ...
+
 
 class Hertz(SIPrefixUnit):
     @typing.overload
     def __init__(self) -> None: ...
     @typing.overload
     def __init__(self, bag: JsonBag, version: Version) -> None: ...
-    Abbreviation: str
-    IsLogarithmic: bool
-    Quantity: str
-    Symbol: str
+    Abbreviation : str
+    IsLogarithmic : bool
+    Quantity : str
+    Symbol : str
     @property
     def ZeroPrefix(self) -> Prefix: ...
     def Clone(self) -> Unit: ...
@@ -128,33 +133,36 @@ class Hertz(SIPrefixUnit):
     def FormatNoPrefix(self, value: float) -> str: ...
     def ToJsonBag(self) -> JsonBag: ...
 
+
 class IDerivedUnit(typing.Protocol):
     @property
     def OriginalUnit(self) -> Unit: ...
+
 
 class Index(FixedUnit):
     @typing.overload
     def __init__(self) -> None: ...
     @typing.overload
     def __init__(self, bag: JsonBag, version: Version) -> None: ...
-    Abbreviation: str
-    IsLogarithmic: bool
-    Quantity: str
-    Symbol: str
+    Abbreviation : str
+    IsLogarithmic : bool
+    Quantity : str
+    Symbol : str
     @property
     def ZeroPrefix(self) -> Prefix: ...
     def Clone(self) -> Unit: ...
     def ToJsonBag(self) -> JsonBag: ...
+
 
 class IntegralUnit(FixedUnit, IDerivedUnit):
     @typing.overload
     def __init__(self, bag: JsonBag, coreVersion: Version) -> None: ...
     @typing.overload
     def __init__(self, xUnit: Unit, yUnit: Unit) -> None: ...
-    Abbreviation: str
-    IsLogarithmic: bool
-    Quantity: str
-    Symbol: str
+    Abbreviation : str
+    IsLogarithmic : bool
+    Quantity : str
+    Symbol : str
     @property
     def OriginalUnit(self) -> Unit: ...
     @property
@@ -164,12 +172,13 @@ class IntegralUnit(FixedUnit, IDerivedUnit):
     def IntegralUnitFromJson(jr: JsonReader) -> Task_1[IntegralUnit]: ...
     def ToJsonBag(self) -> JsonBag: ...
 
+
 class InverseSquareRootTime(Unit, IDerivedUnit):
     def __init__(self) -> None: ...
-    Abbreviation: str
-    IsLogarithmic: bool
-    Quantity: str
-    Symbol: str
+    Abbreviation : str
+    IsLogarithmic : bool
+    Quantity : str
+    Symbol : str
     @property
     def OriginalUnit(self) -> Unit: ...
     @property
@@ -178,15 +187,16 @@ class InverseSquareRootTime(Unit, IDerivedUnit):
     def Format(self, f: float) -> str: ...
     def ToJsonBag(self) -> JsonBag: ...
 
+
 class Log10Current(AdjustedSIPrefixUnit, IDerivedUnit):
     @typing.overload
     def __init__(self, bag: JsonBag, coreVersion: Version) -> None: ...
     @typing.overload
     def __init__(self, originalUnit: Unit, minimumCurrentRange: float) -> None: ...
-    Abbreviation: str
-    IsLogarithmic: bool
-    Quantity: str
-    Symbol: str
+    Abbreviation : str
+    IsLogarithmic : bool
+    Quantity : str
+    Symbol : str
     @property
     def OriginalUnit(self) -> Unit: ...
     @property
@@ -199,6 +209,7 @@ class Log10Current(AdjustedSIPrefixUnit, IDerivedUnit):
     def ToLongString(self, pf: Prefix) -> str: ...
     def ToString(self, pf: Prefix) -> str: ...
 
+
 class Log10Unit(FixedUnit, IDerivedUnit):
     @typing.overload
     def __init__(self, bag: JsonBag, coreVersion: Version) -> None: ...
@@ -206,10 +217,10 @@ class Log10Unit(FixedUnit, IDerivedUnit):
     def __init__(self, originalUnit: Unit) -> None: ...
     @typing.overload
     def __init__(self, s: str, q: str, a: str) -> None: ...
-    Abbreviation: str
-    IsLogarithmic: bool
-    Quantity: str
-    Symbol: str
+    Abbreviation : str
+    IsLogarithmic : bool
+    Quantity : str
+    Symbol : str
     @property
     def OriginalUnit(self) -> Unit: ...
     @property
@@ -222,44 +233,47 @@ class Log10Unit(FixedUnit, IDerivedUnit):
     def ToLongString(self, pf: Prefix) -> str: ...
     def ToString(self) -> str: ...
 
+
 class MicroAmpere(AdjustedSIPrefixUnit):
     @typing.overload
     def __init__(self) -> None: ...
     @typing.overload
     def __init__(self, bag: JsonBag, version: Version) -> None: ...
-    Abbreviation: str
-    IsLogarithmic: bool
-    Quantity: str
-    Symbol: str
+    Abbreviation : str
+    IsLogarithmic : bool
+    Quantity : str
+    Symbol : str
     @property
     def ZeroPrefix(self) -> Prefix: ...
     def Clone(self) -> Unit: ...
     def ToJsonBag(self) -> JsonBag: ...
+
 
 class MicroCoulomb(AdjustedSIPrefixUnit):
     @typing.overload
     def __init__(self) -> None: ...
     @typing.overload
     def __init__(self, bag: JsonBag, version: Version) -> None: ...
-    Abbreviation: str
-    IsLogarithmic: bool
-    Quantity: str
-    Symbol: str
+    Abbreviation : str
+    IsLogarithmic : bool
+    Quantity : str
+    Symbol : str
     @property
     def ZeroPrefix(self) -> Prefix: ...
     def Clone(self) -> Unit: ...
     def Format(self, f: float) -> str: ...
     def ToJsonBag(self) -> JsonBag: ...
 
+
 class MicroWatt(AdjustedSIPrefixUnit, IDerivedUnit):
     @typing.overload
     def __init__(self, bag: JsonBag, version: Version) -> None: ...
     @typing.overload
     def __init__(self, originalUnit: Unit) -> None: ...
-    Abbreviation: str
-    IsLogarithmic: bool
-    Quantity: str
-    Symbol: str
+    Abbreviation : str
+    IsLogarithmic : bool
+    Quantity : str
+    Symbol : str
     @property
     def OriginalUnit(self) -> Unit: ...
     @property
@@ -267,49 +281,53 @@ class MicroWatt(AdjustedSIPrefixUnit, IDerivedUnit):
     def Clone(self) -> Unit: ...
     def ToJsonBag(self) -> JsonBag: ...
 
+
 class Ohm(SIPrefixUnit):
     @typing.overload
     def __init__(self) -> None: ...
     @typing.overload
     def __init__(self, bag: JsonBag, version: Version) -> None: ...
-    Abbreviation: str
-    IsLogarithmic: bool
-    Quantity: str
-    Symbol: str
+    Abbreviation : str
+    IsLogarithmic : bool
+    Quantity : str
+    Symbol : str
     @property
     def ZeroPrefix(self) -> Prefix: ...
     def Clone(self) -> Unit: ...
     def Format(self, value: float) -> str: ...
     def ToJsonBag(self) -> JsonBag: ...
 
+
 class Phase(FixedUnit):
     @typing.overload
     def __init__(self) -> None: ...
     @typing.overload
     def __init__(self, bag: JsonBag, version: Version) -> None: ...
-    Abbreviation: str
-    IsLogarithmic: bool
-    Quantity: str
-    Symbol: str
+    Abbreviation : str
+    IsLogarithmic : bool
+    Quantity : str
+    Symbol : str
     @property
     def ZeroPrefix(self) -> Prefix: ...
     def Clone(self) -> Unit: ...
     def ToJsonBag(self) -> JsonBag: ...
 
+
 class Prefix:
     def __init__(self, factor: float, prefix: str) -> None: ...
-    Factor: float
+    Factor : float
     def ToString(self) -> str: ...
+
 
 class SecondDerivativeUnit(FixedUnit, IDerivedUnit):
     @typing.overload
     def __init__(self, bag: JsonBag, coreVersion: Version) -> None: ...
     @typing.overload
     def __init__(self, xUnit: Unit, yUnit: Unit) -> None: ...
-    Abbreviation: str
-    IsLogarithmic: bool
-    Quantity: str
-    Symbol: str
+    Abbreviation : str
+    IsLogarithmic : bool
+    Quantity : str
+    Symbol : str
     @property
     def OriginalUnit(self) -> Unit: ...
     @property
@@ -319,6 +337,7 @@ class SecondDerivativeUnit(FixedUnit, IDerivedUnit):
     def SecondDerivativeUnitFromJson(jr: JsonReader) -> Task_1[SecondDerivativeUnit]: ...
     def ToJsonBag(self) -> JsonBag: ...
 
+
 class SIPrefixUnit(Unit):
     @typing.overload
     def __init__(self, bag: JsonBag, coreVersion: Version) -> None: ...
@@ -326,20 +345,21 @@ class SIPrefixUnit(Unit):
     def __init__(self, s: str, q: str, a: str) -> None: ...
     @typing.overload
     def __init__(self, serializedString: str) -> None: ...
-    Abbreviation: str
-    IsLogarithmic: bool
-    Quantity: str
-    Symbol: str
+    Abbreviation : str
+    IsLogarithmic : bool
+    Quantity : str
+    Symbol : str
     @property
     def ZeroPrefix(self) -> Prefix: ...
     def ToJsonBag(self) -> JsonBag: ...
 
+
 class SquareRootTime(Unit, IDerivedUnit):
     def __init__(self) -> None: ...
-    Abbreviation: str
-    IsLogarithmic: bool
-    Quantity: str
-    Symbol: str
+    Abbreviation : str
+    IsLogarithmic : bool
+    Quantity : str
+    Symbol : str
     @property
     def OriginalUnit(self) -> Unit: ...
     @property
@@ -348,34 +368,37 @@ class SquareRootTime(Unit, IDerivedUnit):
     def Format(self, f: float) -> str: ...
     def ToJsonBag(self) -> JsonBag: ...
 
+
 class Temperature(Unit):
     def __init__(self) -> None: ...
-    Abbreviation: str
-    IsLogarithmic: bool
-    Quantity: str
-    Symbol: str
+    Abbreviation : str
+    IsLogarithmic : bool
+    Quantity : str
+    Symbol : str
     @property
     def ZeroPrefix(self) -> Prefix: ...
     def Clone(self) -> Unit: ...
     def ToJsonBag(self) -> JsonBag: ...
 
+
 class Time(Unit):
     def __init__(self) -> None: ...
-    Abbreviation: str
-    IsLogarithmic: bool
-    Quantity: str
-    Symbol: str
+    Abbreviation : str
+    IsLogarithmic : bool
+    Quantity : str
+    Symbol : str
     @property
     def ZeroPrefix(self) -> Prefix: ...
     def Clone(self) -> Unit: ...
     def Format(self, f: float) -> str: ...
     def ToJsonBag(self) -> JsonBag: ...
 
+
 class Unit(abc.ABC):
-    Abbreviation: str
-    IsLogarithmic: bool
-    Quantity: str
-    Symbol: str
+    Abbreviation : str
+    IsLogarithmic : bool
+    Quantity : str
+    Symbol : str
     @property
     def ZeroPrefix(self) -> Prefix: ...
     @abc.abstractmethod
@@ -394,140 +417,149 @@ class Unit(abc.ABC):
     def ToLongString(self, pf: Prefix) -> str: ...
     # Skipped Format due to it being static, abstract and generic.
 
-    Format: Format_MethodGroup
+    Format : Format_MethodGroup
     class Format_MethodGroup:
         @typing.overload
-        def __call__(self, f: float) -> str: ...
+        def __call__(self, f: float) -> str:...
         @typing.overload
-        def __call__(self, pf: Prefix, f: float) -> str: ...
+        def __call__(self, pf: Prefix, f: float) -> str:...
 
     # Skipped GetUnitWithPrefix due to it being static, abstract and generic.
 
-    GetUnitWithPrefix: GetUnitWithPrefix_MethodGroup
+    GetUnitWithPrefix : GetUnitWithPrefix_MethodGroup
     class GetUnitWithPrefix_MethodGroup:
         @typing.overload
-        def __call__(self, f: float) -> str: ...
+        def __call__(self, f: float) -> str:...
         @typing.overload
-        def __call__(self, pf: Prefix, f: float) -> str: ...
+        def __call__(self, pf: Prefix, f: float) -> str:...
 
     # Skipped ToString due to it being static, abstract and generic.
 
-    ToString: ToString_MethodGroup
+    ToString : ToString_MethodGroup
     class ToString_MethodGroup:
         @typing.overload
-        def __call__(self) -> str: ...
+        def __call__(self) -> str:...
         @typing.overload
-        def __call__(self, pf: Prefix) -> str: ...
+        def __call__(self, pf: Prefix) -> str:...
+
+
 
 class VauxV(FixedUnit):
     @typing.overload
     def __init__(self) -> None: ...
     @typing.overload
     def __init__(self, bag: JsonBag, version: Version) -> None: ...
-    Abbreviation: str
-    IsLogarithmic: bool
-    Quantity: str
-    Symbol: str
+    Abbreviation : str
+    IsLogarithmic : bool
+    Quantity : str
+    Symbol : str
     @property
     def ZeroPrefix(self) -> Prefix: ...
     def Clone(self) -> Unit: ...
     def ToJsonBag(self) -> JsonBag: ...
+
 
 class Volt(SIPrefixUnit):
     @typing.overload
     def __init__(self) -> None: ...
     @typing.overload
     def __init__(self, bag: JsonBag, version: Version) -> None: ...
-    Abbreviation: str
-    IsLogarithmic: bool
-    Quantity: str
-    Symbol: str
+    Abbreviation : str
+    IsLogarithmic : bool
+    Quantity : str
+    Symbol : str
     @property
     def ZeroPrefix(self) -> Prefix: ...
     def Clone(self) -> Unit: ...
     def Format(self, f: float) -> str: ...
     def ToJsonBag(self) -> JsonBag: ...
 
+
 class Y(SIPrefixUnit):
     @typing.overload
     def __init__(self) -> None: ...
     @typing.overload
     def __init__(self, bag: JsonBag, version: Version) -> None: ...
-    Abbreviation: str
-    IsLogarithmic: bool
-    Quantity: str
-    Symbol: str
+    Abbreviation : str
+    IsLogarithmic : bool
+    Quantity : str
+    Symbol : str
     @property
     def ZeroPrefix(self) -> Prefix: ...
     def Clone(self) -> Unit: ...
     def ToJsonBag(self) -> JsonBag: ...
+
 
 class YIm(SIPrefixUnit):
     @typing.overload
     def __init__(self) -> None: ...
     @typing.overload
     def __init__(self, bag: JsonBag, version: Version) -> None: ...
-    Abbreviation: str
-    IsLogarithmic: bool
-    Quantity: str
-    Symbol: str
+    Abbreviation : str
+    IsLogarithmic : bool
+    Quantity : str
+    Symbol : str
     @property
     def ZeroPrefix(self) -> Prefix: ...
     def Clone(self) -> Unit: ...
     def ToJsonBag(self) -> JsonBag: ...
+
 
 class YRe(SIPrefixUnit):
     @typing.overload
     def __init__(self) -> None: ...
     @typing.overload
     def __init__(self, bag: JsonBag, version: Version) -> None: ...
-    Abbreviation: str
-    IsLogarithmic: bool
-    Quantity: str
-    Symbol: str
+    Abbreviation : str
+    IsLogarithmic : bool
+    Quantity : str
+    Symbol : str
     @property
     def ZeroPrefix(self) -> Prefix: ...
     def Clone(self) -> Unit: ...
     def ToJsonBag(self) -> JsonBag: ...
+
 
 class Z(SIPrefixUnit):
     @typing.overload
     def __init__(self) -> None: ...
     @typing.overload
     def __init__(self, bag: JsonBag, version: Version) -> None: ...
-    Abbreviation: str
-    IsLogarithmic: bool
-    Quantity: str
-    Symbol: str
+    Abbreviation : str
+    IsLogarithmic : bool
+    Quantity : str
+    Symbol : str
     @property
     def ZeroPrefix(self) -> Prefix: ...
     def Clone(self) -> Unit: ...
     def Format(self, value: float) -> str: ...
     def ToJsonBag(self) -> JsonBag: ...
 
+
 class ZIm(SIPrefixUnit):
     @typing.overload
     def __init__(self) -> None: ...
     @typing.overload
     def __init__(self, bag: JsonBag, version: Version) -> None: ...
-    Abbreviation: str
-    IsLogarithmic: bool
-    Quantity: str
-    Symbol: str
+    Abbreviation : str
+    IsLogarithmic : bool
+    Quantity : str
+    Symbol : str
     @property
     def ZeroPrefix(self) -> Prefix: ...
     def Clone(self) -> Unit: ...
     def ToJsonBag(self) -> JsonBag: ...
+
 
 class ZRe(SIPrefixUnit):
     @typing.overload
     def __init__(self) -> None: ...
     @typing.overload
     def __init__(self, bag: JsonBag, version: Version) -> None: ...
-    Abbreviation: str
-    IsLogarithmic: bool
-    Quantity: str
-    Symbol: str
+    Abbreviation : str
+    IsLogarithmic : bool
+    Quantity : str
+    Symbol : str
     @property
     def ZeroPrefix(self) -> Prefix: ...
     def Clone(self) -> Unit: ...

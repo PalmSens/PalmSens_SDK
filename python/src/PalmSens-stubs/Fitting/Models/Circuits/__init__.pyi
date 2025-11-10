@@ -1,9 +1,7 @@
-import abc
-import typing
-
+import typing, abc
 from PalmSens.Fitting.Models.Circuits.Elements import ElementTypes, IElementBase
-from System import Array_1
 from System.Collections.Generic import List_1
+from System import Array_1
 
 class CDCQueItem:
     @typing.overload
@@ -13,35 +11,19 @@ class CDCQueItem:
     @typing.overload
     def __init__(self, elementType: ElementTypes, value: float, value2: float) -> None: ...
     @typing.overload
-    def __init__(
-        self, elementType: ElementTypes, value: float, value2: float, value3: float
-    ) -> None: ...
+    def __init__(self, elementType: ElementTypes, value: float, value2: float, value3: float) -> None: ...
     @typing.overload
-    def __init__(
-        self,
-        elementType: ElementTypes,
-        value: float,
-        value2: float,
-        value3: float,
-        value4: float,
-    ) -> None: ...
+    def __init__(self, elementType: ElementTypes, value: float, value2: float, value3: float, value4: float) -> None: ...
     @typing.overload
-    def __init__(
-        self,
-        elementType: ElementTypes,
-        value: float,
-        value2: float,
-        value3: float,
-        value4: float,
-        value5: float,
-    ) -> None: ...
-    ElementType: ElementTypes
-    NewElement: bool
-    Value: float
-    Value2: float
-    Value3: float
-    Value4: float
-    Value5: float
+    def __init__(self, elementType: ElementTypes, value: float, value2: float, value3: float, value4: float, value5: float) -> None: ...
+    ElementType : ElementTypes
+    NewElement : bool
+    Value : float
+    Value2 : float
+    Value3 : float
+    Value4 : float
+    Value5 : float
+
 
 class CircuitDesigner:
     def __init__(self, fromChild: bool = ...) -> None: ...
@@ -49,14 +31,11 @@ class CircuitDesigner:
     def CircuitDesign(self) -> List_1[ISubGroup]: ...
     @CircuitDesign.setter
     def CircuitDesign(self, value: List_1[ISubGroup]) -> List_1[ISubGroup]: ...
-    def AddSubGroupParallel(
-        self, type: ElementTypes, grpLeft: ISubGroup, grpBase: ISubGroup, grpRight: ISubGroup
-    ) -> None: ...
+    def AddSubGroupParallel(self, type: ElementTypes, grpLeft: ISubGroup, grpBase: ISubGroup, grpRight: ISubGroup) -> None: ...
     def CDCAddParallelGroup(self, grpParent: ISubGroup, iPrlSeries: int) -> ISubGroup: ...
-    def CDCAddSeries(
-        self, type: ElementTypes, grpParent: ISubGroup, iPrlSeries: int
-    ) -> None: ...
+    def CDCAddSeries(self, type: ElementTypes, grpParent: ISubGroup, iPrlSeries: int) -> None: ...
     def RemoveGroup(self, grp: ISubGroup) -> None: ...
+
 
 class CircuitParser:
     def __init__(self, cd: CircuitDesigner) -> None: ...
@@ -68,13 +47,12 @@ class CircuitParser:
     def InsertCDC(self, key: str, index: int) -> Array_1[str]: ...
     def ParseString(self, str: str) -> str: ...
 
+
 class ConnectorGroup(SubGroup):
     @typing.overload
     def __init__(self, fromChild: bool = ...) -> None: ...
     @typing.overload
-    def __init__(
-        self, grpLeft: ISubGroup, grpRight: ISubGroup, grpParent: ISubGroup
-    ) -> None: ...
+    def __init__(self, grpLeft: ISubGroup, grpRight: ISubGroup, grpParent: ISubGroup) -> None: ...
     @property
     def Elements(self) -> List_1[IElementBase]: ...
     @property
@@ -171,11 +149,10 @@ class ConnectorGroup(SubGroup):
     def StatusConn(self, value: StatConn) -> StatConn: ...
     def Clone(self) -> ISubGroup: ...
 
+
 class ElementGroup(SubGroup):
-    def __init__(
-        self, type: ElementTypes, grpLeft: ISubGroup, grpParent: ISubGroup, grpRight: ISubGroup
-    ) -> None: ...
-    NValues: int
+    def __init__(self, type: ElementTypes, grpLeft: ISubGroup, grpParent: ISubGroup, grpRight: ISubGroup) -> None: ...
+    NValues : int
     @property
     def Elements(self) -> List_1[IElementBase]: ...
     @property
@@ -271,18 +248,20 @@ class ElementGroup(SubGroup):
     @StatusConn.setter
     def StatusConn(self, value: StatConn) -> StatConn: ...
     def Clone(self) -> ISubGroup: ...
+
 
 class GroupTypes(typing.SupportsInt):
     @typing.overload
-    def __init__(self, value: int) -> None: ...
+    def __init__(self, value : int) -> None: ...
     @typing.overload
-    def __init__(self, value: int, force_if_true: bool) -> None: ...
+    def __init__(self, value : int, force_if_true: bool) -> None: ...
     def __int__(self) -> int: ...
 
     # Values:
-    ConnectorGroup: GroupTypes  # 0
-    ElementGroup: GroupTypes  # 1
-    ParallelGroup: GroupTypes  # 2
+    ConnectorGroup : GroupTypes # 0
+    ElementGroup : GroupTypes # 1
+    ParallelGroup : GroupTypes # 2
+
 
 class ISubGroup(typing.Protocol):
     @property
@@ -388,27 +367,23 @@ class ISubGroup(typing.Protocol):
     @abc.abstractmethod
     def ResetConnections(self) -> None: ...
     @abc.abstractmethod
-    def ValidateBaseGroup(
-        self, grp: ISubGroup, grpLeft: ISubGroup, grpRight: ISubGroup, grpParent: ISubGroup
-    ) -> None: ...
+    def ValidateBaseGroup(self, grp: ISubGroup, grpLeft: ISubGroup, grpRight: ISubGroup, grpParent: ISubGroup) -> None: ...
     # Skipped InsertInToParallelGroup due to it being static, abstract and generic.
 
-    InsertInToParallelGroup: InsertInToParallelGroup_MethodGroup
+    InsertInToParallelGroup : InsertInToParallelGroup_MethodGroup
     class InsertInToParallelGroup_MethodGroup:
         @typing.overload
-        def __call__(self, type: ElementTypes, connGroup: ISubGroup) -> None: ...
+        def __call__(self, type: ElementTypes, connGroup: ISubGroup) -> None:...
         @typing.overload
-        def __call__(self, type: ElementTypes, index: int, first: bool) -> None: ...
+        def __call__(self, type: ElementTypes, index: int, first: bool) -> None:...
+
+
 
 class ParallelGroup(SubGroup):
     @typing.overload
-    def __init__(
-        self, grpLeft: ISubGroup, grpRight: ISubGroup, grpParent: ISubGroup
-    ) -> None: ...
+    def __init__(self, grpLeft: ISubGroup, grpRight: ISubGroup, grpParent: ISubGroup) -> None: ...
     @typing.overload
-    def __init__(
-        self, type: ElementTypes, grpLeft: ISubGroup, grpBase: ISubGroup, grpRight: ISubGroup
-    ) -> None: ...
+    def __init__(self, type: ElementTypes, grpLeft: ISubGroup, grpBase: ISubGroup, grpRight: ISubGroup) -> None: ...
     @property
     def Elements(self) -> List_1[IElementBase]: ...
     @property
@@ -511,23 +486,26 @@ class ParallelGroup(SubGroup):
     def RemoveFromParallelGroup(self, grp: ISubGroup) -> List_1[ISubGroup]: ...
     # Skipped InsertInToParallelGroup due to it being static, abstract and generic.
 
-    InsertInToParallelGroup: InsertInToParallelGroup_MethodGroup
+    InsertInToParallelGroup : InsertInToParallelGroup_MethodGroup
     class InsertInToParallelGroup_MethodGroup:
         @typing.overload
-        def __call__(self, type: ElementTypes, connGroup: ISubGroup) -> None: ...
+        def __call__(self, type: ElementTypes, connGroup: ISubGroup) -> None:...
         @typing.overload
-        def __call__(self, type: ElementTypes, index: int, first: bool) -> None: ...
+        def __call__(self, type: ElementTypes, index: int, first: bool) -> None:...
+
+
 
 class StatConn(typing.SupportsInt):
     @typing.overload
-    def __init__(self, value: int) -> None: ...
+    def __init__(self, value : int) -> None: ...
     @typing.overload
-    def __init__(self, value: int, force_if_true: bool) -> None: ...
+    def __init__(self, value : int, force_if_true: bool) -> None: ...
     def __int__(self) -> int: ...
 
     # Values:
-    Unconnected: StatConn  # 0
-    Connected: StatConn  # 1
+    Unconnected : StatConn # 0
+    Connected : StatConn # 1
+
 
 class SubGroup(ISubGroup, abc.ABC):
     @property
@@ -632,14 +610,12 @@ class SubGroup(ISubGroup, abc.ABC):
     def RemoveFromChildParallelGroup(self, grp: ISubGroup, parentGrp: ISubGroup) -> None: ...
     def RemoveFromParallelGroup(self, grp: ISubGroup) -> List_1[ISubGroup]: ...
     def ResetConnections(self) -> None: ...
-    def ValidateBaseGroup(
-        self, grp: ISubGroup, grpLeft: ISubGroup, grpRight: ISubGroup, grpParent: ISubGroup
-    ) -> None: ...
+    def ValidateBaseGroup(self, grp: ISubGroup, grpLeft: ISubGroup, grpRight: ISubGroup, grpParent: ISubGroup) -> None: ...
     # Skipped InsertInToParallelGroup due to it being static, abstract and generic.
 
-    InsertInToParallelGroup: InsertInToParallelGroup_MethodGroup
+    InsertInToParallelGroup : InsertInToParallelGroup_MethodGroup
     class InsertInToParallelGroup_MethodGroup:
         @typing.overload
-        def __call__(self, type: ElementTypes, connGroup: ISubGroup) -> None: ...
+        def __call__(self, type: ElementTypes, connGroup: ISubGroup) -> None:...
         @typing.overload
-        def __call__(self, type: ElementTypes, index: int, first: bool) -> None: ...
+        def __call__(self, type: ElementTypes, index: int, first: bool) -> None:...

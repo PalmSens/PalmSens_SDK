@@ -1,12 +1,10 @@
-import abc
-import typing
-
+import typing, abc
 from PalmSens.Comm import enumDeviceType
-from PalmSens.Devices import Device
-from System import Array_1, AsyncCallback, IAsyncResult, IDisposable, MulticastDelegate
-from System.Collections.Generic import IList_1
+from System import MulticastDelegate, IAsyncResult, AsyncCallback, Array_1, IDisposable
 from System.Reflection import MethodInfo
 from System.Text import StringBuilder
+from System.Collections.Generic import IList_1
+from PalmSens.Devices import Device
 from System.Threading.Tasks import Task
 
 class CommandResponse:
@@ -28,27 +26,30 @@ class CommandResponse:
     @Script.setter
     def Script(self, value: str) -> str: ...
 
+
 class EmStat3PSim(SimBase):
     def __init__(self) -> None: ...
-    BiPotCurrentRange: int
-    BiPotPotential: float
-    CurrentRange: int
-    DeviceType: enumDeviceType
-    ExternalOutput: int
-    Mode: int
-    Potential: float
-    SimConfig: SimConfig
+    BiPotCurrentRange : int
+    BiPotPotential : float
+    CurrentRange : int
+    DeviceType : enumDeviceType
+    ExternalOutput : int
+    Mode : int
+    Potential : float
+    SimConfig : SimConfig
+
 
 class EmStatPicoSim(SimBase):
     def __init__(self) -> None: ...
-    BiPotCurrentRange: int
-    BiPotPotential: float
-    CurrentRange: int
-    DeviceType: enumDeviceType
-    ExternalOutput: int
-    Mode: int
-    Potential: float
-    SimConfig: SimConfig
+    BiPotCurrentRange : int
+    BiPotPotential : float
+    CurrentRange : int
+    DeviceType : enumDeviceType
+    ExternalOutput : int
+    Mode : int
+    Potential : float
+    SimConfig : SimConfig
+
 
 class PalmSensSimulator:
     def __init__(self) -> None: ...
@@ -59,31 +60,24 @@ class PalmSensSimulator:
         def Method(self) -> MethodInfo: ...
         @property
         def Target(self) -> typing.Any: ...
-        def BeginInvoke(
-            self,
-            sender: typing.Any,
-            args: PalmSensSimulator.LCDChangeEventArgs,
-            callback: AsyncCallback,
-            object: typing.Any,
-        ) -> IAsyncResult: ...
+        def BeginInvoke(self, sender: typing.Any, args: PalmSensSimulator.LCDChangeEventArgs, callback: AsyncCallback, object: typing.Any) -> IAsyncResult: ...
         def EndInvoke(self, result: IAsyncResult) -> None: ...
-        def Invoke(
-            self, sender: typing.Any, args: PalmSensSimulator.LCDChangeEventArgs
-        ) -> None: ...
+        def Invoke(self, sender: typing.Any, args: PalmSensSimulator.LCDChangeEventArgs) -> None: ...
+
 
     class LCDChangeEventArgs:
         def __init__(self) -> None: ...
-        line: Array_1[str]
+        line : Array_1[str]
 
-    BiPotCurrentRange: int
-    BiPotPotential: float
-    CurrentRange: int
-    ExternalOutput: int
-    FastMode: bool
-    Mode: int
-    outbuffer: StringBuilder
-    Potential: float
-    ProductType: enumDeviceType
+    BiPotCurrentRange : int
+    BiPotPotential : float
+    CurrentRange : int
+    ExternalOutput : int
+    FastMode : bool
+    Mode : int
+    outbuffer : StringBuilder
+    Potential : float
+    ProductType : enumDeviceType
     def PressDown(self) -> None: ...
     def PressEnter(self) -> None: ...
     def PressEsc(self) -> None: ...
@@ -92,25 +86,28 @@ class PalmSensSimulator:
     def PressRight(self) -> None: ...
     def PressUp(self) -> None: ...
 
+
 class parameters(abc.ABC):
-    Ebegin: str
-    Econd: str
-    EDep: str
-    nPoints: str
-    tCond: str
-    tDep: str
-    technique: str
-    tEquil: str
-    tInt: str
+    Ebegin : str
+    Econd : str
+    EDep : str
+    nPoints : str
+    tCond : str
+    tDep : str
+    technique : str
+    tEquil : str
+    tInt : str
+
 
 class SimBase:
     def __init__(self) -> None: ...
-    DeviceType: enumDeviceType
-    SimConfig: SimConfig
+    DeviceType : enumDeviceType
+    SimConfig : SimConfig
     def GenerateIdleData(self) -> None: ...
     def ParseData(self, s: str) -> None: ...
     def ReadOutBuffer(self) -> str: ...
     def TryParseBuffer(self) -> None: ...
+
 
 class SimConfig:
     def __init__(self) -> None: ...
@@ -120,9 +117,10 @@ class SimConfig:
     def CommandResponses(self, value: IList_1[CommandResponse]) -> IList_1[CommandResponse]: ...
     def FindCommandResponse(self, command: str) -> CommandResponse: ...
 
+
 class SimEmStat3P(Device):
     def __init__(self, simConfig: SimConfig) -> None: ...
-    Simulator: EmStat3PSim
+    Simulator : EmStat3PSim
     @property
     def Baudrate(self) -> int: ...
     @property
@@ -161,16 +159,18 @@ class SimEmStat3P(Device):
     def Write(self, s: str) -> None: ...
     # Skipped Open due to it being static, abstract and generic.
 
-    Open: Open_MethodGroup
+    Open : Open_MethodGroup
     class Open_MethodGroup:
         @typing.overload
-        def __call__(self) -> None: ...
+        def __call__(self) -> None:...
         @typing.overload
-        def __call__(self, baudrate: int) -> None: ...
+        def __call__(self, baudrate: int) -> None:...
+
+
 
 class SimEmStatPico(Device):
     def __init__(self, simConfig: SimConfig) -> None: ...
-    Simulator: EmStatPicoSim
+    Simulator : EmStatPicoSim
     @property
     def Baudrate(self) -> int: ...
     @property
@@ -209,28 +209,31 @@ class SimEmStatPico(Device):
     def WriteAsync(self, s: str, delayBetweenBlocks: int) -> Task: ...
     # Skipped Open due to it being static, abstract and generic.
 
-    Open: Open_MethodGroup
+    Open : Open_MethodGroup
     class Open_MethodGroup:
         @typing.overload
-        def __call__(self) -> None: ...
+        def __call__(self) -> None:...
         @typing.overload
-        def __call__(self, baudrate: int) -> None: ...
+        def __call__(self, baudrate: int) -> None:...
 
     # Skipped Write due to it being static, abstract and generic.
 
-    Write: Write_MethodGroup
+    Write : Write_MethodGroup
     class Write_MethodGroup:
         @typing.overload
-        def __call__(self, s: str) -> None: ...
+        def __call__(self, s: str) -> None:...
         @typing.overload
-        def __call__(self, s: str, delayBetweenBlocks: int) -> None: ...
+        def __call__(self, s: str, delayBetweenBlocks: int) -> None:...
+
+
 
 class SimMeasurement(IDisposable, abc.ABC):
     def Dispose(self) -> None: ...
 
+
 class SimPalmSens(SimulatorDevice):
     def __init__(self) -> None: ...
-    Simulator: PalmSensSimulator
+    Simulator : PalmSensSimulator
     @property
     def Baudrate(self) -> int: ...
     @property
@@ -265,9 +268,10 @@ class SimPalmSens(SimulatorDevice):
     def TimeOut(self) -> int: ...
     def ToString(self) -> str: ...
 
+
 class SimulatorDevice(Device):
     def __init__(self, product: enumDeviceType) -> None: ...
-    Simulator: PalmSensSimulator
+    Simulator : PalmSensSimulator
     @property
     def Baudrate(self) -> int: ...
     @property
@@ -306,9 +310,9 @@ class SimulatorDevice(Device):
     def Write(self, s: str) -> None: ...
     # Skipped Open due to it being static, abstract and generic.
 
-    Open: Open_MethodGroup
+    Open : Open_MethodGroup
     class Open_MethodGroup:
         @typing.overload
-        def __call__(self) -> None: ...
+        def __call__(self) -> None:...
         @typing.overload
-        def __call__(self, baudrate: int) -> None: ...
+        def __call__(self, baudrate: int) -> None:...

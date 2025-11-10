@@ -19,6 +19,7 @@ class CommandResponse:
     @Script.setter
     def Script(self, value: str) -> str: ...
 
+
 class SimConfig:
     def __init__(self) -> None: ...
-    CommandResponses: IList_1[CommandResponse]
+    CommandResponses : IList_1[CommandResponse]

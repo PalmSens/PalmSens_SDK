@@ -1,58 +1,39 @@
-import abc
-import typing
-
-import clr
-from Newtonsoft.Json import JsonReader, JsonWriter
-from PalmSens import CurrentRange, MeasType, Method, Plottable, PotentialRange
-from PalmSens.Analysis import CFALevelList, PeakList
-from PalmSens.Data import (
-    ArrayDataAddedEventArgs,
-    CurrentReading,
-    DataArray,
-    DataArrayType,
-    DataSetEIS,
-    EnumAxes,
-    EnumDirection,
-    IDataValue,
-)
+import typing, clr, abc
+from PalmSens import Plottable, MeasType, Method, CurrentRange, PotentialRange
 from PalmSens.DataFiles import JsonBag
-from PalmSens.Techniques import ImpedimetricIterationMethodBase, ImpedimetricMethodBase
-from PalmSens.Techniques.Impedance import enumFrequencyType, enumScanType
-from PalmSens.Units import Unit
-from System import (
-    Array_1,
-    AsyncCallback,
-    EventArgs,
-    IAsyncResult,
-    IDisposable,
-    MulticastDelegate,
-    Version,
-)
-from System.Collections.Generic import Dictionary_2, IComparer_1, List_1
-from System.Drawing import Size
+from System import Version, MulticastDelegate, IAsyncResult, AsyncCallback, Array_1, EventArgs, IDisposable
+from PalmSens.Data import DataArray, ArrayDataAddedEventArgs, DataArrayType, EnumDirection, EnumAxes, DataSetEIS, IDataValue, CurrentReading
 from System.Reflection import MethodInfo
+from PalmSens.Analysis import CFALevelList, PeakList
+from PalmSens.Units import Unit
+from System.Threading.Tasks import Task_1, Task
+from Newtonsoft.Json import JsonReader, JsonWriter
 from System.Threading import CancellationToken
-from System.Threading.Tasks import Task, Task_1
+from System.Collections.Generic import IComparer_1, List_1, Dictionary_2
+from PalmSens.Techniques import ImpedimetricMethodBase, ImpedimetricIterationMethodBase
+from PalmSens.Techniques.Impedance import enumScanType, enumFrequencyType
+from System.Drawing import Size
 
 class AxisFunction(typing.SupportsInt):
     @typing.overload
-    def __init__(self, value: int) -> None: ...
+    def __init__(self, value : int) -> None: ...
     @typing.overload
-    def __init__(self, value: int, force_if_true: bool) -> None: ...
+    def __init__(self, value : int, force_if_true: bool) -> None: ...
     def __int__(self) -> int: ...
 
     # Values:
-    Normal: AxisFunction  # 0
-    Derivative: AxisFunction  # 1
-    Log: AxisFunction  # 2
-    Power: AxisFunction  # 3
-    SecondDerivative: AxisFunction  # 4
-    Integral: AxisFunction  # 5
-    Anson: AxisFunction  # 6
-    Cottrell: AxisFunction  # 7
+    Normal : AxisFunction # 0
+    Derivative : AxisFunction # 1
+    Log : AxisFunction # 2
+    Power : AxisFunction # 3
+    SecondDerivative : AxisFunction # 4
+    Integral : AxisFunction # 5
+    Anson : AxisFunction # 6
+    Cottrell : AxisFunction # 7
+
 
 class Blank(abc.ABC):
-    UseBlank: bool
+    UseBlank : bool
     @classmethod
     @property
     def BlankCurve(cls) -> Curve: ...
@@ -60,37 +41,38 @@ class Blank(abc.ABC):
     @BlankCurve.setter
     def BlankCurve(cls, value: Curve) -> Curve: ...
 
+
 class Curve(Plottable):
     @typing.overload
     def __init__(self, bag: JsonBag, coreVersion: Version) -> None: ...
     @typing.overload
     def __init__(self, curve: Curve, cloneData: bool = ...) -> None: ...
     @typing.overload
-    def __init__(
-        self, xDataArray: DataArray, yDataArray: DataArray, title: str = ..., finish: bool = ...
-    ) -> None: ...
+    def __init__(self, xDataArray: DataArray, yDataArray: DataArray, title: str = ..., finish: bool = ...) -> None: ...
 
     class EnumXAxis(typing.SupportsInt):
         @typing.overload
-        def __init__(self, value: int) -> None: ...
+        def __init__(self, value : int) -> None: ...
         @typing.overload
-        def __init__(self, value: int, force_if_true: bool) -> None: ...
+        def __init__(self, value : int, force_if_true: bool) -> None: ...
         def __int__(self) -> int: ...
 
         # Values:
-        Bottom: Curve.EnumXAxis  # 0
-        Top: Curve.EnumXAxis  # 1
+        Bottom : Curve.EnumXAxis # 0
+        Top : Curve.EnumXAxis # 1
+
 
     class EnumYAxis(typing.SupportsInt):
         @typing.overload
-        def __init__(self, value: int) -> None: ...
+        def __init__(self, value : int) -> None: ...
         @typing.overload
-        def __init__(self, value: int, force_if_true: bool) -> None: ...
+        def __init__(self, value : int, force_if_true: bool) -> None: ...
         def __int__(self) -> int: ...
 
         # Values:
-        Left: Curve.EnumYAxis  # 0
-        Right: Curve.EnumYAxis  # 1
+        Left : Curve.EnumYAxis # 0
+        Right : Curve.EnumYAxis # 1
+
 
     class NewDataAddedEventHandler(MulticastDelegate):
         def __init__(self, object: typing.Any, method: int) -> None: ...
@@ -98,19 +80,13 @@ class Curve(Plottable):
         def Method(self) -> MethodInfo: ...
         @property
         def Target(self) -> typing.Any: ...
-        def BeginInvoke(
-            self,
-            sender: typing.Any,
-            e: ArrayDataAddedEventArgs,
-            callback: AsyncCallback,
-            object: typing.Any,
-        ) -> IAsyncResult: ...
+        def BeginInvoke(self, sender: typing.Any, e: ArrayDataAddedEventArgs, callback: AsyncCallback, object: typing.Any) -> IAsyncResult: ...
         def EndInvoke(self, result: IAsyncResult) -> None: ...
         def Invoke(self, sender: typing.Any, e: ArrayDataAddedEventArgs) -> None: ...
 
-    ErrorMessage: str
-    Hash: Array_1[int]
-    Levels: CFALevelList
+    ErrorMessage : str
+    Hash : Array_1[int]
+    Levels : CFALevelList
     @property
     def Appearance(self) -> VisualSettings: ...
     @Appearance.setter
@@ -236,25 +212,15 @@ class Curve(Plottable):
     def ClearPeaks(self) -> None: ...
     def CorrectIndicesCV(self) -> None: ...
     @staticmethod
-    def CurveFromJson(
-        jr: JsonReader, coreVersion: Version, cancellationToken: CancellationToken
-    ) -> Task_1[Curve]: ...
+    def CurveFromJson(jr: JsonReader, coreVersion: Version, cancellationToken: CancellationToken) -> Task_1[Curve]: ...
     def Dispose(self) -> None: ...
     @staticmethod
     def Empty() -> Curve: ...
     def FindLevels(self, minWidth: float, minHeight: float) -> None: ...
-    def FindNearestVisual(
-        self, x: float, y: float, xMin: float, xMax: float, yMin: float, yMax: float
-    ) -> int: ...
+    def FindNearestVisual(self, x: float, y: float, xMin: float, xMax: float, yMin: float, yMax: float) -> int: ...
     def FindNearestX(self, x: float) -> int: ...
     def FindNearestXCV(self, x: float, y: float, iMin: int, iMax: int) -> int: ...
-    def FindPeaks(
-        self,
-        minPeakWidth: float,
-        minPeakHeight: float,
-        peakShoulders: bool = ...,
-        mergeOverlappingPeaks: bool = ...,
-    ) -> PeakList: ...
+    def FindPeaks(self, minPeakWidth: float, minPeakHeight: float, peakShoulders: bool = ..., mergeOverlappingPeaks: bool = ...) -> PeakList: ...
     def Finish(self, redraw: bool = ...) -> None: ...
     @staticmethod
     def FromJsonBag(bag: JsonBag, coreVersion: Version) -> Curve: ...
@@ -284,55 +250,49 @@ class Curve(Plottable):
     def SupportsAxisFunction(self, function: AxisFunction, method: Method) -> bool: ...
     def SupportsCottrellPlot(self, method: Method) -> bool: ...
     def ToJsonBag(self) -> JsonBag: ...
-    def ToJsonWriterAsync(
-        self, jw: JsonWriter, cancellationToken: CancellationToken
-    ) -> Task: ...
+    def ToJsonWriterAsync(self, jw: JsonWriter, cancellationToken: CancellationToken) -> Task: ...
     def ToString(self) -> str: ...
     # Skipped FindNearest due to it being static, abstract and generic.
 
-    FindNearest: FindNearest_MethodGroup
+    FindNearest : FindNearest_MethodGroup
     class FindNearest_MethodGroup:
         @typing.overload
-        def __call__(self, x: float, y: float) -> int: ...
+        def __call__(self, x: float, y: float) -> int:...
         @typing.overload
-        def __call__(self, x: float, y: float, iStart: int, iEnd: int) -> int: ...
+        def __call__(self, x: float, y: float, iStart: int, iEnd: int) -> int:...
 
     # Skipped LLS due to it being static, abstract and generic.
 
-    LLS: LLS_MethodGroup
+    LLS : LLS_MethodGroup
     class LLS_MethodGroup:
         @typing.overload
-        def __call__(
-            self, a: clr.Reference[float], b: clr.Reference[float], corr: clr.Reference[float]
-        ) -> None: ...
+        def __call__(self, a: clr.Reference[float], b: clr.Reference[float], corr: clr.Reference[float]) -> None:...
         @typing.overload
-        def __call__(
-            self,
-            from_: int,
-            to: int,
-            offset: clr.Reference[float],
-            slope: clr.Reference[float],
-            CoefDet: clr.Reference[float],
-        ) -> None: ...
+        def __call__(self, from_: int, to: int, offset: clr.Reference[float], slope: clr.Reference[float], CoefDet: clr.Reference[float]) -> None:...
+
+
 
 class CurveComparer(IComparer_1[Curve]):
     def __init__(self) -> None: ...
     def Compare(self, x: Curve, y: Curve) -> int: ...
 
+
 class CurveDirection(typing.SupportsInt):
     @typing.overload
-    def __init__(self, value: int) -> None: ...
+    def __init__(self, value : int) -> None: ...
     @typing.overload
-    def __init__(self, value: int, force_if_true: bool) -> None: ...
+    def __init__(self, value : int, force_if_true: bool) -> None: ...
     def __int__(self) -> int: ...
 
     # Values:
-    Ascending: CurveDirection  # 1
-    Descending: CurveDirection  # -1
+    Ascending : CurveDirection # 1
+    Descending : CurveDirection # -1
+
 
 class CurveEventArgs(EventArgs):
     def __init__(self, c: Curve) -> None: ...
     def GetCurve(self) -> Curve: ...
+
 
 class CurveEventHandler(MulticastDelegate):
     def __init__(self, object: typing.Any, method: int) -> None: ...
@@ -340,11 +300,10 @@ class CurveEventHandler(MulticastDelegate):
     def Method(self) -> MethodInfo: ...
     @property
     def Target(self) -> typing.Any: ...
-    def BeginInvoke(
-        self, sender: typing.Any, e: CurveEventArgs, callback: AsyncCallback, object: typing.Any
-    ) -> IAsyncResult: ...
+    def BeginInvoke(self, sender: typing.Any, e: CurveEventArgs, callback: AsyncCallback, object: typing.Any) -> IAsyncResult: ...
     def EndInvoke(self, result: IAsyncResult) -> None: ...
     def Invoke(self, sender: typing.Any, e: CurveEventArgs) -> None: ...
+
 
 class EISCurve(Curve):
     @typing.overload
@@ -352,12 +311,10 @@ class EISCurve(Curve):
     @typing.overload
     def __init__(self, curve: Curve, cloneData: bool) -> None: ...
     @typing.overload
-    def __init__(
-        self, xDataArray: DataArray, yDataArray: DataArray, title: str, finish: bool
-    ) -> None: ...
-    ErrorMessage: str
-    Hash: Array_1[int]
-    Levels: CFALevelList
+    def __init__(self, xDataArray: DataArray, yDataArray: DataArray, title: str, finish: bool) -> None: ...
+    ErrorMessage : str
+    Hash : Array_1[int]
+    Levels : CFALevelList
     @property
     def Appearance(self) -> VisualSettings: ...
     @Appearance.setter
@@ -481,72 +438,68 @@ class EISCurve(Curve):
     @ZUnit.setter
     def ZUnit(self, value: Unit) -> Unit: ...
 
+
 class EISData(Plottable):
     @typing.overload
     def __init__(self, eis: EISData, cloneData: bool = ...) -> None: ...
     @typing.overload
-    def __init__(
-        self, method: ImpedimetricMethodBase, auxInputName: str, auxUnit: Unit
-    ) -> None: ...
+    def __init__(self, method: ImpedimetricMethodBase, auxInputName: str, auxUnit: Unit) -> None: ...
     @typing.overload
-    def __init__(
-        self,
-        scanType: enumScanType,
-        freqType: enumFrequencyType,
-        isGEIS: bool,
-        frequencies: List_1[float] = ...,
-    ) -> None: ...
+    def __init__(self, scanType: enumScanType, freqType: enumFrequencyType, isGEIS: bool, frequencies: List_1[float] = ...) -> None: ...
 
     class DebugValueType(typing.SupportsInt):
         @typing.overload
-        def __init__(self, value: int) -> None: ...
+        def __init__(self, value : int) -> None: ...
         @typing.overload
-        def __init__(self, value: int, force_if_true: bool) -> None: ...
+        def __init__(self, value : int, force_if_true: bool) -> None: ...
         def __int__(self) -> int: ...
 
         # Values:
-        nPointsAC: EISData.DebugValueType  # 0
-        realtintac: EISData.DebugValueType  # 1
-        ymean: EISData.DebugValueType  # 2
-        debugtext: EISData.DebugValueType  # 3
+        nPointsAC : EISData.DebugValueType # 0
+        realtintac : EISData.DebugValueType # 1
+        ymean : EISData.DebugValueType # 2
+        debugtext : EISData.DebugValueType # 3
+
 
     class EISValueType(typing.SupportsInt):
         @typing.overload
-        def __init__(self, value: int) -> None: ...
+        def __init__(self, value : int) -> None: ...
         @typing.overload
-        def __init__(self, value: int, force_if_true: bool) -> None: ...
+        def __init__(self, value : int, force_if_true: bool) -> None: ...
         def __int__(self) -> int: ...
 
         # Values:
-        X: EISData.EISValueType  # 0
-        Freq: EISData.EISValueType  # 1
-        Logf: EISData.EISValueType  # 2
-        LogZ: EISData.EISValueType  # 3
-        Edc: EISData.EISValueType  # 4
-        mEdc: EISData.EISValueType  # 5
-        Eac: EISData.EISValueType  # 6
-        Time: EISData.EISValueType  # 7
-        Idc: EISData.EISValueType  # 8
-        Iac: EISData.EISValueType  # 9
-        miDC: EISData.EISValueType  # 10
-        ZRe: EISData.EISValueType  # 11
-        ZIm: EISData.EISValueType  # 12
-        Z: EISData.EISValueType  # 13
-        MinPhase: EISData.EISValueType  # 14
-        Rct: EISData.EISValueType  # 15
-        LogY: EISData.EISValueType  # 16
-        YRe: EISData.EISValueType  # 17
-        YIm: EISData.EISValueType  # 18
-        Y: EISData.EISValueType  # 19
-        Cs: EISData.EISValueType  # 20
-        CsRe: EISData.EISValueType  # 21
-        CsIm: EISData.EISValueType  # 22
-        iDCinRange: EISData.EISValueType  # 23
-        AuxInput: EISData.EISValueType  # 24
+        X : EISData.EISValueType # 0
+        Freq : EISData.EISValueType # 1
+        Logf : EISData.EISValueType # 2
+        LogZ : EISData.EISValueType # 3
+        Edc : EISData.EISValueType # 4
+        mEdc : EISData.EISValueType # 5
+        Eac : EISData.EISValueType # 6
+        Time : EISData.EISValueType # 7
+        Idc : EISData.EISValueType # 8
+        Iac : EISData.EISValueType # 9
+        miDC : EISData.EISValueType # 10
+        ZRe : EISData.EISValueType # 11
+        ZIm : EISData.EISValueType # 12
+        Z : EISData.EISValueType # 13
+        MinPhase : EISData.EISValueType # 14
+        Rct : EISData.EISValueType # 15
+        LogY : EISData.EISValueType # 16
+        YRe : EISData.EISValueType # 17
+        YIm : EISData.EISValueType # 18
+        Y : EISData.EISValueType # 19
+        Cs : EISData.EISValueType # 20
+        CsRe : EISData.EISValueType # 21
+        CsIm : EISData.EISValueType # 22
+        iDCinRange : EISData.EISValueType # 23
+        AuxInput : EISData.EISValueType # 24
+
 
     class NewDataEventArgs(EventArgs):
-        EISData: EISData
-        Index: int
+        EISData : EISData
+        Index : int
+
 
     class NewDataEventHandler(MulticastDelegate):
         def __init__(self, object: typing.Any, method: int) -> None: ...
@@ -554,15 +507,10 @@ class EISData(Plottable):
         def Method(self) -> MethodInfo: ...
         @property
         def Target(self) -> typing.Any: ...
-        def BeginInvoke(
-            self,
-            sender: typing.Any,
-            e: EISData.NewDataEventArgs,
-            callback: AsyncCallback,
-            object: typing.Any,
-        ) -> IAsyncResult: ...
+        def BeginInvoke(self, sender: typing.Any, e: EISData.NewDataEventArgs, callback: AsyncCallback, object: typing.Any) -> IAsyncResult: ...
         def EndInvoke(self, result: IAsyncResult) -> None: ...
         def Invoke(self, sender: typing.Any, e: EISData.NewDataEventArgs) -> None: ...
+
 
     class NewFreqScanAddedEventHandler(MulticastDelegate):
         def __init__(self, object: typing.Any, method: int) -> None: ...
@@ -570,20 +518,15 @@ class EISData(Plottable):
         def Method(self) -> MethodInfo: ...
         @property
         def Target(self) -> typing.Any: ...
-        def BeginInvoke(
-            self,
-            sender: typing.Any,
-            e: EISData.NewFreqScanEventArgs,
-            callback: AsyncCallback,
-            object: typing.Any,
-        ) -> IAsyncResult: ...
+        def BeginInvoke(self, sender: typing.Any, e: EISData.NewFreqScanEventArgs, callback: AsyncCallback, object: typing.Any) -> IAsyncResult: ...
         def EndInvoke(self, result: IAsyncResult) -> None: ...
         def Invoke(self, sender: typing.Any, e: EISData.NewFreqScanEventArgs) -> None: ...
 
-    class NewFreqScanEventArgs(EventArgs):
-        AddedScan: EISData
 
-    Hash: Array_1[int]
+    class NewFreqScanEventArgs(EventArgs):
+        AddedScan : EISData
+
+    Hash : Array_1[int]
     @property
     def Appearance(self) -> VisualSettings: ...
     @Appearance.setter
@@ -662,9 +605,7 @@ class EISData(Plottable):
     def XUnit(self, value: Unit) -> Unit: ...
     def Dispose(self) -> None: ...
     def Finish(self) -> None: ...
-    def GenerateCurves(
-        self, plotMode: EISPlotModes, secondaryPlot: bool = ..., onlyIfExists: bool = ...
-    ) -> Array_1[Curve]: ...
+    def GenerateCurves(self, plotMode: EISPlotModes, secondaryPlot: bool = ..., onlyIfExists: bool = ...) -> Array_1[Curve]: ...
     @staticmethod
     def GenerateTitle(impedimetricMethod: ImpedimetricMethodBase) -> str: ...
     def GetAllEISDatas(self) -> Array_1[EISData]: ...
@@ -679,80 +620,22 @@ class EISData(Plottable):
     def GetSubScans(self) -> List_1[EISDataSubScan]: ...
     def RemovePoint(self, index: int) -> None: ...
     def ToJsonBag(self) -> JsonBag: ...
-    def ToJsonWriterAsync(
-        self, jw: JsonWriter, cancellationToken: CancellationToken
-    ) -> Task: ...
+    def ToJsonWriterAsync(self, jw: JsonWriter, cancellationToken: CancellationToken) -> Task: ...
     def ToString(self) -> str: ...
     # Skipped AddRow due to it being static, abstract and generic.
 
-    AddRow: AddRow_MethodGroup
+    AddRow : AddRow_MethodGroup
     class AddRow_MethodGroup:
         @typing.overload
-        def __call__(
-            self,
-            iFreq: int,
-            seriesStartTime: float,
-            appliedDC: IDataValue,
-            frequency: float,
-            idc: CurrentReading,
-            iac: CurrentReading,
-            zRe: float,
-            zIm: float,
-            phase: float,
-            mEdc: float = ...,
-            eac: float = ...,
-        ) -> None: ...
+        def __call__(self, iFreq: int, seriesStartTime: float, appliedDC: IDataValue, frequency: float, idc: CurrentReading, iac: CurrentReading, zRe: float, zIm: float, phase: float, mEdc: float = ..., eac: float = ...) -> None:...
         @typing.overload
-        def __call__(
-            self,
-            iFreq: int,
-            seriesStartTime: float,
-            appliedDC: IDataValue,
-            frequency: float,
-            idc: CurrentReading,
-            iac: CurrentReading,
-            zRe: float,
-            zIm: float,
-            phase: float,
-            mEdc: IDataValue,
-            eac: IDataValue,
-        ) -> None: ...
+        def __call__(self, iFreq: int, seriesStartTime: float, appliedDC: IDataValue, frequency: float, idc: CurrentReading, iac: CurrentReading, zRe: float, zIm: float, phase: float, mEdc: IDataValue, eac: IDataValue) -> None:...
         @typing.overload
-        def __call__(
-            self,
-            iFreq: int,
-            seriesStartTime: float,
-            appliedDC: IDataValue,
-            frequency: float,
-            idc: CurrentReading,
-            iac: CurrentReading,
-            zRe: float,
-            zIm: float,
-            phase: float,
-            mEdc: float,
-            eac: float,
-            iterationMethod: ImpedimetricIterationMethodBase,
-            ymean: float,
-            auxValue: float,
-        ) -> None: ...
+        def __call__(self, iFreq: int, seriesStartTime: float, appliedDC: IDataValue, frequency: float, idc: CurrentReading, iac: CurrentReading, zRe: float, zIm: float, phase: float, mEdc: float, eac: float, iterationMethod: ImpedimetricIterationMethodBase, ymean: float, auxValue: float) -> None:...
         @typing.overload
-        def __call__(
-            self,
-            iFreq: int,
-            seriesStartTime: float,
-            appliedDC: IDataValue,
-            frequency: float,
-            idc: CurrentReading,
-            iac: CurrentReading,
-            zRe: float,
-            zIm: float,
-            phase: float,
-            mEdc: IDataValue,
-            eac: IDataValue,
-            iterationMethod: ImpedimetricIterationMethodBase,
-            ymean: float,
-            auxValue: float,
-        ) -> None: ...
+        def __call__(self, iFreq: int, seriesStartTime: float, appliedDC: IDataValue, frequency: float, idc: CurrentReading, iac: CurrentReading, zRe: float, zIm: float, phase: float, mEdc: IDataValue, eac: IDataValue, iterationMethod: ImpedimetricIterationMethodBase, ymean: float, auxValue: float) -> None:...
+
+
 
 class EISDataEventHandler(MulticastDelegate):
     def __init__(self, object: typing.Any, method: int) -> None: ...
@@ -760,39 +643,21 @@ class EISDataEventHandler(MulticastDelegate):
     def Method(self) -> MethodInfo: ...
     @property
     def Target(self) -> typing.Any: ...
-    def BeginInvoke(
-        self, sender: typing.Any, eisdata: EISData, callback: AsyncCallback, object: typing.Any
-    ) -> IAsyncResult: ...
+    def BeginInvoke(self, sender: typing.Any, eisdata: EISData, callback: AsyncCallback, object: typing.Any) -> IAsyncResult: ...
     def EndInvoke(self, result: IAsyncResult) -> None: ...
     def Invoke(self, sender: typing.Any, eisdata: EISData) -> None: ...
 
+
 class EISDataSubScan(EISData):
     @typing.overload
-    def __init__(
-        self, parentEISData: EISData, bag: JsonBag, coreVersion: Version, isGEIS: bool
-    ) -> None: ...
+    def __init__(self, parentEISData: EISData, bag: JsonBag, coreVersion: Version, isGEIS: bool) -> None: ...
     @typing.overload
-    def __init__(
-        self,
-        parentEISData: EISData,
-        scanType: enumScanType,
-        freqType: enumFrequencyType,
-        dataSet: DataSetEIS,
-        isGEIS: bool,
-    ) -> None: ...
+    def __init__(self, parentEISData: EISData, scanType: enumScanType, freqType: enumFrequencyType, dataSet: DataSetEIS, isGEIS: bool) -> None: ...
     @typing.overload
-    def __init__(
-        self,
-        parentEISData: EISData,
-        scanType: enumScanType,
-        freqType: enumFrequencyType,
-        isGEIS: bool,
-    ) -> None: ...
+    def __init__(self, parentEISData: EISData, scanType: enumScanType, freqType: enumFrequencyType, isGEIS: bool) -> None: ...
     @typing.overload
-    def __init__(
-        self, parentEISData: EISData, subscan: EISData, cloneData: bool = ...
-    ) -> None: ...
-    Hash: Array_1[int]
+    def __init__(self, parentEISData: EISData, subscan: EISData, cloneData: bool = ...) -> None: ...
+    Hash : Array_1[int]
     @property
     def Appearance(self) -> VisualSettings: ...
     @Appearance.setter
@@ -872,35 +737,38 @@ class EISDataSubScan(EISData):
     @XUnit.setter
     def XUnit(self, value: Unit) -> Unit: ...
 
+
 class EISPlotModes(typing.SupportsInt):
     @typing.overload
-    def __init__(self, value: int) -> None: ...
+    def __init__(self, value : int) -> None: ...
     @typing.overload
-    def __init__(self, value: int, force_if_true: bool) -> None: ...
+    def __init__(self, value : int, force_if_true: bool) -> None: ...
     def __int__(self) -> int: ...
 
     # Values:
-    ZZvsX: EISPlotModes  # 0
-    LogZPhasevsLogF: EISPlotModes  # 1
-    ZPhasevsX: EISPlotModes  # 2
-    RctvsX: EISPlotModes  # 3
-    ZvsZ: EISPlotModes  # 4
-    LogZvsLogF: EISPlotModes  # 5
-    YvsY: EISPlotModes  # 6
-    YYvsLogF: EISPlotModes  # 7
-    LogYvsLogF: EISPlotModes  # 8
-    YYvsX: EISPlotModes  # 9
-    YvsX: EISPlotModes  # 10
-    CsImvsCsRe: EISPlotModes  # 11
-    CvsX: EISPlotModes  # 12
-    ZPhasevsLogF: EISPlotModes  # 13
-    CCvsX: EISPlotModes  # 14
-    None_: EISPlotModes  # -1
+    ZZvsX : EISPlotModes # 0
+    LogZPhasevsLogF : EISPlotModes # 1
+    ZPhasevsX : EISPlotModes # 2
+    RctvsX : EISPlotModes # 3
+    ZvsZ : EISPlotModes # 4
+    LogZvsLogF : EISPlotModes # 5
+    YvsY : EISPlotModes # 6
+    YYvsLogF : EISPlotModes # 7
+    LogYvsLogF : EISPlotModes # 8
+    YYvsX : EISPlotModes # 9
+    YvsX : EISPlotModes # 10
+    CsImvsCsRe : EISPlotModes # 11
+    CvsX : EISPlotModes # 12
+    ZPhasevsLogF : EISPlotModes # 13
+    CCvsX : EISPlotModes # 14
+    None_ : EISPlotModes # -1
+
 
 class MeasTypeChangedEventArgs(EventArgs):
     def __init__(self, previous: MeasType, current: MeasType) -> None: ...
-    Current: MeasType
-    Previous: MeasType
+    Current : MeasType
+    Previous : MeasType
+
 
 class VisualSettings(IDisposable):
     @typing.overload
@@ -912,17 +780,17 @@ class VisualSettings(IDisposable):
 
     class Symbol(typing.SupportsInt):
         @typing.overload
-        def __init__(self, value: int) -> None: ...
+        def __init__(self, value : int) -> None: ...
         @typing.overload
-        def __init__(self, value: int, force_if_true: bool) -> None: ...
+        def __init__(self, value : int, force_if_true: bool) -> None: ...
         def __int__(self) -> int: ...
 
         # Values:
-        Square: VisualSettings.Symbol  # 0
-        Diamond: VisualSettings.Symbol  # 1
-        Triangle: VisualSettings.Symbol  # 2
-        Circle: VisualSettings.Symbol  # 3
-        None_: VisualSettings.Symbol  # 4
+        Square : VisualSettings.Symbol # 0
+        Diamond : VisualSettings.Symbol # 1
+        Triangle : VisualSettings.Symbol # 2
+        Circle : VisualSettings.Symbol # 3
+        None_ : VisualSettings.Symbol # 4
 
     @property
     def AutoAssignColor(self) -> bool: ...
@@ -957,12 +825,7 @@ class VisualSettings(IDisposable):
     @UseDefaultSettings.setter
     def UseDefaultSettings(self, value: bool) -> bool: ...
     def Clone(self) -> VisualSettings: ...
-    def CopyAppearance(
-        self,
-        newSettings: VisualSettings,
-        includeColor: bool = ...,
-        includeSymbolType: bool = ...,
-    ) -> None: ...
+    def CopyAppearance(self, newSettings: VisualSettings, includeColor: bool = ..., includeSymbolType: bool = ...) -> None: ...
     def Dispose(self) -> None: ...
     @staticmethod
     def FromJsonBag(bag: JsonBag, coreVersion: Version) -> VisualSettings: ...
