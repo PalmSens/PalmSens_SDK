@@ -4,7 +4,7 @@ import asyncio
 import sys
 import traceback
 from time import sleep
-from typing import TYPE_CHECKING, Any, override
+from typing import TYPE_CHECKING, Any
 
 import clr
 import PalmSens
@@ -17,6 +17,7 @@ from PalmSens.Plottables import (
     EISDataEventHandler,
 )
 from System import EventHandler
+from typing_extensions import override
 
 from .._data._shared import ArrayType, get_values_from_NETArray
 from .._methods import CURRENT_RANGE, BaseTechnique

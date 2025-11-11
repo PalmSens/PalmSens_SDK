@@ -1,11 +1,12 @@
 from __future__ import annotations
 
 from collections.abc import Generator, Mapping
-from typing import TYPE_CHECKING, Callable, final, override
+from typing import TYPE_CHECKING, Callable, final
 
 import clr
 from PalmSens.Data import CurrentReading
 from PalmSens.Plottables import Curve as PSCurve
+from typing_extensions import override
 
 from ._shared import ArrayType
 from .curve import Curve

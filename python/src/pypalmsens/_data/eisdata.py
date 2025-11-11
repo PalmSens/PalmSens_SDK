@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import TYPE_CHECKING, final, override
+from typing import TYPE_CHECKING, final
+
+from typing_extensions import override
 
 from .data_array import DataArray
 from .dataset import DataSet

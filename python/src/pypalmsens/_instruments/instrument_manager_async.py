@@ -3,7 +3,7 @@ from __future__ import annotations
 import asyncio
 import sys
 import traceback
-from typing import TYPE_CHECKING, Any, Awaitable, override
+from typing import TYPE_CHECKING, Any, Awaitable
 
 import clr
 import PalmSens
@@ -17,6 +17,7 @@ from PalmSens.Plottables import (
 )
 from System import EventHandler
 from System.Threading.Tasks import Task
+from typing_extensions import override
 
 from .._data._shared import ArrayType, get_values_from_NETArray
 from .._methods import CURRENT_RANGE, BaseTechnique

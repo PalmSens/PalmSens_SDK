@@ -5,10 +5,11 @@ import warnings
 from collections.abc import Sequence
 from dataclasses import dataclass, field
 from math import floor
-from typing import TYPE_CHECKING, Any, Protocol, override
+from typing import TYPE_CHECKING, Any, Protocol
 
 from PalmSens.Comm import enumDeviceType
 from System import Action
+from typing_extensions import override
 
 from .. import __sdk_version__
 

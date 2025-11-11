@@ -1,9 +1,10 @@
 from __future__ import annotations
 
 from collections.abc import Sequence
-from typing import TYPE_CHECKING, overload, override
+from typing import TYPE_CHECKING, overload
 
 import numpy as np
+from typing_extensions import override
 
 from ._shared import ArrayType
 

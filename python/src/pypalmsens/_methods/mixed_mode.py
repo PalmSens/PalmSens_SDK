@@ -1,10 +1,11 @@
 from __future__ import annotations
 
-from typing import ClassVar, Literal, Protocol, override, runtime_checkable
+from typing import ClassVar, Literal, Protocol, runtime_checkable
 
 import attrs
 from PalmSens import Method as PSMethod
 from PalmSens.Techniques import MixedMode as PSMixedMode
+from typing_extensions import override
 
 from .._shared import single_to_double
 from . import mixins

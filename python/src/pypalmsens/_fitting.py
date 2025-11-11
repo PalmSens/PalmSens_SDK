@@ -2,10 +2,11 @@ from __future__ import annotations
 
 from collections.abc import Sequence
 from dataclasses import dataclass, field
-from typing import TYPE_CHECKING, Any, Literal, override
+from typing import TYPE_CHECKING, Any, Literal
 
 from PalmSens import Fitting as PSFitting
 from System import Array
+from typing_extensions import override
 
 from ._data.curve import Curve
 from ._data.eisdata import EISData

@@ -1,11 +1,12 @@
 from __future__ import annotations
 
-from typing import Literal, override
+from typing import Literal
 
 import attrs
 import PalmSens
 from PalmSens import Method as PSMethod
 from PalmSens import MuxMethod as PSMuxMethod
+from typing_extensions import override
 
 from .._shared import single_to_double
 from ._shared import (

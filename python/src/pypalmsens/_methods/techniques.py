@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Literal, override
+from typing import Literal
 
 import attrs
 import PalmSens.Techniques as PSTechniques
@@ -8,6 +8,7 @@ from PalmSens import FixedCurrentRange as PSFixedCurrentRange
 from PalmSens import FixedPotentialRange as PSFixedPotentialRange
 from PalmSens import Method as PSMethod
 from PalmSens.Techniques.Impedance import enumFrequencyType, enumScanType
+from typing_extensions import override
 
 from .._shared import single_to_double
 from . import mixins
