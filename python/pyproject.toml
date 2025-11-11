@@ -119,9 +119,12 @@ ignore_missing_imports = true
 
 [tool.pyright]
 include = ["src/pypalmsens", "tests", "examples"]
-exclude = ["src/PalmSens-stubs"]
+ignore = ["src/PalmSens-stubs"]
 reportMissingModuleSource = false
 reportAttributeAccessIssue = false
+reportUnknownMemberType = false
+reportUnknownVariableType = false
+reportUnknownArgumentType = false
 reportPrivateUsage = false
 
 [tool.bumpversion]
