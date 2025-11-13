@@ -1,0 +1,49 @@
+{
+  "$schema": "https://raw.githubusercontent.com/dotnet/docfx/main/schemas/docfx.schema.json",
+  "metadata": [
+    {
+      "src": [
+        {
+          "src": "/home/stef/code/palmsenssdk/maui/PSLibraries",
+          "files": [
+            "PalmSens.Core.Simplified/*.csproj",
+            // "PalmSens.Core.Simplified.MAUI/*.csproj",
+            "SDKPlot/*NET.csproj",
+            // "SDKPlot.Maui/*.csproj",
+          ]
+        }
+      ],
+      "dest": "api"
+    }
+  ],
+  "build": {
+    "content": [
+      {
+        "files": [
+          "**/*.{md,yml}"
+        ],
+        "exclude": [
+          "_site/**"
+        ]
+      }
+    ],
+    "resource": [
+      {
+        "files": [
+          "header_icon.svg",
+        ]
+      }
+    ],
+    "output": "_site",
+    "template": ["default", "modern"],
+    "globalMetadata": {
+      "_appName": "",
+      "_appTitle": "PalmSens.NET",
+      "_appLogoPath": "header_icon.svg",
+      // "_appFaviconPath": "favicon.ico",
+      "_enableSearch": true,
+      "_lang": "en",
+      "pdf": false
+    }
+  }
+}
