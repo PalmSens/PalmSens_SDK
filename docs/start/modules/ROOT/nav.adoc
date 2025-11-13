@@ -6,4 +6,4 @@
 .PalmSens .NET libraries
 ** xref:core.adoc[]
 ** xref:techniques.adoc[]
-** xref:attachment$index.html[API reference]
+** xref:attachment$api/PalmSens.Core.Simplified.html[API reference]

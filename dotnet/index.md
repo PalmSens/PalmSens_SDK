@@ -2,10 +2,14 @@
 _layout: landing
 ---
 
-# This is the **HOMEPAGE**.
+# PalmSens .NET API reference
 
-Refer to [Markdown](http://daringfireball.net/projects/markdown/) for how to write markdown files.
+The PalmSens .NET libraries are a set of packages that lets you control your PalmSens device using .NET.
 
-## Quick Start Notes:
+- @"PalmSens.Core.Simplified"
+- @"PalmSens.Core.Simplified.Data"
+- @"PalmSens.Core.Simplified.Helpers"
+- @"PalmSens.Core.Simplified.InternalStorage"
+- @"SDKPlot"
 
-1. Add images to the *images* folder if the file is referencing an image.
+For installation instructions, examples, tutorials, and other information, refer to the [PalmSens developer documentation](https://sdk.palmsens.com).
