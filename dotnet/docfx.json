@@ -30,17 +30,18 @@
     "resource": [
       {
         "files": [
-          "header_icon.svg",
+          "images/**",
+          "favicon.ico",
         ]
       }
     ],
     "output": "_site",
-    "template": ["default", "modern"],
+    "template": ["default", "modern", "template"],
     "globalMetadata": {
       "_appName": "",
       "_appTitle": "PalmSens.NET",
-      "_appLogoPath": "header_icon.svg",
-      // "_appFaviconPath": "favicon.ico",
+      "_appLogoPath": "images/banner.svg",
+      "_appFaviconPath": "favicon.ico",
       "_enableSearch": true,
       "_lang": "en",
       "pdf": false
