@@ -4,6 +4,6 @@
 * xref:maui:ROOT:index.adoc[.NET MAUI]
 
 .PalmSens .NET libraries
-** xref:api.adoc[]
 ** xref:core.adoc[]
-** xref:attachment$index.html[API]
+** xref:techniques.adoc[]
+** xref:attachment$index.html[API reference]
