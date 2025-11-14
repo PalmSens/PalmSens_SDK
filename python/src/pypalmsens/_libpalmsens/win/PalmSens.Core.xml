@@ -2311,6 +2311,18 @@
             This will enable the PalmSens BiPotentiostat module
             </summary>
     </member>
+    <member name="M:PalmSens.Comm.ClientConnection.SetBipotCR(PalmSens.CurrentRange)">
+      <summary>
+            Set the current range of the second working electrode.
+            This will enable the PalmSens BiPotentiostat module
+            </summary>
+    </member>
+    <member name="M:PalmSens.Comm.ClientConnection.SetBipotCRAsync(PalmSens.CurrentRange)">
+      <summary>
+            Set the current range of the second working electrode.
+            This will enable the PalmSens BiPotentiostat module
+            </summary>
+    </member>
     <member name="P:PalmSens.Comm.ClientConnection.LastBiPotCurrentRead">
       <summary>
             Gets the last BiPot current read.
@@ -2508,7 +2520,7 @@
       <returns>
       </returns>
     </member>
-    <member name="M:PalmSens.Comm.ClientConnection.#ctor(PalmSens.Devices.Device,System.String,System.Boolean,System.Int32)">
+    <member name="M:PalmSens.Comm.ClientConnection.#ctor(PalmSens.Devices.Device,System.String,System.Boolean,System.Int32,System.Boolean)">
       <summary>
             Initializes a new instance of the <see cref="T:PalmSens.Comm.ClientConnection" /> class.
             </summary>
@@ -2520,7 +2532,7 @@
       <exception cref="T:PalmSens.Comm.CommException">Catch this exception in the caller, abort (or retry) connection attempt and update UI accordingly</exception>
       <exception cref="T:PalmSens.Devices.GetDeviceCapabilities.UnknownCapabilitiesException">Catch this exception in the caller, abort (or retry) connection attempt and update UI accordingly</exception>
     </member>
-    <member name="M:PalmSens.Comm.ClientConnection.ClientConnnectionAsync(PalmSens.Devices.Device,System.String,System.Boolean,System.Int32)">
+    <member name="M:PalmSens.Comm.ClientConnection.ClientConnnectionAsync(PalmSens.Devices.Device,System.String,System.Boolean,System.Int32,System.Boolean)">
       <summary>
             Initializes a new instance of the <see cref="T:PalmSens.Comm.ClientConnection" /> class.
             </summary>
@@ -3731,16 +3743,6 @@
             Whether The EmStat Pico should measure temperature, current and potential when idle.
             </summary>
     </member>
-    <member name="M:PalmSens.Comm.ClientConnectionMS.EnterDownloadMode">
-      <summary>
-            Enter the download mode
-            </summary>
-    </member>
-    <member name="M:PalmSens.Comm.ClientConnectionMS.EnterDownloadModeAsync">
-      <summary>
-            Enter the download mode
-            </summary>
-    </member>
     <member name="M:PalmSens.Comm.ClientConnectionMS.ReadPotential">
       <summary>
             Measure the WE vs RE potential in Volts.
@@ -3942,7 +3944,7 @@
             </summary>
       <param name="bitmask">Bitmask that represents the state of the bits. Bit 0 is for GPIO0, bit 1 for GPIO1, etc. Bits that are high correspond with a high output signal.</param>
     </member>
-    <member name="M:PalmSens.Comm.ClientConnectionMS.SetDigitalOutput(System.Int32,System.Int32)">
+    <member name="M:PalmSens.Comm.ClientConnectionMS.SetDigitalOutput(System.Int32,System.Int32,System.Nullable{System.Int32})">
       <summary>
             Set the Digital Output or GPIO pins async
             </summary>
@@ -3955,7 +3957,7 @@
             </summary>
       <param name="bitmask">Bitmask that represents the state of the bits. Bit 0 is for GPIO0, bit 1 for GPIO1, etc. Bits that are high correspond with a high output signal.</param>
     </member>
-    <member name="M:PalmSens.Comm.ClientConnectionMS.SetDigitalOutputAsync(System.Int32,System.Int32)">
+    <member name="M:PalmSens.Comm.ClientConnectionMS.SetDigitalOutputAsync(System.Int32,System.Int32,System.Nullable{System.Int32})">
       <summary>
             Set the Digital Output or GPIO pins async
             </summary>
@@ -4479,16 +4481,6 @@
     <member name="M:PalmSens.Comm.ClientConnectionPS4.ReloadDataAsync">
       <summary>
             Reloads the data from EEPROM
-            </summary>
-    </member>
-    <member name="M:PalmSens.Comm.ClientConnectionPS4.EnterDownloadMode">
-      <summary>
-            Enter the download mode
-            </summary>
-    </member>
-    <member name="M:PalmSens.Comm.ClientConnectionPS4.EnterDownloadModeAsync">
-      <summary>
-            Enter the download mode
             </summary>
     </member>
     <member name="M:PalmSens.Comm.ClientConnectionPS4.SetPotential(System.Single)">
@@ -5109,7 +5101,7 @@
             Raised when a versus OCP measurement starts determining the OCP.
             </summary>
     </member>
-    <member name="M:PalmSens.Comm.CommManager.#ctor(PalmSens.Devices.Device,System.Int32)">
+    <member name="M:PalmSens.Comm.CommManager.#ctor(PalmSens.Devices.Device,System.Int32,System.Boolean)">
       <summary>
             Create a new connection with a PalmSens over the given stream
             </summary>
@@ -5368,6 +5360,18 @@
       <param name="currentRange">The current range for the WE2.</param>
     </member>
     <member name="M:PalmSens.Comm.CommManager.SetBipotOnAndCurrentRangeAsync(PalmSens.CurrentRange)">
+      <summary>
+            Sets the WE2 and current range.
+            </summary>
+      <param name="currentRange">The current range for the WE2.</param>
+    </member>
+    <member name="M:PalmSens.Comm.CommManager.SetBipotCurrentRange(PalmSens.CurrentRange)">
+      <summary>
+            Sets the WE2 and current range.
+            </summary>
+      <param name="currentRange">The current range for the WE2.</param>
+    </member>
+    <member name="M:PalmSens.Comm.CommManager.SetBipotCurrentRangeAsync(PalmSens.CurrentRange)">
       <summary>
             Sets the WE2 and current range.
             </summary>
@@ -6411,6 +6415,12 @@
             Underload
             </summary>
     </member>
+    <member name="F:PalmSens.Comm.ReadingStatus.OverloadWarning">
+      <summary>
+            Close to overload
+            &gt; 80% Max ADC value
+            </summary>
+    </member>
     <member name="F:PalmSens.Comm.TimingStatus.Unknown">
       <summary>
             Timing status is not known or could not be determined.
@@ -7136,9 +7146,14 @@
             Gets a value indicating whether the device supports displaying a method name.
             </summary>
     </member>
-    <member name="P:PalmSens.Devices.DeviceCapabilities.SupportsStartSpecificRange">
+    <member name="P:PalmSens.Devices.DeviceCapabilities.SupportsImpedimetricMeasurementStartSpecificRange">
       <summary>
             Gets a value indicating whether the device supports starting at a specific current range rather than the default maximum range selected.
+            </summary>
+    </member>
+    <member name="P:PalmSens.Devices.DeviceCapabilities.SupportsImpedimetricACEquilibration">
+      <summary>
+            Indicates whether the device supports AC auto-ranging during equilibration for impedimetric techniques
             </summary>
     </member>
     <member name="P:PalmSens.Devices.DeviceCapabilities.SupportsILimits">
@@ -7557,9 +7572,14 @@
             Whether saving the measurement locally on the device is supported.
             </summary>
     </member>
-    <member name="P:PalmSens.Devices.DefaultCapabilities.SupportsStartSpecificRange">
+    <member name="P:PalmSens.Devices.DefaultCapabilities.SupportsImpedimetricMeasurementStartSpecificRange">
       <summary>
             Gets a value indicating whether the device supports starting at a specific current range rather than the default maximum range selected.
+            </summary>
+    </member>
+    <member name="P:PalmSens.Devices.DefaultCapabilities.SupportsImpedimetricACEquilibration">
+      <summary>
+            Indicates whether the device supports AC auto-ranging during equilibration for impedimetric techniques
             </summary>
     </member>
     <member name="P:PalmSens.Devices.DefaultCapabilities.HexBlobVersion">
@@ -7722,10 +7742,13 @@
       <returns>
       </returns>
     </member>
-    <member name="F:PalmSens.Devices.Device.DeviceProtocol">
+    <member name="M:PalmSens.Devices.Device.FindDeviceType(System.String)">
       <summary>
-            Type of version command used.
+            Finds the type of the device.
             </summary>
+      <param name="versionString">The version string.</param>
+      <returns>
+      </returns>
     </member>
     <member name="T:PalmSens.Devices.EISSettings">
       <summary>
@@ -8412,9 +8435,14 @@
             Whether saving the measurement locally on the device is supported.
             </summary>
     </member>
-    <member name="P:PalmSens.Devices.EmstatCapabilities.SupportsStartSpecificRange">
+    <member name="P:PalmSens.Devices.EmstatCapabilities.SupportsImpedimetricMeasurementStartSpecificRange">
       <summary>
             Gets a value indicating whether the device supports starting at a specific current range rather than the default maximum range selected.
+            </summary>
+    </member>
+    <member name="P:PalmSens.Devices.EmstatCapabilities.SupportsImpedimetricACEquilibration">
+      <summary>
+            Indicates whether the device supports AC auto-ranging during equilibration for impedimetric techniques
             </summary>
     </member>
     <member name="P:PalmSens.Devices.EmstatCapabilities.SupportsILimits">
@@ -8694,16 +8722,6 @@
             </summary>
     </member>
     <!-- Badly formed XML comment ignored for member "P:PalmSens.Devices.EmStat4CommonCapabilities.SupportedExtraValueMasksByMethod" -->
-    <member name="P:PalmSens.Devices.EmStat4CommonCapabilities.HasPSTraceLicence">
-      <summary>
-            Whether this device is licenced for use of PSTrace.
-            </summary>
-    </member>
-    <member name="P:PalmSens.Devices.EmStat4CommonCapabilities.HasAdvancedMathLicence">
-      <summary>
-            Whether this device is licenced for circuit fitting / peak detection in the SDK.
-            </summary>
-    </member>
     <member name="P:PalmSens.Devices.EmStat4CommonCapabilities.SupportsStorage">
       <summary>
             Whether saving the measurement locally on the device is supported.
@@ -8724,9 +8742,14 @@
             Whether saving the measurement locally on the device is supported.
             </summary>
     </member>
-    <member name="P:PalmSens.Devices.EmStat4CommonCapabilities.SupportsStartSpecificRange">
+    <member name="P:PalmSens.Devices.EmStat4CommonCapabilities.SupportsImpedimetricMeasurementStartSpecificRange">
       <summary>
             Gets a value indicating whether the device supports starting at a specific current range rather than the default maximum range selected.
+            </summary>
+    </member>
+    <member name="P:PalmSens.Devices.EmStat4CommonCapabilities.SupportsImpedimetricACEquilibration">
+      <summary>
+            Indicates whether the device supports AC auto-ranging during equilibration for impedimetric techniques
             </summary>
     </member>
     <member name="P:PalmSens.Devices.EmStat4CommonCapabilities.SupportsMultipleExtraValues">
@@ -8959,6 +8982,16 @@
       <returns>
       </returns>
     </member>
+    <member name="P:PalmSens.Devices.EmStat4CommonCapabilities.SupportsMainsFrequencyNoiseReduction">
+      <summary>
+            Supports 50/60hz mains frequency noise reduction
+            </summary>
+    </member>
+    <member name="P:PalmSens.Devices.EmStat4CommonCapabilities.SupportsProgrammableTouchScreen">
+      <summary>
+            Speficies whether this instrument has a programmable touch screen like the EmStat4T
+            </summary>
+    </member>
     <member name="P:PalmSens.Devices.EmStat4LRCapabilities.DeviceType">
       <summary>
             The deviceType type for this capabilities
@@ -9137,16 +9170,6 @@
             </summary>
     </member>
     <!-- Badly formed XML comment ignored for member "P:PalmSens.Devices.EmStatPicoCapabilities.SupportedExtraValueMasksByMethod" -->
-    <member name="P:PalmSens.Devices.EmStatPicoCapabilities.HasPSTraceLicence">
-      <summary>
-            Whether this device is licenced for use of PSTrace.
-            </summary>
-    </member>
-    <member name="P:PalmSens.Devices.EmStatPicoCapabilities.HasAdvancedMathLicence">
-      <summary>
-            Whether this device is licenced for circuit fitting / peak detection in the SDK.
-            </summary>
-    </member>
     <member name="P:PalmSens.Devices.EmStatPicoCapabilities.SupportsStorage">
       <summary>
             Whether saving the measurement locally on the device is supported.
@@ -9167,9 +9190,14 @@
             Whether saving the measurement locally on the device is supported.
             </summary>
     </member>
-    <member name="P:PalmSens.Devices.EmStatPicoCapabilities.SupportsStartSpecificRange">
+    <member name="P:PalmSens.Devices.EmStatPicoCapabilities.SupportsImpedimetricMeasurementStartSpecificRange">
       <summary>
             Gets a value indicating whether the device supports starting at a specific current range rather than the default maximum range selected.
+            </summary>
+    </member>
+    <member name="P:PalmSens.Devices.EmStatPicoCapabilities.SupportsImpedimetricACEquilibration">
+      <summary>
+            Indicates whether the device supports AC auto-ranging during equilibration for impedimetric techniques
             </summary>
     </member>
     <member name="P:PalmSens.Devices.EmStatPicoCapabilities.SupportsMultipleExtraValues">
@@ -9417,6 +9445,16 @@
       <returns>
       </returns>
     </member>
+    <member name="P:PalmSens.Devices.EmStatPicoCapabilities.SupportsMainsFrequencyNoiseReduction">
+      <summary>
+            Supports 50/60hz mains frequency noise reduction
+            </summary>
+    </member>
+    <member name="P:PalmSens.Devices.EmStatPicoCapabilities.SupportsProgrammableTouchScreen">
+      <summary>
+            Speficies whether this instrument has a programmable touch screen like the EmStat4T
+            </summary>
+    </member>
     <member name="T:PalmSens.Devices.MethodScriptDeviceCapabilities.MSCommands">
       <summary>
             MethodScript Commands
@@ -9425,6 +9463,16 @@
     <member name="M:PalmSens.Devices.MethodScriptDeviceCapabilities.MSScriptCommand(PalmSens.Devices.MethodScriptDeviceCapabilities.MSCommands)">
       <summary>
             Returns the MethodScript Commands syntax for the specified command
+            </summary>
+    </member>
+    <member name="P:PalmSens.Devices.MethodScriptDeviceCapabilities.HasPSTraceLicence">
+      <summary>
+            Whether this device is licenced for use of PSTrace.
+            </summary>
+    </member>
+    <member name="P:PalmSens.Devices.MethodScriptDeviceCapabilities.HasAdvancedMathLicence">
+      <summary>
+            Whether this device is licenced for circuit fitting / peak detection in the SDK.
             </summary>
     </member>
     <member name="P:PalmSens.Devices.MethodScriptDeviceCapabilities.MinimumPulseTimeScanMethod">
@@ -9462,6 +9510,16 @@
       <param name="nVars">The number of variables.</param>
       <returns>
       </returns>
+    </member>
+    <member name="P:PalmSens.Devices.MethodScriptDeviceCapabilities.SupportsMainsFrequencyNoiseReduction">
+      <summary>
+            Supports 50/60hz mains frequency noise reduction
+            </summary>
+    </member>
+    <member name="P:PalmSens.Devices.MethodScriptDeviceCapabilities.SupportsProgrammableTouchScreen">
+      <summary>
+            Speficies whether this instrument has a programmable touch screen like the EmStat4T
+            </summary>
     </member>
     <member name="P:PalmSens.Devices.NexusCapabilities.MaxVAux">
       <summary>
@@ -9560,16 +9618,6 @@
             </summary>
     </member>
     <!-- Badly formed XML comment ignored for member "P:PalmSens.Devices.NexusCapabilities.SupportedExtraValueMasksByMethod" -->
-    <member name="P:PalmSens.Devices.NexusCapabilities.HasPSTraceLicence">
-      <summary>
-            Whether this device is licenced for use of PSTrace.
-            </summary>
-    </member>
-    <member name="P:PalmSens.Devices.NexusCapabilities.HasAdvancedMathLicence">
-      <summary>
-            Whether this device is licenced for circuit fitting / peak detection in the SDK.
-            </summary>
-    </member>
     <member name="P:PalmSens.Devices.NexusCapabilities.SupportsStorage">
       <summary>
             Whether saving the measurement locally on the device is supported.
@@ -9590,9 +9638,14 @@
             Whether saving the measurement locally on the device is supported.
             </summary>
     </member>
-    <member name="P:PalmSens.Devices.NexusCapabilities.SupportsStartSpecificRange">
+    <member name="P:PalmSens.Devices.NexusCapabilities.SupportsImpedimetricMeasurementStartSpecificRange">
       <summary>
             Gets a value indicating whether the device supports starting at a specific current range rather than the default maximum range selected.
+            </summary>
+    </member>
+    <member name="P:PalmSens.Devices.NexusCapabilities.SupportsImpedimetricACEquilibration">
+      <summary>
+            Indicates whether the device supports AC auto-ranging during equilibration for impedimetric techniques
             </summary>
     </member>
     <member name="P:PalmSens.Devices.NexusCapabilities.SupportsMultipleExtraValues">
@@ -9642,7 +9695,7 @@
     </member>
     <member name="P:PalmSens.Devices.NexusCapabilities.MaxSamlingRateAutoRanging">
       <summary>
-            Gets the maximum samling rate that can be used in combination with autoranging.
+            Gets the maximum sampling rate that can be used in combination with autoranging.
             </summary>
     </member>
     <member name="P:PalmSens.Devices.NexusCapabilities.HexBlobVersion">
@@ -9819,7 +9872,16 @@
       <returns>
       </returns>
     </member>
-    <!-- Badly formed XML comment ignored for member "P:PalmSens.Devices.NexusCapabilities.AppliedCurrentRangeBandwidth" -->
+    <member name="P:PalmSens.Devices.NexusCapabilities.SupportsMainsFrequencyNoiseReduction">
+      <summary>
+            Supports 50/60hz mains frequency noise reduction
+            </summary>
+    </member>
+    <member name="P:PalmSens.Devices.NexusCapabilities.SupportsProgrammableTouchScreen">
+      <summary>
+            Speficies whether this instrument has a programmable touch screen like the EmStat4T
+            </summary>
+    </member>
     <member name="P:PalmSens.Devices.NexusCapabilities.SupportedMuxModels">
       <summary>
             Multiplexer models supported by the instrument
@@ -10063,9 +10125,14 @@
             Whether saving the measurement locally on the device is supported.
             </summary>
     </member>
-    <member name="P:PalmSens.Devices.PalmSensCapabilities.SupportsStartSpecificRange">
+    <member name="P:PalmSens.Devices.PalmSensCapabilities.SupportsImpedimetricMeasurementStartSpecificRange">
       <summary>
             Gets a value indicating whether the device supports starting at a specific current range rather than the default maximum range selected.
+            </summary>
+    </member>
+    <member name="P:PalmSens.Devices.PalmSensCapabilities.SupportsImpedimetricACEquilibration">
+      <summary>
+            Indicates whether the device supports AC auto-ranging during equilibration for impedimetric techniques
             </summary>
     </member>
     <member name="P:PalmSens.Devices.PalmSensCapabilities.SupportsBipotSoftwareMode">
@@ -10318,9 +10385,14 @@
             Whether saving the measurement locally on the device is supported.
             </summary>
     </member>
-    <member name="P:PalmSens.Devices.PalmSens3Capabilities.SupportsStartSpecificRange">
+    <member name="P:PalmSens.Devices.PalmSens3Capabilities.SupportsImpedimetricMeasurementStartSpecificRange">
       <summary>
             Gets a value indicating whether the device supports starting at a specific current range rather than the default maximum range selected.
+            </summary>
+    </member>
+    <member name="P:PalmSens.Devices.PalmSens3Capabilities.SupportsImpedimetricACEquilibration">
+      <summary>
+            Indicates whether the device supports AC auto-ranging during equilibration for impedimetric techniques
             </summary>
     </member>
     <member name="P:PalmSens.Devices.PalmSens3Capabilities.HexBlobVersion">
@@ -10672,9 +10744,14 @@
             Whether saving the measurement locally on the device is supported.
             </summary>
     </member>
-    <member name="P:PalmSens.Devices.PalmSens4Capabilities.SupportsStartSpecificRange">
+    <member name="P:PalmSens.Devices.PalmSens4Capabilities.SupportsImpedimetricMeasurementStartSpecificRange">
       <summary>
             Gets a value indicating whether the device supports starting at a specific current range rather than the default maximum range selected.
+            </summary>
+    </member>
+    <member name="P:PalmSens.Devices.PalmSens4Capabilities.SupportsImpedimetricACEquilibration">
+      <summary>
+            Indicates whether the device supports AC auto-ranging during equilibration for impedimetric techniques
             </summary>
     </member>
     <member name="P:PalmSens.Devices.PalmSens4Capabilities.SupportsMultipleExtraValues">
@@ -10887,6 +10964,11 @@
             Whether the device supports triggering on digital outputs (AUX) delayed after start of measurement.
             </summary>
     </member>
+    <member name="P:PalmSens.Devices.SambaProgramPortCabalities.SupportsImpedimetricACEquilibration">
+      <summary>
+            Indicates whether the device supports AC auto-ranging during equilibration for impedimetric techniques
+            </summary>
+    </member>
     <member name="P:PalmSens.Devices.SambaProgramPortCabalities.MaxNPoints">
       <summary>
             Maximum amount of points within a measurement technique for this device.
@@ -10895,6 +10977,11 @@
     <member name="F:PalmSens.Devices.SensitWearableCapabilities.MIN_FIRMWARE_REQUIRED">
       <summary>
             The minimum firmware version required for use with this version of PalmSens.Core.
+            </summary>
+    </member>
+    <member name="P:PalmSens.Devices.SensitWearableCapabilities.MinFirmwareVersionRequired">
+      <summary>
+            Gets the minimum firmware version required for use with this version of PalmSens.Core.
             </summary>
     </member>
     <member name="F:PalmSens.CorrosionTechniques.CorrosionPotential.Name">
@@ -14434,7 +14521,15 @@
       <summary>Specifies the potential for WEn.</summary>
     </member>
     <member name="P:PalmSens.Method.BiPotCR">
-      <summary>Specifies the current range for WE2.</summary>
+      <summary>
+             Specifies the current range for WE2.
+             Use this for instruments which only support a fixed Bipot CR
+             </summary>
+    </member>
+    <member name="P:PalmSens.Method.BipotRanging">
+      <summary>
+            Specifies the auto ranging for the Bipot current ranges (Nexus)
+            </summary>
     </member>
     <member name="P:PalmSens.Method.BipotModePS">
       <summary>
@@ -15158,6 +15253,20 @@
       <param name="arrays">
       </param>
     </member>
+    <member name="M:PalmSens.MethodScript.AddFastTechniqueExtraValueArrays(System.Collections.Generic.List{System.ValueTuple{System.String,System.Int32}},System.Int32)">
+      <summary>
+            Adds arrays for measuring extra values
+            </summary>
+      <param name="arrays">
+      </param>
+      <param name="nPoints">
+      </param>
+    </member>
+    <member name="M:PalmSens.MethodScript.DeclareExtraVariables">
+      <summary>
+            Declares the additional variables measured in a script.
+            </summary>
+    </member>
     <member name="M:PalmSens.MethodScript.DeclareTechniqueSpecificVsOCPVariables">
       <summary>
             Declares the technique specific vs ocp variables.
@@ -15176,7 +15285,7 @@
             </summary>
       <param name="method">The method.</param>
     </member>
-    <member name="M:PalmSens.MethodScript.ApplyPotential(System.Single,System.Single,System.Boolean,System.String,System.Boolean)">
+    <member name="M:PalmSens.MethodScript.ApplyPotential(System.Single,System.Single,PalmSens.MethodScript.MeasurementLoopStages,System.Boolean,System.String,System.Boolean)">
       <summary>
             Adds the commands for applying a fixed potential over a set time.
             </summary>
@@ -15184,7 +15293,7 @@
       <param name="potential">The potential in Volt.</param>
       <param name="applyLimits">Specify if limits should be set if any. Default is true.</param>
     </member>
-    <member name="M:PalmSens.MethodScript.ApplyCurrent(System.Int32,System.Single,PalmSens.CurrentRanges)">
+    <member name="M:PalmSens.MethodScript.ApplyCurrent(System.Int32,System.Single,PalmSens.MethodScript.MeasurementLoopStages,PalmSens.CurrentRanges)">
       <summary>
             Applies the current.
             </summary>
@@ -16434,7 +16543,7 @@
             </summary>
     </member>
     <member name="P:PalmSens.Plottable.Title">
-      <summary>The title of the plottable. Is 'Curve' by default. Minimum length is 2 chars, max. is 100 chars.</summary>
+      <summary>The title of the plottable. Is 'Curve' by default. Minimum length is 1 chars, max. is 100 chars.</summary>
     </member>
     <member name="P:PalmSens.Plottable.Error">
       <summary>Error(s) that occured during measurement.</summary>
@@ -18185,6 +18294,11 @@
     <member name="P:PalmSens.Techniques.ChronoPotStripping.SupportsHoldDuringMeasurement">
       <summary>
             Whether or not this techniques supports hold during measurement.
+            </summary>
+    </member>
+    <member name="P:PalmSens.Techniques.ChronoPotStripping.PGStatMode">
+      <summary>
+            Galvano static mode for Chronopotentiometry method
             </summary>
     </member>
     <member name="P:PalmSens.Techniques.ChronoPotStripping.XLeft">
@@ -22614,6 +22728,11 @@
             </summary>
     </member>
     <member name="M:PalmSens.Units.Ohm.#ctor">
+      <summary>
+            Create new unit for Resistance
+            </summary>
+    </member>
+    <member name="M:PalmSens.Units.CustomSIUnit.#ctor(System.String,System.String,System.String)">
       <summary>
             Create new unit for Resistance
             </summary>
