@@ -1,0 +1,91 @@
+site_name: PyPalmSens
+site_url: https://sdk.palmsens.com
+repo_url: https://github.com/palmsens/palmsens_sdk
+repo_name: GitHub
+
+nav:
+  - Home: index.md
+  - data.md
+  - fitting.md
+  - instrument.md
+  - instrument_async.md
+  - io.md
+  - mixed_mode.md
+  - settings.md
+  - settings_enums.md
+  - techniques.md
+  - 🔗 Source code: https://github.com/palmsens/palmsens_sdk
+  - 🔗 Issues: https://github.com/palmsens/palmsens_sdk/issues
+
+theme:
+  name: material
+  primary: blue
+  accent: red
+  palette:
+    accent: indigo
+
+extra_css:
+  - stylesheets/extra.css
+
+extra_javascript:
+  - https://polyfill.io/v3/polyfill.min.js?features:es6
+  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
+
+plugins:
+- search
+- mkdocstrings:
+    # https://mkdocstrings.github.io/usage/
+    handlers:
+      python:
+        paths: [../../src]
+        inventories:
+        - https://docs.python.org/3/objects.inv
+        - https://numpy.org/doc/stable/objects.inv
+        - https://matplotlib.org/stable/objects.inv
+        options:
+          allow_inspection: yes
+          annotations_path: brief
+          docstring_options:
+            ignore_init_summary: yes
+          docstring_section_style: list
+          docstring_style: numpy
+          filters: ['!^_']
+          group_by_category: yes  # Group the object's children by categories: attributes, classes, functions, and modules.
+          heading_level: 1  # The initial heading level to use.
+          inherited_members: yes
+          line_length: 96
+          load_external_modules: no
+          # members: None
+          members_order: source
+          merge_init_into_class: yes
+          # preload_modules: None
+          separate_signature: yes
+          show_bases: no
+          show_category_heading: no  # When grouped by categories, show a heading for each category.
+          show_docstring_attributes: no
+          show_docstring_classes: yes
+          show_docstring_description: yes
+          show_docstring_examples: yes
+          show_docstring_functions: yes
+          show_docstring_modules: yes
+          show_docstring_other_parameters: yes
+          show_docstring_parameters: yes
+          show_docstring_raises: yes
+          show_docstring_receives: yes
+          show_docstring_returns: yes
+          show_docstring_warns: yes
+          show_docstring_yields: yes
+          show_if_no_docstring: yes
+          show_object_full_path: no
+          show_root_full_path: yes  # Show the full Python path for the root object heading.
+          show_root_heading: yes
+          show_root_members_full_path: no  # Show the full Python path of the root members.
+          show_signature: yes
+          show_signature_annotations: no
+          show_submodules: yes
+          signature_crossrefs: yes
+          summary: yes
+
+watch:
+  - ../../src/
+  - docs/

@@ -1,0 +1,25 @@
+# Techniques
+
+::: pypalmsens.ACVoltammetry
+::: pypalmsens.ChronoAmperometry
+::: pypalmsens.ChronoCoulometry
+::: pypalmsens.ChronoPotentiometry
+::: pypalmsens.CyclicVoltammetry
+::: pypalmsens.DifferentialPulseVoltammetry
+::: pypalmsens.ElectrochemicalImpedanceSpectroscopy
+::: pypalmsens.FastAmperometry
+::: pypalmsens.FastCyclicVoltammetry
+::: pypalmsens.FastGalvanostaticImpedanceSpectroscopy
+::: pypalmsens.FastImpedanceSpectroscopy
+::: pypalmsens.GalvanostaticImpedanceSpectroscopy
+::: pypalmsens.LinearSweepPotentiometry
+::: pypalmsens.LinearSweepVoltammetry
+::: pypalmsens.MethodScript
+::: pypalmsens.MultiplePulseAmperometry
+::: pypalmsens.MultiStepAmperometry
+::: pypalmsens.MultiStepPotentiometry
+::: pypalmsens.NormalPulseVoltammetry
+::: pypalmsens.OpenCircuitPotentiometry
+::: pypalmsens.PulsedAmperometricDetection
+::: pypalmsens.SquareWaveVoltammetry
+::: pypalmsens.StrippingChronoPotentiometry

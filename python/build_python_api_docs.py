@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import subprocess as sp
 import tempfile
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -189,26 +188,18 @@ pages = (
 )
 
 ROOT_DIR = Path(__file__).parent
-WORKDIR = ROOT_DIR / 'docs' / 'modules' / 'ROOT' / 'partials' / 'api'
+WORKDIR = ROOT_DIR / 'docs' / 'api' / 'docs'
 
 
 with tempfile.TemporaryDirectory() as temp_dir:
     for page in pages:
-        page_config = config.copy()
-        page_config.update(**page.extra_config)
+        with open(WORKDIR / f'{page.name}.md', 'w') as f:
+            f.write(f'# {page.title}\n')
 
-        # outputmd = Path(f'{page.name}.md')
-        outputmd = Path(temp_dir, f'{page.name}.md')
-
-        with open(outputmd, 'w', encoding='UTF-8') as f:
-            griffe2md.write_package_docs(
-                package=page.module,
-                config=page_config,
-                output=f,
-            )
-
-        outputadoc = WORKDIR / f'{page.name}.adoc'
-
-        print('Generating', outputadoc.relative_to(ROOT_DIR))
-
-        sp.run(f'pandoc {outputmd} -o {outputadoc} -f markdown -t asciidoc'.split())
+            try:
+                members = page.extra_config['members']
+            except KeyError:
+                f.write(f'\n::: {page.module}')
+            else:
+                for member in members:
+                    f.write(f'\n::: {page.module}.{member}')
