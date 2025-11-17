@@ -70,8 +70,8 @@ async def discover_async(
     serial : bool
         If True, discover serial devices
 
-    Return
-    ------
+    Returns
+    -------
     discovered : list[Instrument]
         List of dataclasses with discovered instruments.
     """
