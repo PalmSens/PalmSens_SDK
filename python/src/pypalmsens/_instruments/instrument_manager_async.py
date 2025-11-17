@@ -115,33 +115,64 @@ async def discover_async(
 async def connect_async(
     instrument: None | Instrument = None,
 ) -> InstrumentManagerAsync:
-    """Connect to instrument and return InstrumentManagerAsync.
+    """Async connect to instrument and return `InstrumentManagerAsync`.
+
+    Connects to any plugged-in PalmSens USB device.
+    Error if multiple devices are plugged-in.
 
     Parameters
     ----------
     instrument : Instrument, optional
-        Connect to this instrument.
-        If not specified, automatically discover and connect to the first instrument.
+        Connect to a specific instrument.
+        Use `pypalmsens.discover_async()` to discover instruments.
 
     Returns
     -------
     manager : InstrumentManagerAsync
         Return instance of `InstrumentManagerAsync` connected to the given instrument.
-        The connection will be terminated after the context ends.
     """
-    # connect to first device if not specified
     if not instrument:
         available_instruments = await discover_async()
 
         if not available_instruments:
             raise ConnectionError('No instruments were discovered.')
 
-        # connect to first instrument
+        if len(available_instruments) > 1:
+            raise ConnectionError('More than one device discovered.')
+
         instrument = available_instruments[0]
 
     manager = InstrumentManagerAsync(instrument)
-    await manager.connect()
+    _ = await manager.connect()
     return manager
+
+
+async def measure_async(
+    method: BaseTechnique,
+    instrument: None | Instrument = None,
+) -> Measurement:
+    """Run measurement async.
+
+    Executes the given method on any plugged-in PalmSens USB device.
+    Error if multiple devices are plugged-in.
+
+    Parameters
+    ----------
+    instrument : Instrument, optional
+        Connect to and meassure on a specific instrument.
+        Use `pypalmsens.discover_async()` to discover instruments.
+
+    Returns
+    -------
+    measurement : Measurement
+        Finished measurement.
+    """
+    async with await connect_async(instrument=instrument) as manager:
+        measurement = await manager.measure(method)
+
+    assert measurement
+
+    return measurement
 
 
 class InstrumentManagerAsync:

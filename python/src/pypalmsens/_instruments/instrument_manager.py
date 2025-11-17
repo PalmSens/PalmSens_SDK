@@ -120,31 +120,62 @@ def connect(
 ) -> InstrumentManager:
     """Connect to instrument and return InstrumentManager.
 
+    Connects to any plugged-in PalmSens USB device.
+    Error if multiple devices are plugged-in.
+
     Parameters
     ----------
     instrument : Instrument, optional
-        Connect to this instrument.
-        If not specified, automatically discover and connect to the first instrument.
+        Connect to a specific instrument.
+        Use `pypalmsens.discover()` to discover instruments.
 
     Returns
     -------
     manager : InstrumentManager
         Return instance of `InstrumentManager` connected to the given instrument.
-        The connection will be terminated after the context ends.
     """
-    # connect to first device if not specified
     if not instrument:
         available_instruments = discover()
 
         if not available_instruments:
             raise ConnectionError('No instruments were discovered.')
 
-        # connect to first instrument
+        if len(available_instruments) > 1:
+            raise ConnectionError('More than one device discovered.')
+
         instrument = available_instruments[0]
 
     manager = InstrumentManager(instrument)
     _ = manager.connect()
     return manager
+
+
+def measure(
+    method: BaseTechnique,
+    instrument: None | Instrument = None,
+) -> Measurement:
+    """Run measurement.
+
+    Executes the given method on any plugged-in PalmSens USB device.
+    Error if multiple devices are plugged-in.
+
+    Parameters
+    ----------
+    instrument : Instrument, optional
+        Connect to and meassure on a specific instrument.
+        Use `pypalmsens.discover()` to discover instruments.
+
+    Returns
+    -------
+    measurement : Measurement
+        Finished measurement.
+    """
+    with connect(instrument=instrument) as manager:
+        measurement = manager.measure(method)
+
+    assert measurement
+
+    return measurement
 
 
 class InstrumentManager:
