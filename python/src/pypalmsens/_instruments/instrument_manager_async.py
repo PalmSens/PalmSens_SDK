@@ -50,13 +50,16 @@ if TYPE_CHECKING:
 
 
 async def discover_async(
-    ftdi: bool = True,
+    ftdi: bool = False,
     usbcdc: bool = True,
     winusb: bool = True,
     bluetooth: bool = False,
     serial: bool = True,
+    ignore_errors: bool = False,
 ) -> list[Instrument]:
     """Discover instruments.
+
+    For PalmSens 3, EmStat 1/2/3/Go/Pico devices, use `ftdi=True`.
 
     Parameters
     ----------
@@ -70,6 +73,8 @@ async def discover_async(
         If True, discover bluetooth devices (Windows only)
     serial : bool
         If True, discover serial devices
+    ignore_errors : False
+        Ignores errors in device discovery
 
     Return
     ------
@@ -97,7 +102,19 @@ async def discover_async(
     instruments: list[Instrument] = []
 
     for name, interface in interfaces.items():
-        devices = await create_future(interface.DiscoverDevicesAsync())
+        try:
+            devices = await create_future(interface.DiscoverDevicesAsync())
+        except System.DllNotFoundException as e:
+            if ignore_errors:
+                continue
+
+            if name == 'ftdi':
+                msg = (
+                    'FTDI drivers are missing, for more info see: '
+                    'https://sdk.palmsens.com/python/latest/installation.html#ftdisetup .'
+                )
+                raise IOError(msg) from e
+            raise
 
         for device in devices:
             instruments.append(

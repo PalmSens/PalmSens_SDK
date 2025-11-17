@@ -49,13 +49,16 @@ if TYPE_CHECKING:
 
 
 def discover(
-    ftdi: bool = True,
+    ftdi: bool = False,
     usbcdc: bool = True,
     winusb: bool = True,
     bluetooth: bool = False,
     serial: bool = True,
+    ignore_errors: bool = False,
 ) -> list[Instrument]:
     """Discover instruments.
+
+    For PalmSens 3, EmStat 1/2/3/Go/Pico devices, use `ftdi=True`.
 
     Parameters
     ----------
@@ -69,6 +72,8 @@ def discover(
         If True, discover bluetooth devices (Windows only)
     serial : bool
         If True, discover serial devices
+    ignore_errors : False
+        Ignores errors in device discovery
 
     Return
     ------
@@ -84,8 +89,10 @@ def discover(
     if WINDOWS:
         if usbcdc:
             interfaces['usbcdc'] = USBCDCDevice
+
         if winusb:
             interfaces['winusb'] = WinUSBDevice
+
         if bluetooth:
             interfaces['bluetooth'] = BluetoothDevice
             interfaces['ble'] = BLEDevice
@@ -97,7 +104,19 @@ def discover(
     instruments: list[Instrument] = []
 
     for name, interface in interfaces.items():
-        devices = interface.DiscoverDevices(*args)
+        try:
+            devices = interface.DiscoverDevices(*args)
+        except System.DllNotFoundException as e:
+            if ignore_errors:
+                continue
+
+            if name == 'ftdi':
+                msg = (
+                    'FTDI drivers are missing, for more info see: '
+                    'https://sdk.palmsens.com/python/latest/installation.html#ftdisetup .'
+                )
+                raise IOError(msg) from e
+            raise
 
         if WINDOWS:
             devices = devices[0]
@@ -136,7 +155,7 @@ def connect(
         Return instance of `InstrumentManager` connected to the given instrument.
     """
     if not instrument:
-        available_instruments = discover()
+        available_instruments = discover(ftdi=True, ignore_errors=True)
 
         if not available_instruments:
             raise ConnectionError('No instruments were discovered.')
