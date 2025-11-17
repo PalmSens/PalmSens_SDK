@@ -43,48 +43,91 @@ plugins:
         - https://numpy.org/doc/stable/objects.inv
         - https://matplotlib.org/stable/objects.inv
         options:
-          allow_inspection: yes
-          annotations_path: brief
-          docstring_options:
-            ignore_init_summary: yes
-          docstring_section_style: list
+          # https://mkdocstrings.github.io/python/usage/#recommended-settings
           docstring_style: numpy
-          filters: ['!^_']
-          group_by_category: yes  # Group the object's children by categories: attributes, classes, functions, and modules.
-          heading_level: 1  # The initial heading level to use.
-          inherited_members: yes
+
+          # DOCSTRINGS -------------------------------------------------------------
+          docstring_options:
+            # Discard first line of `__init__` method docstrings,
+            # useful when merging such docstrings into their parent class'.
+            ignore_init_summary: true
+
+          # Tables are generally too large, lists will fix this.
+          docstring_section_style: list
+
+          # CROSS-REFERENCES -------------------------------------------------------
+          # Enable relative crossrefs and scoped crossrefs, see Docstrings options.
+          relative_crossrefs: true
+          scoped_crossrefs: true
+
+          # Enable cross-references in signatures.
+          signature_crossrefs: true
+
+          # Unwrap actual types from `Annotated` type annotations.
+          unwrap_annotated: true
+
+          # MEMBERS ----------------------------------------------------------------
+          # Only render pulic symbols.
+          filters: public
+          # Comment the option otherwise to get the default filters.
+
+          # Show class inherited members.
+          inherited_members: true
+
+          # Render auto-generated summaries of attributes, functions, etc.
+          # at the start of each symbol's documentation.
+          summary: true
+
+          # HEADINGS ---------------------------------------------------------------
+          # For auto-generated pages, one module per page,
+          # make the module heading be the H1 heading of the page.
+          # heading_level: 1
+
+          # Render headings for parameters, making them linkable.
+          parameter_headings: true
+
+          # Render headings for type parameters too.
+          type_parameter_headings: true
+
+          # Always show the heading for the symbol you render with `::: id`.
+          show_root_heading: true
+
+          # Only show the name of the symbols you inject render `::: id`.
+          show_root_full_path: true
+
+          # Show the type of symbol (class, function, etc.) in the heading.
+          show_symbol_type_heading: true
+
+          # Show the type of symbol (class, function, etc.) in the table of contents.
+          show_symbol_type_toc: true
+
+          # SIGNATURES -------------------------------------------------------------
+          # Format code to 80 + 10% margin (Black and Ruff defaults)
+          # in signatures and attribute value code blocks.
+          # Needs Black/Ruff installed.
           line_length: 96
-          load_external_modules: no
-          # members: None
-          members_order: source
-          merge_init_into_class: yes
-          # preload_modules: None
-          separate_signature: yes
-          show_bases: no
-          show_category_heading: no  # When grouped by categories, show a heading for each category.
-          show_docstring_attributes: no
-          show_docstring_classes: yes
-          show_docstring_description: yes
-          show_docstring_examples: yes
-          show_docstring_functions: yes
-          show_docstring_modules: yes
-          show_docstring_other_parameters: yes
-          show_docstring_parameters: yes
-          show_docstring_raises: yes
-          show_docstring_receives: yes
-          show_docstring_returns: yes
-          show_docstring_warns: yes
-          show_docstring_yields: yes
-          show_if_no_docstring: yes
-          show_object_full_path: no
-          show_root_full_path: yes  # Show the full Python path for the root object heading.
-          show_root_heading: yes
-          show_root_members_full_path: no  # Show the full Python path of the root members.
-          show_signature: yes
-          show_signature_annotations: no
-          show_submodules: yes
-          signature_crossrefs: yes
-          summary: yes
+
+          # Merge signature and docstring of `__init__` methods
+          # into their parent class signature and docstring.
+          merge_init_into_class: true
+
+          # Render signatures and attribute values in a separate code block,
+          # below the symbol heading.
+          separate_signature: true
+
+          # Show type annotations in signatures.
+          show_signature_annotations: true
+
+          # Show type parameters in signatures.
+          show_signature_type_parameters: true
+
+          # OTHER ------------------------------------------------------------------
+          # Show backlinks to other documentation sections within each symbol.
+          backlinks: tree
+
+          # Show base classes OR inheritance diagram.
+          show_bases: false
+          show_inheritance_diagram: true
 
 watch:
   - ../../src/
