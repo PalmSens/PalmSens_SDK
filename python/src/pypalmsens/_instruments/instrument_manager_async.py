@@ -111,7 +111,7 @@ async def discover_async(
             if name == 'ftdi':
                 msg = (
                     'FTDI drivers are missing, for more info see: '
-                    'https://sdk.palmsens.com/python/latest/installation.html#ftdisetup .'
+                    'https://sdk.palmsens.com/python/latest/installation.html#ftdisetup'
                 )
                 raise IOError(msg) from e
             raise
