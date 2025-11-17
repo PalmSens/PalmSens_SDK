@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING, Any, Awaitable
 
 import clr
 import PalmSens
+import System
 from PalmSens import AsyncEventHandler, Method, MuxModel
 from PalmSens.Comm import CommManager, MuxType
 from PalmSens.Plottables import (
@@ -49,7 +50,7 @@ if TYPE_CHECKING:
 
 
 async def discover_async(
-    ftdi: bool = False,
+    ftdi: bool = True,
     usbcdc: bool = True,
     winusb: bool = True,
     bluetooth: bool = False,
@@ -224,27 +225,22 @@ class InstrumentManagerAsync:
     async def connect(self) -> int | None:
         """Connect to instrument."""
         if self.__comm is not None:
-            print(
+            raise ConnectionError(
                 'An instance of the InstrumentManager can only be connected to one instrument at a time'
             )
-            return 0
+
+        __instrument = self.instrument.device
 
         try:
-            __instrument = self.instrument.device
             await create_future(__instrument.OpenAsync())
-            self.__comm = await create_future(CommManager.CommManagerAsync(__instrument))
+        except System.UnauthorizedAccessException as err:
+            raise ConnectionError(
+                f'Cannot open instrument connection (reason: {err.Message}). Check if the device is already in use.'
+            ) from err
 
-            firmware_warning(self.__comm.Capabilities)
+        self.__comm = await create_future(CommManager.CommManagerAsync(__instrument))
 
-            return 1
-        except Exception:
-            traceback.print_exc()
-            try:
-                __instrument.Close()
-            except Exception:
-                pass
-
-            return None
+        firmware_warning(self.__comm.Capabilities)
 
     async def set_cell(self, cell_on: bool) -> int | None:
         """Turn the cell on or off.
@@ -255,8 +251,7 @@ class InstrumentManagerAsync:
             If true, turn on the cell
         """
         if self.__comm is None:
-            print('Not connected to an instrument')
-            return 0
+            raise ConnectionError('Not connected to an instrument')
 
         await create_future(self.__comm.ClientConnection.Semaphore.WaitAsync())
 
@@ -282,8 +277,7 @@ class InstrumentManagerAsync:
             Potential in V
         """
         if self.__comm is None:
-            print('Not connected to an instrument')
-            return 0
+            raise ConnectionError('Not connected to an instrument')
 
         await create_future(self.__comm.ClientConnection.Semaphore.WaitAsync())
 
@@ -308,8 +302,7 @@ class InstrumentManagerAsync:
             Set the current range, use `pypalmsens.settings.CURRENT_RANGE`.
         """
         if self.__comm is None:
-            print('Not connected to an instrument')
-            return 0
+            raise ConnectionError('Not connected to an instrument')
 
         await create_future(self.__comm.ClientConnection.Semaphore.WaitAsync())
 
@@ -334,8 +327,7 @@ class InstrumentManagerAsync:
             Current in µA."
         """
         if self.__comm is None:
-            print('Not connected to an instrument')
-            return 0
+            raise ConnectionError('Not connected to an instrument')
 
         await create_future(self.__comm.ClientConnection.Semaphore.WaitAsync())
 
@@ -361,8 +353,7 @@ class InstrumentManagerAsync:
             Potential in V."""
 
         if self.__comm is None:
-            print('Not connected to an instrument')
-            return 0
+            raise ConnectionError('Not connected to an instrument')
 
         await create_future(self.__comm.ClientConnection.Semaphore.WaitAsync())
 
@@ -405,11 +396,10 @@ class InstrumentManagerAsync:
 
             return None
 
-    def validate_method(self, psmethod: PSMethod):
+    def validate_method(self, psmethod: PSMethod) -> tuple[bool, str | None]:
         """Validate method."""
         if self.__comm is None:
-            print('Not connected to an instrument')
-            return False, None
+            raise ConnectionError('Not connected to an instrument')
 
         errors = psmethod.Validate(self.__comm.Capabilities)
 
@@ -432,8 +422,7 @@ class InstrumentManagerAsync:
         """
         psmethod = method._to_psmethod()
         if self.__comm is None:
-            print('Not connected to an instrument')
-            return None
+            raise ConnectionError('Not connected to an instrument')
 
         self.__active_measurement_error = None
 
@@ -637,8 +626,7 @@ class InstrumentManagerAsync:
             The second item is a future that contains the data once the measurement is finished.
         """
         if self.__comm is None:
-            print('Not connected to an instrument')
-            return 0
+            raise ConnectionError('Not connected to an instrument')
 
         hardware_sync_channel_initiated_event = asyncio.Event()
         measurement_finished_future = asyncio.Future()  # type: ignore
@@ -669,8 +657,7 @@ class InstrumentManagerAsync:
             Wait for digital line high before starting
         """
         if self.__comm is None:
-            print('Not connected to an instrument')
-            return 0
+            raise ConnectionError('Not connected to an instrument')
 
         try:
             # obtain lock on library (required when communicating with instrument)
@@ -695,8 +682,7 @@ class InstrumentManagerAsync:
     async def abort(self):
         """Abort measurement."""
         if self.__comm is None:
-            print('Not connected to an instrument')
-            return 0
+            raise ConnectionError('Not connected to an instrument')
 
         if self.__measuring is False:
             return 0
@@ -726,8 +712,7 @@ class InstrumentManagerAsync:
             Number of available multiplexes channels
         """
         if self.__comm is None:
-            print('Not connected to an instrument')
-            return 0
+            raise ConnectionError('Not connected to an instrument')
 
         await create_future(self.__comm.ClientConnection.Semaphore.WaitAsync())
 
@@ -788,8 +773,7 @@ class InstrumentManagerAsync:
             Set the unselected channel working electrode to disconnected/floating (0), ground (1), or standby potential (2). Default is 0.
         """
         if self.__comm is None:
-            print('Not connected to an instrument')
-            return
+            raise ConnectionError('Not connected to an instrument')
 
         if self.__comm.Capabilities.MuxModel != MuxModel.MUX8R2:
             return
@@ -825,8 +809,7 @@ class InstrumentManagerAsync:
             Index of the channel to set.
         """
         if self.__comm is None:
-            print('Not connected to an instrument')
-            return 0
+            raise ConnectionError('Not connected to an instrument')
 
         await create_future(self.__comm.ClientConnection.Semaphore.WaitAsync())
 
