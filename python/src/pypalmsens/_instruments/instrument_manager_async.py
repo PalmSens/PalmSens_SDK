@@ -144,7 +144,7 @@ async def connect_async(
         instrument = available_instruments[0]
 
     manager = InstrumentManagerAsync(instrument)
-    _ = await manager.connect()
+    await manager.connect()
     return manager
 
 
@@ -222,7 +222,7 @@ class InstrumentManagerAsync:
         """Return True if an instrument connection exists."""
         return self.__comm is not None
 
-    async def connect(self) -> int | None:
+    async def connect(self) -> None:
         """Connect to instrument."""
         if self.__comm is not None:
             raise ConnectionError(

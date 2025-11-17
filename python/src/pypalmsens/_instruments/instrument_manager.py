@@ -147,7 +147,7 @@ def connect(
         instrument = available_instruments[0]
 
     manager = InstrumentManager(instrument)
-    _ = manager.connect()
+    manager.connect()
     return manager
 
 
@@ -225,7 +225,7 @@ class InstrumentManager:
         """Return True if an instrument connection exists."""
         return self.__comm is not None
 
-    def connect(self):
+    def connect(self) -> None:
         """Connect to instrument."""
         if self.__comm is not None:
             raise ConnectionError(
