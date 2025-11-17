@@ -2,5 +2,6 @@
 
 ::: pypalmsens.connect_async
 ::: pypalmsens.discover_async
+::: pypalmsens.measure_async
 ::: pypalmsens.InstrumentManagerAsync
 ::: pypalmsens.InstrumentPoolAsync
