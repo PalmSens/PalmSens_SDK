@@ -826,12 +826,8 @@ class InstrumentManagerAsync:
     async def disconnect(self):
         """Disconnect from the instrument."""
         if self.__comm is None:
-            return 0
-        try:
-            await create_future(self.__comm.DisconnectAsync())
-            self.__comm = None
-            self.__measuring = False
-            return 1
-        except Exception:
-            traceback.print_exc()
-            return 0
+            return
+
+        await create_future(self.__comm.DisconnectAsync())
+        self.__comm = None
+        self.__measuring = False

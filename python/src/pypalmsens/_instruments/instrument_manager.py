@@ -764,12 +764,8 @@ class InstrumentManager:
     def disconnect(self):
         """Disconnect from the instrument."""
         if self.__comm is None:
-            return 0
-        try:
-            self.__comm.Disconnect()
-            self.__comm = None
-            self.__measuring = False
-            return 1
-        except Exception:
-            traceback.print_exc()
-            return 0
+            return
+
+        self.__comm.Disconnect()
+        self.__comm = None
+        self.__measuring = False
