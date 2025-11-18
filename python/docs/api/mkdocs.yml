@@ -7,13 +7,14 @@ nav:
   - Home: index.md
   - data.md
   - fitting.md
+  - io.md
   - instrument.md
   - instrument_async.md
-  - io.md
-  - mixed_mode.md
-  - settings.md
-  - settings_enums.md
-  - techniques.md
+  - Methods:
+    - techniques.md
+    - mixed_mode.md
+    - settings.md
+    - settings_enums.md
   - 🔗 Source code: https://github.com/palmsens/palmsens_sdk
   - 🔗 Issues: https://github.com/palmsens/palmsens_sdk/issues
 
@@ -53,7 +54,7 @@ markdown_extensions:
   - pymdownx.superfences
 
 extra:
-  homepage: https://sdk.palmsens.com
+  homepage: https://sdk.palmsens.com/python/latest
 
 extra_css:
   - stylesheets/extra.css
@@ -64,6 +65,8 @@ extra_javascript:
 
 plugins:
 - search
+# - privacy
+# - offline
 - mkdocstrings:
     # https://mkdocstrings.github.io/usage/
     handlers:
