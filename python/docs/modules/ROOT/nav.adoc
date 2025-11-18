@@ -5,4 +5,3 @@
 * xref:methods.adoc[]
 * xref:circuit_fitting.adoc[]
 * xref:examples.adoc[]
-* xref:attachment$index.html[API reference]
