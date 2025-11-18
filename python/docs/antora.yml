@@ -6,10 +6,10 @@ nav:
 - modules/api/nav.adoc
 ext:
   collector:
-  - run: mkdocs build -f python/docs/api/mkdocs.yml
+  - run: mkdocs build -f python/docs/mkdocs.yml
     scan:
       clean: true
-      dir: python/docs/api/site
+      dir: python/docs/site
       into: modules/api/attachments/
   - scan:
       dir: python/examples/

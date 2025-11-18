@@ -2,6 +2,7 @@ site_name: PyPalmSens
 site_url: https://sdk.palmsens.com
 repo_url: https://github.com/palmsens/palmsens_sdk
 repo_name: GitHub
+docs_dir: api
 
 nav:
   - Home: index.md
@@ -71,7 +72,7 @@ plugins:
     # https://mkdocstrings.github.io/usage/
     handlers:
       python:
-        paths: [../../src]
+        paths: [../src]
         inventories:
         - https://docs.python.org/3/objects.inv
         - https://numpy.org/doc/stable/objects.inv
@@ -164,5 +165,5 @@ plugins:
           show_inheritance_diagram: true
 
 watch:
-  - ../../src/
-  - docs/
+  - ../src/
+  - api/
