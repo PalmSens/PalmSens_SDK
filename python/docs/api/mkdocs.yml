@@ -24,6 +24,11 @@ theme:
   palette:
     accent: indigo
 
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+
 extra_css:
   - stylesheets/extra.css
 
@@ -46,7 +51,7 @@ plugins:
           # https://mkdocstrings.github.io/python/usage/#recommended-settings
           docstring_style: numpy
 
-          # DOCSTRINGS -------------------------------------------------------------
+          # # DOCSTRINGS -------------------------------------------------------------
           docstring_options:
             # Discard first line of `__init__` method docstrings,
             # useful when merging such docstrings into their parent class'.
@@ -123,7 +128,7 @@ plugins:
 
           # OTHER ------------------------------------------------------------------
           # Show backlinks to other documentation sections within each symbol.
-          backlinks: tree
+          backlinks: False  # crashes in linux
 
           # Show base classes OR inheritance diagram.
           show_bases: false
