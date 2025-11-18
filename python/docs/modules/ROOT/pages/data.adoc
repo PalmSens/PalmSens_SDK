@@ -1,9 +1,10 @@
 = Working with data
 :source-language: python
+:api-data: api:attachment$data/index.html
 
 This page shows how to use `pypalmsens` to interface with your measurement data.
 
-The xref:attachment$data/index.html[`ps.data`] submodule contains wrappers for the PyPalmSens .NET SDK libraries.
+The xref:{api-data}[`ps.data`] submodule contains wrappers for the PyPalmSens .NET SDK libraries.
 These are the same libraries that power the https://www.palmsens.com/software/ps-trace/[PSTrace] software.
 
 == Measurement
@@ -46,7 +47,7 @@ There are two ways to access the data.
 `m.dataset` returns the raw data that were measured, analogous to the _Data_ tab in PSTrace.
 `m.curves` returns a list of <<Curve>> objects, which represent the plots.
 
-For more information, see the xref:attachment$data/index.html#pypalmsens.data.Measurement[Measurement reference].
+For more information, see the xref:{api-data}#pypalmsens.data.Measurement[Measurement reference].
 
 == Curve
 
@@ -108,10 +109,10 @@ For more info on this algorithm, see https://en.wikipedia.org/wiki/Neopolarogram
 .Peak finding
 ====
 Depending on your data, the peak finder may not always find peaks on the first try.
-Sometimes the parameters need to be tuned, see xref:attachment$data/index.html#pypalmsens.data.Curve.find_peaks[`.find_peaks()`] for more information.
+Sometimes the parameters need to be tuned, see xref:{api-data}#pypalmsens.data.Curve.find_peaks[`.find_peaks()`] for more information.
 ====
 
-You can do filtering using xref:attachment$data/index.html#pypalmsens.data.Curve.smooth[`.smooth()`]. Note that this updates the curve in-place.
+You can do filtering using xref:{api-data}#pypalmsens.data.Curve.smooth[`.smooth()`]. Note that this updates the curve in-place.
 
 ----
 >>> curve.smooth(smooth_level=1)
@@ -141,7 +142,7 @@ array([0.352146, 0.351192, ..., 0.19908 , 0.199557])
 <1> Convert to list...
 <2> ...or numpy array
 
-For more information, see the xref:attachment$data/index.html#pypalmsens.data.Curve[Curve reference].
+For more information, see the xref:{api-data}#pypalmsens.data.Curve[Curve reference].
 
 == Peak
 
@@ -171,7 +172,7 @@ Many peak properties are accessible from this object.
 ----
 <1> The peak value is the height of the peak relative to the baseline
 
-For more information, see the xref:attachment$data/index.html#pypalmsens.data.Peak[Peak reference].
+For more information, see the xref:{api-data}#pypalmsens.data.Peak[Peak reference].
 
 == DataSet
 
@@ -272,7 +273,7 @@ Curve(title=My curve, n_points=219)
 ----
 <1> Any combination of these will work
 
-For more information, see the xref:attachment$data/index.html#pypalmsens.data.DataSet[DataSet reference].
+For more information, see the xref:{api-data}#pypalmsens.data.DataSet[DataSet reference].
 
 == DataArray
 
@@ -335,7 +336,7 @@ Arrays can be converted to lists or numpy arrays:
 array([0.352146, 0.351192, ..., 0.19908 , 0.199557])
 ----
 
-For more information, see the xref:attachment$data/index.html#pypalmsens.data.DataArray[DataArray reference].
+For more information, see the xref:{api-data}#pypalmsens.data.DataArray[DataArray reference].
 
 == EISData
 
@@ -440,4 +441,4 @@ Subscans can be accessed via the `.subscans()` method.
 
 The subscans are themselves <<EISData>> objects.
 
-For more information, see the xref:attachment$data/index.html#pypalmsens.data.EISData[EISData reference].
+For more information, see the xref:{api-data}#pypalmsens.data.EISData[EISData reference].
