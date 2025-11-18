@@ -19,6 +19,8 @@ nav:
 
 theme:
   name: material
+  logo: assets/header_icon.svg
+  favicon: assets/favicon.ico
 
   palette:
     # Palette toggle for automatic mode
@@ -31,7 +33,7 @@ theme:
     - media: "(prefers-color-scheme: light)"
       scheme: default
       primary: custom
-      accent: red
+      accent: custom
       toggle:
         icon: material/brightness-7
         name: Switch to dark mode
@@ -40,7 +42,7 @@ theme:
     - media: "(prefers-color-scheme: dark)"
       scheme: slate
       primary: custom
-      accent: red
+      accent: custom
       toggle:
         icon: material/brightness-4
         name: Switch to system preference
@@ -49,6 +51,9 @@ markdown_extensions:
   - admonition
   - pymdownx.details
   - pymdownx.superfences
+
+extra:
+  homepage: https://sdk.palmsens.com
 
 extra_css:
   - stylesheets/extra.css
