@@ -6,45 +6,45 @@ The following methods are supported in PyPalmSens:
 
 Voltammetric Techniques::
 
-- xref:api/techniques.adoc#_linearsweepvoltammetry[Linear Sweep Voltammetry]
-- xref:api/techniques.adoc#_cyclicvoltammetry[Cyclic Voltammetry]
-- xref:api/techniques.adoc#_fastcyclicvoltammetry[Fast Cyclic Voltammetry]
-- xref:api/techniques.adoc#_acvoltammetry[AC Voltammetry]
+- xref:attachment$techniques/index.html#LinearSweepVoltammetry[Linear Sweep Voltammetry]
+- xref:attachment$techniques/index.html#CyclicVoltammetry[Cyclic Voltammetry]
+- xref:attachment$techniques/index.html#FastCyclicVoltammetry[Fast Cyclic Voltammetry]
+- xref:attachment$techniques/index.html#AcVoltammetry[AC Voltammetry]
 
 Pulsed Techniques::
 
-- xref:api/techniques.adoc#_differentialpulsevoltammetry[Differential Pulse Voltammetry]
-- xref:api/techniques.adoc#_squarewavevoltammetry[Square Wave Voltammetry]
-- xref:api/techniques.adoc#_normalpulsevoltammetry[Normal Pulse Voltammetry]
+- xref:attachment$techniques/index.html#DifferentialPulseVoltammetry[Differential Pulse Voltammetry]
+- xref:attachment$techniques/index.html#SquareWaveVoltammetry[Square Wave Voltammetry]
+- xref:attachment$techniques/index.html#NormalPulseVoltammetry[Normal Pulse Voltammetry]
 
 Amperometric Techniques::
 
-- xref:api/techniques.adoc#_chronoamperometry[Chronoamperometry]
-- xref:api/techniques.adoc#_multistepamperometry[Multistep Amperometry]
-- xref:api/techniques.adoc#_fastamperometry[Fast Amperometry]
-- xref:api/techniques.adoc#_pulsedamperometricdetection[Pulsed Amperometric Detection]
-- xref:api/techniques.adoc#_multiplepulseamperometry[Multiple Pulse Amperometry]
+- xref:attachment$techniques/index.html#Chronoamperometry[Chronoamperometry]
+- xref:attachment$techniques/index.html#MultistepAmperometry[Multistep Amperometry]
+- xref:attachment$techniques/index.html#FastAmperometry[Fast Amperometry]
+- xref:attachment$techniques/index.html#PulsedAmperometricDetection[Pulsed Amperometric Detection]
+- xref:attachment$techniques/index.html#MultiplePulseAmperometry[Multiple Pulse Amperometry]
 
 Potentiometric Techniques::
 
-- xref:api/techniques.adoc#_opencircuitpotentiometry[Open Circuit Potentiometry]
-- xref:api/techniques.adoc#_chronopotentiometry[Chronopotentiometry]
-- xref:api/techniques.adoc#_linearsweeppotentiometry[Linear Sweep Potentiometry]
-- xref:api/techniques.adoc#_multisteppotentiometry[Multistep Potentiometry]
-- xref:api/techniques.adoc#_strippingchronopotentiometry[Stripping Chronopotentiometry]
+- xref:attachment$techniques/index.html#OpenCircuitPotentiometry[Open Circuit Potentiometry]
+- xref:attachment$techniques/index.html#Chronopotentiometry[Chronopotentiometry]
+- xref:attachment$techniques/index.html#LinearSweepPotentiometry[Linear Sweep Potentiometry]
+- xref:attachment$techniques/index.html#MultistepPotentiometry[Multistep Potentiometry]
+- xref:attachment$techniques/index.html#StrippingChronopotentiometry[Stripping Chronopotentiometry]
 
 Coulometric techniques::
 
-- xref:api/techniques.adoc#_chronocoulometry[Chronocoulometry]
+- xref:attachment$techniques/index.html#Chronocoulometry[Chronocoulometry]
 
 Other::
 
-- xref:api/techniques.adoc#_impedancespectroscopy[Impedance Spectroscopy]
-- xref:api/techniques.adoc#_fastimpedancespectroscopy[Fast Impedance Spectroscopy]
-- xref:api/techniques.adoc#_galvanostaticimpedancespectroscopy[Galvanostatic Impedance Spectroscopy]
-- xref:api/techniques.adoc#_fastgalvanostaticimpedancespectroscopy[Fast Galvanostatic Impedance Spectroscopy]
-- xref:api/mixed_mode.adoc#_mixedmode[Mixed Mode]
-- xref:api/techniques.adoc#_methodscript[Method Script]
+- xref:attachment$techniques/index.html#ImpedanceSpectroscopy[Impedance Spectroscopy]
+- xref:attachment$techniques/index.html#FastImpedanceSpectroscopy[Fast Impedance Spectroscopy]
+- xref:attachment$techniques/index.html#GalvanostaticImpedanceSpectroscopy[Galvanostatic Impedance Spectroscopy]
+- xref:attachment$techniques/index.html#FastGalvanostaticImpedanceSpectroscopy[Fast Galvanostatic Impedance Spectroscopy]
+- xref:attachment$techniques/index.html#MixedMode[Mixed Mode]
+- xref:attachment$techniques/index.html#MethodScript[Method Script]
 
 == Setting up a method
 
@@ -114,7 +114,7 @@ image::ipython_autocomplete.png[Debug console in VSCode]
 === Common settings
 
 Many settings are shared between methods.
-For a full listing, see xref:api/method_settings.adoc[].
+For a full listing, see the xref:attachment$settings/index.html[method settings API reference].
 
 If you don't specify any arguments, the default values are loaded.
 These are accessible via attributes on the methods.
