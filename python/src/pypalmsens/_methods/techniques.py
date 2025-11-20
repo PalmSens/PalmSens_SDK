@@ -42,25 +42,25 @@ class CyclicVoltammetry(
     _id = 'cv'
 
     equilibration_time: float = 0.0
-    """Equilibration time in s"""
+    """Equilibration time in s."""
 
     begin_potential: float = -0.5
-    """Begin potential in V"""
+    """Begin potential in V."""
 
     vertex1_potential: float = 0.5
-    """Vertex 1 potential in V"""
+    """Vertex 1 potential in V."""
 
     vertex2_potential: float = -0.5
-    """Vertex 2 potential in V"""
+    """Vertex 2 potential in V."""
 
     step_potential: float = 0.1
-    """Step potential in V"""
+    """Step potential in V."""
 
     scanrate: float = 1.0
-    """Scan rate in V/s"""
+    """Scan rate in V/s."""
 
     n_scans: int = 1
-    """Number of scans"""
+    """Number of scans."""
 
     enable_bipot_current: bool = False
     """Enable bipot current."""
@@ -136,25 +136,25 @@ class FastCyclicVoltammetry(
     """Fixed current range."""
 
     equilibration_time: float = 0.0
-    """Equilibration time in s"""
+    """Equilibration time in s."""
 
     begin_potential: float = -0.5
-    """Begin potential in V"""
+    """Begin potential in V."""
 
     vertex1_potential: float = 0.5
-    """Vertex 1 potential in V"""
+    """Vertex 1 potential in V."""
 
     vertex2_potential: float = -0.5
-    """Vertex 2 potential in V"""
+    """Vertex 2 potential in V."""
 
     step_potential: float = 0.01
-    """Step potential in V"""
+    """Step potential in V."""
 
     scanrate: float = 500.0
-    """Scan rate in V/s"""
+    """Scan rate in V/s."""
 
     n_scans: int = 1
-    """Number of scans"""
+    """Number of scans."""
 
     n_avg_scans: int = 1
     """Number of scans to be averaged."""
@@ -396,7 +396,7 @@ class SquareWaveVoltammetry(
     Reference electrode vs ground."""
 
     record_forward_and_reverse_currents: bool = False
-    """Record forward and reverse currents"""
+    """Record forward and reverse currents."""
 
     @override
     def _update_psmethod(self, psmethod: PSMethod, /):
