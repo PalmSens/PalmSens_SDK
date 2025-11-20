@@ -37,7 +37,14 @@ class CyclicVoltammetry(
     mixins.DataProcessingMixin,
     mixins.GeneralMixin,
 ):
-    """Create cyclic voltammetry method parameters."""
+    """Create cyclic voltammetry method parameters.
+
+    In Cyclic Voltammetry, recurrent potential scans are performed between the potentials `vertex1_potential`
+    and `vertex2_potential` going back the number of times determined by the `n_scans`.
+    The scan starts at the `begin_potential` which can be at one of these vertex potentials
+    or anywhere in between. The experiment will always terminate at the same potential set as the
+    'begin_potential'.
+    """
 
     _id = 'cv'
 
@@ -45,22 +52,24 @@ class CyclicVoltammetry(
     """Equilibration time in s."""
 
     begin_potential: float = -0.5
-    """Begin potential in V."""
+    """Potential where the scan starts and stops at in V."""
 
     vertex1_potential: float = 0.5
-    """Vertex 1 potential in V."""
+    """First potential where direction reverses in V."""
 
     vertex2_potential: float = -0.5
-    """Vertex 2 potential in V."""
+    """Second potential where direction reverses. V."""
 
     step_potential: float = 0.1
-    """Step potential in V."""
+    """Potential step size in V."""
 
     scanrate: float = 1.0
-    """Scan rate in V/s."""
+    """Scan rate in V/s.
+
+    The applicable range depends on the value of `step_potential`."""
 
     n_scans: int = 1
-    """Number of scans."""
+    """Number of repetitions for this scan."""
 
     enable_bipot_current: bool = False
     """Enable bipot current."""
@@ -128,7 +137,15 @@ class FastCyclicVoltammetry(
     mixins.DataProcessingMixin,
     mixins.GeneralMixin,
 ):
-    """Create fast cyclic voltammetry method parameters."""
+    """Create fast cyclic voltammetry method parameters.
+
+    In Cyclic Voltammetry a cyclic potential scan is performed between two vertex potentials
+    `vertex1_potential` and `vertex2_potential`.
+    The scan can start (`begin_potential`) at one of these vertex potentials or anywhere in between.
+
+    A CV becomes a Fast CV if the scan rate in combination with `step_potential` results in a rate of over 2500
+    points / second (`scan_rate` / `step_potential` > 2500).
+    """
 
     _id = 'fcv'
 
@@ -139,28 +156,36 @@ class FastCyclicVoltammetry(
     """Equilibration time in s."""
 
     begin_potential: float = -0.5
-    """Begin potential in V."""
+    """Potential where the scan starts and stops at in V."""
 
     vertex1_potential: float = 0.5
-    """Vertex 1 potential in V."""
+    """First potential where direction reverses in V."""
 
     vertex2_potential: float = -0.5
-    """Vertex 2 potential in V."""
+    """Second potential where direction reverses. V."""
 
-    step_potential: float = 0.01
-    """Step potential in V."""
+    step_potential: float = 0.1
+    """Potential step size in V."""
 
-    scanrate: float = 500.0
-    """Scan rate in V/s."""
+    scanrate: float = 1.0
+    """Scan rate in V/s.
+
+    The applicable range depends on the value of `step_potential`."""
 
     n_scans: int = 1
-    """Number of scans."""
+    """Number of repetitions for this scan."""
 
     n_avg_scans: int = 1
-    """Number of scans to be averaged."""
+    """The number of scan repetitions for averaging.
+
+    In case `n_scans` is set to a value > 1, each scan in the measurement is the result
+    of an average of multiple scans, where the number of scans averaged is
+    specified with this value."""
 
     n_equil_scans: int = 1
-    """Number of equilibration scans."""
+    """Number of equilibration scans.
+
+    During these scans, no data is recorded."""
 
     @override
     def _update_psmethod(self, psmethod: PSMethod, /):
@@ -203,7 +228,14 @@ class ACVoltammetry(
     mixins.DataProcessingMixin,
     mixins.GeneralMixin,
 ):
-    """Create AC Voltammetry method parameters."""
+    """Create AC Voltammetry method parameters.
+
+    In AC Voltammetry a potential scan is made with a superimposed sine wave which has a
+    relatively small amplitude (normally 5 – 10 mV) and a frequency of 10 – 2000 Hz.
+
+    The AC signal superimposed on the DC-potential results in an AC response (i ac rms). The
+    resulting AC response is plotted against the potential.
+    """
 
     _id = 'acv'
 
@@ -211,25 +243,30 @@ class ACVoltammetry(
     """Equilibration time in s."""
 
     begin_potential: float = -0.5
-    """Begin potential in V."""
+    """Potential where the scan starts at in V."""
 
     end_potential: float = 0.5
-    """End potential in V."""
+    """Potential where the scan stops at in V."""
 
     step_potential: float = 0.1
-    """Step potential in V."""
+    """Potential step size in V."""
 
     ac_potential: float = 0.01
-    """Sine wave amplitude in V as rms value."""
+    """RMS amplitude of the applied sine wave in V."""
 
     frequency: float = 100.0
-    """AC frequency in HZ."""
+    """Frequency of the applied AC signal in HZ."""
 
     scanrate: float = 1.0
-    """Scan rate in V/s."""
+    """The applied scan rate in V/s
+
+    The applicable range depends on the value of `step_potential`."""
 
     measure_dc_current: bool = False
-    """Measure the DC current seperately."""
+    """Measure the DC current seperately.
+
+    If True, the direct current (DC) will be measured separately
+    and added to the measurement as an additional curve."""
 
     @override
     def _update_psmethod(self, psmethod: PSMethod, /):
@@ -276,19 +313,24 @@ class LinearSweepVoltammetry(
     _id = 'lsv'
 
     equilibration_time: float = 0.0
-    """Equilibration time in s."""
+    """Equilibration time in s.
+
+    Begin potential is applied during equilibration and the device switches to the appropriate current range."""
 
     begin_potential: float = -0.5
-    """Begin potential in V."""
+    """Potential where the scan starts at in V."""
 
     end_potential: float = 0.5
-    """End potential in V."""
+    """Potential where the scan stops at in V."""
 
     step_potential: float = 0.1
-    """Step potential in V."""
+    """Potential step size in V."""
 
     scanrate: float = 1.0
-    """Scan rate in V/s."""
+    """Scan rate in V/s.
+
+    The applicable range depends on the value of `step_potential` since the data
+    acquisition rate is limited by the connected instrument."""
 
     enable_bipot_current: bool = False
     """Enable bipot current."""
@@ -365,19 +407,21 @@ class SquareWaveVoltammetry(
     """Equilibration time in s."""
 
     begin_potential: float = -0.5
-    """Begin potential in V."""
+    """Potential where the scan starts at in V."""
 
     end_potential: float = 0.5
-    """End potential in V."""
+    """Potential where the scan stops at in V."""
 
     step_potential: float = 0.1
-    """Step potential in V."""
+    """Potential step size in V."""
 
     frequency: float = 10.0
-    """Frequency in Hz."""
+    """Frequency of the square wave in Hz."""
 
     amplitude: float = 0.05
-    """Amplitude in V as half peak-to-peak value."""
+    """Amplitude of square wave pulse in V.
+
+    Values are defined as the half peak-to-peak value."""
 
     enable_bipot_current: bool = False
     """Enable bipot current."""
@@ -453,7 +497,12 @@ class DifferentialPulseVoltammetry(
     mixins.MultiplexerMixin,
     mixins.GeneralMixin,
 ):
-    """Create differential pulse voltammetry method parameters."""
+    """Create differential pulse voltammetry method parameters.
+
+    In Differential Pulse Voltammetry a potential scan is made using pulses with a constant
+    amplitude of `pulse_potential` superimposed on the dc-potential. The amplitude is mostly in the range
+    of 5 – 50 mV.
+    """
 
     _id = 'dpv'
 
@@ -461,22 +510,29 @@ class DifferentialPulseVoltammetry(
     """Equilibration time in s."""
 
     begin_potential: float = -0.5
-    """Begin potential in V."""
+    """Potential where the scan starts at in V."""
 
     end_potential: float = 0.5
-    """End potential in V."""
+    """Potential where the scan stops at in V."""
 
     step_potential: float = 0.1
-    """Step potential in V."""
+    """Potential step size in V."""
 
     pulse_potential: float = 0.05
-    """Pulse potential in V."""
+    """Pulse potential height in V."""
 
     pulse_time: float = 0.01
-    """Pulse time in s."""
+    """Pulse time in s.
+
+    This duration needs to be set shorter than 0.5 * interval time
+    where the interval time is equal to `potential_step` / `scan_rate`.
+    """
 
     scan_rate: float = 1.0
-    """Scan rate (potential/time) in V/s."""
+    """Scan rate (potential/time) in V/s.
+
+    The maximum scan rate depends on the value of `step_potential` step and `pulse_time`.
+    The scan rate must be < (`step_potential` / `pulse_time`)."""
 
     enable_bipot_current: bool = False
     """Enable bipot current."""
@@ -557,19 +613,22 @@ class NormalPulseVoltammetry(
     """Equilibration time in s."""
 
     begin_potential: float = -0.5
-    """Begin potential in V."""
+    """Potential where the scan starts at in V."""
 
     end_potential: float = 0.5
-    """End potential in V."""
+    """Potential where the scan stops at in V."""
 
     step_potential: float = 0.1
-    """Step potential in V."""
+    """Potential step size in V."""
 
     pulse_time: float = 0.01
     """Pulse time in s."""
 
     scan_rate: float = 1.0
-    """Scan rate (potential/time) in V/s."""
+    """Scan rate (potential/time) in V/s.
+
+    The applicable range depends on the value of `step_potential` since the data
+    acquisition rate is limited by the connected instrument."""
 
     enable_bipot_current: bool = False
     """Enable bipot current."""
@@ -872,7 +931,14 @@ class PulsedAmperometricDetection(
     mixins.MultiplexerMixin,
     mixins.GeneralMixin,
 ):
-    """Create pulsed amperometric detection method parameters."""
+    """Create pulsed amperometric detection method parameters.
+
+    With Pulsed Amperometric Detection a series of pulses (pulse profile) is periodically repeated.
+    Pulsed Amperometric Detection can be used when higher sensitivity is required. Using pulses
+    instead of constant potential might result in higher faradaic currents. PAD is also used when the
+    electrode surface has to be regenerated continuously, for instance, to remove adsorbents from
+    the electrode surface.
+    """
 
     _id = 'pad'
 
@@ -882,10 +948,12 @@ class PulsedAmperometricDetection(
     """Equilibration time in s."""
 
     potential: float = 0.5
-    """Potential in V."""
+    """DC or base potential in V."""
 
     pulse_potential: float = 0.05
-    """Pulse potential in V."""
+    """Pulse potential in V.
+
+    Note that this value is not relative to `potential` given above."""
 
     pulse_time: float = 0.01
     """Pulse time in s."""
@@ -893,16 +961,20 @@ class PulsedAmperometricDetection(
     mode: Literal['dc', 'pulse', 'differential'] = 'dc'
     """Measurement mode.
 
-    - dc: Measurement is performed at potential (E dc)
-    - pulse: measurement is performed at pulse potential (E pulse)
-    - differential: measurement is (pulse - dc)
+    - dc: measurement is performed at `potential`
+    - pulse: measurement is performed at `pulse_potential`
+    - differential: measurement is the difference (pulse - dc)
     """
 
     interval_time: float = 0.1
-    """Interval time in s."""
+    """Time between two current samples in s."""
 
     run_time: float = 10.0
-    """Run time in s."""
+    """Total run time of scan in s.
+
+    The minimum and maximum duration of a measurement:
+    5 * `interval_time` to 1,000,000 seconds (~278 hours).
+    """
 
     @override
     def _update_psmethod(self, psmethod: PSMethod, /):
@@ -1148,9 +1220,18 @@ class StrippingChronoPotentiometry(
 ):
     """Create stripping potentiometry method parameters.
 
-    If the stripping current is set to 0, then chemical stripping is performed,
-    otherwise it is chemical constant current stripping.
-    The applicable range is +- 0.001 microampere to +- 2 milliampere.
+    Chronopotentiometric Stripping or Stripping chronopotentiometry is a sensitive analytical
+    technique.
+    The sequence of a stripping chronopotentiometry measurement:
+
+    1. Apply conditioning potential, if conditioning time > 0.
+    2. Apply deposition potential, if deposition time > 0.
+    3. Apply deposition potential and wait for equilibration time.
+    4. If the stripping current is set to 0 then the cell is switched off. Otherwise,
+    the specified constant current is applied. The measurement with a rate of 40 kHz starts. The measurement
+    stops when either the measured potential is below ‘end_potential’ or the `measurement_time` is exceeded.
+
+
     """
 
     _id = 'scp'
@@ -1159,12 +1240,15 @@ class StrippingChronoPotentiometry(
     """Fixed potential range."""
 
     current: float = 0.0
-    """The stripping current to apply in the given current range.
+    """The stripping current to apply.
 
     Note that this value acts as a multiplier in the applied current range.
-
     So if 10 uA is the applied current range and 1.5 is given as current value,
-    the applied current will be 15 uA."""
+    the applied current will be 15 uA.
+
+    If the stripping current is set to 0, then chemical stripping is performed,
+    otherwise it is chemical constant current stripping.
+    """
 
     applied_current_range: CURRENT_RANGE = CURRENT_RANGE.cr_100_uA
     """Applied current range.
@@ -1172,10 +1256,15 @@ class StrippingChronoPotentiometry(
     Use `CURRENT_RANGE` to define the range."""
 
     end_potential: float = 0.0
-    """Potential in V where measurement ends."""
+    """Potential where the measurement at stops in V ."""
 
     measurement_time: float = 1.0
-    """Measurement time in s."""
+    """The maximum measurement time in s.
+
+    This value should always exceed the required measurement time.
+    It only limits the time of the measurement.
+    When the potential response is erroneously and `end_potential` is not reached within this time,
+    the measurement is aborted."""
 
     bandwidth: None | float = None
     """Override the bandwidth filter cutoff frequency (in Hz)."""
@@ -1185,7 +1274,7 @@ class StrippingChronoPotentiometry(
         """Update method with stripping chrono potentiometry settings."""
         psmethod.RangingPotential = PSFixedPotentialRange(self.potential_range._to_psobj())
 
-        psmethod.Current = self.current
+        psmethod.Istrip = self.current
         psmethod.AppliedCurrentRange = self.applied_current_range._to_psobj()
         psmethod.MeasurementTime = self.measurement_time
         psmethod.EndPotential = self.end_potential
@@ -1250,7 +1339,10 @@ class LinearSweepPotentiometry(
     This value is multiplied by the defined current range."""
 
     scan_rate: float = 1.0
-    """The applied scan rate.
+    """Scan rate (current/time) in V/s.
+
+    The applicable range depends on the value of `current_step` since the data
+    acquisition rate is limited by the connected instrument.
 
     This value is multiplied by the defined current range."""
 
