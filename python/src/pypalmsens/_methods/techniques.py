@@ -783,7 +783,11 @@ class FastAmperometry(
     mixins.MultiplexerMixin,
     mixins.GeneralMixin,
 ):
-    """Create fast amperometry method parameters."""
+    """Create fast amperometry method parameters.
+
+    Fast amperometry is a form of Amperometric Detection (Chronoamperometry) but with very
+    high sampling rates or very short interval times.
+    """
 
     _id = 'fam'
 
@@ -794,16 +798,23 @@ class FastAmperometry(
     """Equilibration time in s."""
 
     equilibration_potential: float = 1.0
-    """Equilibration potential in V."""
+    """Equilibration potential at which the measurement starts in V."""
 
     interval_time: float = 0.1
-    """Interval time in s."""
+    """Time between two current samples in s."""
 
     potential: float = 0.5
-    """Potential in V."""
+    """Potential during measurement in V.
+
+    Note that this value is not relative to 'equilibration_potential`.
+    The current is continuously sampled during this stage.
+    """
 
     run_time: float = 1.0
-    """Run time in s."""
+    """Total run time of the measurement in s.
+
+    Applicable run time: 1 ms to 30 s.
+    """
 
     @override
     def _update_psmethod(self, psmethod: PSMethod, /):
@@ -970,7 +981,7 @@ class PulsedAmperometricDetection(
     """Time between two current samples in s."""
 
     run_time: float = 10.0
-    """Total run time of scan in s.
+    """Total run time of the measurement in s.
 
     The minimum and maximum duration of a measurement:
     5 * `interval_time` to 1,000,000 seconds (~278 hours).
@@ -1010,7 +1021,18 @@ class MultiplePulseAmperometry(
     mixins.DataProcessingMixin,
     mixins.GeneralMixin,
 ):
-    """Create multiple pulse amperometry method parameters."""
+    """Create multiple pulse amperometry method parameters.
+
+    The Multiple Pulse Amperometry (MPAD) technique involves applying a series of voltage pulses
+    to an electrode immersed in a sample solution, and the resulting current of one of the pulses is
+    measured
+
+    This technique can be used when higher sensitivity is required. Using pulses instead of constant
+    potential might result in higher faradaic currents. MPAD is used when the electrode surface
+    must be regenerated continuously, for instance, to remove adsorbents from the electrode
+    surface. Some examples include detection and quantification of specific analytes, particularly
+    in liquid chromatography and flow-injection analysis.
+    """
 
     _id = 'mpad'
 
@@ -1018,7 +1040,11 @@ class MultiplePulseAmperometry(
     """Equilibration time in s."""
 
     run_time: float = 10.0
-    """Run time in s."""
+    """Total run time of the measurement in s.
+
+    The minimum and maximum duration of a measurement:
+    5 * `interval_time` to 1,000,000 seconds (~278 hours).
+    """
 
     duration_1: float = 0.1
     """Duration of the first applied potential in s."""
@@ -1077,15 +1103,30 @@ class OpenCircuitPotentiometry(
     mixins.MultiplexerMixin,
     mixins.GeneralMixin,
 ):
-    """Create open circuit potentiometry method parameters."""
+    """Create open circuit potentiometry method parameters.
+
+    For Open Circuit Potentiometry there is no polarization, and the so-called Open Circuit
+    Potential (OCP) is measured and recorded with constant interval times. The result is a curve of
+    Potential vs. Time. The OCP is also called Open Circuit Voltage (OCV).
+
+    In corrosion, it is referred to as the "Corrosion Potential" (Ecorr), but in this context, it
+    specifically denotes the potential of a metal or electrode when exposed to a corrosive
+    environment.
+
+    This method is the same as `Chronopotentiometry(current=0)`.
+    """
 
     _id = 'ocp'
 
     interval_time: float = 0.1
-    """Interval time in s."""
+    """Time between two potential samples in s."""
 
     run_time: float = 1.0
-    """Run time in s."""
+    """Total run time of the measurement in s.
+
+    The minimum and maximum duration of a measurement:
+    5 * `interval_time` to 1,000,000 seconds (~278 hours).
+    """
 
     record_auxiliary_input: bool = False
     """Record auxiliary input."""
@@ -1139,16 +1180,25 @@ class ChronoPotentiometry(
     mixins.MultiplexerMixin,
     mixins.GeneralMixin,
 ):
-    """Create potentiometry method parameters."""
+    """Create potentiometry method parameters.
+
+    Chronopotentiometry (CP) is an electrochemical technique
+    that requires a galvanostat instead of a potentiostat.
+    In this method, a constant current is applied, and the resulting potential (voltage)
+    is continuously recorded over time in a definite time interval. This technique is particularly
+    useful for studying electrochemical reactions, kinetics, and processes under non-steady-state
+    conditions, offering valuable insights into how the electrode potential evolves in response to
+    the applied current.
+    """
 
     _id = 'pot'
 
     current: float = 0.0
     """The current to apply in the given current range.
 
-    Note that this value acts as a multiplier in the applied current range.
+    Note that this value acts as a multiplier in the `applied_current_range`.
 
-    So if 10 uA is the applied current range and 1.5 is given as current value,
+    So if 10 uA is the `applied_current_range` and 1.5 is given as current value,
     the applied current will be 15 uA."""
 
     applied_current_range: CURRENT_RANGE = CURRENT_RANGE.cr_100_uA
@@ -1157,10 +1207,10 @@ class ChronoPotentiometry(
     Use `CURRENT_RANGE` to define the range."""
 
     interval_time: float = 0.1
-    """Interval time in s (default: 0.1)"""
+    """Time between two potential samples in s."""
 
     run_time: float = 1.0
-    """Run time in s."""
+    """Total run time of the measurement in s."""
 
     record_auxiliary_input: bool = False
     """Record auxiliary input."""
@@ -1230,8 +1280,6 @@ class StrippingChronoPotentiometry(
     4. If the stripping current is set to 0 then the cell is switched off. Otherwise,
     the specified constant current is applied. The measurement with a rate of 40 kHz starts. The measurement
     stops when either the measured potential is below ‘end_potential’ or the `measurement_time` is exceeded.
-
-
     """
 
     _id = 'scp'
