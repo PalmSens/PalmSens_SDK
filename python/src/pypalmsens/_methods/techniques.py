@@ -1624,7 +1624,23 @@ class ElectrochemicalImpedanceSpectroscopy(
     mixins.MultiplexerMixin,
     mixins.GeneralMixin,
 ):
-    """Create potentiometry method parameters."""
+    """Create potentiometry method parameters.
+
+    Electrochemical Impedance Spectroscopy (EIS) is an electrochemical technique to measure
+    the impedance of a system in dependence of the AC potentials frequency.
+
+    Although "spectroscopy" implies a frequency sweep, which is the most common
+    measurement, this class provide the flexibility to set the frequency and vary
+    other parameters, such as DC potential and time.
+
+    Available modes of EIS measurements:
+
+    - a frequency scan at a fixed dc-potential (default EIS)
+    - frequency scans at each dc-potential in a potential scan
+    - frequency scans at specified time intervals (time scan)
+    - a single frequency applied at each dc potential in a potential scan (Mott-Schottky)
+    - a repeated single frequency at specified time intervals
+    """
 
     _id = 'eis'
 
@@ -1639,29 +1655,16 @@ class ElectrochemicalImpedanceSpectroscopy(
     """Equilibration time in s."""
 
     dc_potential: float = 0.0
-    """DC potential in V."""
+    """DC-potential applied during the EIS scan in V.
+
+    Also called _DC Bias_ or _level_.
+    The most common setting for this parameter is 0 V vs. OCP."""
 
     ac_potential: float = 0.01
-    """AC potential in V RMS."""
+    """AC potential in V RMS.
 
-    n_frequencies: int = 11
-    """Number of frequencies."""
-
-    max_frequency: float = 1e5
-    """Maximum frequency in Hz."""
-
-    min_frequency: float = 1e3
-    """Minimum frequency in Hz."""
-
-    scan_type: Literal['potential', 'time', 'fixed'] = 'fixed'
-    """Whether a single or multiple frequency scans are performed.
-
-    Possible values: 'potential', 'time', 'fixed'.
-
-    * Fixed scan: perform a single scan (default).
-    * Time scan: scans are repeated for a specific amount of time at a specific interval.
-    * Potential scan: scans are repeated over a range of DC potential values.
-      A potential scan should not be performed versus the OCP.
+    The amplitude of the ac potential signal has a range of 0.001 V to 0.25 V
+    (RMS). In many applications, a value of 0.010 V (RMS) is used.
     """
 
     frequency_type: Literal['fixed', 'scan'] = 'scan'
@@ -1669,12 +1672,42 @@ class ElectrochemicalImpedanceSpectroscopy(
 
     Possible values: 'scan', 'fixed'.
 
-    Scan: multiple frequency
-    Fixed: single frequency. This can be used in combination with a time or a potential scan.
+    - Scan: a frequency scan is performed starting at the given `max_frequency`
+        to the `min_frequency`.
+    - Fixed: a single frequency given by 'fixed_frequencya is applied for
+        the given duration or at each potential step or time interval.
+    """
+
+    n_frequencies: int = 11
+    """Number of frequencies (frequency scan only).
+
+    Defines the range of frequencies to apply between the `max_frequency` and
+    `min_frequency`. For example, a value of 11 will measure at 11 frequencies,
+    including both end points.
+    """
+
+    max_frequency: float = 10_000
+    """Maximum frequency in Hz (frequency scan only)."""
+
+    min_frequency: float = 5.0
+    """Minimum frequency in Hz (frequency scan only)."""
+
+    fixed_frequency: float = 1_000
+    """Fixed frequency in Hz."""
+
+    scan_type: Literal['potential', 'time', 'fixed'] = 'fixed'
+    """Whether a single or multiple frequency scans are performed.
+
+    Possible values: 'potential', 'time', 'fixed'.
+
+    - Fixed scan: perform a single scan (default).
+    - Time scan: scans are repeated for a specific amount of time at a specific interval.
+    - Potential scan: scans are repeated over a range of DC potential values.
+      A potential scan should not be performed versus the OCP.
     """
 
     run_time: float = 10.0
-    """This is the minimal run time in seconds (time scan only).
+    """Minimal run time in seconds (time scan only).
 
     For example, if a frequency scan takes 18 seconds and is measured
     at an interval of 19 seconds for a `run_time` of 40 seconds, then
@@ -1683,26 +1716,32 @@ class ElectrochemicalImpedanceSpectroscopy(
     interval_time: float = 0.1
     """The interval at which a measurement iteration should be performed (time scan only).
 
+    The minimum interval time between each data point (`frequency_type='fixed') or
+    between each frequency scan (`frequency_type='scan').
+    We recommend a time higher than the required time to measure the data point or perform the
+    frequency scan + overhead time. While it's possible to use a shorter time, doing so may
+    lead to incorrect impedance calculations.
+
     If a measurement iteration takes longer than the interval time the next measurement
     will not be triggered until after it has been completed.
     """
 
     begin_potential: float = 0.0
-    """Begin potential in V (potential scan only).
+    """The dc-potential at which the measurement starts in V (potential scan only).
 
-    The DC potential of the applied sine wave to start the series of iterative measurements at.
+    I.e. the DC potential of the applied sine wave to start the series of iterative measurements at.
     """
 
     end_potential: float = 0.0
-    """End potential in V (potential scan only).
+    """The dc-potential at which the scan ends in  V (potential scan only).
 
-    The DC potential of the applied sine wave at which the series of iterative measurements ends.
+    I.e. the DC potential of the applied sine wave at which the series of iterative measurements ends.
     """
 
     step_potential: float = 0.01
-    """Step potential in V (potential scan only).
+    """Potential step size in V (potential scan only).
 
-    The size of DC potential step to iterate with.
+    This sets the increment to be used between `begin_potential` and `end_potential`.
     """
 
     min_sampling_time: float = 0.5
@@ -1752,9 +1791,12 @@ class ElectrochemicalImpedanceSpectroscopy(
         psmethod.EquilibrationTime = self.equilibration_time
         psmethod.Potential = self.dc_potential
         psmethod.Eac = self.ac_potential
-        psmethod.nFrequencies = self.n_frequencies
+
+        psmethod.FixedFrequency = self.fixed_frequency
         psmethod.MaxFrequency = self.max_frequency
         psmethod.MinFrequency = self.min_frequency
+
+        psmethod.nFrequencies = self.n_frequencies
         psmethod.SamplingTime = self.min_sampling_time
         psmethod.MaxEqTime = self.max_equilibration_time
 
@@ -1766,6 +1808,8 @@ class ElectrochemicalImpedanceSpectroscopy(
         self.dc_potential = single_to_double(psmethod.Potential)
         self.ac_potential = single_to_double(psmethod.Eac)
         self.n_frequencies = psmethod.nFrequencies
+
+        self.fixed_frequency = single_to_double(psmethod.FixedFrequency)
         self.max_frequency = single_to_double(psmethod.MaxFrequency)
         self.min_frequency = single_to_double(psmethod.MinFrequency)
 
@@ -1844,7 +1888,16 @@ class GalvanostaticImpedanceSpectroscopy(
     mixins.MultiplexerMixin,
     mixins.GeneralMixin,
 ):
-    """Create potentiometry method parameters."""
+    """Create potentiometry method parameters.
+
+
+    For Galvanostatic EIS (GEIS) the modes are:
+    - a frequency scan at a fixed dc-current
+    - frequency scans at each current in a current scan
+    - frequency scans at specified time intervals (time scan)
+    - a single frequency applied at each current in a current scan
+    - a single frequency at specified time intervals
+    """
 
     _id = 'gis'
 
