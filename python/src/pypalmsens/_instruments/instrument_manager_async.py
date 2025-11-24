@@ -115,7 +115,7 @@ async def discover_async(
                     'Cannot discover FTDI devices (driver cannot be found).'
                     '\nfor more information see: '
                     'https://sdk.palmsens.com/python/latest/installation.html#ftdisetup'
-                    '\nSet `ftdi=False` to hide this message'
+                    '\nSet `ftdi=False` to hide this message.'
                 )
                 warnings.warn(msg, stacklevel=2)
                 continue
