@@ -3,6 +3,7 @@ from __future__ import annotations
 import asyncio
 import sys
 import traceback
+import warnings
 from typing import TYPE_CHECKING, Any, Awaitable
 
 import clr
@@ -59,7 +60,8 @@ async def discover_async(
 ) -> list[Instrument]:
     """Discover instruments.
 
-    For PalmSens 3, EmStat 1/2/3/Go/Pico devices, use `ftdi=True`.
+    For a list of device interfaces, see:
+        https://sdk.palmsens.com/python/latest/#compatibility
 
     Parameters
     ----------
@@ -110,10 +112,12 @@ async def discover_async(
 
             if name == 'ftdi':
                 msg = (
-                    'FTDI drivers are missing, for more info see: '
+                    f'Cannot discover FTDI devices (reason={e.message}), '
+                    'for more information see: '
                     'https://sdk.palmsens.com/python/latest/installation.html#ftdisetup'
+                    'Set `ftdi=False` to hide this message'
                 )
-                raise IOError(msg) from e
+                warnings.warn(msg)
             raise
 
         for device in devices:
