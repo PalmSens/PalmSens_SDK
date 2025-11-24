@@ -108,13 +108,13 @@ def discover(
     for name, interface in interfaces.items():
         try:
             devices = interface.DiscoverDevices(*args)
-        except System.DllNotFoundException as e:
+        except System.DllNotFoundException as err:
             if ignore_errors:
                 continue
 
             if name == 'ftdi':
                 msg = (
-                    f'Cannot discover FTDI devices (reason={e.message}), '
+                    f'Cannot discover FTDI devices (reason={err}), '
                     'for more information see: '
                     'https://sdk.palmsens.com/python/latest/installation.html#ftdisetup'
                     'Set `ftdi=False` to hide this message'
