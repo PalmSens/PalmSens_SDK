@@ -119,7 +119,7 @@ def discover(
                     'https://sdk.palmsens.com/python/latest/installation.html#ftdisetup'
                     'Set `ftdi=False` to hide this message'
                 )
-                warnings.warn(msg)
+                warnings.warn(msg, stacklevel=2)
                 continue
             raise
 
