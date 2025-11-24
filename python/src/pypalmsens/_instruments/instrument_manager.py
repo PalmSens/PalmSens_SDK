@@ -114,7 +114,7 @@ def discover(
 
             if name == 'ftdi':
                 msg = (
-                    f'Cannot discover FTDI devices (reason={err}), '
+                    f'Cannot discover FTDI devices (reason={err.__class__.__name__}), '
                     'for more information see: '
                     'https://sdk.palmsens.com/python/latest/installation.html#ftdisetup'
                     'Set `ftdi=False` to hide this message'
