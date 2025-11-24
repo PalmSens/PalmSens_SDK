@@ -118,6 +118,7 @@ async def discover_async(
                     'Set `ftdi=False` to hide this message'
                 )
                 warnings.warn(msg)
+                continue
             raise
 
         for device in devices:

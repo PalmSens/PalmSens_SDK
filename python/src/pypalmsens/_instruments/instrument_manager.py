@@ -120,6 +120,7 @@ def discover(
                     'Set `ftdi=False` to hide this message'
                 )
                 warnings.warn(msg)
+                continue
             raise
 
         if WINDOWS:
