@@ -94,17 +94,6 @@ sudo udevadm control --reload
 sudo udevadm trigger
 ----
 
-Don't forget to enable scanning for FTDI devices.
-
-[,python]
-----
->>> import pypalmsens as ps
->>> instruments = ps.discover(ftdi=True)  <1>
->>> instruments
-[Instrument(name='EmStat3+Blue[ES93QFLP]', interface='ftdi')]
-----
-<1> Enable scanning for FTDI devices
-
 === RuntimeError: Failed to create a .NET runtime (coreclr)
 
 This error is raised if you did not install the dotnet runtime correctly. See xref:#req-linux[installation instructions above].
