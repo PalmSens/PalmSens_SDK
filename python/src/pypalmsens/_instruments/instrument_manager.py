@@ -114,7 +114,7 @@ def discover(
 
             if name == 'ftdi':
                 msg = (
-                    'Cannot discover FTDI devices (driver cannot be found).'
+                    'Cannot discover FTDI devices (missing driver).'
                     '\nfor more information see: '
                     'https://sdk.palmsens.com/python/latest/installation.html#ftdisetup'
                     '\nSet `ftdi=False` to hide this message.'
