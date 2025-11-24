@@ -60,8 +60,7 @@ def discover(
     """Discover instruments.
 
     For a list of device interfaces, see:
-
-    https://sdk.palmsens.com/python/latest/#compatibility
+        https://sdk.palmsens.com/python/latest/#compatibility
 
     Parameters
     ----------
@@ -160,7 +159,7 @@ def connect(
         Return instance of `InstrumentManager` connected to the given instrument.
     """
     if not instrument:
-        available_instruments = discover(ftdi=True, ignore_errors=True)
+        available_instruments = discover(ignore_errors=True)
 
         if not available_instruments:
             raise ConnectionError('No instruments were discovered.')
