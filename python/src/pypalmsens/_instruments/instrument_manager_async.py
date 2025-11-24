@@ -106,16 +106,16 @@ async def discover_async(
     for name, interface in interfaces.items():
         try:
             devices = await create_future(interface.DiscoverDevicesAsync())
-        except System.DllNotFoundException as err:
+        except System.DllNotFoundException:
             if ignore_errors:
                 continue
 
             if name == 'ftdi':
                 msg = (
-                    f'Cannot discover FTDI devices (reason={err.__class__.__name__}), '
-                    'for more information see: '
+                    'Cannot discover FTDI devices (driver cannot be found).'
+                    '\nfor more information see: '
                     'https://sdk.palmsens.com/python/latest/installation.html#ftdisetup'
-                    'Set `ftdi=False` to hide this message'
+                    '\nSet `ftdi=False` to hide this message'
                 )
                 warnings.warn(msg, stacklevel=2)
                 continue
