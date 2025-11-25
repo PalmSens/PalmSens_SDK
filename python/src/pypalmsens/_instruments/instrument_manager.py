@@ -227,7 +227,7 @@ class InstrumentManager:
         self.instrument: Instrument = instrument
         """Instrument to connect to."""
 
-        self._comm: CommManager | None = None
+        self._comm: CommManager
         self._measuring: bool = False
         self._active_measurement: PSMeasurement | None = None
         self._active_measurement_error: str | None = None
@@ -247,9 +247,8 @@ class InstrumentManager:
         _ = self.disconnect()
 
     @contextmanager
-    def _locked_comm(self) -> Generator[CommManager, Any, Any]:
-        if self._comm is None:
-            raise ConnectionError('Not connected to an instrument')
+    def _lock(self) -> Generator[CommManager, Any, Any]:
+        self.ensure_connection()
 
         self._comm.ClientConnection.Semaphore.Wait()
 
@@ -261,14 +260,22 @@ class InstrumentManager:
 
     def is_connected(self) -> bool:
         """Return True if an instrument connection exists."""
-        return self._comm is not None
+        try:
+            self._comm
+        except AttributeError:
+            return False
+        else:
+            return True
+
+    def ensure_connection(self):
+        """Raises connection error if the instrument is not connected."""
+        if not self.is_connected():
+            raise ConnectionError('Not connected to an instrument')
 
     def connect(self) -> None:
         """Connect to instrument."""
-        if self._comm is not None:
-            raise ConnectionError(
-                'An instance of the InstrumentManager can only be connected to one instrument at a time'
-            )
+        if self.is_connected():
+            return
 
         psinstrument = self.instrument.device
         try:
@@ -290,8 +297,8 @@ class InstrumentManager:
         cell_on : bool
             If true, turn on the cell
         """
-        with self._locked_comm() as comm:
-            comm.CellOn = cell_on
+        with self._lock():
+            self._comm.CellOn = cell_on
 
     def set_potential(self, potential: float):
         """Set the potential of the cell.
@@ -301,8 +308,8 @@ class InstrumentManager:
         potential : float
             Potential in V
         """
-        with self._locked_comm() as comm:
-            comm.Potential = potential
+        with self._lock():
+            self._comm.Potential = potential
 
     def set_current_range(self, current_range: CURRENT_RANGE):
         """Set the current range for the cell.
@@ -312,8 +319,8 @@ class InstrumentManager:
         current_range: CURRENT_RANGE
             Set the current range, use `pypalmsens.settings.CURRENT_RANGE`.
         """
-        with self._locked_comm() as comm:
-            comm.CurrentRange = current_range._to_psobj()
+        with self._lock():
+            self._comm.CurrentRange = current_range._to_psobj()
 
     def read_current(self) -> None | float:
         """Read the current in µA.
@@ -323,8 +330,8 @@ class InstrumentManager:
         float
             Current in µA."
         """
-        with self._locked_comm() as comm:
-            current = comm.Current  # in µA
+        with self._lock():
+            current = self._comm.Current  # in µA
 
         return current
 
@@ -336,8 +343,8 @@ class InstrumentManager:
         float
             Potential in V."""
 
-        with self._locked_comm() as comm:
-            potential = comm.Potential  # in V
+        with self._lock():
+            potential = self._comm.Potential  # in V
 
         return potential
 
@@ -349,15 +356,14 @@ class InstrumentManager:
         serial : str
             Instrument serial.
         """
-        with self._locked_comm() as comm:
-            serial = comm.DeviceSerial.ToString()
+        with self._lock():
+            serial = self._comm.DeviceSerial.ToString()
 
         return serial
 
     def validate_method(self, psmethod: PSMethod) -> tuple[bool, str | None]:
         """Validate method."""
-        if self._comm is None:
-            raise ConnectionError('Not connected to an instrument')
+        self.ensure_connection()
 
         errors = psmethod.Validate(self._comm.Capabilities)
 
@@ -377,8 +383,8 @@ class InstrumentManager:
             Method parameters for measurement
         """
         psmethod = method._to_psmethod()
-        if self._comm is None:
-            raise ConnectionError('Not connected to an instrument')
+
+        self.ensure_connection()
 
         self._active_measurement_error = None
 
@@ -562,9 +568,9 @@ class InstrumentManager:
         wait_for_high: bool
             Wait for digital line high before starting
         """
-        with self._locked_comm() as comm:
+        with self._lock():
             while True:
-                if comm.DigitalLineD0 == wait_for_high:
+                if self._comm.DigitalLineD0 == wait_for_high:
                     break
                 sleep(0.05)
 
@@ -573,8 +579,8 @@ class InstrumentManager:
         if self._measuring is False:
             return 0
 
-        with self._locked_comm() as comm:
-            comm.Abort()
+        with self._lock():
+            self._comm.Abort()
 
     def initialize_multiplexer(self, mux_model: int) -> int:
         """Initialize the multiplexer.
@@ -592,29 +598,29 @@ class InstrumentManager:
         channels : int
             Number of available multiplexes channels
         """
-        with self._locked_comm() as comm:
+        with self._lock():
             model = MuxModel(mux_model)
 
             if model == MuxModel.MUX8R2 and (
-                comm.ClientConnection.GetType().Equals(
+                self._comm.ClientConnection.GetType().Equals(
                     clr.GetClrType(PalmSens.Comm.ClientConnectionPS4)
                 )
-                or comm.ClientConnection.GetType().Equals(
+                or self._comm.ClientConnection.GetType().Equals(
                     clr.GetClrType(PalmSens.Comm.ClientConnectionMS)
                 )
             ):
-                comm.ClientConnection.ReadMuxInfo()
+                self._comm.ClientConnection.ReadMuxInfo()
 
-            comm.Capabilities.MuxModel = model
+            self._comm.Capabilities.MuxModel = model
 
-            if comm.Capabilities.MuxModel == MuxModel.MUX8:
-                comm.Capabilities.NumMuxChannels = 8
-            elif comm.Capabilities.MuxModel == MuxModel.MUX16:
-                comm.Capabilities.NumMuxChannels = 16
-            elif comm.Capabilities.MuxModel == MuxModel.MUX8R2:
-                comm.ClientConnection.ReadMuxInfo()
+            if self._comm.Capabilities.MuxModel == MuxModel.MUX8:
+                self._comm.Capabilities.NumMuxChannels = 8
+            elif self._comm.Capabilities.MuxModel == MuxModel.MUX16:
+                self._comm.Capabilities.NumMuxChannels = 16
+            elif self._comm.Capabilities.MuxModel == MuxModel.MUX8R2:
+                self._comm.ClientConnection.ReadMuxInfo()
 
-            channels = comm.Capabilities.NumMuxChannels
+            channels = self._comm.Capabilities.NumMuxChannels
 
         return channels
 
@@ -638,8 +644,6 @@ class InstrumentManager:
         set_unselected_channel_working_electrode: float
             Set the unselected channel working electrode to disconnected/floating (0), ground (1), or standby potential (2). Default is 0.
         """
-        assert self._comm
-
         if self._comm.Capabilities.MuxModel != MuxModel.MUX8R2:
             raise ValueError(
                 f"Incompatible mux model: {self._comm.Capabilities.MuxModel}, expected 'MUXR2'."
@@ -653,8 +657,8 @@ class InstrumentManager:
             set_unselected_channel_working_electrode
         )
 
-        with self._locked_comm() as comm:
-            comm.ClientConnection.SetMuxSettings(MuxType(1), mux_settings)
+        with self._lock():
+            self._comm.ClientConnection.SetMuxSettings(MuxType(1), mux_settings)
 
     def set_multiplexer_channel(self, channel: int):
         """Sets the multiplexer channel.
@@ -664,14 +668,16 @@ class InstrumentManager:
         channel : int
             Index of the channel to set.
         """
-        with self._locked_comm() as comm:
-            comm.ClientConnection.SetMuxChannel(channel)
+        with self._lock():
+            self._comm.ClientConnection.SetMuxChannel(channel)
 
     def disconnect(self):
         """Disconnect from the instrument."""
-        if self._comm is None:
+        if not self.is_connected():
             return
 
         self._comm.Disconnect()
         self._comm = None
         self._measuring = False
+
+        del self._comm
