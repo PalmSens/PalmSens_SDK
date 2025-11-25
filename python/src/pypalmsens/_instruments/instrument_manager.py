@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import asyncio
 import sys
-import traceback
 import warnings
 from contextlib import contextmanager
 from time import sleep
@@ -497,7 +496,7 @@ class InstrumentManager:
         eis_data_data_added_handler = EISData.NewDataEventHandler(eis_data_data_added_callback)
         comm_error_handler = EventHandler(comm_error_callback)
 
-        try:
+        def setup_measurement():
             # subscribe to events indicating the start and end of the measurement
             self._comm.BeginMeasurement += begin_measurement_handler
             self._comm.EndMeasurement += end_measurement_handler
@@ -507,24 +506,7 @@ class InstrumentManager:
                 self._comm.BeginReceiveEISData += begin_receive_eis_data_handler
                 self._comm.BeginReceiveCurve += begin_receive_curve_handler
 
-            async def await_measurement():
-                # obtain lock on library (required when communicating with instrument)
-                await create_future(self._comm.ClientConnection.Semaphore.WaitAsync())
-
-                # send and execute the method on the instrument
-                _ = self._comm.Measure(psmethod)
-                self._measuring = True
-
-                # release lock on library (required when communicating with instrument)
-                _ = self._comm.ClientConnection.Semaphore.Release()
-
-                _ = await begin_measurement_event.wait()
-                _ = await end_measurement_event.wait()
-
-            loop.run_until_complete(await_measurement())
-            loop.close()
-
-            # unsubscribe to events indicating the start and end of the measurement
+        def teardown_measurement():  # unsubscribe to events indicating the start and end of the measurement
             self._comm.BeginMeasurement -= begin_measurement_handler
             self._comm.EndMeasurement -= end_measurement_handler
             self._comm.Disconnected -= comm_error_handler
@@ -535,30 +517,47 @@ class InstrumentManager:
 
             if self._active_measurement_error is not None:
                 print(self._active_measurement_error)
-                return None
 
-            measurement = self._active_measurement
-            self._active_measurement = None
-            return Measurement(psmeasurement=measurement)
+        @contextmanager
+        def _measurement_context():
+            try:
+                setup_measurement()
 
-        except Exception:
-            traceback.print_exc()
+                yield
 
-            if self._comm.ClientConnection.Semaphore.CurrentCount == 0:
-                # release lock on library (required when communicating with instrument)
-                _ = self._comm.ClientConnection.Semaphore.Release()
+            except Exception:
+                if self._comm.ClientConnection.Semaphore.CurrentCount == 0:
+                    # release lock on library (required when communicating with instrument)
+                    _ = self._comm.ClientConnection.Semaphore.Release()
 
-            self._active_measurement = None
-            self._comm.BeginMeasurement -= begin_measurement_handler
-            self._comm.EndMeasurement -= end_measurement_handler
-            self._comm.Disconnected -= comm_error_handler
+                self._measuring = False
 
-            if self.callback is not None:
-                self._comm.BeginReceiveEISData -= begin_receive_eis_data_handler
-                self._comm.BeginReceiveCurve -= begin_receive_curve_handler
+                raise
 
-            self._measuring = False
-            return None
+            finally:
+                teardown_measurement()
+
+        async def await_measurement():
+            # obtain lock on library (required when communicating with instrument)
+            await create_future(self._comm.ClientConnection.Semaphore.WaitAsync())
+
+            # send and execute the method on the instrument
+            _ = self._comm.Measure(psmethod)
+            self._measuring = True
+
+            # release lock on library (required when communicating with instrument)
+            _ = self._comm.ClientConnection.Semaphore.Release()
+
+            _ = await begin_measurement_event.wait()
+            _ = await end_measurement_event.wait()
+
+        with _measurement_context():
+            loop.run_until_complete(await_measurement())
+            loop.close()
+
+        measurement = self._active_measurement
+        self._active_measurement = None
+        return Measurement(psmeasurement=measurement)
 
     def wait_digital_trigger(self, wait_for_high: bool):
         """Wait for digital trigger.
