@@ -574,10 +574,10 @@ class InstrumentManager:
                     break
                 sleep(0.05)
 
-    def abort(self):
+    def abort(self) -> None:
         """Abort measurement."""
         if self._measuring is False:
-            return 0
+            return
 
         with self._lock():
             self._comm.Abort()
