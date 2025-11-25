@@ -9,7 +9,7 @@ from typing import TYPE_CHECKING, Any, Generator
 import clr
 import PalmSens
 import System
-from PalmSens import Method, MuxModel
+from PalmSens import MuxModel
 from PalmSens.Comm import CommManager, MuxType
 from typing_extensions import override
 
@@ -33,7 +33,6 @@ else:
 
 
 if TYPE_CHECKING:
-    from PalmSens import Measurement as PSMeasurement
     from PalmSens import Method as PSMethod
 
 
@@ -215,9 +214,6 @@ class InstrumentManager:
         """Instrument to connect to."""
 
         self._comm: CommManager
-        self._measuring: bool = False
-        self._active_measurement: PSMeasurement | None = None
-        self._active_measurement_error: str | None = None
 
     @override
     def __repr__(self):
@@ -232,6 +228,11 @@ class InstrumentManager:
 
     def __exit__(self, exc_type, exc_value, traceback):
         _ = self.disconnect()
+
+    @property
+    def is_measuring(self) -> bool:
+        """Return True if device is measuring."""
+        return int(self._comm.State) == CommManager.DeviceState.Measurement
 
     @contextmanager
     def _lock(self) -> Generator[CommManager, Any, Any]:
@@ -348,18 +349,20 @@ class InstrumentManager:
 
         return serial
 
-    def validate_method(self, psmethod: PSMethod) -> tuple[bool, str | None]:
-        """Validate method."""
+    def validate_method(self, method: PSMethod | BaseTechnique) -> None:
+        """Validate method.
+
+        Raise ValueError if the method cannot be validated."""
         self.ensure_connection()
 
-        errors = psmethod.Validate(self._comm.Capabilities)
+        if not isinstance(method, PSMethod):
+            method = method._to_psmethod()
+
+        errors = method.Validate(self._comm.Capabilities)
 
         if any(error.IsFatal for error in errors):
-            return False, 'Method not compatible:\n' + '\n'.join(
-                [error.Message for error in errors]
-            )
-
-        return True, None
+            message = '\n'.join([error.Message for error in errors])
+            raise ValueError(f'Method not compatible:\n{message}')
 
     def measure(self, method: BaseTechnique):
         """Start measurement using given method parameters.
@@ -373,19 +376,16 @@ class InstrumentManager:
 
         self.ensure_connection()
 
-        is_valid, message = self.validate_method(psmethod)
-        if not is_valid:
-            raise ValueError(message)
+        self.validate_method(psmethod)
 
         from .measurement_manager import MeasurementManager
 
         measurement_manager = MeasurementManager(
-            method=psmethod,
-            callback=self.callback,
             comm=self._comm,
+            callback=self.callback,
         )
 
-        return measurement_manager.measure()
+        return measurement_manager.measure(psmethod)
 
     def wait_digital_trigger(self, wait_for_high: bool):
         """Wait for digital trigger.
@@ -403,9 +403,6 @@ class InstrumentManager:
 
     def abort(self) -> None:
         """Abort measurement."""
-        if self._measuring is False:
-            return
-
         with self._lock():
             self._comm.Abort()
 
@@ -476,11 +473,11 @@ class InstrumentManager:
                 f"Incompatible mux model: {self._comm.Capabilities.MuxModel}, expected 'MUXR2'."
             )
 
-        mux_settings = Method.MuxSettings(False)
+        mux_settings = PSMethod.MuxSettings(False)
         mux_settings.ConnSEWE = connect_sense_to_working_electrode
         mux_settings.ConnectCERE = combine_reference_and_counter_electrodes
         mux_settings.CommonCERE = use_channel_1_reference_and_counter_electrodes
-        mux_settings.UnselWE = Method.MuxSettings.UnselWESetting(
+        mux_settings.UnselWE = PSMethod.MuxSettings.UnselWESetting(
             set_unselected_channel_working_electrode
         )
 
@@ -504,7 +501,5 @@ class InstrumentManager:
             return
 
         self._comm.Disconnect()
-        self._comm = None
-        self._measuring = False
 
         del self._comm
