@@ -441,8 +441,7 @@ class InstrumentManager:
             elif self._comm.Capabilities.MuxModel == MuxModel.MUX8R2:
                 self._comm.ClientConnection.ReadMuxInfo()
 
-            channels = self._comm.Capabilities.NumMuxChannels
-
+        channels = self._comm.Capabilities.NumMuxChannels
         return channels
 
     def set_mux8r2_settings(
@@ -465,6 +464,8 @@ class InstrumentManager:
         set_unselected_channel_working_electrode: float
             Set the unselected channel working electrode to disconnected/floating (0), ground (1), or standby potential (2). Default is 0.
         """
+        self.ensure_connection()
+
         if self._comm.Capabilities.MuxModel != MuxModel.MUX8R2:
             raise ValueError(
                 f"Incompatible mux model: {self._comm.Capabilities.MuxModel}, expected 'MUXR2'."

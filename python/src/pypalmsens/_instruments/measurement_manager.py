@@ -135,6 +135,7 @@ class MeasurementManager:
             self.loop.run_until_complete(self.await_measurement(method))
             self.loop.close()
 
+        assert self.last_measurement
         return Measurement(psmeasurement=self.last_measurement)
 
     def begin_measurement(self, measurement: PSMeasurement):

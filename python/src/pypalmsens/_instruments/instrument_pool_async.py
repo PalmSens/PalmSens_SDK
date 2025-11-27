@@ -160,7 +160,7 @@ class InstrumentPoolAsync:
             )
 
         for manager in self.managers:
-            _ = manager.validate_method(method._to_psmethod())
+            manager.validate_method(method._to_psmethod())
 
         for manager in self.managers:
             if manager is hw_sync_manager:
