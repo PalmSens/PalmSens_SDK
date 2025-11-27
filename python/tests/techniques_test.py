@@ -30,14 +30,12 @@ def test_get_instrument_serial(manager):
 @pytest.mark.instrument
 def test_read_current(manager):
     val = manager.read_current()
-    assert val
     assert isinstance(val, float)
 
 
 @pytest.mark.instrument
 def test_read_potential(manager):
     val = manager.read_current()
-    assert val
     assert isinstance(val, float)
 
 

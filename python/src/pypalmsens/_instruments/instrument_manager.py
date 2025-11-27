@@ -4,11 +4,12 @@ import sys
 import warnings
 from contextlib import contextmanager
 from time import sleep
-from typing import TYPE_CHECKING, Any, Generator
+from typing import Any, Generator
 
 import clr
 import PalmSens
 import System
+from PalmSens import Method as PSMethod
 from PalmSens import MuxModel
 from PalmSens.Comm import CommManager, MuxType
 from typing_extensions import override
@@ -30,10 +31,6 @@ if WINDOWS:
     )
 else:
     from PalmSens.Core.Linux.Comm.Devices import FTDIDevice, SerialPortDevice
-
-
-if TYPE_CHECKING:
-    from PalmSens import Method as PSMethod
 
 
 def discover(
