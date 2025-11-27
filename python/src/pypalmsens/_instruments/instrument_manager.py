@@ -226,7 +226,6 @@ class InstrumentManager:
     def __exit__(self, exc_type, exc_value, traceback):
         _ = self.disconnect()
 
-    @property
     def is_measuring(self) -> bool:
         """Return True if device is measuring."""
         return int(self._comm.State) == CommManager.DeviceState.Measurement

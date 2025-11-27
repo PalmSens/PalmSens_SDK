@@ -30,7 +30,7 @@ class MeasurementManager:
         self,
         *,
         comm: CommManager,
-        callback: None | Callback = None,
+        callback: Callback | None = None,
     ):
         self.callback = callback
         self.comm = comm
@@ -117,7 +117,6 @@ class MeasurementManager:
         # obtain lock on library (required when communicating with instrument)
         await create_future(self.comm.ClientConnection.Semaphore.WaitAsync())
 
-        # send and execute the method on the instrument
         _ = self.comm.Measure(method)
 
         # release lock on library (required when communicating with instrument)
@@ -126,13 +125,16 @@ class MeasurementManager:
         _ = await self.begin_measurement_event.wait()
         _ = await self.end_measurement_event.wait()
 
-    def measure(self, method: PSMethod) -> Measurement:
+    def measure(
+        self,
+        method: PSMethod,
+    ) -> Measurement:
         self.loop = asyncio.new_event_loop()
         self.begin_measurement_event = asyncio.Event()
         self.end_measurement_event = asyncio.Event()
 
         with self._measurement_context():
-            self.loop.run_until_complete(self.await_measurement(method))
+            self.loop.run_until_complete(self.await_measurement(method=method))
             self.loop.close()
 
         assert self.last_measurement

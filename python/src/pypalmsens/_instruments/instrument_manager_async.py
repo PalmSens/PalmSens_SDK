@@ -226,7 +226,6 @@ class InstrumentManagerAsync:
     async def __aexit__(self, exc_type, exc_value, traceback):
         _ = await self.disconnect()
 
-    @property
     def is_measuring(self) -> bool:
         """Return True if device is measuring."""
         return int(self._comm.State) == CommManager.DeviceState.Measurement

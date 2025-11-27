@@ -33,7 +33,7 @@ class MeasurementManagerAsync:
         self,
         *,
         comm: CommManager,
-        callback: None | Callback = None,
+        callback: Callback | None = None,
     ):
         self.callback = callback
         self.comm = comm
@@ -121,7 +121,19 @@ class MeasurementManagerAsync:
 
     async def await_measurement(self, method: PSMethod):
         # obtain lock on library (required when communicating with instrument)
-        ...
+        await create_future(self.comm.ClientConnection.Semaphore.WaitAsync())
+
+        _ = await create_future(self.comm.MeasureAsync(method))
+
+        # release lock on library (required when communicating with instrument)
+        _ = self.comm.ClientConnection.Semaphore.Release()
+
+        _ = await self.begin_measurement_event.wait()
+
+        if self.hardware_sync_initiated_event is not None:
+            self.hardware_sync_initiated_event.set()
+
+        _ = await self.end_measurement_event.wait()
 
     async def measure(
         self,
@@ -135,19 +147,7 @@ class MeasurementManagerAsync:
         self.hardware_sync_initiated_event = hardware_sync_initiated_event
 
         async with self._measurement_context():
-            await create_future(self.comm.ClientConnection.Semaphore.WaitAsync())
-
-            _ = await create_future(self.comm.MeasureAsync(method))
-
-            # release lock on library (required when communicating with instrument)
-            _ = self.comm.ClientConnection.Semaphore.Release()
-
-            _ = await self.begin_measurement_event.wait()
-
-            if self.hardware_sync_initiated_event is not None:
-                self.hardware_sync_initiated_event.set()
-
-            _ = await self.end_measurement_event.wait()
+            await self.await_measurement(method=method)
 
         assert self.last_measurement
         return Measurement(psmeasurement=self.last_measurement)
@@ -160,14 +160,14 @@ class MeasurementManagerAsync:
         self.end_measurement_event.set()
 
     def begin_measurement_callback(self, sender, args):
-        self.loop.call_soon_threadsafe(lambda: self.begin_measurement(args.NewMeasurement))
+        _ = self.loop.call_soon_threadsafe(self.begin_measurement, args.NewMeasurement)
         return Task.CompletedTask
 
     def end_measurement_callback(self, sender, args):
-        self.loop.call_soon_threadsafe(self.end_measurement)
+        _ = self.loop.call_soon_threadsafe(self.end_measurement)
         return Task.CompletedTask
 
-    def curve_new_data_added(self, curve: PSCurve, args):
+    async def curve_new_data_added(self, curve: PSCurve, args):
         start = args.StartIndex
         count = curve.NPoints - start
 
@@ -186,14 +186,12 @@ class MeasurementManagerAsync:
         if self.callback:
             self.callback(data)
 
-    async def curve_new_data_added_coroutine(self, curve: PSCurve, args):
-        self.curve_new_data_added(curve, args)
-
     def curve_data_added_callback(self, curve: PSCurve, args):
         future = asyncio.run_coroutine_threadsafe(
-            self.curve_new_data_added_coroutine(curve, args), self.loop
+            self.curve_new_data_added(curve, args), self.loop
         )
-        # block c# core library thread to apply backpressure and prevent unnescessary load on the python asyncio eventloop
+        # block c# core library thread to apply backpressure and
+        # prevent unnescessary load on the python asyncio eventloop
         future.result()
 
     def curve_finished_callback(self, curve: PSCurve, args):
@@ -228,7 +226,11 @@ class MeasurementManagerAsync:
             self.callback(data)
 
     def eis_data_data_added_callback(self, eis_data: PSEISData, args):
-        _ = self.loop.call_soon_threadsafe(lambda: self.eis_data_new_data_added(eis_data, args))
+        _ = self.loop.call_soon_threadsafe(
+            self.eis_data_new_data_added,
+            eis_data,
+            args,
+        )
 
     def eis_data_finished_callback(self, eis_data: PSEISData, args):
         eis_data.NewDataAdded -= self.eis_data_data_added_handler
