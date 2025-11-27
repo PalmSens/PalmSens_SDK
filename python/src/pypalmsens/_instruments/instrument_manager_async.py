@@ -10,6 +10,7 @@ import clr
 import PalmSens
 import System
 from PalmSens import AsyncEventHandler, MuxModel
+from PalmSens import Method as PSMethod
 from PalmSens.Comm import CommManager, MuxType
 from PalmSens.Plottables import (
     Curve,
@@ -37,8 +38,7 @@ if WINDOWS:
         USBCDCDevice,
         WinUSBDevice,
     )
-
-if LINUX:
+else:
     from PalmSens.Core.Linux.Comm.Devices import FTDIDevice, SerialPortDevice
 
 
@@ -91,8 +91,10 @@ async def discover_async(
     if WINDOWS:
         if usbcdc:
             interfaces['usbcdc'] = USBCDCDevice
+
         if winusb:
             interfaces['winusb'] = WinUSBDevice
+
         if bluetooth:
             interfaces['bluetooth'] = BluetoothDevice
             interfaces['ble'] = BLEDevice
@@ -155,7 +157,7 @@ async def connect_async(
         Return instance of `InstrumentManagerAsync` connected to the given instrument.
     """
     if not instrument:
-        available_instruments = await discover_async()
+        available_instruments = await discover_async(ignore_errors=True)
 
         if not available_instruments:
             raise ConnectionError('No instruments were discovered.')
@@ -384,12 +386,12 @@ class InstrumentManagerAsync:
             ...
         """
         psmethod = method._to_psmethod()
-        if self._comm is None:
-            raise ConnectionError('Not connected to an instrument')
 
-        self.__active_measurement_error = None
+        self.ensure_connection()
 
         self.validate_method(psmethod)
+
+        self.__active_measurement_error = None
 
         loop = asyncio.get_running_loop()
         begin_measurement_event = asyncio.Event()
@@ -634,11 +636,14 @@ class InstrumentManagerAsync:
         Parameters
         ----------
         mux_model: int
-            The model of the multiplexer. 0 = 8 channel, 1 = 16 channel, 2 = 32 channel.
+            The model of the multiplexer.
+            - 0 = 8 channel
+            - 1 = 16 channel
+            - 2 = 32 channel
 
         Returns
         -------
-        int
+        channels : int
             Number of available multiplexes channels
         """
         async with self._lock():

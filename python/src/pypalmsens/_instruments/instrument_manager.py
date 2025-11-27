@@ -307,16 +307,16 @@ class InstrumentManager:
         with self._lock():
             self._comm.CurrentRange = current_range._to_psobj()
 
-    def read_current(self) -> None | float:
+    def read_current(self) -> float:
         """Read the current in µA.
 
         Returns
         -------
-        float
-            Current in µA."
+        current : float
+            Current in µA.
         """
         with self._lock():
-            current = self._comm.Current  # in µA
+            current = self._comm.Current
 
         return current
 
@@ -325,11 +325,12 @@ class InstrumentManager:
 
         Returns
         -------
-        float
-            Potential in V."""
+        potential : float
+            Potential in V.
+        """
 
         with self._lock():
-            potential = self._comm.Potential  # in V
+            potential = self._comm.Potential
 
         return potential
 
@@ -361,7 +362,7 @@ class InstrumentManager:
             message = '\n'.join([error.Message for error in errors])
             raise ValueError(f'Method not compatible:\n{message}')
 
-    def measure(self, method: BaseTechnique):
+    def measure(self, method: BaseTechnique) -> Measurement:
         """Start measurement using given method parameters.
 
         Parameters
