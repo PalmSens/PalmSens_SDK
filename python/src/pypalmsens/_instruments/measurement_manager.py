@@ -39,6 +39,7 @@ class MeasurementManager:
         self.last_measurement: PSMeasurement | None = None
 
         self.loop: asyncio.AbstractEventLoop
+
         self.begin_measurement_event: asyncio.Event
         self.end_measurement_event: asyncio.Event
 
