@@ -30,10 +30,9 @@ class MeasurementManager:
         self,
         *,
         comm: CommManager,
-        callback: Callback | None = None,
     ):
-        self.callback = callback
-        self.comm = comm
+        self.comm: CommManager = comm
+        self.callback: Callback | None = None
 
         self.is_measuring: bool = False
         self.last_measurement: PSMeasurement | None = None
@@ -128,10 +127,13 @@ class MeasurementManager:
     def measure(
         self,
         method: PSMethod,
+        callback: Callback | None = None,
     ) -> Measurement:
         self.loop = asyncio.new_event_loop()
         self.begin_measurement_event = asyncio.Event()
         self.end_measurement_event = asyncio.Event()
+
+        self.callback = callback
 
         with self._measurement_context():
             self.loop.run_until_complete(self.await_measurement(method=method))

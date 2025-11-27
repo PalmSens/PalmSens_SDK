@@ -163,6 +163,7 @@ def connect(
 def measure(
     method: BaseTechnique,
     instrument: None | Instrument = None,
+    callback: Callback | None = None,
 ) -> Measurement:
     """Run measurement.
 
@@ -174,6 +175,13 @@ def measure(
     instrument : Instrument, optional
         Connect to and meassure on a specific instrument.
         Use `pypalmsens.discover()` to discover instruments.
+    callback: Callback, optional
+        If specified, call this function on every new set of data points.
+        New data points are batched, and contain all points since the last
+        time it was called. Each point is a dictionary containing
+        `frequency`, `z_re`, `z_im` for impedimetric techniques and
+        `index`, `x`, `x_unit`, `x_type`, `y`, `y_unit` and `y_type` for
+        non-impedimetric techniques.
 
     Returns
     -------
@@ -181,7 +189,7 @@ def measure(
         Finished measurement.
     """
     with connect(instrument=instrument) as manager:
-        measurement = manager.measure(method)
+        measurement = manager.measure(method, callback=callback)
 
     assert measurement
 
@@ -195,16 +203,22 @@ class InstrumentManager:
     ----------
     instrument: Instrument
         Instrument to connect to, use `discover()` to find connected instruments.
-    callback: Callback, optional
-        If specified, call this function on every new set of data points.
-        New data points are batched, and contain all points since the last
-        time it was called. Each point is a dictionary containing
-        `frequency`, `z_re`, `z_im` for impedimetric techniques and
-        `index`, `x`, `x_unit`, `x_type`, `y`, `y_unit` and `y_type` for
-        non-impedimetric techniques.
+    callback : Callback, optional
+        Deprecated. Pass your callback to `InstrumentManager.measure()` directly instead.
     """
 
     def __init__(self, instrument: Instrument, *, callback: None | Callback = None):
+        if callback:
+            warnings.warn(
+                (
+                    'Passing a callback to the instrument manager is '
+                    'deprecated and will be removed in a future version. '
+                    'Use `InstrumentManager.measure(..., callback=callback)` '
+                    'instead.'
+                ),
+                DeprecationWarning,
+            )
+
         self.callback: None | Callback = callback
         """This callback is called on every data point."""
 
@@ -362,14 +376,23 @@ class InstrumentManager:
             message = '\n'.join([error.Message for error in errors])
             raise ValueError(f'Method not compatible:\n{message}')
 
-    def measure(self, method: BaseTechnique) -> Measurement:
+    def measure(self, method: BaseTechnique, callback: Callback | None = None) -> Measurement:
         """Start measurement using given method parameters.
 
         Parameters
         ----------
         method: MethodParameters
             Method parameters for measurement
+        callback: Callback, optional
+            If specified, call this function on every new set of data points.
+            New data points are batched, and contain all points since the last
+            time it was called. Each point is a dictionary containing
+            `frequency`, `z_re`, `z_im` for impedimetric techniques and
+            `index`, `x`, `x_unit`, `x_type`, `y`, `y_unit` and `y_type` for
+            non-impedimetric techniques.
         """
+        callback = callback or self.callback
+
         psmethod = method._to_psmethod()
 
         self.ensure_connection()
@@ -378,10 +401,12 @@ class InstrumentManager:
 
         measurement_manager = MeasurementManager(
             comm=self._comm,
-            callback=self.callback,
         )
 
-        return measurement_manager.measure(psmethod)
+        return measurement_manager.measure(
+            psmethod,
+            callback=callback,
+        )
 
     def wait_digital_trigger(self, wait_for_high: bool):
         """Wait for digital trigger.

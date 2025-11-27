@@ -163,6 +163,7 @@ async def connect_async(
 async def measure_async(
     method: BaseTechnique,
     instrument: None | Instrument = None,
+    callback: Callback | None = None,
 ) -> Measurement:
     """Run measurement async.
 
@@ -174,6 +175,13 @@ async def measure_async(
     instrument : Instrument, optional
         Connect to and meassure on a specific instrument.
         Use `pypalmsens.discover_async()` to discover instruments.
+    callback: Callback, optional
+        If specified, call this function on every new set of data points.
+        New data points are batched, and contain all points since the last
+        time it was called. Each point is a dictionary containing
+        `frequency`, `z_re`, `z_im` for impedimetric techniques and
+        `index`, `x`, `x_unit`, `x_type`, `y`, `y_unit` and `y_type` for
+        non-impedimetric techniques.
 
     Returns
     -------
@@ -181,7 +189,7 @@ async def measure_async(
         Finished measurement.
     """
     async with await connect_async(instrument=instrument) as manager:
-        measurement = await manager.measure(method)
+        measurement = await manager.measure(method, callback=callback)
 
     assert measurement
 
@@ -195,16 +203,22 @@ class InstrumentManagerAsync:
     ----------
     instrument: Instrument
         Instrument to connect to, use `discover()` to find connected instruments.
-    callback: Callback, optional
-        If specified, call this function on every new set of data points.
-        New data points are batched, and contain all points since the last
-        time it was called. Each point is a dictionary containing
-        `frequency`, `z_re`, `z_im` for impedimetric techniques and
-        `index`, `x`, `x_unit`, `x_type`, `y`, `y_unit` and `y_type` for
-        non-impedimetric techniques.
+    callback : Callback, optional
+        Deprecated. Pass your callback to `InstrumentManagerAsync.measure()` directly instead.
     """
 
     def __init__(self, instrument: Instrument, *, callback: None | Callback = None):
+        if callback:
+            warnings.warn(
+                (
+                    'Passing a callback to the instrument manager is '
+                    'deprecated and will be removed in a future version. '
+                    'Use `InstrumentManager.measure(..., callback=callback)` '
+                    'instead.'
+                ),
+                DeprecationWarning,
+            )
+
         self.callback: None | Callback = callback
         """This callback is called on every data point."""
 
@@ -362,17 +376,31 @@ class InstrumentManagerAsync:
             message = '\n'.join([error.Message for error in errors])
             raise ValueError(f'Method not compatible:\n{message}')
 
-    async def measure(self, method: BaseTechnique, sync_event: asyncio.Event | None = None):
+    async def measure(
+        self,
+        method: BaseTechnique,
+        callback: Callback | None = None,
+        sync_event: asyncio.Event | None = None,
+    ):
         """Start measurement using given method parameters.
 
         Parameters
         ----------
         method: MethodParameters
             Method parameters for measurement
+        callback: Callback, optional
+            If specified, call this function on every new set of data points.
+            New data points are batched, and contain all points since the last
+            time it was called. Each point is a dictionary containing
+            `frequency`, `z_re`, `z_im` for impedimetric techniques and
+            `index`, `x`, `x_unit`, `x_type`, `y`, `y_unit` and `y_type` for
+            non-impedimetric techniques.
         sync_event: asyncio.Event
             Event for hardware synchronization. Do not use directly.
             Instead, initiate hardware sync via `InstrumentPoolAsync.measure()`.
         """
+        callback = callback or self.callback
+
         psmethod = method._to_psmethod()
 
         self.ensure_connection()
@@ -381,10 +409,9 @@ class InstrumentManagerAsync:
 
         measurement_manager = MeasurementManagerAsync(
             comm=self._comm,
-            callback=self.callback,
         )
 
-        return await measurement_manager.measure(psmethod, sync_event=sync_event)
+        return await measurement_manager.measure(psmethod, callback=callback, sync_event=sync_event)
 
     def _initiate_hardware_sync_follower_channel(
         self, method: BaseTechnique

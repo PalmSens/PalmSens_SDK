@@ -33,10 +33,9 @@ class MeasurementManagerAsync:
         self,
         *,
         comm: CommManager,
-        callback: Callback | None = None,
     ):
-        self.callback = callback
-        self.comm = comm
+        self.comm: CommManager = comm
+        self.callback: Callback | None = None
 
         self.is_measuring: bool = False
         self.last_measurement: PSMeasurement | None = None
@@ -45,8 +44,6 @@ class MeasurementManagerAsync:
 
         self.begin_measurement_event: asyncio.Event
         self.end_measurement_event: asyncio.Event
-
-        self.hardware_sync_initiated_event: asyncio.Event | None
 
         self.setup_handlers()
 
@@ -140,11 +137,14 @@ class MeasurementManagerAsync:
     async def measure(
         self,
         method: PSMethod,
+        callback: Callback | None = None,
         sync_event: asyncio.Event | None = None,
     ) -> Measurement:
         self.loop = asyncio.get_running_loop()
         self.begin_measurement_event = asyncio.Event()
         self.end_measurement_event = asyncio.Event()
+
+        self.callback = callback
 
         async with self._measurement_context():
             await self.await_measurement(method=method, sync_event=sync_event)
