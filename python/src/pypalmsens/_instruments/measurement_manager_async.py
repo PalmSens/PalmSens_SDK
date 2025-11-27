@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 import asyncio
-from contextlib import contextmanager
-from typing import TYPE_CHECKING
+from contextlib import asynccontextmanager
+from typing import TYPE_CHECKING, Any, AsyncGenerator
 
 from PalmSens import AsyncEventHandler
 from PalmSens import Method as PSMethod
@@ -42,8 +42,11 @@ class MeasurementManagerAsync:
         self.last_measurement: PSMeasurement
 
         self.loop: asyncio.AbstractEventLoop
+
         self.begin_measurement_event: asyncio.Event
         self.end_measurement_event: asyncio.Event
+
+        self.hardware_sync_initiated_event: asyncio.Event | None
 
         self.setup_handlers()
 
@@ -69,18 +72,35 @@ class MeasurementManagerAsync:
         )
         self.comm_error_handler = EventHandler(self.comm_error_callback)
 
-    def setup(self):
+    async def setup(self):
         """Subscribe to events indicating the start and end of the measurement."""
-        ...
+        # subscribe to events indicating the start and end of the measurement
+        self.is_measuring = True
+        self.comm.BeginMeasurementAsync += self.begin_measurement_handler
+        self.comm.EndMeasurementAsync += self.end_measurement_handler
+        self.comm.Disconnected += self.comm_error_handler
 
-    def teardown(self):
+        if self.callback is not None:
+            self.comm.BeginReceiveEISData += self.begin_receive_eis_data_handler
+            self.comm.BeginReceiveCurve += self.begin_receive_curve_handler
+
+    async def teardown(self):
         """Unsubscribe to events indicating the start and end of the measurement."""
-        ...
+        # unsubscribe to events indicating the start and end of the measurement
+        self.comm.BeginMeasurementAsync -= self.begin_measurement_handler
+        self.comm.EndMeasurementAsync -= self.end_measurement_handler
+        self.comm.Disconnected -= self.comm_error_handler
 
-    @contextmanager
-    def _measurement_context(self):
+        if self.callback is not None:
+            self.comm.BeginReceiveEISData -= self.begin_receive_eis_data_handler
+            self.comm.BeginReceiveCurve -= self.begin_receive_curve_handler
+
+        self.is_measuring = False
+
+    @asynccontextmanager
+    async def _measurement_context(self) -> AsyncGenerator[None, Any]:
         try:
-            self.setup()
+            await self.setup()
 
             yield
 
@@ -92,7 +112,7 @@ class MeasurementManagerAsync:
             raise
 
         finally:
-            self.teardown()
+            await self.teardown()
 
     async def await_measurement(self, method: PSMethod):
         # obtain lock on library (required when communicating with instrument)
@@ -105,60 +125,24 @@ class MeasurementManagerAsync:
         self.begin_measurement_event = asyncio.Event()
         self.end_measurement_event = asyncio.Event()
 
-        # try:
-        # subscribe to events indicating the start and end of the measurement
-        self.comm.BeginMeasurementAsync += self.begin_measurement_handler
-        self.comm.EndMeasurementAsync += self.end_measurement_handler
-        self.comm.Disconnected += self.comm_error_handler
+        self.hardware_sync_initiated_event = hardware_sync_initiated_event
 
-        if self.callback is not None:
-            self.comm.BeginReceiveEISData += self.begin_receive_eis_data_handler
-            self.comm.BeginReceiveCurve += self.begin_receive_curve_handler
+        async with self._measurement_context():
+            await create_future(self.comm.ClientConnection.Semaphore.WaitAsync())
 
-        # obtain lock on library (required when communicating with instrument)
-        await create_future(self.comm.ClientConnection.Semaphore.WaitAsync())
+            _ = await create_future(self.comm.MeasureAsync(method))
 
-        # send and execute the method on the instrument
-        _ = await create_future(self.comm.MeasureAsync(method))
+            # release lock on library (required when communicating with instrument)
+            _ = self.comm.ClientConnection.Semaphore.Release()
 
-        # release lock on library (required when communicating with instrument)
-        _ = self.comm.ClientConnection.Semaphore.Release()
+            _ = await self.begin_measurement_event.wait()
 
-        _ = await self.begin_measurement_event.wait()
+            if self.hardware_sync_initiated_event is not None:
+                self.hardware_sync_initiated_event.set()
 
-        if hardware_sync_initiated_event is not None:
-            hardware_sync_initiated_event.set()
+            _ = await self.end_measurement_event.wait()
 
-        _ = await self.end_measurement_event.wait()
-
-        # unsubscribe to events indicating the start and end of the measurement
-        self.comm.BeginMeasurementAsync -= self.begin_measurement_handler
-        self.comm.EndMeasurementAsync -= self.end_measurement_handler
-        self.comm.Disconnected -= self.comm_error_handler
-
-        if self.callback is not None:
-            self.comm.BeginReceiveEISData -= self.begin_receive_eis_data_handler
-            self.comm.BeginReceiveCurve -= self.begin_receive_curve_handler
-
-        # except Exception:
-        #     traceback.print_exc()
-
-        #     if self.comm.ClientConnection.Semaphore.CurrentCount == 0:
-        #         # release lock on library (required when communicating with instrument)
-        #         _= self.comm.ClientConnection.Semaphore.Release()
-
-        #     self.__active_measurement = None
-        #     self.comm.BeginMeasurementAsync -= begin_measurement_handler
-        #     self.comm.EndMeasurementAsync -= end_measurement_handler
-        #     self.comm.Disconnected -= comm_error_handler
-
-        #     if self.new_data_callback is not None:
-        #         self.comm.BeginReceiveEISData -= begin_receive_eis_data_handler
-        #         self.comm.BeginReceiveCurve -= begin_receive_curve_handler
-
-        #     self.__measuring = False
-        #     return None
-
+        assert self.last_measurement
         return Measurement(psmeasurement=self.last_measurement)
 
     def begin_measurement(self, measurement: PSMeasurement):
