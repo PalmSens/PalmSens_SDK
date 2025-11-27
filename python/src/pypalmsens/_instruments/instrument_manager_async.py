@@ -411,17 +411,20 @@ class InstrumentManagerAsync:
             comm=self._comm,
         )
 
-        return await measurement_manager.measure(psmethod, callback=callback, sync_event=sync_event)
+        return await measurement_manager.measure(
+            psmethod, callback=callback, sync_event=sync_event
+        )
 
     def _initiate_hardware_sync_follower_channel(
-        self, method: BaseTechnique
+        self,
+        **kwargs,
     ) -> tuple[Coroutine[Any, Any, bool], asyncio.Future[Measurement]]:
         """Initiate hardware sync follower channel.
 
         Parameters
         ----------
-        method : MethodParameters
-            Method parameters
+        **kwargs
+            There keyword arguments are passed to the measure function.
 
         Returns
         -------
@@ -438,22 +441,22 @@ class InstrumentManagerAsync:
         async def start_measurement(
             *,
             manager: InstrumentManagerAsync,
-            method: BaseTechnique,
             sync_event: asyncio.Event,
             measurement_future: asyncio.Future[Measurement],
+            **kwargs,
         ):
             measurement = await manager.measure(
-                method=method,
                 sync_event=sync_event,
+                **kwargs,
             )
             measurement_future.set_result(measurement)
 
         _ = asyncio.run_coroutine_threadsafe(
             start_measurement(
                 manager=self,
-                method=method,
                 sync_event=sync_event,
                 measurement_future=measurement_future,
+                **kwargs,
             ),
             asyncio.get_running_loop(),
         )
