@@ -9,20 +9,11 @@ from typing import TYPE_CHECKING, Any, AsyncGenerator
 import clr
 import PalmSens
 import System
-from PalmSens import AsyncEventHandler, MuxModel
 from PalmSens import Method as PSMethod
+from PalmSens import MuxModel
 from PalmSens.Comm import CommManager, MuxType
-from PalmSens.Plottables import (
-    Curve,
-    CurveEventHandler,
-    EISData,
-    EISDataEventHandler,
-)
-from System import EventHandler
-from System.Threading.Tasks import Task
 from typing_extensions import override
 
-from .._data._shared import ArrayType, get_values_from_NETArray
 from .._methods import CURRENT_RANGE, BaseTechnique
 from ..data import Measurement
 from ._common import Callback, Instrument, create_future, firmware_warning
@@ -43,11 +34,7 @@ else:
 
 
 if TYPE_CHECKING:
-    from PalmSens import Measurement as PSMeasurement
     from PalmSens import Method as PSMethod
-    from PalmSens.Data import DataArray as PSDataArray
-    from PalmSens.Plottables import Curve as PSCurve
-    from PalmSens.Plottables import EISData as PSEISData
 
 
 async def discover_async(
@@ -391,185 +378,14 @@ class InstrumentManagerAsync:
 
         self.validate_method(psmethod)
 
-        self.__active_measurement_error = None
+        from .measurement_manager_async import MeasurementManagerAsync
 
-        loop = asyncio.get_running_loop()
-        begin_measurement_event = asyncio.Event()
-        end_measurement_event = asyncio.Event()
-
-        def begin_measurement(measurement: PSMeasurement):
-            self.__active_measurement = measurement
-            begin_measurement_event.set()
-
-        def end_measurement():
-            self.__measuring = False
-            end_measurement_event.set()
-
-        def curve_new_data_added(curve: PSCurve, start: int, count: int):
-            data: list[dict[str, float | str]] = []
-            for i in range(start, start + count):
-                point: dict[str, float | str] = {}
-                point['index'] = i + 1
-                point['x'] = get_values_from_NETArray(curve.XAxisDataArray, start=i, count=1)[0]
-                point['x_unit'] = curve.XUnit.ToString()
-                point['x_type'] = ArrayType(curve.XAxisDataArray.ArrayType).name
-                point['y'] = get_values_from_NETArray(curve.YAxisDataArray, start=i, count=1)[0]
-                point['y_unit'] = curve.YUnit.ToString()
-                point['y_type'] = ArrayType(curve.YAxisDataArray.ArrayType).name
-                data.append(point)
-
-            if self.callback:
-                self.callback(data)
-
-        def eis_data_new_data_added(eis_data: PSEISData, start: int, count: int):
-            data: list[dict[str, float | str]] = []
-            arrays: list[PSDataArray] = [array for array in eis_data.EISDataSet.GetDataArrays()]
-            for i in range(start, start + count):
-                point: dict[str, float | str] = {}
-                point['index'] = i + 1
-                for array in arrays:
-                    array_type = ArrayType(array.ArrayType)
-                    if array_type == ArrayType.Frequency:
-                        point['frequency'] = get_values_from_NETArray(array, start=i, count=1)[
-                            0
-                        ]
-                    elif array_type == ArrayType.ZRe:
-                        point['zre'] = get_values_from_NETArray(array, start=i, count=1)[0]
-                    elif array_type == ArrayType.ZIm:
-                        point['zim'] = get_values_from_NETArray(array, start=i, count=1)[0]
-                data.append(point)
-
-            if self.callback:
-                self.callback(data)
-
-        def comm_error():
-            self.__measuring = False
-            self.__active_measurement_error = (
-                'measurement failed due to a communication or parsing error'
-            )
-            begin_measurement_event.set()
-            end_measurement_event.set()
-
-        def begin_measurement_callback(sender, args):
-            loop.call_soon_threadsafe(lambda: begin_measurement(args.NewMeasurement))
-            return Task.CompletedTask
-
-        def end_measurement_callback(sender, args):
-            loop.call_soon_threadsafe(end_measurement)
-            return Task.CompletedTask
-
-        def curve_data_added_callback(curve: PSCurve, args):
-            start = args.StartIndex
-            count = curve.NPoints - start
-            future = asyncio.run_coroutine_threadsafe(
-                curve_new_data_added_coroutine(curve, start, count), loop
-            )
-            future.result()  # block c# core library thread to apply backpressure and prevent unnescessary load on the python asyncio eventloop
-
-        async def curve_new_data_added_coroutine(curve: PSCurve, start: int, count: int):
-            curve_new_data_added(curve, start, count)
-
-        def curve_finished_callback(curve: PSCurve, args):
-            curve.NewDataAdded -= curve_data_added_handler
-            curve.Finished -= curve_finished_handler
-
-        def begin_receive_curve_callback(sender, args):
-            curve = args.GetCurve()
-            curve.NewDataAdded += curve_data_added_handler
-            curve.Finished += curve_finished_handler
-
-        def eis_data_data_added_callback(eis_data: PSEISData, args):
-            start = args.Index
-            count = 1
-            loop.call_soon_threadsafe(lambda: eis_data_new_data_added(eis_data, start, count))
-
-        def eis_data_finished_callback(eis_data: PSEISData, args):
-            eis_data.NewDataAdded -= eis_data_data_added_handler
-            eis_data.Finished -= eis_data_finished_handler
-
-        def begin_receive_eis_data_callback(sender, eis_data: PSEISData):
-            eis_data.NewDataAdded += eis_data_data_added_handler
-            eis_data.Finished += eis_data_finished_handler
-
-        def comm_error_callback(sender, args):
-            loop.call_soon_threadsafe(comm_error)
-
-        begin_measurement_handler = AsyncEventHandler[
-            CommManager.BeginMeasurementEventArgsAsync
-        ](begin_measurement_callback)
-        end_measurement_handler = AsyncEventHandler[CommManager.EndMeasurementAsyncEventArgs](
-            end_measurement_callback
+        measurement_manager = MeasurementManagerAsync(
+            comm=self._comm,
+            callback=self.callback,
         )
-        begin_receive_curve_handler = CurveEventHandler(begin_receive_curve_callback)
-        curve_data_added_handler = Curve.NewDataAddedEventHandler(curve_data_added_callback)
-        curve_finished_handler = EventHandler(curve_finished_callback)
-        eis_data_finished_handler = EventHandler(eis_data_finished_callback)
-        begin_receive_eis_data_handler = EISDataEventHandler(begin_receive_eis_data_callback)
-        eis_data_data_added_handler = EISData.NewDataEventHandler(eis_data_data_added_callback)
-        comm_error_handler = EventHandler(comm_error_callback)
 
-        # try:
-        # subscribe to events indicating the start and end of the measurement
-        self._comm.BeginMeasurementAsync += begin_measurement_handler
-        self._comm.EndMeasurementAsync += end_measurement_handler
-        self._comm.Disconnected += comm_error_handler
-
-        if self.callback is not None:
-            self._comm.BeginReceiveEISData += begin_receive_eis_data_handler
-            self._comm.BeginReceiveCurve += begin_receive_curve_handler
-
-        # obtain lock on library (required when communicating with instrument)
-        await create_future(self._comm.ClientConnection.Semaphore.WaitAsync())
-
-        # send and execute the method on the instrument
-        _ = await create_future(self._comm.MeasureAsync(psmethod))
-        self.__measuring = True
-
-        # release lock on library (required when communicating with instrument)
-        _ = self._comm.ClientConnection.Semaphore.Release()
-
-        _ = await begin_measurement_event.wait()
-
-        if hardware_sync_initiated_event is not None:
-            hardware_sync_initiated_event.set()
-
-        _ = await end_measurement_event.wait()
-
-        # unsubscribe to events indicating the start and end of the measurement
-        self._comm.BeginMeasurementAsync -= begin_measurement_handler
-        self._comm.EndMeasurementAsync -= end_measurement_handler
-        self._comm.Disconnected -= comm_error_handler
-
-        if self.callback is not None:
-            self._comm.BeginReceiveEISData -= begin_receive_eis_data_handler
-            self._comm.BeginReceiveCurve -= begin_receive_curve_handler
-
-        if self.__active_measurement_error is not None:
-            print(self.__active_measurement_error)
-            return None
-
-        measurement = self.__active_measurement
-        self.__active_measurement = None
-        return Measurement(psmeasurement=measurement)
-
-        # except Exception:
-        #     traceback.print_exc()
-
-        #     if self._comm.ClientConnection.Semaphore.CurrentCount == 0:
-        #         # release lock on library (required when communicating with instrument)
-        #         _= self._comm.ClientConnection.Semaphore.Release()
-
-        #     self.__active_measurement = None
-        #     self._comm.BeginMeasurementAsync -= begin_measurement_handler
-        #     self._comm.EndMeasurementAsync -= end_measurement_handler
-        #     self._comm.Disconnected -= comm_error_handler
-
-        #     if self.new_data_callback is not None:
-        #         self._comm.BeginReceiveEISData -= begin_receive_eis_data_handler
-        #         self._comm.BeginReceiveCurve -= begin_receive_curve_handler
-
-        #     self.__measuring = False
-        #     return None
+        return await measurement_manager.measure(psmethod)
 
     def initiate_hardware_sync_follower_channel(
         self, method: BaseTechnique

@@ -13,8 +13,7 @@ from PalmSens.Plottables import (
 )
 from System import EventHandler
 
-from pypalmsens.data import Measurement
-
+from .._data import Measurement
 from .._data._shared import ArrayType, get_values_from_NETArray
 from ._common import Callback, create_future
 
