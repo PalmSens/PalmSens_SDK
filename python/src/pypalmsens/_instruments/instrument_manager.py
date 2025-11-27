@@ -17,6 +17,7 @@ from typing_extensions import override
 from .._methods import CURRENT_RANGE, BaseTechnique
 from ..data import Measurement
 from ._common import Callback, Instrument, firmware_warning
+from .measurement_manager import MeasurementManager
 
 WINDOWS = sys.platform == 'win32'
 LINUX = not WINDOWS
@@ -374,8 +375,6 @@ class InstrumentManager:
         self.ensure_connection()
 
         self.validate_method(psmethod)
-
-        from .measurement_manager import MeasurementManager
 
         measurement_manager = MeasurementManager(
             comm=self._comm,

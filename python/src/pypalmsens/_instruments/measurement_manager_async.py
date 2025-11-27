@@ -119,7 +119,9 @@ class MeasurementManagerAsync:
         finally:
             await self.teardown()
 
-    async def await_measurement(self, method: PSMethod):
+    async def await_measurement(
+        self, method: PSMethod, sync_event: asyncio.Event | None = None
+    ):
         # obtain lock on library (required when communicating with instrument)
         await create_future(self.comm.ClientConnection.Semaphore.WaitAsync())
 
@@ -130,24 +132,22 @@ class MeasurementManagerAsync:
 
         _ = await self.begin_measurement_event.wait()
 
-        if self.hardware_sync_initiated_event is not None:
-            self.hardware_sync_initiated_event.set()
+        if sync_event is not None:
+            sync_event.set()
 
         _ = await self.end_measurement_event.wait()
 
     async def measure(
         self,
         method: PSMethod,
-        hardware_sync_initiated_event=None,
+        sync_event: asyncio.Event | None = None,
     ) -> Measurement:
         self.loop = asyncio.get_running_loop()
         self.begin_measurement_event = asyncio.Event()
         self.end_measurement_event = asyncio.Event()
 
-        self.hardware_sync_initiated_event = hardware_sync_initiated_event
-
         async with self._measurement_context():
-            await self.await_measurement(method=method)
+            await self.await_measurement(method=method, sync_event=sync_event)
 
         assert self.last_measurement
         return Measurement(psmeasurement=self.last_measurement)

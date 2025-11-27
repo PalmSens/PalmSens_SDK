@@ -132,7 +132,7 @@ class InstrumentPoolAsync:
             Method parameters for measurement.
         """
         follower_sync_tasks = []
-        tasks = []
+        tasks: list[Awaitable[Measurement]] = []
 
         if len(self.managers) < 2:
             raise ValueError(
@@ -166,11 +166,11 @@ class InstrumentPoolAsync:
             if manager is hw_sync_manager:
                 continue
 
-            sync_task, measure_task = manager.initiate_hardware_sync_follower_channel(method)  # type: ignore
+            sync_task, measure_task = manager._initiate_hardware_sync_follower_channel(method)
             follower_sync_tasks.append(sync_task)
             tasks.append(measure_task)
 
-        await asyncio.gather(*follower_sync_tasks)
+        _ = await asyncio.gather(*follower_sync_tasks)
 
         tasks.append(hw_sync_manager.measure(method))
         return tasks

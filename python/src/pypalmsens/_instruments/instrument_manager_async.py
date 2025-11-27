@@ -4,7 +4,7 @@ import asyncio
 import sys
 import warnings
 from contextlib import asynccontextmanager
-from typing import TYPE_CHECKING, Any, AsyncGenerator
+from typing import TYPE_CHECKING, Any, AsyncGenerator, Coroutine
 
 import clr
 import PalmSens
@@ -17,6 +17,7 @@ from typing_extensions import override
 from .._methods import CURRENT_RANGE, BaseTechnique
 from ..data import Measurement
 from ._common import Callback, Instrument, create_future, firmware_warning
+from .measurement_manager_async import MeasurementManagerAsync
 
 WINDOWS = sys.platform == 'win32'
 LINUX = not WINDOWS
@@ -361,15 +362,16 @@ class InstrumentManagerAsync:
             message = '\n'.join([error.Message for error in errors])
             raise ValueError(f'Method not compatible:\n{message}')
 
-    async def measure(self, method: BaseTechnique, hardware_sync_initiated_event=None):
+    async def measure(self, method: BaseTechnique, sync_event: asyncio.Event | None = None):
         """Start measurement using given method parameters.
 
         Parameters
         ----------
         method: MethodParameters
             Method parameters for measurement
-        hardware_sync_initiated_event:
-            ...
+        sync_event: asyncio.Event
+            Event for hardware synchronization. Do not use directly.
+            Instead, initiate hardware sync via `InstrumentPoolAsync.measure()`.
         """
         psmethod = method._to_psmethod()
 
@@ -377,18 +379,16 @@ class InstrumentManagerAsync:
 
         self.validate_method(psmethod)
 
-        from .measurement_manager_async import MeasurementManagerAsync
-
         measurement_manager = MeasurementManagerAsync(
             comm=self._comm,
             callback=self.callback,
         )
 
-        return await measurement_manager.measure(psmethod)
+        return await measurement_manager.measure(psmethod, sync_event=sync_event)
 
-    def initiate_hardware_sync_follower_channel(
+    def _initiate_hardware_sync_follower_channel(
         self, method: BaseTechnique
-    ) -> int | tuple[Any, Any]:
+    ) -> tuple[Coroutine[Any, Any, bool], asyncio.Future[Measurement]]:
         """Initiate hardware sync follower channel.
 
         Parameters
@@ -396,35 +396,42 @@ class InstrumentManagerAsync:
         method : MethodParameters
             Method parameters
 
-
         Returns
         -------
         tuple[event, future]
             Activate the event to start the measurement.
             The second item is a future that contains the data once the measurement is finished.
         """
-        if self._comm is None:
-            raise ConnectionError('Not connected to an instrument')
+        self.ensure_connection()
 
-        hardware_sync_channel_initiated_event = asyncio.Event()
-        measurement_finished_future = asyncio.Future()  # type: ignore
+        # Create event for hardware synchronization
+        sync_event = asyncio.Event()
+        measurement_future: asyncio.Future[Measurement] = asyncio.Future()
 
         async def start_measurement(
-            self, method, hardware_sync_channel_initiated_event, measurement_finished_future
+            *,
+            manager: InstrumentManagerAsync,
+            method: BaseTechnique,
+            sync_event: asyncio.Event,
+            measurement_future: asyncio.Future[Measurement],
         ):
-            measurement = await self.measure(
-                method, hardware_sync_initiated_event=hardware_sync_channel_initiated_event
+            measurement = await manager.measure(
+                method=method,
+                sync_event=sync_event,
             )
-            measurement_finished_future.set_result(measurement)
+            measurement_future.set_result(measurement)
 
-        asyncio.run_coroutine_threadsafe(
+        _ = asyncio.run_coroutine_threadsafe(
             start_measurement(
-                self, method, hardware_sync_channel_initiated_event, measurement_finished_future
+                manager=self,
+                method=method,
+                sync_event=sync_event,
+                measurement_future=measurement_future,
             ),
             asyncio.get_running_loop(),
         )
 
-        return hardware_sync_channel_initiated_event.wait(), measurement_finished_future
+        return sync_event.wait(), measurement_future
 
     async def wait_digital_trigger(self, wait_for_high: bool) -> None:
         """Wait for digital trigger.
