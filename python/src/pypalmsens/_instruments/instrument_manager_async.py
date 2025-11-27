@@ -344,7 +344,7 @@ class InstrumentManagerAsync:
         async with self._lock():
             serial = await create_future(self._comm.GetDeviceSerialAsync())
 
-        return serial
+        return serial.ToString()
 
     def validate_method(self, method: PSMethod | BaseTechnique) -> None:
         """Validate method.

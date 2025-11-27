@@ -3,6 +3,7 @@ from __future__ import annotations
 import logging
 import tempfile
 from pathlib import Path
+from typing import override
 
 import pytest
 
@@ -39,7 +40,7 @@ def test_read_potential(manager):
     assert isinstance(val, float)
 
 
-class TestCV:
+class BaseCV:
     id = 'cv'
     kwargs = {
         'begin_potential': -1,
@@ -51,12 +52,7 @@ class TestCV:
         'current_range': {'max': 7, 'min': 3, 'start': 6},
     }
 
-    @pytest.mark.instrument
-    def test_measurement(self, manager):
-        method = BaseTechnique._registry[self.id].from_dict(self.kwargs)
-
-        measurement = manager.measure(method)
-
+    def validate(self, measurement):
         assert measurement
         assert isinstance(measurement, ps.data.Measurement)
 
@@ -80,7 +76,7 @@ class TestCV:
         assert dataset.array_quantities == {'Charge', 'Current', 'Potential', 'Time'}
 
 
-class TestFCV:
+class BaseFCV:
     id = 'fcv'
     kwargs = {
         'begin_potential': -1,
@@ -94,12 +90,7 @@ class TestFCV:
         'current_range': 5,
     }
 
-    @pytest.mark.instrument
-    def test_measurement(self, manager):
-        method = BaseTechnique._registry[self.id].from_dict(self.kwargs)
-
-        measurement = manager.measure(method)
-
+    def validate(self, measurement):
         assert measurement
         assert isinstance(measurement, ps.data.Measurement)
 
@@ -129,7 +120,7 @@ class TestFCV:
         assert dataset.array_quantities == {'Charge', 'Current', 'Potential', 'Time'}
 
 
-class TestLSV:
+class BaseLSV:
     id = 'lsv'
     kwargs = {
         'begin_potential': -1.0,
@@ -139,12 +130,7 @@ class TestLSV:
         'current_range': {'max': 7, 'min': 3, 'start': 6},
     }
 
-    @pytest.mark.instrument
-    def test_measurement(self, manager):
-        method = BaseTechnique._registry[self.id].from_dict(self.kwargs)
-
-        measurement = manager.measure(method)
-
+    def validate(self, measurement):
         assert measurement
         assert isinstance(measurement, ps.data.Measurement)
 
@@ -158,7 +144,7 @@ class TestLSV:
         assert dataset.array_quantities == {'Charge', 'Current', 'Potential', 'Time'}
 
 
-class TestACV:
+class BaseACV:
     id = 'acv'
     kwargs = {
         'begin_potential': -0.15,
@@ -170,11 +156,7 @@ class TestACV:
         'current_range': {'max': 7, 'min': 3, 'start': 6},
     }
 
-    @pytest.mark.instrument
-    def test_measurement(self, manager):
-        method = BaseTechnique._registry[self.id].from_dict(self.kwargs)
-        measurement = manager.measure(method)
-
+    def validate(self, measurement):
         assert measurement
         assert isinstance(measurement, ps.data.Measurement)
 
@@ -197,7 +179,7 @@ class TestACV:
         assert dataset.array_quantities == {'Current', 'Potential', 'Time', "Y'", "Y''"}
 
 
-class TestSWV:
+class BaseSWV:
     id = 'swv'
     kwargs = {
         'equilibration_time': 0.0,
@@ -210,11 +192,7 @@ class TestSWV:
         'current_range': {'max': 7, 'min': 3, 'start': 6},
     }
 
-    @pytest.mark.instrument
-    def test_measurement(self, manager):
-        method = BaseTechnique._registry[self.id].from_dict(self.kwargs)
-        measurement = manager.measure(method)
-
+    def validate(self, measurement):
         assert measurement
         assert isinstance(measurement, ps.data.Measurement)
 
@@ -230,7 +208,7 @@ class TestSWV:
         assert dataset.array_quantities == {'Current', 'Potential', 'Time'}
 
 
-class TestCP:
+class BaseCP:
     id = 'pot'
     kwargs = {
         'current': 0.0,
@@ -240,12 +218,7 @@ class TestCP:
         'potential_range': {'max': 7, 'min': 1, 'start': 7},
     }
 
-    @pytest.mark.instrument
-    def test_measurement(self, manager):
-        method = BaseTechnique._registry[self.id].from_dict(self.kwargs)
-
-        measurement = manager.measure(method)
-
+    def validate(self, measurement):
         assert measurement
         assert isinstance(measurement, ps.data.Measurement)
 
@@ -259,7 +232,7 @@ class TestCP:
         assert dataset.array_quantities == {'Current', 'Potential', 'Time', 'Charge'}
 
 
-class TestSCP:
+class BaseSCP:
     id = 'scp'
     kwargs = {
         'current': 0.1,
@@ -269,15 +242,7 @@ class TestSCP:
         'pretreatment': {'deposition_time': 1, 'deposition_potential': 0.1},
     }
 
-    @pytest.mark.xfail(
-        raises=ValueError,
-        reason='Not all devices support SCP.',
-    )
-    @pytest.mark.instrument
-    def test_measurement(self, manager):
-        method = BaseTechnique._registry[self.id].from_dict(self.kwargs)
-        measurement = manager.measure(method)
-
+    def validate(self, measurement):
         assert measurement
         assert isinstance(measurement, ps.data.Measurement)
 
@@ -291,7 +256,7 @@ class TestSCP:
         assert dataset.array_quantities == {'Current', 'Potential', 'Time', 'Charge'}
 
 
-class TestLSP:
+class BaseLSP:
     id = 'lsp'
     kwargs = {
         'applied_current_range': ps.settings.CURRENT_RANGE.cr_100_uA,
@@ -300,11 +265,7 @@ class TestLSP:
         'potential_range': {'max': 7, 'min': 1, 'start': 7},
     }
 
-    @pytest.mark.instrument
-    def test_measurement(self, manager):
-        method = BaseTechnique._registry[self.id].from_dict(self.kwargs)
-        measurement = manager.measure(method)
-
+    def validate(self, measurement):
         assert measurement
         assert isinstance(measurement, ps.data.Measurement)
 
@@ -318,7 +279,7 @@ class TestLSP:
         assert dataset.array_quantities == {'Current', 'Potential', 'Time', 'Charge'}
 
 
-class TestOCP:
+class BaseOCP:
     id = 'ocp'
     kwargs = {
         'interval_time': 0.1,
@@ -326,11 +287,7 @@ class TestOCP:
         'potential_range': {'max': 7, 'min': 1, 'start': 7},
     }
 
-    @pytest.mark.instrument
-    def test_measurement(self, manager):
-        method = BaseTechnique._registry[self.id].from_dict(self.kwargs)
-        measurement = manager.measure(method)
-
+    def validate(self, measurement):
         assert measurement
         assert isinstance(measurement, ps.data.Measurement)
 
@@ -344,18 +301,14 @@ class TestOCP:
         assert dataset.array_quantities == {'Potential', 'Time'}
 
 
-class TestCA:
+class BaseCA:
     id = 'ad'
     kwargs = {
         'interval_time': 0.1,
         'run_time': 1.0,
     }
 
-    @pytest.mark.instrument
-    def test_measurement(self, manager):
-        method = BaseTechnique._registry[self.id].from_dict(self.kwargs)
-        measurement = manager.measure(method)
-
+    def validate(self, measurement):
         assert measurement
         assert isinstance(measurement, ps.data.Measurement)
 
@@ -369,18 +322,14 @@ class TestCA:
         assert dataset.array_quantities == {'Potential', 'Time', 'Charge', 'Current'}
 
 
-class TestFAM:
+class BaseFAM:
     id = 'fam'
     kwargs = {
         'interval_time': 0.1,
         'run_time': 1.0,
     }
 
-    @pytest.mark.instrument
-    def test_measurement(self, manager):
-        method = BaseTechnique._registry[self.id].from_dict(self.kwargs)
-        measurement = manager.measure(method)
-
+    def validate(self, measurement):
         assert measurement
         assert isinstance(measurement, ps.data.Measurement)
 
@@ -394,7 +343,7 @@ class TestFAM:
         assert dataset.array_quantities == {'Potential', 'Time', 'Charge', 'Current'}
 
 
-class TestDPV:
+class BaseDPV:
     id = 'dpv'
     kwargs = {
         'begin_potential': -0.4,
@@ -405,11 +354,7 @@ class TestDPV:
         'scan_rate': 0.5,
     }
 
-    @pytest.mark.instrument
-    def test_measurement(self, manager):
-        method = BaseTechnique._registry[self.id].from_dict(self.kwargs)
-        measurement = manager.measure(method)
-
+    def validate(self, measurement):
         assert measurement
         assert isinstance(measurement, ps.data.Measurement)
 
@@ -423,7 +368,7 @@ class TestDPV:
         assert dataset.array_quantities == {'Potential', 'Time', 'Current'}
 
 
-class TestPAD:
+class BasePAD:
     id = 'pad'
     kwargs = {
         'potential': 0.5,
@@ -434,11 +379,7 @@ class TestPAD:
         'interval_time': 0.2,
     }
 
-    @pytest.mark.instrument
-    def test_measurement(self, manager):
-        method = BaseTechnique._registry[self.id].from_dict(self.kwargs)
-        measurement = manager.measure(method)
-
+    def validate(self, measurement):
         assert measurement
         assert isinstance(measurement, ps.data.Measurement)
 
@@ -452,7 +393,7 @@ class TestPAD:
         assert dataset.array_quantities == {'Potential', 'Time', 'Current'}
 
 
-class TestMPAD:
+class BaseMPAD:
     id = 'mpad'
     kwargs = {
         'run_time': 2.5,
@@ -464,15 +405,7 @@ class TestMPAD:
         'duration_3': 0.15,
     }
 
-    @pytest.mark.xfail(
-        raises=ValueError,
-        reason='Not all devices support MPAD.',
-    )
-    @pytest.mark.instrument
-    def test_measurement(self, manager):
-        method = BaseTechnique._registry[self.id].from_dict(self.kwargs)
-        measurement = manager.measure(method)
-
+    def validate(self, measurement):
         assert measurement
         assert isinstance(measurement, ps.data.Measurement)
 
@@ -486,7 +419,7 @@ class TestMPAD:
         assert dataset.array_quantities == {'Potential', 'Time', 'Current'}
 
 
-class TestNPV:
+class BaseNPV:
     id = 'npv'
     kwargs = {
         'begin_potential': -0.4,
@@ -496,11 +429,7 @@ class TestNPV:
         'scan_rate': 0.5,
     }
 
-    @pytest.mark.instrument
-    def test_measurement(self, manager):
-        method = BaseTechnique._registry[self.id].from_dict(self.kwargs)
-        measurement = manager.measure(method)
-
+    def validate(self, measurement):
         assert measurement
         assert isinstance(measurement, ps.data.Measurement)
 
@@ -514,7 +443,7 @@ class TestNPV:
         assert dataset.array_quantities == {'Potential', 'Time', 'Current'}
 
 
-class TestMA:
+class BaseMA:
     id = 'ma'
     kwargs = {
         'equilibration_time': 0.0,
@@ -526,11 +455,7 @@ class TestMA:
         ],
     }
 
-    @pytest.mark.instrument
-    def test_measurement(self, manager):
-        method = BaseTechnique._registry[self.id].from_dict(self.kwargs)
-        measurement = manager.measure(method)
-
+    def validate(self, measurement):
         assert measurement
         assert isinstance(measurement, ps.data.Measurement)
 
@@ -549,7 +474,7 @@ class TestMA:
         assert dataset.array_quantities == {'Charge', 'Potential', 'Time', 'Current'}
 
 
-class TestMP:
+class BaseMP:
     id = 'mp'
     kwargs = {
         'interval_time': 0.01,
@@ -560,12 +485,7 @@ class TestMP:
         ],
     }
 
-    @pytest.mark.instrument
-    def test_measurement(self, manager):
-        method = BaseTechnique._registry[self.id].from_dict(self.kwargs)
-
-        measurement = manager.measure(method)
-
+    def validate(self, measurement):
         assert measurement
         assert isinstance(measurement, ps.data.Measurement)
 
@@ -584,7 +504,7 @@ class TestMP:
         assert dataset.array_quantities == {'Charge', 'Potential', 'Time', 'Current'}
 
 
-class TestCC:
+class BaseCC:
     id = 'cc'
     kwargs = {
         'equilibration_time': 0.0,
@@ -593,11 +513,7 @@ class TestCC:
         'step2_run_time': 0.2,
     }
 
-    @pytest.mark.instrument
-    def test_measurement(self, manager):
-        method = BaseTechnique._registry[self.id].from_dict(self.kwargs)
-        measurement = manager.measure(method)
-
+    def validate(self, measurement):
         assert measurement
         assert isinstance(measurement, ps.data.Measurement)
 
@@ -687,7 +603,7 @@ def check_eis_measurement(measurement):
         ]
 
 
-class TestEIS:
+class BaseEIS:
     id = 'eis'
     kwargs = {
         'n_frequencies': 5,
@@ -697,10 +613,7 @@ class TestEIS:
         'frequency_type': 'scan',
     }
 
-    @pytest.mark.instrument
-    def test_measurement(self, manager):
-        method = BaseTechnique._registry[self.id].from_dict(self.kwargs)
-        measurement = manager.measure(method)
+    def validate(self, measurement):
         check_eis_measurement(measurement)
 
         eis_datas = measurement.eis_data
@@ -711,7 +624,7 @@ class TestEIS:
             assert eis_data.n_frequencies == 10
 
 
-class TestEIS_pot_fixed:
+class BaseEIS_pot_fixed:
     id = 'eis'
     kwargs = {
         'n_frequencies': 5,
@@ -724,10 +637,7 @@ class TestEIS_pot_fixed:
         'step_potential': 0.1,
     }
 
-    @pytest.mark.instrument
-    def test_potential_fixed(self, manager):
-        method = BaseTechnique._registry[self.id].from_dict(self.kwargs)
-        measurement = manager.measure(method)
+    def validate(self, measurement):
         check_eis_measurement(measurement)
 
         eis_datas = measurement.eis_data
@@ -738,7 +648,7 @@ class TestEIS_pot_fixed:
             assert eis_data.n_frequencies == 1
 
 
-class TestEIS_pot_scan:
+class BaseEIS_pot_scan:
     id = 'eis'
     kwargs = {
         'n_frequencies': 5,
@@ -751,10 +661,7 @@ class TestEIS_pot_scan:
         'step_potential': 0.1,
     }
 
-    @pytest.mark.instrument
-    def test_potential_scan(self, manager):
-        method = BaseTechnique._registry[self.id].from_dict(self.kwargs)
-        measurement = manager.measure(method)
+    def validate(self, measurement):
         check_eis_measurement(measurement)
 
         eis_datas = measurement.eis_data
@@ -765,7 +672,7 @@ class TestEIS_pot_scan:
             assert eis_data.n_frequencies == 5
 
 
-class TestEIS_time_fixed:
+class BaseEIS_time_fixed:
     id = 'eis'
     kwargs = {
         'n_frequencies': 5,
@@ -776,10 +683,7 @@ class TestEIS_time_fixed:
         'run_time': 1.3,
     }
 
-    @pytest.mark.instrument
-    def test_time_fixed(self, manager):
-        method = BaseTechnique._registry[self.id].from_dict(self.kwargs)
-        measurement = manager.measure(method)
+    def validate(self, measurement):
         check_eis_measurement(measurement)
 
         eis_datas = measurement.eis_data
@@ -791,7 +695,7 @@ class TestEIS_time_fixed:
             assert eis_data.n_frequencies == 1
 
 
-class TestEIS_time_scan:
+class BaseEIS_time_scan:
     id = 'eis'
     kwargs = {
         'n_frequencies': 5,
@@ -802,10 +706,7 @@ class TestEIS_time_scan:
         'run_time': 0.4,
     }
 
-    @pytest.mark.instrument
-    def test_time_scan(self, manager):
-        method = BaseTechnique._registry[self.id].from_dict(self.kwargs)
-        measurement = manager.measure(method)
+    def validate(self, measurement):
         check_eis_measurement(measurement)
 
         eis_datas = measurement.eis_data
@@ -816,7 +717,7 @@ class TestEIS_time_scan:
             assert eis_data.n_frequencies == 5
 
 
-class TestEIS_single_point:
+class BaseEIS_single_point:
     id = 'eis'
     kwargs = {
         'n_frequencies': 5,
@@ -826,10 +727,7 @@ class TestEIS_single_point:
         'frequency_type': 'fixed',
     }
 
-    @pytest.mark.instrument
-    def test_freq_fixed(self, manager):
-        method = BaseTechnique._registry[self.id].from_dict(self.kwargs)
-        measurement = manager.measure(method)
+    def validate(self, measurement):
         check_eis_measurement(measurement)
 
         eis_datas = measurement.eis_data
@@ -840,18 +738,14 @@ class TestEIS_single_point:
             assert eis_data.n_frequencies == 1
 
 
-class TestFIS:
+class BaseFIS:
     id = 'fis'
     kwargs = {
         'frequency': 40000,
         'run_time': 0.5,
     }
 
-    @pytest.mark.instrument
-    def test_measurement(self, manager):
-        method = BaseTechnique._registry[self.id].from_dict(self.kwargs)
-        measurement = manager.measure(method)
-
+    def validate(self, measurement):
         assert measurement
         assert isinstance(measurement, ps.data.Measurement)
 
@@ -899,7 +793,7 @@ class TestFIS:
         }
 
 
-class TestGIS:
+class BaseGIS:
     id = 'gis'
     kwargs = {
         'applied_current_range': 5,
@@ -909,11 +803,7 @@ class TestGIS:
         'min_frequency': 1e3,
     }
 
-    @pytest.mark.instrument
-    def test_measurement(self, manager):
-        method = BaseTechnique._registry[self.id].from_dict(self.kwargs)
-        measurement = manager.measure(method)
-
+    def validate(self, measurement):
         assert measurement
         assert isinstance(measurement, ps.data.Measurement)
 
@@ -961,18 +851,14 @@ class TestGIS:
         }
 
 
-class TestFGIS:
+class BaseFGIS:
     id = 'fgis'
     kwargs = {
         'applied_current_range': 5,
         'run_time': 0.3,
     }
 
-    @pytest.mark.instrument
-    def test_measurement(self, manager):
-        method = BaseTechnique._registry[self.id].from_dict(self.kwargs)
-        measurement = manager.measure(method)
-
+    def validate(self, measurement):
         assert measurement
         assert isinstance(measurement, ps.data.Measurement)
 
@@ -1020,7 +906,7 @@ class TestFGIS:
         }
 
 
-class TestMS:
+class BaseMS:
     id = 'ms'
     kwargs = {
         'script': (
@@ -1040,11 +926,7 @@ class TestMS:
         )
     }
 
-    @pytest.mark.instrument
-    def test_measurement(self, manager):
-        method = BaseTechnique._registry[self.id].from_dict(self.kwargs)
-        measurement = manager.measure(method)
-
+    def validate(self, measurement):
         assert measurement
         assert isinstance(measurement, ps.data.Measurement)
 
@@ -1058,7 +940,7 @@ class TestMS:
         assert dataset.array_quantities == {'Current', 'Potential'}
 
 
-class TestMM:
+class BaseMM:
     id = 'mm'
     kwargs = {
         'cycles': 2,
@@ -1096,11 +978,7 @@ class TestMM:
         ],
     }
 
-    @pytest.mark.instrument
-    def test_measurement(self, manager):
-        method = BaseTechnique._registry[self.id].from_dict(self.kwargs)
-        measurement = manager.measure(method)
-
+    def validate(self, measurement):
         assert measurement
         assert isinstance(measurement, ps.data.Measurement)
 
@@ -1157,38 +1035,149 @@ class TestMM:
         }
 
 
+class MeasureMixin:
+    @pytest.mark.instrument
+    def test_measurement(self, manager):
+        method = BaseTechnique._registry[self.id].from_dict(self.kwargs)
+
+        measurement = manager.measure(method)
+
+        self.validate(measurement)
+
+
+class TestCV(BaseCV, MeasureMixin): ...
+
+
+class TestFCV(BaseFCV, MeasureMixin): ...
+
+
+class TestLSV(BaseLSV, MeasureMixin): ...
+
+
+class TestACV(BaseACV, MeasureMixin): ...
+
+
+class TestSWV(BaseSWV, MeasureMixin): ...
+
+
+class TestCP(BaseCP, MeasureMixin): ...
+
+
+class TestSCP(BaseSCP, MeasureMixin):
+    @override
+    @pytest.mark.xfail(
+        raises=ValueError,
+        reason='Not all devices support SCP.',
+    )
+    def test_measurement(self, manager):
+        super().test_measurement(manager)
+
+
+class TestLSP(BaseLSP, MeasureMixin): ...
+
+
+class TestOCP(BaseOCP, MeasureMixin): ...
+
+
+class TestCA(BaseCA, MeasureMixin): ...
+
+
+class TestFAM(BaseFAM, MeasureMixin): ...
+
+
+class TestDPV(BaseDPV, MeasureMixin): ...
+
+
+class TestPAD(BasePAD, MeasureMixin): ...
+
+
+class TestMPAD(BaseMPAD, MeasureMixin):
+    @override
+    @pytest.mark.xfail(
+        raises=ValueError,
+        reason='Not all devices support MPAD.',
+    )
+    def test_measurement(self, manager):
+        super().test_measurement(manager)
+
+
+class TestNPV(BaseNPV, MeasureMixin): ...
+
+
+class TestMA(BaseMA, MeasureMixin): ...
+
+
+class TestMP(BaseMP, MeasureMixin): ...
+
+
+class TestCC(BaseCC, MeasureMixin): ...
+
+
+class TestEIS(BaseEIS, MeasureMixin): ...
+
+
+class TestEIS_pot_fixed(BaseEIS_pot_fixed, MeasureMixin): ...
+
+
+class TestEIS_pot_scan(BaseEIS_pot_scan, MeasureMixin): ...
+
+
+class TestEIS_time_scan(BaseEIS_time_scan, MeasureMixin): ...
+
+
+class TestEIS_time_fixed(BaseEIS_time_fixed, MeasureMixin): ...
+
+
+class TestEIS_single_point(BaseEIS_single_point, MeasureMixin): ...
+
+
+class TestFIS(BaseFIS, MeasureMixin): ...
+
+
+class TestGIS(BaseGIS, MeasureMixin): ...
+
+
+class TestFGIS(BaseFGIS, MeasureMixin): ...
+
+
+class TestMS(BaseMS, MeasureMixin): ...
+
+
+class TestMM(BaseMM, MeasureMixin): ...
+
+
 @pytest.mark.parametrize(
     'method',
     (
-        TestCV,
-        TestFCV,
-        TestLSV,
-        TestACV,
-        TestSWV,
-        TestCP,
-        TestSCP,
-        TestLSP,
-        TestOCP,
-        TestCA,
-        TestFAM,
-        TestDPV,
-        TestPAD,
-        TestMPAD,
-        TestNPV,
-        TestMA,
-        TestMP,
-        TestCC,
-        TestEIS,
-        TestEIS_pot_fixed,
-        TestEIS_pot_scan,
-        TestEIS_time_scan,
-        TestEIS_time_fixed,
-        TestEIS_single_point,
-        TestFIS,
-        TestGIS,
-        TestFGIS,
-        TestMS,
-        TestMM,
+        BaseCV,
+        BaseFCV,
+        BaseLSV,
+        BaseACV,
+        BaseSWV,
+        BaseCP,
+        BaseSCP,
+        BaseLSP,
+        BaseOCP,
+        BaseCA,
+        BaseFAM,
+        BaseDPV,
+        BasePAD,
+        BaseMPAD,
+        BaseNPV,
+        BaseMA,
+        BaseMP,
+        BaseCC,
+        BaseEIS,
+        BaseEIS_pot_fixed,
+        BaseEIS_pot_scan,
+        BaseEIS_time_scan,
+        BaseEIS_time_fixed,
+        BaseEIS_single_point,
+        BaseFIS,
+        BaseGIS,
+        BaseFGIS,
+        BaseMS,
+        BaseMM,
     ),
 )
 def test_params_round_trip(method):
