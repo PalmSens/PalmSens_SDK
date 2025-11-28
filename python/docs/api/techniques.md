@@ -14,10 +14,10 @@ For example to set up a CV experiment:
 ...     step_potential = 0.25,
 ...     scanrate = 5,
 ...     n_scans = 2,
-...     current_range = pypalmsens.settings.CurrentRange(
-...         max = pypalmsens.settings.CURRENT_RANGE.cr_1_mA,
-...         min = pypalmsens.settings.CURRENT_RANGE.cr_100_nA,
-...         start = pypalmsens.settings.CURRENT_RANGE.cr_100_uA,
+...     current_range = ps.settings.CurrentRange(
+...         max = ps.settings.CURRENT_RANGE.cr_1_mA,
+...         min = ps.settings.CURRENT_RANGE.cr_100_nA,
+...         start = ps.settings.CURRENT_RANGE.cr_100_uA,
 ...     ),
 ... )
 ```
