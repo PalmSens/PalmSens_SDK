@@ -21,7 +21,7 @@ with ps.connect(instruments[0]) as manager:
 
     # Chronoamperometry measurement using helper class
     method = ps.ChronoAmperometry(
-        interval_time=0.0004,
+        interval_time=0.004,
         potential=1.0,
         run_time=10.0,
     )

@@ -39,7 +39,7 @@ if TYPE_CHECKING:
 
 
 async def discover_async(
-    ftdi: bool = False,
+    ftdi: bool = True,
     usbcdc: bool = True,
     winusb: bool = True,
     bluetooth: bool = False,

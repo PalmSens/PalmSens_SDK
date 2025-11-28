@@ -38,9 +38,7 @@ async def main():
 
     # run multichannel experiment with csv writer
     async with ps.InstrumentPoolAsync(instruments) as pool:
-        results = await pool.submit(
-            stream_to_csv, method=method, callback=stream_to_csv_callback
-        )
+        results = await pool.submit(stream_to_csv, method=method)
 
     print(results)
 
