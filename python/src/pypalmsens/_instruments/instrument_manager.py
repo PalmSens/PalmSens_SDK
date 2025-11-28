@@ -381,7 +381,7 @@ class InstrumentManager:
 
         Parameters
         ----------
-        method: MethodParameters
+        method: Method parameters
             Method parameters for measurement
         callback: Callback, optional
             If specified, call this function on every new set of data points.

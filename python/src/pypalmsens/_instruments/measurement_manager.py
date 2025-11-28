@@ -26,6 +26,8 @@ if TYPE_CHECKING:
 
 
 class MeasurementManager:
+    """Measurement helper class that manages the instrument communication and handles events."""
+
     def __init__(
         self,
         *,
@@ -45,6 +47,7 @@ class MeasurementManager:
         self.setup_handlers()
 
     def setup_handlers(self):
+        """Set up event handlers."""
         self.begin_measurement_handler: EventHandler = CommManager.BeginMeasurementEventHandler(
             self.begin_measurement_callback
         )
@@ -97,6 +100,7 @@ class MeasurementManager:
 
     @contextmanager
     def _measurement_context(self):
+        """Context manager to manage the connection to the communication object."""
         try:
             self.setup()
 
@@ -104,7 +108,6 @@ class MeasurementManager:
 
         except Exception:
             if self.comm.ClientConnection.Semaphore.CurrentCount == 0:
-                # release lock on library (required when communicating with instrument)
                 _ = self.comm.ClientConnection.Semaphore.Release()
 
             raise
@@ -113,12 +116,14 @@ class MeasurementManager:
             self.teardown()
 
     async def await_measurement(self, method: PSMethod):
-        # obtain lock on library (required when communicating with instrument)
+        """Helper function to handle the measurement.
+
+        Obtaining a lock on the `ClientConnection` (via semaphore) is required when
+        communicating with the instrument."""
         await create_future(self.comm.ClientConnection.Semaphore.WaitAsync())
 
         _ = self.comm.Measure(method)
 
-        # release lock on library (required when communicating with instrument)
         _ = self.comm.ClientConnection.Semaphore.Release()
 
         _ = await self.begin_measurement_event.wait()
@@ -129,6 +134,19 @@ class MeasurementManager:
         method: PSMethod,
         callback: Callback | None = None,
     ) -> Measurement:
+        """Measure given method.
+
+        Parameters
+        ----------
+        method: MethodParameters
+            Method parameters for measurement
+        callback: Callback, optional
+            Gets called every time new data is added
+
+        Returns
+        -------
+        measurement : Measurement
+        """
         self.loop = asyncio.new_event_loop()
         self.begin_measurement_event = asyncio.Event()
         self.end_measurement_event = asyncio.Event()
@@ -142,92 +160,98 @@ class MeasurementManager:
         assert self.last_measurement
         return Measurement(psmeasurement=self.last_measurement)
 
-    def begin_measurement(self, measurement: PSMeasurement):
-        self.last_measurement = measurement
-        self.begin_measurement_event.set()
-
-    def end_measurement(self):
-        self.end_measurement_event.set()
-
     def begin_measurement_callback(self, sender, measurement: PSMeasurement):
-        _ = self.loop.call_soon_threadsafe(self.begin_measurement, measurement)
+        """Called when the measurement begins."""
+
+        def func(measurement: PSMeasurement):
+            self.last_measurement = measurement
+            self.begin_measurement_event.set()
+
+        _ = self.loop.call_soon_threadsafe(func, measurement)
 
     def end_measurement_callback(self, sender, args):
-        _ = self.loop.call_soon_threadsafe(self.end_measurement)
-
-    def curve_new_data_added(self, curve: PSCurve, args):
-        start = args.StartIndex
-        count = curve.NPoints - start
-
-        data: list[dict[str, float | str]] = []
-        for i in range(start, start + count):
-            point: dict[str, float | str] = {}
-            point['index'] = i + 1
-            point['x'] = get_values_from_NETArray(curve.XAxisDataArray, start=i, count=1)[0]
-            point['x_unit'] = curve.XUnit.ToString()
-            point['x_type'] = ArrayType(curve.XAxisDataArray.ArrayType).name
-            point['y'] = get_values_from_NETArray(curve.YAxisDataArray, start=i, count=1)[0]
-            point['y_unit'] = curve.YUnit.ToString()
-            point['y_type'] = ArrayType(curve.YAxisDataArray.ArrayType).name
-            data.append(point)
-
-        if self.callback:
-            self.callback(data)
+        """Called when the measurement ends."""
+        _ = self.loop.call_soon_threadsafe(self.end_measurement_event.set)
 
     def curve_data_added_callback(self, curve: PSCurve, args):
-        _ = self.loop.call_soon_threadsafe(self.curve_new_data_added, curve, args)
+        """Called when new data is added to the curve."""
+
+        def func(curve: PSCurve, args, callback: Callback):
+            start = args.StartIndex
+            count = curve.NPoints - start
+
+            data: list[dict[str, float | str]] = []
+            for i in range(start, start + count):
+                point: dict[str, float | str] = {
+                    'index': i + 1,
+                    'x': get_values_from_NETArray(curve.XAxisDataArray, start=i, count=1)[0],
+                    'x_unit': curve.XUnit.ToString(),
+                    'x_type': ArrayType(curve.XAxisDataArray.ArrayType).name,
+                    'y': get_values_from_NETArray(curve.YAxisDataArray, start=i, count=1)[0],
+                    'y_unit': curve.YUnit.ToString(),
+                    'y_type': ArrayType(curve.YAxisDataArray.ArrayType).name,
+                }
+                data.append(point)
+
+            callback(data)
+
+        assert self.callback
+        _ = self.loop.call_soon_threadsafe(func, curve, args, self.callback)
 
     def curve_finished_callback(self, curve: PSCurve, args):
+        """Unsubscribe to curve finished / new data added events."""
         curve.NewDataAdded -= self.curve_data_added_handler
         curve.Finished -= self.curve_finished_handler
 
     def begin_receive_curve_callback(self, sender, args):
+        """Subscribe to curve finished / new data added events."""
         curve = args.GetCurve()
         curve.NewDataAdded += self.curve_data_added_handler
         curve.Finished += self.curve_finished_handler
 
-    def eis_data_new_data_added(self, eis_data: PSEISData, args):
-        start = args.Index
-        count = 1
-
-        data: list[dict[str, float | str]] = []
-        arrays: list[PSDataArray] = [array for array in eis_data.EISDataSet.GetDataArrays()]
-        for i in range(start, start + count):
-            point: dict[str, float | str] = {}
-            point['index'] = i + 1
-            for array in arrays:
-                array_type = ArrayType(array.ArrayType)
-                if array_type == ArrayType.Frequency:
-                    point['frequency'] = get_values_from_NETArray(array, start=i, count=1)[0]
-                elif array_type == ArrayType.ZRe:
-                    point['zre'] = get_values_from_NETArray(array, start=i, count=1)[0]
-                elif array_type == ArrayType.ZIm:
-                    point['zim'] = get_values_from_NETArray(array, start=i, count=1)[0]
-            data.append(point)
-
-        if self.callback:
-            self.callback(data)
-
     def eis_data_data_added_callback(self, eis_data: PSEISData, args):
-        _ = self.loop.call_soon_threadsafe(
-            self.eis_data_new_data_added,
-            eis_data,
-            args,
-        )
+        """Called when a new EIS data points is obtained. Requires a callback."""
+
+        def func(eis_data: PSEISData, args, callback: Callback):
+            start = args.Index
+            count = 1
+
+            data: list[dict[str, float | str]] = []
+            arrays: list[PSDataArray] = [array for array in eis_data.EISDataSet.GetDataArrays()]
+            for i in range(start, start + count):
+                point: dict[str, float | str] = {'index': i + 1}
+
+                for array in arrays:
+                    array_type = ArrayType(array.ArrayType)
+
+                    if array_type in (ArrayType.Frequency, ArrayType.ZRe, ArrayType.ZIm):
+                        key = array_type.name.lower()
+                        point[key] = get_values_from_NETArray(array, start=i, count=1)[0]
+
+                data.append(point)
+
+            callback(data)
+
+        assert self.callback
+        _ = self.loop.call_soon_threadsafe(func, eis_data, args, self.callback)
 
     def eis_data_finished_callback(self, eis_data: PSEISData, args):
+        """Unsubscribes to EIS data events."""
         eis_data.NewDataAdded -= self.eis_data_data_added_handler
         eis_data.Finished -= self.eis_data_finished_handler
 
     def begin_receive_eis_data_callback(self, sender, eis_data: PSEISData):
+        """Subscribes to EIS data events."""
         eis_data.NewDataAdded += self.eis_data_data_added_handler
         eis_data.Finished += self.eis_data_finished_handler
 
-    def comm_error(self):
-        self.begin_measurement_event.set()
-        self.end_measurement_event.set()
-
-        raise ConnectionError('Measurement failed due to a communication or parsing error')
-
     def comm_error_callback(self, sender, args):
-        _ = self.loop.call_soon_threadsafe(self.comm_error)
+        """Called when a communication error occurs."""
+
+        def func():
+            self.begin_measurement_event.set()
+            self.end_measurement_event.set()
+
+            raise ConnectionError('Measurement failed due to a communication or parsing error')
+
+        _ = self.loop.call_soon_threadsafe(func)
