@@ -16,7 +16,7 @@ from PalmSens.Plottables import (
 from System import EventHandler
 from System.Threading.Tasks import Task
 
-from .._data._shared import ArrayType, get_values_from_NETArray
+from .._data._shared import ArrayType
 from ..data import Measurement
 from ._common import Callback, create_future
 
@@ -178,7 +178,6 @@ class MeasurementManagerAsync:
         """Called when the measurement begins."""
 
         def func(measurement: PSMeasurement):
-            """Called when the measurement begins."""
             self.last_measurement = measurement
             self.begin_measurement_event.set()
 
@@ -191,6 +190,8 @@ class MeasurementManagerAsync:
         return Task.CompletedTask
 
     def curve_data_added_callback(self, curve: PSCurve, args):
+        """Called when new data is added to the curve."""
+
         def func(curve: PSCurve, args, callback: Callback):
             start = args.StartIndex
             count = curve.NPoints - start
@@ -199,11 +200,11 @@ class MeasurementManagerAsync:
             for i in range(start, start + count):
                 point: dict[str, float | str] = {
                     'index': i + 1,
-                    'x': get_values_from_NETArray(curve.XAxisDataArray, start=i, count=1)[0],
-                    'x_unit': curve.XUnit.ToString(),
+                    'x': curve.XAxisDataArray[i].Value,
+                    'x_unit': str(curve.XUnit),
                     'x_type': ArrayType(curve.XAxisDataArray.ArrayType).name,
-                    'y': get_values_from_NETArray(curve.YAxisDataArray, start=i, count=1)[0],
-                    'y_unit': curve.YUnit.ToString(),
+                    'y': curve.YAxisDataArray[i].Value,
+                    'y_unit': str(curve.YUnit),
                     'y_type': ArrayType(curve.YAxisDataArray.ArrayType).name,
                 }
                 data.append(point)
@@ -241,7 +242,7 @@ class MeasurementManagerAsync:
 
                     if array_type in (ArrayType.Frequency, ArrayType.ZRe, ArrayType.ZIm):
                         key = array_type.name.lower()
-                        point[key] = get_values_from_NETArray(array, start=i, count=1)[0]
+                        point[key] = array[i].Value
 
                 data.append(point)
 
