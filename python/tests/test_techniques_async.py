@@ -57,6 +57,7 @@ async def test_read_potential(manager):
 
 
 @pytest.mark.asyncio
+@pytest.mark.instrument
 @pytest.mark.parametrize(
     'method',
     (

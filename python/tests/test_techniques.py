@@ -1078,6 +1078,7 @@ class MM:
         }
 
 
+@pytest.mark.instrument
 @pytest.mark.parametrize(
     'method',
     (
