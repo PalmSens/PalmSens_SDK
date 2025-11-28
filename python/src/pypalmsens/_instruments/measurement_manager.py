@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import asyncio
 from contextlib import contextmanager
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, Generator
 
 from PalmSens.Comm import CommManager
 from PalmSens.Plottables import (
@@ -99,7 +99,7 @@ class MeasurementManager:
         self.is_measuring = False
 
     @contextmanager
-    def _measurement_context(self):
+    def _measurement_context(self) -> Generator[None, Any, Any]:
         """Context manager to manage the connection to the communication object."""
         try:
             self.setup()
@@ -115,7 +115,10 @@ class MeasurementManager:
         finally:
             self.teardown()
 
-    async def await_measurement(self, method: PSMethod):
+    async def await_measurement(
+        self,
+        method: PSMethod,
+    ):
         """Helper function to handle the measurement.
 
         Obtaining a lock on the `ClientConnection` (via semaphore) is required when
