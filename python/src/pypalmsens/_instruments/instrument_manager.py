@@ -404,14 +404,9 @@ class InstrumentManager:
 
         self.validate_method(psmethod)
 
-        measurement_manager = MeasurementManager(
-            comm=self._comm,
-        )
+        measurement_manager = MeasurementManager(comm=self._comm)
 
-        return measurement_manager.measure(
-            psmethod,
-            callback=callback,
-        )
+        return measurement_manager.measure(psmethod, callback=callback)
 
     def wait_digital_trigger(self, wait_for_high: bool):
         """Wait for digital trigger.

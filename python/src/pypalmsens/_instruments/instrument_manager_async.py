@@ -408,9 +408,7 @@ class InstrumentManagerAsync:
 
         self.validate_method(psmethod)
 
-        measurement_manager = MeasurementManagerAsync(
-            comm=self._comm,
-        )
+        measurement_manager = MeasurementManagerAsync(comm=self._comm)
 
         return await measurement_manager.measure(
             psmethod, callback=callback, sync_event=sync_event
