@@ -4,7 +4,7 @@ import logging
 
 import pytest
 import pytest_asyncio
-from techniques_test import CP, CV, EIS, MM, MS
+from test_techniques import CP, CV, EIS, MM, MS
 
 import pypalmsens as ps
 from pypalmsens._methods import BaseTechnique
