@@ -4,7 +4,7 @@ import logging
 
 import pytest
 import pytest_asyncio
-from techniques_test import BaseCP, BaseCV, BaseEIS, BaseMM, BaseMS
+from techniques_test import CP, CV, EIS, MM, MS
 
 import pypalmsens as ps
 from pypalmsens._methods import BaseTechnique
@@ -12,7 +12,6 @@ from pypalmsens._methods import BaseTechnique
 logger = logging.getLogger(__name__)
 
 
-@pytest.mark.asyncio
 @pytest_asyncio.fixture(scope='module')
 async def manager():
     instruments = ps.discover()
@@ -42,26 +41,19 @@ async def test_read_potential(manager):
     assert isinstance(val, float)
 
 
-class MeasureAsyncMixin:
-    @pytest.mark.instrument
-    @pytest.mark.asyncio
-    async def _test_measurement(self, manager):
-        method = BaseTechnique._registry[self.id].from_dict(self.kwargs)
-        measurement = await manager.measure(method)
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    'method',
+    (
+        CV,
+        CP,
+        EIS,
+        MS,
+        MM,
+    ),
+)
+async def test_measure(manager, method):
+    params = BaseTechnique._registry[method.id].from_dict(method.kwargs)
+    measurement = await manager.measure(params)
 
-        self.validate(measurement)
-
-
-class TestCVAsync(BaseCV, MeasureAsyncMixin): ...
-
-
-class TestCPAsync(BaseCP, MeasureAsyncMixin): ...
-
-
-class TestEISAsync(BaseEIS, MeasureAsyncMixin): ...
-
-
-class TestMSAsync(BaseMS, MeasureAsyncMixin): ...
-
-
-class TestMMAsync(BaseMM, MeasureAsyncMixin): ...
+    method.validate(measurement)
