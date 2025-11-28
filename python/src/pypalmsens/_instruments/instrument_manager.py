@@ -376,7 +376,12 @@ class InstrumentManager:
             message = '\n'.join([error.Message for error in errors])
             raise ValueError(f'Method not compatible:\n{message}')
 
-    def measure(self, method: BaseTechnique, callback: Callback | None = None) -> Measurement:
+    def measure(
+        self,
+        method: BaseTechnique,
+        *,
+        callback: Callback | None = None,
+    ) -> Measurement:
         """Start measurement using given method parameters.
 
         Parameters

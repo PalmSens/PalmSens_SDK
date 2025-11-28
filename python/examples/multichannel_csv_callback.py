@@ -17,9 +17,8 @@ async def stream_to_csv(manager, *, method):
         csv_writer = csv.writer(csv_file, delimiter=' ')
 
         callback = functools.partial(stream_to_csv_callback, csv_writer=csv_writer)
-        manager.callback = callback
 
-        measurement = await manager.measure(method)
+        measurement = await manager.measure(method, callback=callback)
 
     print(f'Wrote data to {csv_file.name}')
 
@@ -39,7 +38,9 @@ async def main():
 
     # run multichannel experiment with csv writer
     async with ps.InstrumentPoolAsync(instruments) as pool:
-        results = await pool.submit(stream_to_csv, method=method)
+        results = await pool.submit(
+            stream_to_csv, method=method, callback=stream_to_csv_callback
+        )
 
     print(results)
 

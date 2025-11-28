@@ -379,6 +379,7 @@ class InstrumentManagerAsync:
     async def measure(
         self,
         method: BaseTechnique,
+        *,
         callback: Callback | None = None,
         sync_event: asyncio.Event | None = None,
     ):

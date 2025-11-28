@@ -16,8 +16,6 @@ instruments = ps.discover()
 print(instruments)
 
 with ps.connect(instruments[0]) as manager:
-    manager.callback = stream_to_csv_callback
-
     serial = manager.get_instrument_serial()
     print(serial)
 
@@ -28,7 +26,7 @@ with ps.connect(instruments[0]) as manager:
         run_time=10.0,
     )
 
-    measurement = manager.measure(method)
+    measurement = manager.measure(method, callback=stream_to_csv_callback)
 
 print(measurement)
 
