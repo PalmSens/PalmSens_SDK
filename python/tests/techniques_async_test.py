@@ -57,3 +57,51 @@ async def test_measure(manager, method):
     measurement = await manager.measure(params)
 
     method.validate(measurement)
+
+
+@pytest.mark.instrument
+@pytest.mark.asyncio
+async def test_callback(manager):
+    points = []
+
+    def callback(data):
+        points.extend(data)
+
+    params = ps.LinearSweepVoltammetry(scanrate=10)
+    _ = await manager.measure(params, callback=callback)
+
+    assert len(points) == 11
+
+    point = points[-1]
+    assert isinstance(point, dict)
+    assert point['index'] == 11
+    assert isinstance(point['x'], float)
+    assert point['x_unit'] == 'V'
+    assert point['x_type'] == 'Potential'
+    assert isinstance(point['y'], float)
+    assert point['y_unit'] == 'µA'
+    assert point['y_type'] == 'Current'
+
+
+@pytest.mark.instrument
+@pytest.mark.asyncio
+async def test_callback_eis(manager):
+    points = []
+
+    def callback(data):
+        points.extend(data)
+
+    params = ps.ElectrochemicalImpedanceSpectroscopy(
+        frequency_type='fixed',
+        scan_type='fixed',
+        # fixed_frequency=1000,
+    )
+    _ = await manager.measure(params, callback=callback)
+
+    assert len(points) == 1
+
+    point = points[0]
+    assert point['index'] == 1
+    assert point['frequency'] == 1000.0
+    assert isinstance(point['zre'], float)
+    assert isinstance(point['zim'], float)
