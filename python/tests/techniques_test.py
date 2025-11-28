@@ -29,14 +29,29 @@ def test_get_instrument_serial(manager):
 
 @pytest.mark.instrument
 def test_read_current(manager):
-    val = manager.read_current()
-    assert isinstance(val, float)
+    manager.set_cell(True)
+
+    manager.set_current_range(ps.settings.CURRENT_RANGE.cr_1_uA)
+    val1 = manager.read_current()
+    manager.set_current_range(ps.settings.CURRENT_RANGE.cr_10_uA)
+    val2 = manager.read_current()
+
+    manager.set_cell(False)
+
+    div = abs(abs(val2 / val1))
+    assert 9.0 < div < 11.0
 
 
 @pytest.mark.instrument
 def test_read_potential(manager):
-    val = manager.read_current()
-    assert isinstance(val, float)
+    manager.set_cell(True)
+    manager.set_potential(1)
+    val = manager.read_potential()
+    assert 0.95 < abs(val) < 1.05
+    manager.set_potential(0)
+    val = manager.read_potential()
+    assert abs(val) < 0.05
+    manager.set_cell(False)
 
 
 class CV:
@@ -1118,7 +1133,6 @@ def test_measure(manager, method):
 
 
 @pytest.mark.instrument
-@pytest.mark.asyncio
 def test_callback(manager):
     points = []
 
