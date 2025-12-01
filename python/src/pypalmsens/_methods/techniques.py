@@ -411,7 +411,13 @@ class SquareWaveVoltammetry(
     mixins.MultiplexerMixin,
     mixins.GeneralMixin,
 ):
-    """Create square wave method parameters."""
+    """Create square wave method parameters.
+
+    Square wave Voltammetry (SWV) is in fact a special version of DPV.
+
+    DPV is SWV when the pulse time is equal to the interval / 2. The interval time is the inverse of the
+    frequency (1 / `frequency`). Like DPV, the pulse amplitude is also normally in the range of 5 - 25 or 50 mV.
+    """
 
     _id = 'swv'
 
@@ -617,7 +623,13 @@ class NormalPulseVoltammetry(
     mixins.MultiplexerMixin,
     mixins.GeneralMixin,
 ):
-    """Create normal pulse voltammetry method parameters."""
+    """Create normal pulse voltammetry method parameters.
+
+    In Normal Pulse Voltammetry (NPV) a potential scan is conducted in pulses by consistently
+    increasing the pulse amplitude. The influence of diffusion
+    limitation on your i-E curve (Cottrel behavior) is removed. NPV is normally more sensitive than
+    LSV, since the diffusion layer thickness will be smaller, resulting in a higher faradaic current.
+    """
 
     _id = 'npv'
 
@@ -634,13 +646,18 @@ class NormalPulseVoltammetry(
     """Potential step size in V."""
 
     pulse_time: float = 0.01
-    """Pulse time in s."""
+    """Pulse time in s.
+
+    This duration needs to be set
+    shorter than `0.5 * interval_time` where the interval time is equal to
+    `potential_step` / `scan_rate`.
+    """
 
     scan_rate: float = 1.0
-    """Scan rate (potential/time) in V/s.
+    """The applied scan rate (potential/time) in V/s.
 
-    The applicable range depends on the value of `step_potential` since the data
-    acquisition rate is limited by the connected instrument."""
+    The maximum scan rate depends on the value of `step_potential` step and `pulse_time`.
+    The scan rate must be < (`step_potential` / `pulse_time`)."""
 
     enable_bipot_current: bool = False
     """Enable bipot current."""
@@ -865,7 +882,15 @@ class MultiStepAmperometry(
     mixins.MultiplexerMixin,
     mixins.GeneralMixin,
 ):
-    """Create multi-step amperometry method parameters."""
+    """Create multi-step amperometry method parameters.
+
+    With Multistep amperometry you can specify the number of potential steps
+    to apply and how long each step should last. Each step works exactly as a
+    Chronoamperometry step. The current is continuously sampled with the specified interval
+    time. A whole cycle of steps can be repeated several times.
+
+    Levels can be specified using `pypalmsens.settings.ELevel`.
+    """
 
     _id = 'ma'
 
@@ -876,10 +901,10 @@ class MultiStepAmperometry(
     """The time between two samples in s."""
 
     n_cycles: int = 1
-    """Number of cycles."""
+    """Number of repetitions."""
 
     levels: list[ELevel] = attrs.field(factory=lambda: [ELevel()])
-    """List of levels.
+    """The cto apply within a cycle.
 
     Use `ELevel()` to create levels.
     """
@@ -1041,13 +1066,7 @@ class MultiplePulseAmperometry(
 
     The Multiple Pulse Amperometry (MPAD) technique involves applying a series of voltage pulses
     to an electrode immersed in a sample solution, and the resulting current of one of the pulses is
-    measured
-
-    This technique can be used when higher sensitivity is required. Using pulses instead of constant
-    potential might result in higher faradaic currents. MPAD is used when the electrode surface
-    must be regenerated continuously, for instance, to remove adsorbents from the electrode
-    surface. Some examples include detection and quantification of specific analytes, particularly
-    in liquid chromatography and flow-injection analysis.
+    measured.
     """
 
     _id = 'mpad'
@@ -1464,7 +1483,16 @@ class MultiStepPotentiometry(
     mixins.MultiplexerMixin,
     mixins.GeneralMixin,
 ):
-    """Create multi-step potentiometry method parameters."""
+    """Create multi-step potentiometry method parameters.
+
+    MultiStep Potentiometry you can specify the number of current steps
+    to apply and how long each step should last. The current is continuously
+    sampled with the specified interval.
+
+    A whole cycle of steps can be repeated several times.
+
+    Levels can be specified using `pypalmsens.settings.ILevel()`.
+    """
 
     _id = 'mp'
 
@@ -1477,10 +1505,10 @@ class MultiStepPotentiometry(
     """The time between two samples in s."""
 
     n_cycles: int = 1
-    """Number of cycles."""
+    """Number of repetitions."""
 
     levels: list[ILevel] = attrs.field(factory=lambda: [ILevel()])
-    """List of levels.
+    """The currents to apply within a cycle.
 
     Use `ILevel()` to create levels.
     """
