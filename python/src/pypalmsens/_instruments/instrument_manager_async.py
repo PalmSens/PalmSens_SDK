@@ -344,7 +344,7 @@ class InstrumentManagerAsync:
         """
 
         async with self._lock():
-            potential = await create_future(self._comm.GetPotentialAsync())  # in V
+            potential = await create_future(self._comm.GetPotentialAsync())
 
         return potential
 

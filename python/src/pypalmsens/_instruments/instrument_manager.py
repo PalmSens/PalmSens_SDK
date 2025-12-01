@@ -16,9 +16,9 @@ from typing_extensions import override
 
 from .._methods import CURRENT_RANGE, BaseTechnique
 from ..data import Measurement
-from ._common import Callback, Instrument, firmware_warning
-from .instrument_manager_async import InstrumentManagerAsync, discover_async
-from .measurement_manager import MeasurementManager
+from ._common import Callback, Instrument, create_future, firmware_warning
+from .instrument_manager_async import discover_async
+from .measurement_manager_async import MeasurementManagerAsync
 
 
 def discover(
@@ -217,15 +217,17 @@ class InstrumentManager:
         if self.is_connected():
             return
 
-        psinstrument = self.instrument.device
-        try:
-            psinstrument.Open()
-        except System.UnauthorizedAccessException as err:
-            raise ConnectionError(
-                f'Cannot open instrument connection (reason: {err.Message}). Check if the device is already in use.'
-            ) from err
+        async def _connect(psinstrument: PalmSens.Devices.Device) -> CommManager:
+            try:
+                await create_future(psinstrument.OpenAsync())
+            except System.UnauthorizedAccessException as err:
+                raise ConnectionError(
+                    f'Cannot open instrument connection (reason: {err.Message}). Check if the device is already in use.'
+                ) from err
 
-        self._comm = CommManager(psinstrument)
+            return await create_future(CommManager.CommManagerAsync(psinstrument))
+
+        self._comm = asyncio.run(_connect(self.instrument.device))
 
         firmware_warning(self._comm.Capabilities)
 
@@ -345,9 +347,9 @@ class InstrumentManager:
 
         self.validate_method(psmethod)
 
-        measurement_manager = MeasurementManager(comm=self._comm)
+        measurement_manager = MeasurementManagerAsync(comm=self._comm)
 
-        return measurement_manager.measure(psmethod, callback=callback)
+        return asyncio.run(measurement_manager.measure(psmethod, callback=callback))
 
     def wait_digital_trigger(self, wait_for_high: bool):
         """Wait for digital trigger.
