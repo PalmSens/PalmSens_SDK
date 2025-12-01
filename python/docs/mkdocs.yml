@@ -21,7 +21,7 @@ nav:
     - methods/chrono_potentiometry.md
     - methods/cyclic_voltammetry.md
     - methods/differential_pulse_voltammetry.md
-    - methods/electrochemical_impedance_spectroscopy.md
+    - Impedance Spectroscopy: methods/impedance_spectroscopy.md
     - methods/fast_amperometry.md
     - methods/fast_cyclic_voltammetry.md
     - methods/fast_galvanostatic_impedance_spectroscopy.md
