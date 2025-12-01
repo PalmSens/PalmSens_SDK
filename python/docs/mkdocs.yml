@@ -48,7 +48,7 @@ theme:
   favicon: assets/favicon.ico
 
   features:
-    # - navigation.indexes
+    - navigation.indexes
     - toc.follow
 
 
