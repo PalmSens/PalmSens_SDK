@@ -308,7 +308,19 @@ class LinearSweepVoltammetry(
     mixins.MultiplexerMixin,
     mixins.GeneralMixin,
 ):
-    """Create linear sweep method parameters."""
+    """Create linear sweep method parameters.
+
+    In Linear Sweep Voltammetry a potential scan is performed from `begin_potential`,
+    to `end_potential`. The scan is not exactly linear, but small potential steps (`potential_step`)
+    are made.
+
+    The current is sampled during the last 25% interval period of each step.
+    The number of points in a curve showing the current versus potential is
+    (`begin_potential` – `end_potential`) / (`step_potential` + 1).
+
+    The scan rate is specified in V/s, which determines the time between two steps and thus the
+    sampling time. The interval time is equal to `potential_step` / `scan_rate`.
+    """
 
     _id = 'lsv'
 
@@ -701,7 +713,11 @@ class ChronoAmperometry(
     mixins.MultiplexerMixin,
     mixins.GeneralMixin,
 ):
-    """Create chrono amperometry method parameters."""
+    """Create chrono amperometry method parameters.
+
+    The instrument applies a constant DC-potential (E dc) and the current is measured
+    with constant interval times.
+    """
 
     _id = 'ad'
 
@@ -709,13 +725,13 @@ class ChronoAmperometry(
     """Equilibration time in s."""
 
     interval_time: float = 0.1
-    """Interval time in s."""
+    """Time between two current samples in s."""
 
     potential: float = 0.0
-    """Potential in V."""
+    """The potential applied during the measurement in V."""
 
     run_time: float = 1.0
-    """Run time in s."""
+    """Total run time of the measurement in s."""
 
     enable_bipot_current: bool = False
     """Enable bipot current."""
@@ -857,7 +873,7 @@ class MultiStepAmperometry(
     """Equilibration time in s."""
 
     interval_time: float = 0.1
-    """Interval time in s."""
+    """The time between two samples in s."""
 
     n_cycles: int = 1
     """Number of cycles."""
@@ -1458,7 +1474,7 @@ class MultiStepPotentiometry(
     Use `CURRENT_RANGE` to define the range."""
 
     interval_time: float = 0.1
-    """Interval time in s."""
+    """The time between two samples in s."""
 
     n_cycles: int = 1
     """Number of cycles."""
@@ -1529,7 +1545,12 @@ class ChronoCoulometry(
     mixins.DataProcessingMixin,
     mixins.GeneralMixin,
 ):
-    """Create linear sweep method parameters."""
+    """Create chrono coulometry method parameters.
+
+    Chronoamperometry (CA) and Chronocoulometry (CC) have the same potential waveform but
+    in CC, the charge is monitored as a function of time (instead of the current).
+    The charge is determined by integrating the current.
+    """
 
     _id = 'cc'
 
@@ -1537,19 +1558,27 @@ class ChronoCoulometry(
     """Equilibration time in s."""
 
     interval_time: float = 0.1
-    """Interval time in s."""
+    """The time between two samples in s."""
 
     step1_potential: float = 0.5
     """Potential applied during first step in V."""
 
     step1_run_time: float = 5.0
-    """Run time for the first step."""
+    """Run time for the first step.
+
+    The minimum and maximum duration of a measurement:
+    5 * `interval_time` to 1,000,000 seconds (ca. 278 hours).
+    """
 
     step2_potential: float = 0.5
     """Potential applied during second step in V."""
 
     step2_run_time: float = 5.0
-    """Run time for the second step."""
+    """Run time for the second step.
+
+    The minimum and maximum duration of a measurement:
+    5 * `interval_time` to 1,000,000 seconds (ca. 278 hours).
+    """
 
     bandwidth: None | float = None
     """Override bandwidth on MethodSCRIPT devices if set."""
@@ -1678,6 +1707,15 @@ class ElectrochemicalImpedanceSpectroscopy(
         the given duration or at each potential step or time interval.
     """
 
+    fixed_frequency: float = 1_000
+    """Fixed frequency in Hz (fixed frequency only)."""
+
+    min_frequency: float = 5.0
+    """Minimum frequency in Hz (frequency scan only)."""
+
+    max_frequency: float = 10_000
+    """Maximum frequency in Hz (frequency scan only)."""
+
     n_frequencies: int = 11
     """Number of frequencies (frequency scan only).
 
@@ -1685,15 +1723,6 @@ class ElectrochemicalImpedanceSpectroscopy(
     `min_frequency`. For example, a value of 11 will measure at 11 frequencies,
     including both end points.
     """
-
-    max_frequency: float = 10_000
-    """Maximum frequency in Hz (frequency scan only)."""
-
-    min_frequency: float = 5.0
-    """Minimum frequency in Hz (frequency scan only)."""
-
-    fixed_frequency: float = 1_000
-    """Fixed frequency in Hz."""
 
     scan_type: Literal['potential', 'time', 'fixed'] = 'fixed'
     """Whether a single or multiple frequency scans are performed.
@@ -1748,12 +1777,12 @@ class ElectrochemicalImpedanceSpectroscopy(
     """Minimum sampling time in s.
 
     Each measurement point of the impedance spectrum is performed
-    during the period specified by SamplingTime.
+    during the period specified by `min_sampling_time`.
 
-    This means that the number of measured sine waves is equal to SamplingTime * frequency.
-    If this value is less than 1 sine wave, the sampling is extended to 1 / frequency.
+    This means that the number of measured sine waves is equal to `min_sampling_time * frequency`.
+    If this value is less than 1 sine wave, the sampling is extended to `1 / frequency`.
 
-    So for a measurement at a frequency, at least one complete sine wave is measured.
+    So for a measurement at a `frequency`, at least one complete sine wave is measured.
     Reasonable values for the sampling are in the range of 0.1 to 1 s."""
 
     max_equilibration_time: float = 5.0
@@ -1842,10 +1871,10 @@ class FastImpedanceSpectroscopy(
     """Equilibration time in s."""
 
     interval_time: float = 0.1
-    """Interval time in s."""
+    """The time between two samples in s."""
 
     run_time: float = 10.0
-    """Run time in s."""
+    """Total run time of the measurement in s."""
 
     dc_potential: float = 0.0
     """Potential applied during measurement in V."""
@@ -1854,7 +1883,7 @@ class FastImpedanceSpectroscopy(
     """Potential amplitude in V (rms)."""
 
     frequency: float = 50000.0
-    """Frequency in Hz."""
+    """Fixed frequency in Hz."""
 
     @override
     def _update_psmethod(self, psmethod: PSMethod, /):
@@ -1888,10 +1917,10 @@ class GalvanostaticImpedanceSpectroscopy(
     mixins.MultiplexerMixin,
     mixins.GeneralMixin,
 ):
-    """Create potentiometry method parameters.
-
+    """Create galvanostatic impedance spectroscopy method parameters.
 
     For Galvanostatic EIS (GEIS) the modes are:
+
     - a frequency scan at a fixed dc-current
     - frequency scans at each current in a current scan
     - frequency scans at specified time intervals (time scan)
@@ -1915,14 +1944,14 @@ class GalvanostaticImpedanceSpectroscopy(
     dc_current: float = 0.0
     """DC current in applied current range."""
 
-    n_frequencies: int = 11
-    """Number of frequencies."""
+    min_frequency: float = 1_000
+    """Minimum frequency in Hz."""
 
-    max_frequency: float = 1e5
+    max_frequency: float = 50_000
     """Maximum frequency in Hz."""
 
-    min_frequency: float = 1e3
-    """Minimum frequency in Hz."""
+    n_frequencies: int = 11
+    """Number of frequencies."""
 
     @override
     def _update_psmethod(self, psmethod: PSMethod, /):
@@ -1968,10 +1997,10 @@ class FastGalvanostaticImpedanceSpectroscopy(
     Use `CURRENT_RANGE` to define the range."""
 
     run_time: float = 10.0
-    """Run time in s."""
+    """Total run time of the measurement in s."""
 
     interval_time: float = 0.1
-    """Interval time in s."""
+    """The time between two samples in s."""
 
     ac_current: float = 0.01
     """AC current in applied current range RMS.
@@ -1984,7 +2013,7 @@ class FastGalvanostaticImpedanceSpectroscopy(
     This value is multiplied by the applied current range."""
 
     frequency: float = 50000.0
-    """Frequency in Hz."""
+    """Fixed frequency in Hz."""
 
     @override
     def _update_psmethod(self, psmethod: PSMethod, /):
@@ -2008,7 +2037,18 @@ class FastGalvanostaticImpedanceSpectroscopy(
 
 @attrs.define
 class MethodScript(BaseTechnique):
-    """Create a method script sandbox object."""
+    """Create a method script sandbox object.
+
+    The MethodSCRIPT Sandbox allows you to write your own MethodSCRIPT and run them
+    on your instrument.
+
+    The MethodSCRIPT language allows for programming a human-readable script directly into the
+    potentiostat. The simple script language makes it easy to combine different measurements and
+    other tasks.
+
+    For more information see:
+        https://www.palmsens.com/methodscript/
+    """
 
     _id = 'ms'
 
