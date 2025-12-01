@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-import sys
+import asyncio
 import warnings
 from contextlib import contextmanager
 from time import sleep
@@ -17,21 +17,8 @@ from typing_extensions import override
 from .._methods import CURRENT_RANGE, BaseTechnique
 from ..data import Measurement
 from ._common import Callback, Instrument, firmware_warning
+from .instrument_manager_async import InstrumentManagerAsync, discover_async
 from .measurement_manager import MeasurementManager
-
-WINDOWS = sys.platform == 'win32'
-LINUX = not WINDOWS
-
-if WINDOWS:
-    from PalmSens.Windows.Devices import (
-        BLEDevice,
-        BluetoothDevice,
-        FTDIDevice,
-        USBCDCDevice,
-        WinUSBDevice,
-    )
-else:
-    from PalmSens.Core.Linux.Comm.Devices import FTDIDevice, SerialPortDevice
 
 
 def discover(
@@ -67,62 +54,16 @@ def discover(
     discovered : list[Instrument]
         List of dataclasses with discovered instruments.
     """
-    args = [''] if WINDOWS else []
-    interfaces: dict[str, Any] = {}
-
-    if ftdi:
-        interfaces['ftdi'] = FTDIDevice
-
-    if WINDOWS:
-        if usbcdc:
-            interfaces['usbcdc'] = USBCDCDevice
-
-        if winusb:
-            interfaces['winusb'] = WinUSBDevice
-
-        if bluetooth:
-            interfaces['bluetooth'] = BluetoothDevice
-            interfaces['ble'] = BLEDevice
-
-    if LINUX:
-        if serial:
-            interfaces['serial'] = SerialPortDevice
-
-    instruments: list[Instrument] = []
-
-    for name, interface in interfaces.items():
-        try:
-            devices = interface.DiscoverDevices(*args)
-        except System.DllNotFoundException:
-            if ignore_errors:
-                continue
-
-            if name == 'ftdi':
-                msg = (
-                    'Cannot discover FTDI devices (missing driver).'
-                    '\nfor more information see: '
-                    'https://sdk.palmsens.com/python/latest/installation.html#ftdisetup'
-                    '\nSet `ftdi=False` to hide this message.'
-                )
-                warnings.warn(msg, stacklevel=2)
-                continue
-            raise
-
-        if WINDOWS:
-            devices = devices[0]
-
-        for device in devices:
-            instruments.append(
-                Instrument(
-                    id=device.ToString(),
-                    interface=name,
-                    device=device,
-                )
-            )
-
-    instruments.sort(key=lambda instrument: instrument.id)
-
-    return instruments
+    return asyncio.run(
+        discover_async(
+            ftdi=ftdi,
+            usbcdc=usbcdc,
+            winusb=winusb,
+            bluetooth=bluetooth,
+            serial=serial,
+            ignore_errors=ignore_errors,
+        )
+    )
 
 
 def connect(
