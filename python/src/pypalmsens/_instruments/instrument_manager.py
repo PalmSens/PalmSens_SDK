@@ -4,7 +4,7 @@ import asyncio
 import warnings
 from contextlib import contextmanager
 from time import sleep
-from typing import Any, Generator
+from typing import Iterator
 
 import clr
 import PalmSens
@@ -189,7 +189,7 @@ class InstrumentManager:
         return int(self._comm.State) == CommManager.DeviceState.Measurement
 
     @contextmanager
-    def _lock(self) -> Generator[CommManager, Any, Any]:
+    def _lock(self) -> Iterator[CommManager]:
         self.ensure_connection()
 
         self._comm.ClientConnection.Semaphore.Wait()
