@@ -37,6 +37,8 @@ else:
 if TYPE_CHECKING:
     from PalmSens import Method as PSMethod
 
+warnings.simplefilter('default')
+
 
 async def discover_async(
     ftdi: bool = True,

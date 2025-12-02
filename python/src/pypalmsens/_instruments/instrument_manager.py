@@ -20,6 +20,8 @@ from ._common import Callback, Instrument, create_future, firmware_warning
 from .instrument_manager_async import discover_async
 from .measurement_manager_async import MeasurementManagerAsync
 
+warnings.simplefilter('default')
+
 
 def discover(
     ftdi: bool = True,
@@ -353,7 +355,6 @@ class InstrumentManager:
 
         # note that the comm manager must be opened async so it sets the
         # correct async event handlers
-
         measurement_manager = MeasurementManagerAsync(comm=self._comm)
 
         return asyncio.run(measurement_manager.measure(psmethod, callback=callback))
