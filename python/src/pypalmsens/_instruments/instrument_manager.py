@@ -227,6 +227,10 @@ class InstrumentManager:
 
             return await create_future(CommManager.CommManagerAsync(psinstrument))
 
+        # The comm manager needs to open async, because the measurement is handled async.
+        # Opening the comm manager in async sets some handlers in ClientConnection
+        # that are sync or async specific. This affects the measurement,
+        # receive status, and device state change events.
         self._comm = asyncio.run(_connect(self.instrument.device))
 
         firmware_warning(self._comm.Capabilities)
@@ -346,6 +350,9 @@ class InstrumentManager:
         self.ensure_connection()
 
         self.validate_method(psmethod)
+
+        # note that the comm manager must be opened async so it sets the
+        # correct async event handlers
 
         measurement_manager = MeasurementManagerAsync(comm=self._comm)
 
