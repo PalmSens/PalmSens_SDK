@@ -139,7 +139,7 @@ namespace PalmSensInternalStorage
             ListFilesBtn.IsEnabled = true;
         }
 
-        private async void ListFiles()
+        private void ListFiles()
         {
             Log.Add("Reading contents from: Root");
 
