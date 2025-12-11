@@ -39,12 +39,27 @@ The `PalmSens.Core` libraries are referenced by the Simplified wrapper, and do n
 
 You can use `net9.0` as the target .NET runtime.
 
-== Making a new app
+== Compatible devices and firmware
 
-1. Copy the directory you want to start from, e.g. `BasicExampleApp`
-2. Rename the directory, e.g. `MyNewApp`
-3. Rename the `BasicExampleApp.csproj` file to `MyNewApp.csproj`
-4. Right click Solution > Add > Existing Project, select `.csproj` file
-5. Update namespace (find-replace), `BasicExampleApp` -> `MyNewApp`
+The PalmSens .NET MAUI SDK is based on PalmSens Core version 5.12 which is compatible with:
 
-== Platform notices
+[cols=",",options="header",]
+|===
+|Device |Minimum required firmware version
+|EmStat |3.7
+|EmStat2 |7.7
+|EmStat3 |7.7
+|EmStat3{plus} |7.7
+|EmStat4 |1.3
+|EmStat4T |1.4
+|EmStat Go |7.7
+|EmStat Pico |1.5
+|Sensit Smart |1.5
+|Sensit BT |1.5
+|Sensit Wearable |1.5
+|MultiEmStat3 |7.7
+|MultiEmStat4 |1.3
+|PalmSens3 |2.8
+|PalmSens4 |1.7
+|MultiPalmSens4 |1.7
+|===

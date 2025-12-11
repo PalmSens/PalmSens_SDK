@@ -21,8 +21,8 @@ To make a new app using one of the example apps as a template:
 --
 image:example_basic.png[Linux,200,float="right"]
 
-This is a basic example that shows how to get started with building a simple data measurement app using the PalmSens .NET MAUI SDK.
-It shows how to discover devices, make a connection, run a measurement, and show the data in a table.
+This example shows how to get started with building a simple data measurement app using the PalmSens .NET MAUI SDK.
+It demonstrates UI elements to discover devices, make a connection, run a measurement, and show the data in a table.
 
 https://github.com/palmsens/palmsens_sdk/blob/main/maui/Examples/MeasureApp[Link to the code]
 --
