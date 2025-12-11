@@ -665,7 +665,7 @@ class EIS_pot_fixed:
         'min_frequency': 1e3,
         'scan_type': 'potential',
         'frequency_type': 'fixed',
-        'start_potential': 0.0,
+        'begin_potential': 0.0,
         'end_potential': -0.1,
         'step_potential': 0.1,
     }
@@ -690,7 +690,7 @@ class EIS_pot_scan:
         'min_frequency': 1e3,
         'scan_type': 'potential',
         'frequency_type': 'scan',
-        'start_potential': 0.0,
+        'begin_potential': 0.0,
         'end_potential': -0.1,
         'step_potential': 0.1,
     }
