@@ -7,9 +7,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PalmSens.Core.Simplified", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PalmSens.Core.Simplified.MAUI", "PSLibraries\PalmSens.Core.Simplified.MAUI\PalmSens.Core.Simplified.MAUI.csproj", "{D9949105-5E98-4C82-1A0E-8E92C0DEDC7A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BasicExample", "Examples\BasicExampleApp\BasicExample.csproj", "{F6A6A78F-921C-9FB6-DFD1-D26375539BA6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BasicExample", "Examples\MeasureApp\BasicExample.csproj", "{F6A6A78F-921C-9FB6-DFD1-D26375539BA6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BiPotAuxExample", "Examples\BiPotAuxExampleApp\BiPotAuxExample.csproj", "{6D1CA250-949B-72B2-8828-C97CA2A311F7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BiPotAuxExample", "Examples\BiPotAuxApp\BiPotAuxExample.csproj", "{6D1CA250-949B-72B2-8828-C97CA2A311F7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataProcessingExample", "Examples\DataProcessingApp\DataProcessingExample.csproj", "{5237E62B-CFF3-56D6-59C1-97FA5FDCB8AB}"
 EndProject
