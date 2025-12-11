@@ -8,11 +8,11 @@ programming] where necessary to prevent the PalmSens SDK libraries from blocking
 
 To make a new app using one of the example apps as a template:
 
-1. Copy the directory you want to copy, e.g. `BasicExampleApp`
+1. Copy the directory you want to copy, e.g. `MeasureApp`
 2. Rename the directory to e.g. `MyPalmSensApp`
-3. Rename `BasicExampleApp.csproj` to `MyPalmSensApp.csproj`
+3. Rename `MeasureApp.csproj` to `MyPalmSensApp.csproj`
 4. Right click menu:Solution[Add > Existing Project], select `MyPalmSensApp.csproj` file
-5. Update namespace (find-replace), `BasicExampleApp` -> `MyPalmSensApp`
+5. Update namespace (find-replace), `MeasureApp` -> `MyPalmSensApp`
 
 
 [#example-basic]
