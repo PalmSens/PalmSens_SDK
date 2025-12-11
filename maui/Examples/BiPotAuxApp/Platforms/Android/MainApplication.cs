@@ -1,7 +1,7 @@
 ﻿using Android.App;
 using Android.Runtime;
 
-namespace PalmSensBiPotExample
+namespace BiPotAuxApp
 {
     [Application]
     public class MainApplication : MauiApplication

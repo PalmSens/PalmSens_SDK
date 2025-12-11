@@ -1,6 +1,6 @@
 ﻿using Foundation;
 
-namespace PalmSensMeasureApp
+namespace MeasureApp
 {
     [Register("AppDelegate")]
     public class AppDelegate : MauiUIApplicationDelegate

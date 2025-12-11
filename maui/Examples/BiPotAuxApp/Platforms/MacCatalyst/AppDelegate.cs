@@ -1,6 +1,6 @@
 ﻿using Foundation;
 
-namespace PalmSensBiPotExample
+namespace BiPotAuxApp
 {
     [Register("AppDelegate")]
     public class AppDelegate : MauiUIApplicationDelegate

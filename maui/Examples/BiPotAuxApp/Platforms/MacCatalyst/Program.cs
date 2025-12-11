@@ -1,7 +1,7 @@
 ﻿using ObjCRuntime;
 using UIKit;
 
-namespace PalmSensBiPotExample
+namespace BiPotAuxApp
 {
     public class Program
     {

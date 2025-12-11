@@ -1,4 +1,4 @@
-﻿namespace PalmSensBiPotExample
+﻿namespace BiPotAuxApp
 {
     public partial class App : Application
     {

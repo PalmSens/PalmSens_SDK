@@ -1,4 +1,4 @@
-﻿namespace PalmSensMeasureApp
+﻿namespace MeasureApp
 {
     public partial class App : Application
     {

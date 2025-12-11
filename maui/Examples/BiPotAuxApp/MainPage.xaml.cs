@@ -7,7 +7,7 @@ using System.Collections.ObjectModel;
 using PalmSens.Core.Simplified.MAUI;
 using Device = PalmSens.Devices.Device;
 
-namespace PalmSensBiPotExample
+namespace BiPotAuxApp
 {
     public partial class MainPage : ContentPage
     {
@@ -270,7 +270,7 @@ namespace PalmSensBiPotExample
                         Log.Add(ex.Message);
                     }
                     break;
-           
+
             case PalmSens.Comm.CommManager.DeviceState.Pretreatment:
             case PalmSens.Comm.CommManager.DeviceState.Measurement:
                 Log.Add($"Aborting measurement...");

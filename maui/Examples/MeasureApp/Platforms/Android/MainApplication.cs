@@ -1,7 +1,7 @@
 ﻿using Android.App;
 using Android.Runtime;
 
-namespace PalmSensMeasureApp
+namespace MeasureApp
 {
     [Application]
     public class MainApplication : MauiApplication

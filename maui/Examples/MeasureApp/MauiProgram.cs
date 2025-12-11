@@ -3,7 +3,7 @@ using OxyPlot.Maui.Skia;
 using SkiaSharp.Views.Maui.Controls.Hosting;
 using static PalmSens.Core.Simplified.MAUI.PalmSensServiceCollectionExtensions;
 
-namespace PalmSensMeasureApp
+namespace MeasureApp
 {
     public static class MauiProgram
     {

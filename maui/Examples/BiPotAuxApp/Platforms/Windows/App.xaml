@@ -1,8 +1,8 @@
 ﻿<maui:MauiWinUIApplication
-    x:Class="PalmSensBiPotExample.WinUI.App"
+    x:Class="BiPotAuxApp.WinUI.App"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:maui="using:Microsoft.Maui"
-    xmlns:local="using:PalmSensBiPotExample.WinUI">
+    xmlns:local="using:BiPotAuxApp.WinUI">
 
 </maui:MauiWinUIApplication>

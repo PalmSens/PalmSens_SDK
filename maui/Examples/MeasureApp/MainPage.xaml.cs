@@ -10,7 +10,7 @@ using System.Collections.ObjectModel;
 using PalmSens.Core.Simplified.MAUI;
 using Device = PalmSens.Devices.Device;
 
-namespace PalmSensMeasureApp
+namespace MeasureApp
 {
     public partial class MainPage : ContentPage
     {

@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using static PalmSens.Core.Simplified.MAUI.PalmSensServiceCollectionExtensions;
 
-namespace PalmSensBiPotExample
+namespace BiPotAuxApp
 {
     public static class MauiProgram
     {
