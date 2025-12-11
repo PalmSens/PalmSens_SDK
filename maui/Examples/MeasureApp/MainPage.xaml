@@ -2,8 +2,8 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:oxy="clr-namespace:OxyPlot.Maui.Skia;assembly=OxyPlot.Maui.Skia"
-             xmlns:local="clr-namespace:PalmSensBasicExample"
-             x:Class="PalmSensBasicExample.MainPage"
+             xmlns:local="clr-namespace:PalmSensMeasureApp"
+             x:Class="PalmSensMeasureApp.MainPage"
              x:DataType="local:MainPage">
 
     <ScrollView>
@@ -12,7 +12,7 @@
             Spacing="15">
 
             <Label
-                Text="Basic example"
+                Text="Measure App"
                 Style="{StaticResource Headline}"
                 SemanticProperties.HeadingLevel="Level1" />
 

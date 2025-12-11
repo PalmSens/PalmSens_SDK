@@ -1,4 +1,4 @@
-﻿namespace PalmSensBasicExample
+﻿namespace PalmSensMeasureApp
 {
     public partial class App : Application
     {

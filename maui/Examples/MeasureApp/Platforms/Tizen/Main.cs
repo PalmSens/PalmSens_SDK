@@ -2,7 +2,7 @@ using System;
 using Microsoft.Maui;
 using Microsoft.Maui.Hosting;
 
-namespace PalmSensBasicExample
+namespace PalmSensMeasureApp
 {
     internal class Program : MauiApplication
     {

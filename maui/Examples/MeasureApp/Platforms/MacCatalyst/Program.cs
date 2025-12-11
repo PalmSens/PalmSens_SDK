@@ -1,7 +1,7 @@
 ﻿using ObjCRuntime;
 using UIKit;
 
-namespace PalmSensBasicExample
+namespace PalmSensMeasureApp
 {
     public class Program
     {
