@@ -1258,13 +1258,6 @@ def test_callback_eis(manager):
 def test_params_round_trip(method):
     params = BaseTechnique._registry[method.id].from_dict(method.kwargs)
 
-    # m = params._to_psmethod()
-
-    # ocp = ps.OpenCircuitPotentiometry()
-    # ocp._update_params(m)
-
-    # assert ocp.potential_range.min == 'pr_10_mV'
-
     with tempfile.TemporaryDirectory() as tmp:
         path = Path(tmp, f'{method.id}.psmethod')
         ps.save_method_file(path, params)
