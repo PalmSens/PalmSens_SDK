@@ -119,7 +119,7 @@ class ConstantI(BaseStage, mixins.PotentialLimitsMixin):
     applied_current_range: AllowedCurrentRanges = 'cr_100_uA'
     """Applied current range.
 
-    Use `CURRENT_RANGE` to define the range."""
+    See `pypalmsens.settings.AllowedCurrentRanges` for options."""
 
     run_time: float = 1.0
     """Run time of the stage in s."""

@@ -27,17 +27,17 @@ class CurrentRange(BaseSettings):
     max: AllowedCurrentRanges = 'cr_10_mA'
     """Maximum current range.
 
-    Use `CURRENT_RANGE` to define the range."""
+    See `pypalmsens.settings.AllowedCurrentRanges` for options."""
 
     min: AllowedCurrentRanges = 'cr_1_uA'
     """Minimum current range.
 
-    Use `CURRENT_RANGE` to define the range."""
+    See `pypalmsens.settings.AllowedCurrentRanges` for options."""
 
     start: AllowedCurrentRanges = 'cr_100_uA'
     """Start current range.
 
-    Use `CURRENT_RANGE` to define the range."""
+    See `pypalmsens.settings.AllowedCurrentRanges` for options."""
 
     @override
     def _update_psmethod(self, psmethod: PSMethod, /):
@@ -59,17 +59,17 @@ class PotentialRange(BaseSettings):
     max: AllowedPotentialRanges = 'pr_1_V'
     """Maximum potential range.
 
-    Use `POTENTIAL_RANGE` to define the range."""
+    See `pypalmsens.settings.AllowedPotentialRanges` for options."""
 
     min: AllowedPotentialRanges = 'pr_1_mV'
     """Minimum potential range.
 
-    Use `POTENTIAL_RANGE` to define the range."""
+    See `pypalmsens.settings.AllowedPotentialRanges` for options."""
 
     start: AllowedPotentialRanges = 'pr_1_V'
     """Start potential range.
 
-    Use `POTENTIAL_RANGE` to define the range."""
+    See `pypalmsens.settings.AllowedPotentialRanges` for options."""
 
     @override
     def _update_psmethod(self, psmethod: PSMethod, /):

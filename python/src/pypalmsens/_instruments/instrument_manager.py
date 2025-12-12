@@ -264,8 +264,9 @@ class InstrumentManager:
 
         Parameters
         ----------
-        current_range: CURRENT_RANGE
-            Set the current range, use `pypalmsens.settings.CURRENT_RANGE`.
+        current_range: AllowedCurrentRanges
+            Set the current range as a string.
+            See `pypalmsens.settings.AllowedCurrentRanges` for options.
         """
         with self._lock():
             self._comm.CurrentRange = CURRENT_RANGE[current_range]._to_psobj()

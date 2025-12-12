@@ -127,9 +127,9 @@ For example:
 >>> cv = ps.CyclicVoltammetry()
 >>> cv.current_range
 CurrentRange(
-    max=<CURRENT_RANGE.cr_10_mA: 8>,
-    min=<CURRENT_RANGE.cr_1_uA: 4>,
-    start=<CURRENT_RANGE.cr_100_uA: 6>,
+    max = 'cr_10_mA',
+    min = 'cr_1_uA',
+    start = 'cr_100_uA',
 )
 ----
 
@@ -146,9 +146,9 @@ There are two ways to modify the current ranges, for example, if you want so set
 ... )
 >>> cv.current_range
 CurrentRange(
-    max=<CURRENT_RANGE.cr_10_mA: 8>,
-    min=<CURRENT_RANGE.cr_1_uA: 4>,
-    start=<CURRENT_RANGE.cr_10_uA: 5>, # <1>
+    max = 'cr_10_mA',
+    min = 'cr_1_uA',
+    start = 'cr_10_uA', # <1>
 )
 ----
 <1> Only the start value was set, so the min/max are populated with the defaults.
@@ -165,7 +165,7 @@ CurrentRange(
 .Fixed ranges
 ====
 If you want to use a fixed current (or potential) range,
-you can save yourself some typing by passing `CURRENT_RANGE` directly.
+you can save yourself some typing by passing the current range string directly.
 This automatically expands into the `CurrentRange` object with `min`, `max`, and `start` equal.
 
 [,python]
@@ -175,9 +175,9 @@ This automatically expands into the `CurrentRange` object with `min`, `max`, and
 ... )
 >>> cv.current_range
 CurrentRange(
-    max=<CURRENT_RANGE.cr_10_uA: 5>,
-    min=<CURRENT_RANGE.cr_10_uA: 5>,
-    start=<CURRENT_RANGE.cr_10_uA: 5>,
+    max = 'cr_10_uA',
+    min = 'cr_10_uA',
+    start = 'cr_10_uA',
 )
 ----
 ====
