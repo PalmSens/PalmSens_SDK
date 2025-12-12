@@ -9,6 +9,46 @@ import PalmSens
 
 from .._shared import single_to_double
 
+AllowedCurrentRanges = Literal[
+    'cr_100_pA',
+    'cr_1_nA',
+    'cr_10_nA',
+    'cr_100_nA',
+    'cr_1_uA',
+    'cr_10_uA',
+    'cr_100_uA',
+    'cr_1_mA',
+    'cr_10_mA',
+    'cr_100_mA',
+    'cr_2_uA',
+    'cr_4_uA',
+    'cr_8_uA',
+    'cr_16_uA',
+    'cr_32_uA',
+    'cr_63_uA',
+    'cr_125_uA',
+    'cr_250_uA',
+    'cr_500_uA',
+    'cr_5_mA',
+    'cr_6_uA',
+    'cr_13_uA',
+    'cr_25_uA',
+    'cr_50_uA',
+    'cr_200_uA',
+    'cr_1_A',
+]
+
+AllowedPotentialRanges = Literal[
+    'pr_1_mV',
+    'pr_10_mV',
+    'pr_20_mV',
+    'pr_50_mV',
+    'pr_100_mV',
+    'pr_200_mV',
+    'pr_500_mV',
+    'pr_1_V',
+]
+
 
 class CURRENT_RANGE(Enum):
     """Get the id for a given current range.

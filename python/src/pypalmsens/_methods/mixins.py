@@ -3,11 +3,16 @@ from __future__ import annotations
 import attrs
 
 from . import settings
-from ._shared import CURRENT_RANGE, POTENTIAL_RANGE
+from ._shared import (
+    AllowedCurrentRanges,
+    AllowedPotentialRanges,
+)
 
 
-def current_converter(value: CURRENT_RANGE | settings.CurrentRange) -> settings.CurrentRange:
-    if isinstance(value, CURRENT_RANGE):
+def current_converter(
+    value: AllowedCurrentRanges | settings.CurrentRange,
+) -> settings.CurrentRange:
+    if isinstance(value, str):
         return settings.CurrentRange(min=value, max=value, start=value)
     return value
 
@@ -21,9 +26,9 @@ class CurrentRangeMixin:
 
 
 def potential_converter(
-    value: POTENTIAL_RANGE | settings.PotentialRange,
+    value: AllowedPotentialRanges | settings.PotentialRange,
 ) -> settings.PotentialRange:
-    if isinstance(value, POTENTIAL_RANGE):
+    if isinstance(value, str):
         return settings.PotentialRange(min=value, max=value, start=value)
     return value
 

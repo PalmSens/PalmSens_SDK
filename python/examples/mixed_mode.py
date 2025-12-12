@@ -22,9 +22,9 @@ print(instruments)
 
 method = ps.mixed_mode.MixedMode(
     current_range=ps.settings.CurrentRange(
-        min=ps.settings.CURRENT_RANGE.cr_1_mA,  # 1 mA range
-        max=ps.settings.CURRENT_RANGE.cr_100_mA,  # 100 mA range
-        start=ps.settings.CURRENT_RANGE.cr_100_mA,  # 100 mA range
+        min='cr_1_mA',  # 1 mA range
+        max='cr_100_mA',  # 100 mA range
+        start='cr_100_mA',  # 100 mA range
     ),
     interval_time=1.0,
     cycles=N_CYCLES,
@@ -35,7 +35,7 @@ method = ps.mixed_mode.MixedMode(
         ps.mixed_mode.ConstantI(
             run_time=TIMEOUT,  # s
             current=3.0,
-            applied_current_range=ps.settings.CURRENT_RANGE.cr_100_mA,
+            applied_current_range='cr_100_mA',
             potential_limits=ps.settings.PotentialLimits(max=4.2),
         ),
         ps.mixed_mode.ConstantE(
@@ -49,7 +49,7 @@ method = ps.mixed_mode.MixedMode(
         ps.mixed_mode.ConstantI(
             run_time=TIMEOUT,  # s
             current=-3.0,
-            applied_current_range=ps.settings.CURRENT_RANGE.cr_100_mA,
+            applied_current_range='cr_100_mA',
             potential_limits=ps.settings.PotentialLimits(min=2.5),
         ),
     ],

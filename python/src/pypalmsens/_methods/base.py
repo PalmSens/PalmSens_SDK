@@ -77,6 +77,8 @@ class BaseTechnique(Protocol):
         """Convert parameters to dotnet method."""
         psmethod = PSMethod.FromMethodID(self._id)
 
+        print(psmethod.RangingPotential.MinimumPotentialRange.ToString())
+
         self._update_psmethod(psmethod)
         self._update_psmethod_nested(psmethod)
         return psmethod
@@ -88,6 +90,7 @@ class BaseTechnique(Protocol):
         """Convert and set field parameters on dotnet method."""
         for field in self.__attrs_attrs__:
             attribute = getattr(self, field.name)
+            print(field.name, attribute)
             try:
                 # Update parameters if attribute has the `update_params` method
                 attribute._update_psmethod(psmethod)

@@ -15,9 +15,9 @@ with ps.connect(instruments[0]) as manager:
 
     method = ps.CyclicVoltammetry(
         current_range=ps.settings.CurrentRange(
-            max=ps.settings.CURRENT_RANGE.cr_1_A,  # 1 A range
-            min=ps.settings.CURRENT_RANGE.cr_1_uA,  # 1 µA range
-            start=ps.settings.CURRENT_RANGE.cr_1_mA,  # 1 mA range
+            max='cr_1_A',  # 1 A range
+            min='cr_1_uA',  # 1 µA range
+            start='cr_1_mA',  # 1 mA range
         ),
         equilibration_time=2,  # seconds
         begin_potential=-2,  # V
