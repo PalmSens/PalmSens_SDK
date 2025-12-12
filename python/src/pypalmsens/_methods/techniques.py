@@ -15,6 +15,8 @@ from . import mixins
 from ._shared import (
     CURRENT_RANGE,
     POTENTIAL_RANGE,
+    AllowedCurrentRanges,
+    AllowedPotentialRanges,
     ELevel,
     ILevel,
     get_extra_value_mask,
@@ -149,7 +151,7 @@ class FastCyclicVoltammetry(
 
     _id = 'fcv'
 
-    current_range: CURRENT_RANGE = CURRENT_RANGE.cr_1_uA
+    current_range: AllowedCurrentRanges = 'cr_1_uA'
     """Fixed current range."""
 
     equilibration_time: float = 0.0
@@ -191,7 +193,7 @@ class FastCyclicVoltammetry(
     def _update_psmethod(self, psmethod: PSMethod, /):
         """Update method with fast cyclic voltammetry settings."""
 
-        psmethod.Ranging = PSFixedCurrentRange(self.current_range._to_psobj())
+        psmethod.Ranging = PSFixedCurrentRange(CURRENT_RANGE[self.current_range]._to_psobj())
         psmethod.EquilibrationTime = self.equilibration_time
         psmethod.BeginPotential = self.begin_potential
         psmethod.Vtx1Potential = self.vertex1_potential
@@ -204,7 +206,7 @@ class FastCyclicVoltammetry(
 
     @override
     def _update_params(self, psmethod: PSMethod, /):
-        self.current_range = CURRENT_RANGE._from_psobj(psmethod.Ranging.StartCurrentRange)
+        self.current_range = CURRENT_RANGE._from_psobj(psmethod.Ranging.StartCurrentRange).name
         self.equilibration_time = single_to_double(psmethod.EquilibrationTime)
         self.begin_potential = single_to_double(psmethod.BeginPotential)
         self.vertex1_potential = single_to_double(psmethod.Vtx1Potential)
@@ -824,7 +826,7 @@ class FastAmperometry(
 
     _id = 'fam'
 
-    current_range: CURRENT_RANGE = CURRENT_RANGE.cr_100_nA
+    current_range: AllowedCurrentRanges = 'cr_100_nA'
     """Fixed current range."""
 
     equilibration_time: float = 0.0
@@ -852,7 +854,7 @@ class FastAmperometry(
     @override
     def _update_psmethod(self, psmethod: PSMethod, /):
         """Update method with fast amperometry settings."""
-        psmethod.Ranging = PSFixedCurrentRange(self.current_range._to_psobj())
+        psmethod.Ranging = PSFixedCurrentRange(CURRENT_RANGE[self.current_range]._to_psobj())
         psmethod.EquilibrationTime = self.equilibration_time
         psmethod.EqPotentialFA = self.equilibration_potential
         psmethod.IntervalTime = self.interval_time
@@ -861,7 +863,7 @@ class FastAmperometry(
 
     @override
     def _update_params(self, psmethod: PSMethod, /):
-        self.current_range = CURRENT_RANGE._from_psobj(psmethod.Ranging.StartCurrentRange)
+        self.current_range = CURRENT_RANGE._from_psobj(psmethod.Ranging.StartCurrentRange).name
         self.equilibration_time = single_to_double(psmethod.EquilibrationTime)
         self.equilibration_potential = single_to_double(psmethod.EqPotentialFA)
         self.interval_time = single_to_double(psmethod.IntervalTime)
@@ -1169,7 +1171,7 @@ class OpenCircuitPotentiometry(
     record_we_current: bool = False
     """Record working electrode current."""
 
-    record_we_current_range: CURRENT_RANGE = CURRENT_RANGE.cr_1_uA
+    record_we_current_range: AllowedCurrentRanges = 'cr_1_uA'
     """Record working electrode current range.
 
     Use `CURRENT_RANGE` to define the range."""
@@ -1179,7 +1181,7 @@ class OpenCircuitPotentiometry(
         """Update method with open circuit potentiometry settings."""
         psmethod.IntervalTime = self.interval_time
         psmethod.RunTime = self.run_time
-        psmethod.AppliedCurrentRange = self.record_we_current_range._to_psobj()
+        psmethod.AppliedCurrentRange = CURRENT_RANGE[self.record_we_current_range]._to_psobj()
 
         set_extra_value_mask(
             obj=psmethod,
@@ -1191,7 +1193,9 @@ class OpenCircuitPotentiometry(
     def _update_params(self, psmethod: PSMethod, /):
         self.interval_time = single_to_double(psmethod.IntervalTime)
         self.run_time = single_to_double(psmethod.RunTime)
-        self.record_we_current_range = CURRENT_RANGE._from_psobj(psmethod.AppliedCurrentRange)
+        self.record_we_current_range = CURRENT_RANGE._from_psobj(
+            psmethod.AppliedCurrentRange
+        ).name
 
         msk = get_extra_value_mask(psmethod)
 
@@ -1236,7 +1240,7 @@ class ChronoPotentiometry(
     So if 10 uA is the `applied_current_range` and 1.5 is given as current value,
     the applied current will be 15 uA."""
 
-    applied_current_range: CURRENT_RANGE = CURRENT_RANGE.cr_100_uA
+    applied_current_range: AllowedCurrentRanges = 'cr_100_mA'
     """Applied current range.
 
     Use `CURRENT_RANGE` to define the range."""
@@ -1262,11 +1266,11 @@ class ChronoPotentiometry(
     def _update_psmethod(self, psmethod: PSMethod, /):
         """Update method with chronopotentiometry settings."""
         psmethod.Current = self.current
-        psmethod.AppliedCurrentRange = self.applied_current_range._to_psobj()
+        psmethod.AppliedCurrentRange = CURRENT_RANGE[self.applied_current_range]._to_psobj()
         psmethod.IntervalTime = self.interval_time
         psmethod.RunTime = self.run_time
 
-        psmethod.AppliedCurrentRange = self.applied_current_range._to_psobj()
+        psmethod.AppliedCurrentRange = CURRENT_RANGE[self.applied_current_range]._to_psobj()
 
         set_extra_value_mask(
             obj=psmethod,
@@ -1278,7 +1282,9 @@ class ChronoPotentiometry(
     @override
     def _update_params(self, psmethod: PSMethod, /):
         self.current = single_to_double(psmethod.Current)
-        self.applied_current_range = CURRENT_RANGE._from_psobj(psmethod.AppliedCurrentRange)
+        self.applied_current_range = CURRENT_RANGE._from_psobj(
+            psmethod.AppliedCurrentRange
+        ).name
         self.interval_time = single_to_double(psmethod.IntervalTime)
         self.run_time = single_to_double(psmethod.RunTime)
 
@@ -1319,7 +1325,7 @@ class StrippingChronoPotentiometry(
 
     _id = 'scp'
 
-    potential_range: POTENTIAL_RANGE = POTENTIAL_RANGE.pr_500_mV
+    potential_range: AllowedPotentialRanges = 'pr_500_mV'
     """Fixed potential range."""
 
     current: float = 0.0
@@ -1333,7 +1339,7 @@ class StrippingChronoPotentiometry(
     otherwise it is chemical constant current stripping.
     """
 
-    applied_current_range: CURRENT_RANGE = CURRENT_RANGE.cr_100_uA
+    applied_current_range: AllowedCurrentRanges = 'cr_100_uA'
     """Applied current range.
 
     Use `CURRENT_RANGE` to define the range."""
@@ -1355,14 +1361,14 @@ class StrippingChronoPotentiometry(
     @override
     def _update_psmethod(self, psmethod: PSMethod, /):
         """Update method with stripping chrono potentiometry settings."""
-        psmethod.RangingPotential = PSFixedPotentialRange(self.potential_range._to_psobj())
+        psmethod.RangingPotential = PSFixedPotentialRange(
+            POTENTIAL_RANGE[self.potential_range]._to_psobj()
+        )
 
         psmethod.Istrip = self.current
-        psmethod.AppliedCurrentRange = self.applied_current_range._to_psobj()
+        psmethod.AppliedCurrentRange = CURRENT_RANGE[self.applied_current_range]._to_psobj()
         psmethod.MeasurementTime = self.measurement_time
         psmethod.EndPotential = self.end_potential
-
-        psmethod.AppliedCurrentRange = self.applied_current_range._to_psobj()
 
         if self.bandwidth is not None:
             psmethod.OverrideBandwidth = True
@@ -1372,10 +1378,12 @@ class StrippingChronoPotentiometry(
     def _update_params(self, psmethod: PSMethod, /):
         self.potential_range = POTENTIAL_RANGE._from_psobj(
             psmethod.RangingPotential.StartPotentialRange
-        )
+        ).name
 
         self.current = single_to_double(psmethod.Current)
-        self.applied_current_range = CURRENT_RANGE._from_psobj(psmethod.AppliedCurrentRange)
+        self.applied_current_range = CURRENT_RANGE._from_psobj(
+            psmethod.AppliedCurrentRange
+        ).name
         self.measurement_time = single_to_double(psmethod.MeasurementTime)
         self.end_potential = single_to_double(psmethod.EndPotential)
 
@@ -1401,7 +1409,7 @@ class LinearSweepPotentiometry(
 
     _id = 'lsp'
 
-    applied_current_range: CURRENT_RANGE = CURRENT_RANGE.cr_100_uA
+    applied_current_range: AllowedCurrentRanges = 'cr_100_uA'
     """Applied current range.
 
     Use `CURRENT_RANGE` to define the range."""
@@ -1438,14 +1446,12 @@ class LinearSweepPotentiometry(
     @override
     def _update_psmethod(self, psmethod: PSMethod, /):
         """Update method with lineas sweep potentiometry settings."""
-        psmethod.AppliedCurrentRange = self.applied_current_range._to_psobj()
+        psmethod.AppliedCurrentRange = CURRENT_RANGE[self.applied_current_range]._to_psobj()
 
         psmethod.BeginCurrent = self.current_begin
         psmethod.EndCurrent = self.current_end
         psmethod.StepCurrent = self.current_step
         psmethod.ScanrateG = self.scan_rate
-
-        psmethod.AppliedCurrentRange = self.applied_current_range._to_psobj()
 
         set_extra_value_mask(
             obj=psmethod,
@@ -1455,7 +1461,9 @@ class LinearSweepPotentiometry(
 
     @override
     def _update_params(self, psmethod: PSMethod, /):
-        self.applied_current_range = CURRENT_RANGE._from_psobj(psmethod.AppliedCurrentRange)
+        self.applied_current_range = CURRENT_RANGE._from_psobj(
+            psmethod.AppliedCurrentRange
+        ).name
 
         self.current_begin = single_to_double(psmethod.BeginCurrent)
         self.current_end = single_to_double(psmethod.EndCurrent)
@@ -1496,7 +1504,7 @@ class MultiStepPotentiometry(
 
     _id = 'mp'
 
-    applied_current_range: CURRENT_RANGE = CURRENT_RANGE.cr_1_uA
+    applied_current_range: AllowedCurrentRanges = 'cr_1_uA'
     """Applied current range.
 
     Use `CURRENT_RANGE` to define the range."""
@@ -1524,7 +1532,7 @@ class MultiStepPotentiometry(
     @override
     def _update_psmethod(self, psmethod: PSMethod, /):
         """Update method with multistep potentiometry settings."""
-        psmethod.AppliedCurrentRange = self.applied_current_range._to_psobj()
+        psmethod.AppliedCurrentRange = CURRENT_RANGE[self.applied_current_range]._to_psobj()
         psmethod.IntervalTime = self.interval_time
         psmethod.nCycles = self.n_cycles
         psmethod.Levels.Clear()
@@ -1546,7 +1554,9 @@ class MultiStepPotentiometry(
 
     @override
     def _update_params(self, psmethod: PSMethod, /):
-        self.applied_current_range = CURRENT_RANGE._from_psobj(psmethod.AppliedCurrentRange)
+        self.applied_current_range = CURRENT_RANGE._from_psobj(
+            psmethod.AppliedCurrentRange
+        ).name
 
         self.interval_time = single_to_double(psmethod.IntervalTime)
         self.n_cycles = psmethod.nCycles
@@ -1958,7 +1968,7 @@ class GalvanostaticImpedanceSpectroscopy(
 
     _id = 'gis'
 
-    applied_current_range: CURRENT_RANGE = CURRENT_RANGE.cr_100_uA
+    applied_current_range: AllowedCurrentRanges = 'cr_100_uA'
     """Applied current range.
 
     Use `CURRENT_RANGE` to define the range."""
@@ -1987,7 +1997,7 @@ class GalvanostaticImpedanceSpectroscopy(
 
         psmethod.ScanType = enumScanType.Fixed
         psmethod.FreqType = enumFrequencyType.Scan
-        psmethod.AppliedCurrentRange = self.applied_current_range._to_psobj()
+        psmethod.AppliedCurrentRange = CURRENT_RANGE[self.applied_current_range]._to_psobj()
         psmethod.EquilibrationTime = self.equilibration_time
         psmethod.Iac = self.ac_current
         psmethod.Idc = self.dc_current
@@ -1997,7 +2007,9 @@ class GalvanostaticImpedanceSpectroscopy(
 
     @override
     def _update_params(self, psmethod: PSMethod, /):
-        self.applied_current_range = CURRENT_RANGE._from_psobj(psmethod.AppliedCurrentRange)
+        self.applied_current_range = CURRENT_RANGE._from_psobj(
+            psmethod.AppliedCurrentRange
+        ).name
         self.equilibration_time = single_to_double(psmethod.EquilibrationTime)
         self.ac_current = single_to_double(psmethod.Iac)
         self.dc_current = single_to_double(psmethod.Idc)
@@ -2019,7 +2031,7 @@ class FastGalvanostaticImpedanceSpectroscopy(
 
     _id = 'fgis'
 
-    applied_current_range: CURRENT_RANGE = CURRENT_RANGE.cr_100_uA
+    applied_current_range: AllowedCurrentRanges = 'cr_100_uA'
     """Applied current range.
 
     Use `CURRENT_RANGE` to define the range."""
@@ -2046,7 +2058,7 @@ class FastGalvanostaticImpedanceSpectroscopy(
     @override
     def _update_psmethod(self, psmethod: PSMethod, /):
         """Update method with fast galvanic impedance spectroscopy settings."""
-        psmethod.AppliedCurrentRange = self.applied_current_range._to_psobj()
+        psmethod.AppliedCurrentRange = CURRENT_RANGE[self.applied_current_range]._to_psobj()
         psmethod.Iac = self.ac_current
         psmethod.Idc = self.dc_current
         psmethod.FixedFrequency = self.frequency
@@ -2055,7 +2067,9 @@ class FastGalvanostaticImpedanceSpectroscopy(
 
     @override
     def _update_params(self, psmethod: PSMethod, /):
-        self.applied_current_range = CURRENT_RANGE._from_psobj(psmethod.AppliedCurrentRange)
+        self.applied_current_range = CURRENT_RANGE._from_psobj(
+            psmethod.AppliedCurrentRange
+        ).name
         self.ac_current = single_to_double(psmethod.Iac)
         self.dc_current = single_to_double(psmethod.Idc)
         self.frequency = single_to_double(psmethod.FixedFrequency)
