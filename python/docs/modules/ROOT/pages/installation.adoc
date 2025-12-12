@@ -184,7 +184,12 @@ See the https://code.visualstudio.com/docs/python/environments#_creating-environ
 [#compatibility]
 == Compatible devices and firmware
 
-The table below lists the minimum supported firmwares versions and required drivers:
+The PalmSens SDK is based on PalmSens core version 5.12.
+
+The table below lists the minimum supported firmwares versions and required drivers.
+
+You can update the firmware using a recent version of PSTrace on a Windows PC
+See the chapter 'Updating firmware' in the https://www.palmsens.com/knowledgebase-article/pstrace-user-manual/[PSTrace user manual] for more information.
 
 [cols=",,,",options="header",]
 |===
