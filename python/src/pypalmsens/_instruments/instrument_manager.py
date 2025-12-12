@@ -14,7 +14,7 @@ from PalmSens import MuxModel
 from PalmSens.Comm import CommManager, MuxType
 from typing_extensions import override
 
-from .._methods import CURRENT_RANGE, BaseTechnique
+from .._methods import CURRENT_RANGE, AllowedCurrentRanges, BaseTechnique
 from ..data import Measurement
 from ._common import Callback, Instrument, create_future, firmware_warning
 from .instrument_manager_async import discover_async
@@ -259,7 +259,7 @@ class InstrumentManager:
         with self._lock():
             self._comm.Potential = potential
 
-    def set_current_range(self, current_range: CURRENT_RANGE):
+    def set_current_range(self, current_range: AllowedCurrentRanges):
         """Set the current range for the cell.
 
         Parameters
@@ -268,7 +268,7 @@ class InstrumentManager:
             Set the current range, use `pypalmsens.settings.CURRENT_RANGE`.
         """
         with self._lock():
-            self._comm.CurrentRange = current_range._to_psobj()
+            self._comm.CurrentRange = CURRENT_RANGE[current_range]._to_psobj()
 
     def read_current(self) -> float:
         """Read the current in µA.

@@ -11,6 +11,7 @@ from .._shared import single_to_double
 from . import mixins
 from ._shared import (
     CURRENT_RANGE,
+    AllowedCurrentRanges,
 )
 from .base import BaseTechnique
 
@@ -115,7 +116,7 @@ class ConstantI(BaseStage, mixins.PotentialLimitsMixin):
     So if 10 uA is the applied current range and 1.5 is given as current value,
     the applied current will be 15 uA."""
 
-    applied_current_range: CURRENT_RANGE = CURRENT_RANGE.cr_100_uA
+    applied_current_range: AllowedCurrentRanges = 'cr_100_uA'
     """Applied current range.
 
     Use `CURRENT_RANGE` to define the range."""
@@ -125,13 +126,13 @@ class ConstantI(BaseStage, mixins.PotentialLimitsMixin):
 
     @override
     def _update_psstage(self, psstage: PSMethod, /):
-        psstage.AppliedCurrentRange = self.applied_current_range._to_psobj()
+        psstage.AppliedCurrentRange = CURRENT_RANGE[self.applied_current_range]._to_psobj()
         psstage.Current = self.current
         psstage.RunTime = self.run_time
 
     @override
     def _update_params(self, psstage: PSMethod, /):
-        self.applied_current_range = CURRENT_RANGE._from_psobj(psstage.AppliedCurrentRange)
+        self.applied_current_range = CURRENT_RANGE._from_psobj(psstage.AppliedCurrentRange).name
         self.current = single_to_double(psstage.Current)
         self.run_time = single_to_double(psstage.RunTime)
 

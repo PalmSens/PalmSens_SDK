@@ -12,6 +12,8 @@ from .._shared import single_to_double
 from ._shared import (
     CURRENT_RANGE,
     POTENTIAL_RANGE,
+    AllowedCurrentRanges,
+    AllowedPotentialRanges,
     convert_bools_to_int,
     convert_int_to_bools,
 )
@@ -22,64 +24,72 @@ from .base import BaseSettings
 class CurrentRange(BaseSettings):
     """Set the autoranging current."""
 
-    max: CURRENT_RANGE = CURRENT_RANGE.cr_10_mA
+    max: AllowedCurrentRanges = 'cr_10_mA'
     """Maximum current range.
 
     Use `CURRENT_RANGE` to define the range."""
 
-    min: CURRENT_RANGE = CURRENT_RANGE.cr_1_uA
+    min: AllowedCurrentRanges = 'cr_1_uA'
     """Minimum current range.
 
     Use `CURRENT_RANGE` to define the range."""
 
-    start: CURRENT_RANGE = CURRENT_RANGE.cr_100_uA
+    start: AllowedCurrentRanges = 'cr_100_uA'
     """Start current range.
 
     Use `CURRENT_RANGE` to define the range."""
 
     @override
     def _update_psmethod(self, psmethod: PSMethod, /):
-        psmethod.Ranging.MaximumCurrentRange = self.max._to_psobj()
-        psmethod.Ranging.MinimumCurrentRange = self.min._to_psobj()
-        psmethod.Ranging.StartCurrentRange = self.start._to_psobj()
+        psmethod.Ranging.MaximumCurrentRange = CURRENT_RANGE[self.max]._to_psobj()
+        psmethod.Ranging.MinimumCurrentRange = CURRENT_RANGE[self.min]._to_psobj()
+        psmethod.Ranging.StartCurrentRange = CURRENT_RANGE[self.start]._to_psobj()
 
     @override
     def _update_params(self, psmethod: PSMethod, /):
-        self.max = CURRENT_RANGE._from_psobj(psmethod.Ranging.MaximumCurrentRange)
-        self.min = CURRENT_RANGE._from_psobj(psmethod.Ranging.MinimumCurrentRange)
-        self.start = CURRENT_RANGE._from_psobj(psmethod.Ranging.StartCurrentRange)
+        self.max = CURRENT_RANGE._from_psobj(psmethod.Ranging.MaximumCurrentRange).name
+        self.min = CURRENT_RANGE._from_psobj(psmethod.Ranging.MinimumCurrentRange).name
+        self.start = CURRENT_RANGE._from_psobj(psmethod.Ranging.StartCurrentRange).name
 
 
 @attrs.define
 class PotentialRange(BaseSettings):
     """Set the autoranging potential."""
 
-    max: POTENTIAL_RANGE = POTENTIAL_RANGE.pr_1_V
+    max: AllowedPotentialRanges = 'pr_1_V'
     """Maximum potential range.
 
     Use `POTENTIAL_RANGE` to define the range."""
 
-    min: POTENTIAL_RANGE = POTENTIAL_RANGE.pr_1_mV
+    min: AllowedPotentialRanges = 'pr_1_mV'
     """Minimum potential range.
 
     Use `POTENTIAL_RANGE` to define the range."""
 
-    start: POTENTIAL_RANGE = POTENTIAL_RANGE.pr_1_V
+    start: AllowedPotentialRanges = 'pr_1_V'
     """Start potential range.
 
     Use `POTENTIAL_RANGE` to define the range."""
 
     @override
     def _update_psmethod(self, psmethod: PSMethod, /):
-        psmethod.RangingPotential.MaximumPotentialRange = self.max._to_psobj()
-        psmethod.RangingPotential.MinimumPotentialRange = self.min._to_psobj()
-        psmethod.RangingPotential.StartPotentialRange = self.start._to_psobj()
+        psmethod.RangingPotential.MaximumPotentialRange = POTENTIAL_RANGE[self.max]._to_psobj()
+        psmethod.RangingPotential.MinimumPotentialRange = POTENTIAL_RANGE[self.min]._to_psobj()
+        psmethod.RangingPotential.StartPotentialRange = POTENTIAL_RANGE[self.start]._to_psobj()
 
     @override
     def _update_params(self, psmethod: PSMethod, /):
-        self.max = POTENTIAL_RANGE._from_psobj(psmethod.RangingPotential.MaximumPotentialRange)
-        self.min = POTENTIAL_RANGE._from_psobj(psmethod.RangingPotential.MinimumPotentialRange)
-        self.start = POTENTIAL_RANGE._from_psobj(psmethod.RangingPotential.StartPotentialRange)
+        print(self.min)
+        self.max = POTENTIAL_RANGE._from_psobj(
+            psmethod.RangingPotential.MaximumPotentialRange
+        ).name
+        self.min = POTENTIAL_RANGE._from_psobj(
+            psmethod.RangingPotential.MinimumPotentialRange
+        ).name
+        self.start = POTENTIAL_RANGE._from_psobj(
+            psmethod.RangingPotential.StartPotentialRange
+        ).name
+        print(self.min)
 
 
 @attrs.define
@@ -168,17 +178,17 @@ class BiPot(BaseSettings):
     potential: float = 0.0
     """Set the bipotential in V."""
 
-    current_range_max: CURRENT_RANGE = CURRENT_RANGE.cr_10_mA
+    current_range_max: AllowedCurrentRanges = 'cr_10_mA'
     """Maximum bipotential current range in mA.
 
     Use `CURRENT_RANGE` to define the range."""
 
-    current_range_min: CURRENT_RANGE = CURRENT_RANGE.cr_1_uA
+    current_range_min: AllowedCurrentRanges = 'cr_1_uA'
     """Minimum bipotential current range.
 
     Use `CURRENT_RANGE` to define the range."""
 
-    current_range_start: CURRENT_RANGE = CURRENT_RANGE.cr_100_uA
+    current_range_start: AllowedCurrentRanges = 'cr_100_uA'
     """Start bipotential current range.
 
     Use `CURRENT_RANGE` to define the range."""
@@ -188,9 +198,15 @@ class BiPot(BaseSettings):
         bipot_num = self._MODES.index(self.mode)
         psmethod.BipotModePS = PalmSens.Method.EnumPalmSensBipotMode(bipot_num)
         psmethod.BiPotPotential = self.potential
-        psmethod.BipotRanging.MaximumCurrentRange = self.current_range_max._to_psobj()
-        psmethod.BipotRanging.MinimumCurrentRange = self.current_range_min._to_psobj()
-        psmethod.BipotRanging.StartCurrentRange = self.current_range_start._to_psobj()
+        psmethod.BipotRanging.MaximumCurrentRange = CURRENT_RANGE[
+            self.current_range_max
+        ]._to_psobj()
+        psmethod.BipotRanging.MinimumCurrentRange = CURRENT_RANGE[
+            self.current_range_min
+        ]._to_psobj()
+        psmethod.BipotRanging.StartCurrentRange = CURRENT_RANGE[
+            self.current_range_start
+        ]._to_psobj()
 
     @override
     def _update_params(self, psmethod: PSMethod, /):
@@ -198,13 +214,13 @@ class BiPot(BaseSettings):
         self.potential = single_to_double(psmethod.BiPotPotential)
         self.current_range_max = CURRENT_RANGE._from_psobj(
             psmethod.BipotRanging.MaximumCurrentRange
-        )
+        ).name
         self.current_range_min = CURRENT_RANGE._from_psobj(
             psmethod.BipotRanging.MinimumCurrentRange
-        )
+        ).name
         self.current_range_start = CURRENT_RANGE._from_psobj(
             psmethod.BipotRanging.StartCurrentRange
-        )
+        ).name
 
 
 @attrs.define
