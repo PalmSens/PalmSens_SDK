@@ -23,7 +23,6 @@ from ._shared import (
 from .base import BaseTechnique
 
 
-@attrs.define
 class CyclicVoltammetry(
     BaseTechnique,
     mixins.CurrentRangeMixin,

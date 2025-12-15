@@ -1,10 +1,12 @@
 from __future__ import annotations
 
-from typing import ClassVar, Literal, Protocol, runtime_checkable
+from abc import ABCMeta
+from typing import ClassVar, Literal
 
 import attrs
 from PalmSens import Method as PSMethod
 from PalmSens.Techniques import MixedMode as PSMixedMode
+from pydantic import BaseModel
 from typing_extensions import override
 
 from .._shared import single_to_double
@@ -15,13 +17,10 @@ from ._shared import (
 from .base import BaseTechnique
 
 
-@runtime_checkable
-class BaseStage(Protocol):
+class BaseStage(BaseModel, metaclass=ABCMeta):
     """Protocol to provide base methods for stage classes."""
 
-    __attrs_attrs__: ClassVar[list[attrs.Attribute]] = []
-    _registry: dict[str, type[BaseStage]] = {}
-    type: str
+    _registry: ClassVar[dict[str, type[BaseStage]]] = {}
 
     def __init_subclass__(cls, **kwargs) -> None:
         super().__init_subclass__(**kwargs)
@@ -45,8 +44,8 @@ class BaseStage(Protocol):
 
     def _update_params_nested(self, psstage: PSMethod, /) -> None:
         """Retrieve and convert dotnet method for nested field parameters."""
-        for field in self.__attrs_attrs__:
-            attribute = getattr(self, field.name)
+        for field in self.__class__.model_fields:
+            attribute = getattr(self, field)
             try:
                 # Update parameters if attribute has the `update_params` method
                 attribute._update_params(psstage)
@@ -65,8 +64,8 @@ class BaseStage(Protocol):
 
     def _update_psstage_nested(self, psstage: PSMethod, /) -> None:
         """Convert and set field parameters on dotnet method."""
-        for field in self.__attrs_attrs__:
-            attribute = getattr(self, field.name)
+        for field in self.__class__.model_fields:
+            attribute = getattr(self, field)
             try:
                 # Update parameters if attribute has the `update_params` method
                 attribute._update_psmethod(psstage)
@@ -74,7 +73,6 @@ class BaseStage(Protocol):
                 pass
 
 
-@attrs.define(slots=False)
 class ConstantE(BaseStage, mixins.CurrentLimitsMixin):
     """Amperometric detection stage.
 
@@ -99,7 +97,6 @@ class ConstantE(BaseStage, mixins.CurrentLimitsMixin):
         self.run_time = single_to_double(psstage.RunTime)
 
 
-@attrs.define(slots=False)
 class ConstantI(BaseStage, mixins.PotentialLimitsMixin):
     """Potentiometry stage.
 
@@ -136,7 +133,6 @@ class ConstantI(BaseStage, mixins.PotentialLimitsMixin):
         self.run_time = single_to_double(psstage.RunTime)
 
 
-@attrs.define(slots=False)
 class SweepE(BaseStage, mixins.CurrentLimitsMixin):
     """Linear sweep detection stage.
 
@@ -176,7 +172,6 @@ class SweepE(BaseStage, mixins.CurrentLimitsMixin):
         self.scanrate = single_to_double(psstage.Scanrate)
 
 
-@attrs.define(slots=False)
 class OpenCircuit(BaseStage, mixins.PotentialLimitsMixin):
     """Open Circuit stage.
 
@@ -196,7 +191,6 @@ class OpenCircuit(BaseStage, mixins.PotentialLimitsMixin):
         self.run_time = single_to_double(psstage.RunTime)
 
 
-@attrs.define(slots=False)
 class Impedance(BaseStage):
     """Electostatic impedance stage.
 
