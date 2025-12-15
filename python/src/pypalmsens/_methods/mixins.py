@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import Any
+
 import attrs
 
 from . import settings
@@ -9,12 +11,20 @@ from ._shared import (
 )
 
 
+class ConversionError(BaseException): ...
+
+
 def current_converter(
-    value: AllowedCurrentRanges | settings.CurrentRange,
+    value: AllowedCurrentRanges | settings.CurrentRange | dict[str, Any] | object,
 ) -> settings.CurrentRange:
     if isinstance(value, str):
         return settings.CurrentRange(min=value, max=value, start=value)
-    return value
+    elif isinstance(value, dict):
+        return settings.CurrentRange(**value)
+    elif isinstance(value, settings.CurrentRange):
+        return value
+    else:
+        raise ConversionError(f'Invalid value: {value}')
 
 
 @attrs.define(slots=False)
@@ -26,11 +36,16 @@ class CurrentRangeMixin:
 
 
 def potential_converter(
-    value: AllowedPotentialRanges | settings.PotentialRange,
+    value: AllowedPotentialRanges | settings.PotentialRange | dict[str, Any] | object,
 ) -> settings.PotentialRange:
     if isinstance(value, str):
         return settings.PotentialRange(min=value, max=value, start=value)
-    return value
+    elif isinstance(value, dict):
+        return settings.PotentialRange(**value)
+    elif isinstance(value, settings.PotentialRange):
+        return value
+    else:
+        raise ConversionError(f'Invalid value: {value}')
 
 
 @attrs.define(slots=False)
