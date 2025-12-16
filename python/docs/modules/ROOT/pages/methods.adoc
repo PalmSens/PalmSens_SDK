@@ -68,7 +68,7 @@ This example creates a method for a square-wave voltammetry measurement versus t
 ...)
 ----
 
-Because methods are https://www.attrs.org/index.html[attrs dataclasses], all attributes can be modified afterwards:
+Because methods are https://docs.pydantic.dev/latest/[pydantic models], all attributes can be modified afterwards:
 
 [,python]
 ----
@@ -77,12 +77,12 @@ Because methods are https://www.attrs.org/index.html[attrs dataclasses], all att
 >>> method.step_potential = 0.02
 ----
 
-Dataclasses can be serialized to and from a dictionary:
+Methods can be serialized to and from a dictionary:
 
 [,python]
 ----
->>> d = method.to_dict()
->>> d
+>>> dumped = method.model_dump()
+>>> dumped
 {'equilibration_time': 0.0,
  'begin_potential': -1.0,
  'end_potential': 1.0,
@@ -90,18 +90,17 @@ Dataclasses can be serialized to and from a dictionary:
  'frequency': 10,
  'amplitude': 0.08,
  ...}
->>> method2 == ps.SquareWaveVoltammetry(**d)
+>>> method2 == ps.SquareWaveVoltammetry(**dumped)
 >>> method == method2
 True
 ----
 
-It can be updated like a dataclass:
+Methods can be copied and updated:
 
 [,python]
 ----
->>> from attrs import evolve
->>> method2 = evolve(method, equilibration_time=10.0)
->>> method == method2
+>>> method3 = method.model_copy(update={'equilibration_time' : 10.0})
+>>> method == method3
 False
 ----
 
