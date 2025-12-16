@@ -1,17 +1,18 @@
 from __future__ import annotations
 
-from pydantic import BaseModel, Field, field_validator
+from pydantic import Field, field_validator
 
 from . import settings
 from ._shared import CURRENT_RANGE, POTENTIAL_RANGE
+from .base_model import BaseModel
 
 
 class CurrentRangeMixin(BaseModel):
     current_range: settings.CurrentRange = Field(default_factory=settings.CurrentRange)
     """Set the autoranging current."""
 
+    @field_validator('current_range', mode='before')
     @classmethod
-    @field_validator('current_range', mode='after')
     def current_converter(
         cls, value: CURRENT_RANGE | settings.CurrentRange
     ) -> settings.CurrentRange:
@@ -24,8 +25,8 @@ class PotentialRangeMixin(BaseModel):
     potential_range: settings.PotentialRange = Field(default_factory=settings.PotentialRange)
     """Set the autoranging potential."""
 
+    @field_validator('potential_range', mode='before')
     @classmethod
-    @field_validator('potential_range', mode='after')
     def potential_converter(
         cls, value: POTENTIAL_RANGE | settings.PotentialRange
     ) -> settings.PotentialRange:

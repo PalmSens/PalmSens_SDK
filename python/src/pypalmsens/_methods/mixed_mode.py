@@ -5,7 +5,7 @@ from typing import ClassVar
 
 from PalmSens import Method as PSMethod
 from PalmSens.Techniques import MixedMode as PSMixedMode
-from pydantic import BaseModel, Field
+from pydantic import Field
 from typing_extensions import override
 
 from .._shared import single_to_double
@@ -14,6 +14,7 @@ from ._shared import (
     CURRENT_RANGE,
 )
 from .base import BaseTechnique
+from .base_model import BaseModel
 
 
 class BaseStage(BaseModel, metaclass=ABCMeta):

@@ -69,7 +69,11 @@ class CV:
         'step_potential': 0.25,
         'scanrate': 5,
         'n_scans': 2,
-        'current_range': {'max': 7, 'min': 3, 'start': 6},
+        'current_range': {
+            'max': ps.settings.CURRENT_RANGE(7),
+            'min': ps.settings.CURRENT_RANGE(3),
+            'start': ps.settings.CURRENT_RANGE(6),
+        },
     }
 
     @staticmethod
@@ -108,7 +112,7 @@ class FCV:
         'n_scans': 3,
         'n_avg_scans': 2,
         'n_equil_scans': 2,
-        'current_range': 5,
+        'current_range': ps.settings.CURRENT_RANGE(5),
     }
 
     @staticmethod
@@ -149,7 +153,11 @@ class LSV:
         'end_potential': 1.0,
         'step_potential': 0.1,
         'scanrate': 2.0,
-        'current_range': {'max': 7, 'min': 3, 'start': 6},
+        'current_range': {
+            'max': ps.settings.CURRENT_RANGE(7),
+            'min': ps.settings.CURRENT_RANGE(3),
+            'start': ps.settings.CURRENT_RANGE(6),
+        },
     }
 
     @staticmethod
@@ -209,7 +217,11 @@ class ACV:
         'ac_potential': 0.25,
         'frequency': 200.0,
         'scanrate': 0.2,
-        'current_range': {'max': 7, 'min': 3, 'start': 6},
+        'current_range': {
+            'max': ps.settings.CURRENT_RANGE(7),
+            'min': ps.settings.CURRENT_RANGE(3),
+            'start': ps.settings.CURRENT_RANGE(6),
+        },
     }
 
     @staticmethod
@@ -246,7 +258,11 @@ class SWV:
         'frequency': 10.0,
         'amplitude': 0.05,
         'record_forward_and_reverse_currents': True,
-        'current_range': {'max': 7, 'min': 3, 'start': 6},
+        'current_range': {
+            'max': ps.settings.CURRENT_RANGE(7),
+            'min': ps.settings.CURRENT_RANGE(3),
+            'start': ps.settings.CURRENT_RANGE(6),
+        },
     }
 
     @staticmethod
@@ -273,7 +289,11 @@ class CP:
         'applied_current_range': ps.settings.CURRENT_RANGE.cr_100_uA,
         'interval_time': 0.1,
         'run_time': 1.0,
-        'potential_range': {'max': 7, 'min': 1, 'start': 7},
+        'potential_range': {
+            'max': ps.settings.POTENTIAL_RANGE(7),
+            'min': ps.settings.POTENTIAL_RANGE(1),
+            'start': ps.settings.POTENTIAL_RANGE(7),
+        },
     }
 
     @staticmethod
@@ -297,7 +317,7 @@ class SCP:
         'current': 0.1,
         'applied_current_range': ps.settings.CURRENT_RANGE.cr_100_uA,
         'measurement_time': 1.0,
-        'potential_range': 4,
+        'potential_range': ps.settings.POTENTIAL_RANGE(4),
         'pretreatment': {'deposition_time': 1, 'deposition_potential': 0.1},
     }
 
@@ -322,7 +342,11 @@ class LSP:
         'applied_current_range': ps.settings.CURRENT_RANGE.cr_100_uA,
         'current_step': 0.1,
         'scan_rate': 8.0,
-        'potential_range': {'max': 7, 'min': 1, 'start': 7},
+        'potential_range': {
+            'max': ps.settings.POTENTIAL_RANGE(7),
+            'min': ps.settings.POTENTIAL_RANGE(1),
+            'start': ps.settings.POTENTIAL_RANGE(7),
+        },
     }
 
     @staticmethod
@@ -345,7 +369,11 @@ class OCP:
     kwargs = {
         'interval_time': 0.1,
         'run_time': 1.0,
-        'potential_range': {'max': 7, 'min': 1, 'start': 7},
+        'potential_range': {
+            'max': ps.settings.POTENTIAL_RANGE(7),
+            'min': ps.settings.POTENTIAL_RANGE(1),
+            'start': ps.settings.POTENTIAL_RANGE(7),
+        },
     }
 
     @staticmethod
@@ -874,7 +902,7 @@ class FIS:
 class GIS:
     id = 'gis'
     kwargs = {
-        'applied_current_range': 5,
+        'applied_current_range': ps.settings.CURRENT_RANGE(5),
         'equilibration_time': 0.0,
         'n_frequencies': 7,
         'max_frequency': 1e5,
@@ -933,7 +961,7 @@ class GIS:
 class FGIS:
     id = 'fgis'
     kwargs = {
-        'applied_current_range': 5,
+        'applied_current_range': ps.settings.CURRENT_RANGE(5),
         'run_time': 0.3,
     }
 
@@ -1037,7 +1065,7 @@ class MM:
                 'type': 'ConstantI',
                 'potential_limits': {'max': 1, 'min': -1},
                 'current': 1.0,
-                'applied_current_range': 3,
+                'applied_current_range': ps.settings.CURRENT_RANGE(3),
                 'run_time': 0.1,
             },
             {

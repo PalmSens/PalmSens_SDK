@@ -4,18 +4,12 @@ from abc import ABCMeta, abstractmethod
 from typing import Any, ClassVar
 
 from PalmSens import Method as PSMethod
-from pydantic import BaseModel, ConfigDict
 
-MODEL_CONFIG = ConfigDict(
-    extra='forbid',
-    strict=True,
-)
+from .base_model import BaseModel
 
 
 class BaseSettings(BaseModel, metaclass=ABCMeta):
     """Protocol to provide generic methods for parameters."""
-
-    model_config = MODEL_CONFIG
 
     @abstractmethod
     def _update_psmethod(self, psmethod: PSMethod, /): ...
@@ -26,8 +20,6 @@ class BaseSettings(BaseModel, metaclass=ABCMeta):
 
 class BaseTechnique(BaseModel, metaclass=ABCMeta):
     """Protocol to provide base methods for method classes."""
-
-    model_config = MODEL_CONFIG
 
     id: ClassVar[str] = ''
     _registry: ClassVar[dict[str, type[BaseTechnique]]] = {}
