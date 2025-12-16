@@ -4,8 +4,8 @@ import logging
 import tempfile
 from pathlib import Path
 
-import cattrs
 import pytest
+from pydantic import ValidationError
 
 import pypalmsens as ps
 from pypalmsens._methods import BaseTechnique
@@ -56,9 +56,8 @@ def test_read_potential(manager):
 
 
 def test_forbid_extra_keys():
-    with pytest.raises(cattrs.ForbiddenExtraKeysError):
-        params = {'foo': 123, 'bar': 678}
-        _ = ps.CyclicVoltammetry.from_dict(params)
+    with pytest.raises(ValidationError):
+        _ = ps.CyclicVoltammetry(foo=123, bar=678)
 
 
 class CV:

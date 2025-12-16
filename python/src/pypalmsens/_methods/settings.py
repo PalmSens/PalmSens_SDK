@@ -2,10 +2,10 @@ from __future__ import annotations
 
 from typing import Literal
 
-import attrs
 import PalmSens
 from PalmSens import Method as PSMethod
 from PalmSens import MuxMethod as PSMuxMethod
+from pydantic import Field
 from typing_extensions import override
 
 from .._shared import single_to_double
@@ -520,7 +520,7 @@ class Multiplexer(BaseSettings):
     * 'alternate
     """
 
-    channels: list[int] = attrs.field(factory=list)
+    channels: list[int] = Field(default_factory=list)
     """Set multiplexer channels
 
     This is defined as a list of indexes for which channels to enable (max 128).

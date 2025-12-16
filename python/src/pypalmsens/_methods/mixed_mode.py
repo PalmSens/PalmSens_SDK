@@ -1,12 +1,11 @@
 from __future__ import annotations
 
 from abc import ABCMeta
-from typing import ClassVar, Literal
+from typing import ClassVar
 
-import attrs
 from PalmSens import Method as PSMethod
 from PalmSens.Techniques import MixedMode as PSMixedMode
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing_extensions import override
 
 from .._shared import single_to_double
@@ -20,11 +19,12 @@ from .base import BaseTechnique
 class BaseStage(BaseModel, metaclass=ABCMeta):
     """Protocol to provide base methods for stage classes."""
 
+    name: ClassVar[str]
     _registry: ClassVar[dict[str, type[BaseStage]]] = {}
 
     def __init_subclass__(cls, **kwargs) -> None:
         super().__init_subclass__(**kwargs)
-        cls._registry[cls.type] = cls
+        cls._registry[cls.name] = cls
 
     @classmethod
     def from_stage_type(cls, id: str) -> BaseStage:
@@ -54,7 +54,7 @@ class BaseStage(BaseModel, metaclass=ABCMeta):
 
     def _update_psmethod(self, psmethod: PSMethod, /) -> PSMethod:
         """Add stage to dotnet method, and update paramaters on dotnet stage."""
-        stage_type = getattr(PSMixedMode.EnumMixedModeStageType, self.type)
+        stage_type = getattr(PSMixedMode.EnumMixedModeStageType, self.name)
         psstage = psmethod.AddStage(stage_type)
         self._update_psstage(psstage)
         self._update_psstage_nested(psstage)
@@ -78,7 +78,7 @@ class ConstantE(BaseStage, mixins.CurrentLimitsMixin):
 
     Apply constant potential during this stage."""
 
-    type: Literal['ConstantE'] = 'ConstantE'
+    name: ClassVar[str] = 'ConstantE'
 
     potential: float = 0.0
     """Potential during measurement in V."""
@@ -102,7 +102,7 @@ class ConstantI(BaseStage, mixins.PotentialLimitsMixin):
 
     Apply constant fixed current during this stage."""
 
-    type: Literal['ConstantI'] = 'ConstantI'
+    name: ClassVar[str] = 'ConstantI'
 
     current: float = 0.0
     """The current to apply in the given current range.
@@ -138,7 +138,7 @@ class SweepE(BaseStage, mixins.CurrentLimitsMixin):
 
     Ramp the voltage from `begin_potential` to `end_potential` during this stage."""
 
-    type: Literal['SweepE'] = 'SweepE'
+    name: ClassVar[str] = 'SweepE'
 
     begin_potential: float = -0.5
     """Potential where the scan starts in V."""
@@ -177,7 +177,7 @@ class OpenCircuit(BaseStage, mixins.PotentialLimitsMixin):
 
     Measure the open circuit potential during this stage."""
 
-    type: Literal['OpenCircuit'] = 'OpenCircuit'
+    name: ClassVar[str] = 'OpenCircuit'
 
     run_time: float = 1.0
     """Run time of the stage in s."""
@@ -198,7 +198,7 @@ class Impedance(BaseStage):
     (`scan_type = 'fixed'`, `freq_type = 'fixed'`).
     """
 
-    type: Literal['Impedance'] = 'Impedance'
+    name: ClassVar[str] = 'Impedance'
 
     run_time: float = 10.0
     """Run time of the scan in s."""
@@ -271,7 +271,6 @@ class Impedance(BaseStage):
         self.max_equilibration_time = single_to_double(psstage.MaxEqTime)
 
 
-@attrs.define
 class MixedMode(
     BaseTechnique,
     mixins.CurrentRangeMixin,
@@ -307,7 +306,7 @@ class MixedMode(
     potential, and minimum potential.
     """
 
-    _id = 'mm'
+    id: ClassVar[str] = 'mm'
 
     interval_time: float = 0.1
     """Time between two samples in s."""
@@ -315,8 +314,8 @@ class MixedMode(
     cycles: int = 1
     """Number of times to go through all stages."""
 
-    stages: list[ConstantE | ConstantI | SweepE | OpenCircuit | Impedance] = attrs.field(
-        factory=list
+    stages: list[ConstantE | ConstantI | SweepE | OpenCircuit | Impedance] = Field(
+        default_factory=list
     )
     """List of stages to run through."""
 
