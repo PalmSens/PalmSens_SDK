@@ -1056,28 +1056,28 @@ class MM:
         'interval_time': 0.02,
         'stages': [
             {
-                'type': 'ConstantE',
+                'stage_type': 'ConstantE',
                 'current_limits': {'max': 10.0, 'min': 1},
                 'potential': 0.5,
                 'run_time': 0.1,
             },
             {
-                'type': 'ConstantI',
+                'stage_type': 'ConstantI',
                 'potential_limits': {'max': 1, 'min': -1},
                 'current': 1.0,
                 'applied_current_range': ps.settings.CURRENT_RANGE(3),
                 'run_time': 0.1,
             },
             {
-                'type': 'SweepE',
+                'stage_type': 'SweepE',
                 'begin_potential': -0.5,
                 'end_potential': 0.5,
                 'step_potential': 0.25,
                 'scanrate': 20.0,
             },
-            {'type': 'OpenCircuit', 'run_time': 0.1},
+            {'stage_type': 'OpenCircuit', 'run_time': 0.1},
             {
-                'type': 'Impedance',
+                'stage_type': 'Impedance',
                 'run_time': 0.1,
                 'dc_potential': 0.0,
                 'ac_potential': 0.01,
