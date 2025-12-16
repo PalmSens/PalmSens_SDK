@@ -36,7 +36,6 @@ classifiers = [
 dependencies = [
     'pydantic',
     'numpy',
-    'packaging',
     'pythonnet',
     'typing-extensions',
 ]
