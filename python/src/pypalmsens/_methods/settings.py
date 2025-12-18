@@ -79,11 +79,9 @@ class PotentialRange(BaseSettings):
 
     @override
     def _update_params(self, psmethod: PSMethod, /):
-        print(self.min)
         self.max = pr_enum_to_string(psmethod.RangingPotential.MaximumPotentialRange)
         self.min = pr_enum_to_string(psmethod.RangingPotential.MinimumPotentialRange)
         self.start = pr_enum_to_string(psmethod.RangingPotential.StartPotentialRange)
-        print(self.min)
 
 
 class Pretreatment(BaseSettings):

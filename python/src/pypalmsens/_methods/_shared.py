@@ -74,8 +74,8 @@ def pr_string_to_enum(s: AllowedPotentialRanges) -> PalmSens.PotentialRange:
 
 def pr_enum_to_string(enum: PalmSens.PotentialRange) -> AllowedPotentialRanges:
     """Convert PotentialRange enum to literal string."""
-    cr = enum.Range
-    return cr.ToString().lstrip('cr')
+    pr = enum.PR
+    return pr.ToString().lstrip('pr')
 
 
 def convert_bools_to_int(lst: Sequence[bool]) -> int:

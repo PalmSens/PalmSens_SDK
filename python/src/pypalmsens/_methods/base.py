@@ -70,8 +70,6 @@ class BaseTechnique(BaseModel, metaclass=ABCMeta):
         """Convert parameters to dotnet method."""
         psmethod = PSMethod.FromMethodID(self.id)
 
-        print(psmethod.RangingPotential.MinimumPotentialRange.ToString())
-
         self._update_psmethod(psmethod)
         self._update_psmethod_nested(psmethod)
         return psmethod

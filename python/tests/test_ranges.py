@@ -118,7 +118,7 @@ def test_method_potential_range_clipping():
 
 
 def test_fixed_current_range():
-    cr = 'cr_100_uA'
+    cr = '100uA'
 
     method = ps.CyclicVoltammetry(current_range=cr)
 
@@ -129,7 +129,7 @@ def test_fixed_current_range():
 
 
 def test_fixed_potential_range():
-    pr = 'pr_10_mV'
+    pr = '10mV'
 
     method = ps.ChronoPotentiometry(potential_range=pr)
 
