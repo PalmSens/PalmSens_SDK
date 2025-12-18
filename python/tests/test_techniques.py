@@ -4,8 +4,8 @@ import logging
 import tempfile
 from pathlib import Path
 
-import cattrs
 import pytest
+from pydantic import ValidationError
 
 import pypalmsens as ps
 from pypalmsens._methods import BaseTechnique
@@ -56,9 +56,8 @@ def test_read_potential(manager):
 
 
 def test_forbid_extra_keys():
-    with pytest.raises(cattrs.ForbiddenExtraKeysError):
-        params = {'foo': 123, 'bar': 678}
-        _ = ps.CyclicVoltammetry.from_dict(params)
+    with pytest.raises(ValidationError):
+        _ = ps.CyclicVoltammetry(foo=123, bar=678)
 
 
 class CV:
@@ -1029,28 +1028,28 @@ class MM:
         'interval_time': 0.02,
         'stages': [
             {
-                'type': 'ConstantE',
+                'stage_type': 'ConstantE',
                 'current_limits': {'max': 10.0, 'min': 1},
                 'potential': 0.5,
                 'run_time': 0.1,
             },
             {
-                'type': 'ConstantI',
+                'stage_type': 'ConstantI',
                 'potential_limits': {'max': 1, 'min': -1},
                 'current': 1.0,
                 'applied_current_range': 'cr_100_nA',
                 'run_time': 0.1,
             },
             {
-                'type': 'SweepE',
+                'stage_type': 'SweepE',
                 'begin_potential': -0.5,
                 'end_potential': 0.5,
                 'step_potential': 0.25,
                 'scanrate': 20.0,
             },
-            {'type': 'OpenCircuit', 'run_time': 0.1},
+            {'stage_type': 'OpenCircuit', 'run_time': 0.1},
             {
-                'type': 'Impedance',
+                'stage_type': 'Impedance',
                 'run_time': 0.1,
                 'dc_potential': 0.0,
                 'ac_potential': 0.01,
@@ -1064,6 +1063,11 @@ class MM:
     def validate(measurement):
         assert measurement
         assert isinstance(measurement, ps.data.Measurement)
+
+        params = measurement.method.to_settings()
+        stages = [stage.stage_type for stage in params.stages]
+
+        assert stages == ['ConstantE', 'ConstantI', 'SweepE', 'OpenCircuit', 'Impedance']
 
         for curve in measurement.curves:
             assert curve.n_points >= 5

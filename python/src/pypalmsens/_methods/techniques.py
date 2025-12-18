@@ -1,13 +1,13 @@
 from __future__ import annotations
 
-from typing import Literal
+from typing import ClassVar, Literal
 
-import attrs
 import PalmSens.Techniques as PSTechniques
 from PalmSens import FixedCurrentRange as PSFixedCurrentRange
 from PalmSens import FixedPotentialRange as PSFixedPotentialRange
 from PalmSens import Method as PSMethod
 from PalmSens.Techniques.Impedance import enumFrequencyType, enumScanType
+from pydantic import Field
 from typing_extensions import override
 
 from .._shared import single_to_double
@@ -25,7 +25,6 @@ from ._shared import (
 from .base import BaseTechnique
 
 
-@attrs.define
 class CyclicVoltammetry(
     BaseTechnique,
     mixins.CurrentRangeMixin,
@@ -48,7 +47,7 @@ class CyclicVoltammetry(
     'begin_potential'.
     """
 
-    _id = 'cv'
+    id: ClassVar[str] = 'cv'
 
     equilibration_time: float = 0.0
     """Equilibration time in s."""
@@ -129,7 +128,6 @@ class CyclicVoltammetry(
             setattr(self, key, msk[key])
 
 
-@attrs.define
 class FastCyclicVoltammetry(
     BaseTechnique,
     mixins.PretreatmentMixin,
@@ -149,7 +147,7 @@ class FastCyclicVoltammetry(
     points / second (`scan_rate` / `step_potential` > 2500).
     """
 
-    _id = 'fcv'
+    id: ClassVar[str] = 'fcv'
 
     current_range: AllowedCurrentRanges = 'cr_1_uA'
     """Fixed current range.
@@ -220,7 +218,6 @@ class FastCyclicVoltammetry(
         self.n_equil_scans = psmethod.nEqScans
 
 
-@attrs.define
 class ACVoltammetry(
     BaseTechnique,
     mixins.CurrentRangeMixin,
@@ -241,7 +238,7 @@ class ACVoltammetry(
     resulting AC response is plotted against the potential.
     """
 
-    _id = 'acv'
+    id: ClassVar[str] = 'acv'
 
     equilibration_time: float = 0.0
     """Equilibration time in s."""
@@ -296,7 +293,6 @@ class ACVoltammetry(
         self.measure_dc_current = psmethod.MeasureDCcurrent
 
 
-@attrs.define
 class LinearSweepVoltammetry(
     BaseTechnique,
     mixins.CurrentRangeMixin,
@@ -326,7 +322,7 @@ class LinearSweepVoltammetry(
     sampling time. The interval time is equal to `potential_step` / `scan_rate`.
     """
 
-    _id = 'lsv'
+    id: ClassVar[str] = 'lsv'
 
     equilibration_time: float = 0.0
     """Equilibration time in s.
@@ -400,7 +396,6 @@ class LinearSweepVoltammetry(
             setattr(self, key, msk[key])
 
 
-@attrs.define
 class SquareWaveVoltammetry(
     BaseTechnique,
     mixins.CurrentRangeMixin,
@@ -423,7 +418,7 @@ class SquareWaveVoltammetry(
     frequency (1 / `frequency`). Like DPV, the pulse amplitude is also normally in the range of 5 - 25 or 50 mV.
     """
 
-    _id = 'swv'
+    id: ClassVar[str] = 'swv'
 
     equilibration_time: float = 0.0
     """Equilibration time in s."""
@@ -504,7 +499,6 @@ class SquareWaveVoltammetry(
             setattr(self, key, msk[key])
 
 
-@attrs.define
 class DifferentialPulseVoltammetry(
     BaseTechnique,
     mixins.CurrentRangeMixin,
@@ -526,7 +520,7 @@ class DifferentialPulseVoltammetry(
     of 5 – 50 mV.
     """
 
-    _id = 'dpv'
+    id: ClassVar[str] = 'dpv'
 
     equilibration_time: float = 0.0
     """Equilibration time in s."""
@@ -612,7 +606,6 @@ class DifferentialPulseVoltammetry(
             setattr(self, key, msk[key])
 
 
-@attrs.define
 class NormalPulseVoltammetry(
     BaseTechnique,
     mixins.CurrentRangeMixin,
@@ -635,7 +628,7 @@ class NormalPulseVoltammetry(
     LSV, since the diffusion layer thickness will be smaller, resulting in a higher faradaic current.
     """
 
-    _id = 'npv'
+    id: ClassVar[str] = 'npv'
 
     equilibration_time: float = 0.0
     """Equilibration time in s."""
@@ -717,7 +710,6 @@ class NormalPulseVoltammetry(
             setattr(self, key, msk[key])
 
 
-@attrs.define
 class ChronoAmperometry(
     BaseTechnique,
     mixins.CurrentRangeMixin,
@@ -740,7 +732,7 @@ class ChronoAmperometry(
     with constant interval times.
     """
 
-    _id = 'ad'
+    id: ClassVar[str] = 'ad'
 
     equilibration_time: float = 0.0
     """Equilibration time in s."""
@@ -804,7 +796,6 @@ class ChronoAmperometry(
             setattr(self, key, msk[key])
 
 
-@attrs.define
 class FastAmperometry(
     BaseTechnique,
     mixins.PretreatmentMixin,
@@ -826,7 +817,7 @@ class FastAmperometry(
     high sampling rates or very short interval times.
     """
 
-    _id = 'fam'
+    id: ClassVar[str] = 'fam'
 
     current_range: AllowedCurrentRanges = 'cr_100_nA'
     """Fixed current range.
@@ -875,7 +866,6 @@ class FastAmperometry(
         self.run_time = single_to_double(psmethod.RunTime)
 
 
-@attrs.define
 class MultiStepAmperometry(
     BaseTechnique,
     mixins.CurrentRangeMixin,
@@ -898,7 +888,7 @@ class MultiStepAmperometry(
     Levels can be specified using `pypalmsens.settings.ELevel`.
     """
 
-    _id = 'ma'
+    id: ClassVar[str] = 'ma'
 
     equilibration_time: float = 0.0
     """Equilibration time in s."""
@@ -909,7 +899,7 @@ class MultiStepAmperometry(
     n_cycles: int = 1
     """Number of repetitions."""
 
-    levels: list[ELevel] = attrs.field(factory=lambda: [ELevel()])
+    levels: list[ELevel] = Field(default_factory=lambda: [ELevel()])
     """The cto apply within a cycle.
 
     Use `ELevel()` to create levels.
@@ -975,7 +965,6 @@ class MultiStepAmperometry(
             setattr(self, key, msk[key])
 
 
-@attrs.define
 class PulsedAmperometricDetection(
     BaseTechnique,
     mixins.CurrentRangeMixin,
@@ -998,7 +987,7 @@ class PulsedAmperometricDetection(
     the electrode surface.
     """
 
-    _id = 'pad'
+    id: ClassVar[str] = 'pad'
 
     _MODES: tuple[Literal['dc', 'pulse', 'differential'], ...] = ('dc', 'pulse', 'differential')
 
@@ -1059,7 +1048,6 @@ class PulsedAmperometricDetection(
         self.mode = self._MODES[int(psmethod.tMode) - 1]
 
 
-@attrs.define
 class MultiplePulseAmperometry(
     BaseTechnique,
     mixins.CurrentRangeMixin,
@@ -1075,7 +1063,7 @@ class MultiplePulseAmperometry(
     measured.
     """
 
-    _id = 'mpad'
+    id: ClassVar[str] = 'mpad'
 
     equilibration_time: float = 0.0
     """Equilibration time in s."""
@@ -1131,7 +1119,6 @@ class MultiplePulseAmperometry(
         self.duration_3 = single_to_double(psmethod.t3)
 
 
-@attrs.define
 class OpenCircuitPotentiometry(
     BaseTechnique,
     mixins.CurrentRangeMixin,
@@ -1157,7 +1144,7 @@ class OpenCircuitPotentiometry(
     This method is the same as `Chronopotentiometry(current=0)`.
     """
 
-    _id = 'ocp'
+    id: ClassVar[str] = 'ocp'
 
     interval_time: float = 0.1
     """Time between two potential samples in s."""
@@ -1210,7 +1197,6 @@ class OpenCircuitPotentiometry(
             setattr(self, key, msk[key])
 
 
-@attrs.define
 class ChronoPotentiometry(
     BaseTechnique,
     mixins.CurrentRangeMixin,
@@ -1234,7 +1220,7 @@ class ChronoPotentiometry(
     the applied current.
     """
 
-    _id = 'pot'
+    id: ClassVar[str] = 'pot'
 
     current: float = 0.0
     """The current to apply in the given current range.
@@ -1302,7 +1288,6 @@ class ChronoPotentiometry(
             setattr(self, key, msk[key])
 
 
-@attrs.define
 class StrippingChronoPotentiometry(
     BaseTechnique,
     mixins.CurrentRangeMixin,
@@ -1327,7 +1312,7 @@ class StrippingChronoPotentiometry(
     stops when either the measured potential is below ‘end_potential’ or the `measurement_time` is exceeded.
     """
 
-    _id = 'scp'
+    id: ClassVar[str] = 'scp'
 
     potential_range: AllowedPotentialRanges = 'pr_500_mV'
     """Fixed potential range.
@@ -1397,7 +1382,6 @@ class StrippingChronoPotentiometry(
             self.bandwidth = single_to_double(psmethod.Bandwidth)
 
 
-@attrs.define
 class LinearSweepPotentiometry(
     BaseTechnique,
     mixins.CurrentRangeMixin,
@@ -1413,7 +1397,7 @@ class LinearSweepPotentiometry(
 ):
     """Create linear sweep potentiometry method parameters."""
 
-    _id = 'lsp'
+    id: ClassVar[str] = 'lsp'
 
     applied_current_range: AllowedCurrentRanges = 'cr_100_uA'
     """Applied current range.
@@ -1485,7 +1469,6 @@ class LinearSweepPotentiometry(
             setattr(self, key, msk[key])
 
 
-@attrs.define
 class MultiStepPotentiometry(
     BaseTechnique,
     mixins.CurrentRangeMixin,
@@ -1508,7 +1491,7 @@ class MultiStepPotentiometry(
     Levels can be specified using `pypalmsens.settings.ILevel()`.
     """
 
-    _id = 'mp'
+    id: ClassVar[str] = 'mp'
 
     applied_current_range: AllowedCurrentRanges = 'cr_1_uA'
     """Applied current range.
@@ -1521,7 +1504,7 @@ class MultiStepPotentiometry(
     n_cycles: int = 1
     """Number of repetitions."""
 
-    levels: list[ILevel] = attrs.field(factory=lambda: [ILevel()])
+    levels: list[ILevel] = Field(default_factory=lambda: [ILevel()])
     """The currents to apply within a cycle.
 
     Use `ILevel()` to create levels.
@@ -1578,7 +1561,6 @@ class MultiStepPotentiometry(
             setattr(self, key, msk[key])
 
 
-@attrs.define
 class ChronoCoulometry(
     BaseTechnique,
     mixins.CurrentRangeMixin,
@@ -1596,7 +1578,7 @@ class ChronoCoulometry(
     The charge is determined by integrating the current.
     """
 
-    _id = 'cc'
+    id: ClassVar[str] = 'cc'
 
     equilibration_time: float = 0.0
     """Equilibration time in s."""
@@ -1684,7 +1666,6 @@ class ChronoCoulometry(
             setattr(self, key, msk[key])
 
 
-@attrs.define
 class ElectrochemicalImpedanceSpectroscopy(
     BaseTechnique,
     mixins.CurrentRangeMixin,
@@ -1715,7 +1696,7 @@ class ElectrochemicalImpedanceSpectroscopy(
     - a repeated single frequency at specified time intervals
     """
 
-    _id = 'eis'
+    id: ClassVar[str] = 'eis'
 
     _SCAN_TYPES: tuple[Literal['potential', 'time', 'fixed'], ...] = (
         'potential',
@@ -1895,7 +1876,6 @@ class ElectrochemicalImpedanceSpectroscopy(
             self.interval_time = single_to_double(psmethod.IntervalTime)
 
 
-@attrs.define
 class FastImpedanceSpectroscopy(
     BaseTechnique,
     mixins.CurrentRangeMixin,
@@ -1909,7 +1889,7 @@ class FastImpedanceSpectroscopy(
 ):
     """Create fast impedance spectroscopy method parameters."""
 
-    _id = 'fis'
+    id: ClassVar[str] = 'fis'
 
     equilibration_time: float = 0.0
     """Equilibration time in s."""
@@ -1949,7 +1929,6 @@ class FastImpedanceSpectroscopy(
         self.run_time = single_to_double(psmethod.RunTime)
 
 
-@attrs.define
 class GalvanostaticImpedanceSpectroscopy(
     BaseTechnique,
     mixins.CurrentRangeMixin,
@@ -1972,7 +1951,7 @@ class GalvanostaticImpedanceSpectroscopy(
     - a single frequency at specified time intervals
     """
 
-    _id = 'gis'
+    id: ClassVar[str] = 'gis'
 
     applied_current_range: AllowedCurrentRanges = 'cr_100_uA'
     """Applied current range.
@@ -2024,7 +2003,6 @@ class GalvanostaticImpedanceSpectroscopy(
         self.min_frequency = single_to_double(psmethod.MinFrequency)
 
 
-@attrs.define
 class FastGalvanostaticImpedanceSpectroscopy(
     BaseTechnique,
     mixins.CurrentRangeMixin,
@@ -2035,7 +2013,7 @@ class FastGalvanostaticImpedanceSpectroscopy(
 ):
     """Create fast galvanostatic impededance spectroscopy method parameters."""
 
-    _id = 'fgis'
+    id: ClassVar[str] = 'fgis'
 
     applied_current_range: AllowedCurrentRanges = 'cr_100_uA'
     """Applied current range.
@@ -2083,7 +2061,6 @@ class FastGalvanostaticImpedanceSpectroscopy(
         self.interval_time = single_to_double(psmethod.IntervalTime)
 
 
-@attrs.define
 class MethodScript(BaseTechnique):
     """Create a method script sandbox object.
 
@@ -2098,7 +2075,7 @@ class MethodScript(BaseTechnique):
         https://www.palmsens.com/methodscript/
     """
 
-    _id = 'ms'
+    id: ClassVar[str] = 'ms'
 
     script: str = """e
 wait 100m

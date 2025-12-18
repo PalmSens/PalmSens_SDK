@@ -2,10 +2,10 @@ from __future__ import annotations
 
 from typing import Literal
 
-import attrs
 import PalmSens
 from PalmSens import Method as PSMethod
 from PalmSens import MuxMethod as PSMuxMethod
+from pydantic import Field
 from typing_extensions import override
 
 from .._shared import single_to_double
@@ -20,7 +20,6 @@ from ._shared import (
 from .base import BaseSettings
 
 
-@attrs.define
 class CurrentRange(BaseSettings):
     """Set the autoranging current."""
 
@@ -52,7 +51,6 @@ class CurrentRange(BaseSettings):
         self.start = CURRENT_RANGE._from_psobj(psmethod.Ranging.StartCurrentRange).name
 
 
-@attrs.define
 class PotentialRange(BaseSettings):
     """Set the autoranging potential."""
 
@@ -92,7 +90,6 @@ class PotentialRange(BaseSettings):
         print(self.min)
 
 
-@attrs.define
 class Pretreatment(BaseSettings):
     """Set the measurement pretreatment settings."""
 
@@ -123,7 +120,6 @@ class Pretreatment(BaseSettings):
         self.conditioning_time = single_to_double(psmethod.ConditioningTime)
 
 
-@attrs.define
 class VersusOCP(BaseSettings):
     """Set the versus OCP settings."""
 
@@ -164,7 +160,6 @@ class VersusOCP(BaseSettings):
         self.stability_criterion = single_to_double(psmethod.OCPStabilityCriterion)
 
 
-@attrs.define
 class BiPot(BaseSettings):
     """Set the bipot settings."""
 
@@ -223,7 +218,6 @@ class BiPot(BaseSettings):
         ).name
 
 
-@attrs.define
 class PostMeasurement(BaseSettings):
     """Set the post measurement settings."""
 
@@ -249,7 +243,6 @@ class PostMeasurement(BaseSettings):
         self.standby_time = single_to_double(psmethod.StandbyTime)
 
 
-@attrs.define
 class CurrentLimits(BaseSettings):
     """Set the limit settings.
 
@@ -292,7 +285,6 @@ class CurrentLimits(BaseSettings):
             self.min = None
 
 
-@attrs.define
 class PotentialLimits(BaseSettings):
     """Set the limit settings.
 
@@ -334,7 +326,6 @@ class PotentialLimits(BaseSettings):
             self.min = None
 
 
-@attrs.define
 class ChargeLimits(BaseSettings):
     """Set the charge limit settings."""
 
@@ -371,7 +362,6 @@ class ChargeLimits(BaseSettings):
             self.min = None
 
 
-@attrs.define
 class IrDropCompensation(BaseSettings):
     """Set the iR drop compensation settings."""
 
@@ -394,7 +384,6 @@ class IrDropCompensation(BaseSettings):
             self.resistance = None
 
 
-@attrs.define
 class EquilibrationTriggers(BaseSettings):
     """Set the trigger at equilibration settings.
 
@@ -437,7 +426,6 @@ class EquilibrationTriggers(BaseSettings):
             self.d3 = False
 
 
-@attrs.define
 class MeasurementTriggers(BaseSettings):
     """Set the trigger at measurement settings.
 
@@ -479,7 +467,6 @@ class MeasurementTriggers(BaseSettings):
             self.d3 = False
 
 
-@attrs.define
 class DelayTriggers(BaseSettings):
     """Set the delayed trigger at measurement settings.
 
@@ -531,7 +518,6 @@ class DelayTriggers(BaseSettings):
             self.d3 = False
 
 
-@attrs.define
 class Multiplexer(BaseSettings):
     """Set the multiplexer settings."""
 
@@ -550,7 +536,7 @@ class Multiplexer(BaseSettings):
     * 'alternate
     """
 
-    channels: list[int] = attrs.field(factory=list)
+    channels: list[int] = Field(default_factory=list)
     """Set multiplexer channels
 
     This is defined as a list of indexes for which channels to enable (max 128).
@@ -606,7 +592,6 @@ class Multiplexer(BaseSettings):
         self.set_unselected_channel_working_electrode = int(psmethod.MuxSett.UnselWE)
 
 
-@attrs.define
 class DataProcessing(BaseSettings):
     """Set the data processing settings."""
 
@@ -647,7 +632,6 @@ class DataProcessing(BaseSettings):
         self.min_height = single_to_double(psmethod.MinPeakHeight)
 
 
-@attrs.define
 class General(BaseSettings):
     """Sets general/other settings."""
 
