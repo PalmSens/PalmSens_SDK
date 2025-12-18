@@ -194,6 +194,16 @@ This means is automatically converts dictionaries to the correct type (if the fi
 CurrentRange(max='10mA', min='1uA', start='100uA')
 ----
 
+And gives an errorr when trying to overwrite types by invalid dictionaries or instances:
+
+----
+>>> cv.current_range='foo'
+ValidationError: 1 validation error for CyclicVoltammetry
+current_range
+  Input should be a valid dictionary or instance of CurrentRange [type=model_type, input_value='foo', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.12/v/model_type
+----
+
 It is also helps prevents setting non-existant variables and guard against typos:
 
 ----
@@ -207,6 +217,16 @@ foo
     For further information visit https://errors.pydantic.dev/2.12/v/extra_forbidden
 ----
 
+https://docs.pydantic.dev/latest/concepts/strict_mode/['Strict' mode] helps catching variable errors, for example when you set a string when a number (float) is expected:
+
+----
+>>> cv = ps.CyclicVoltammetry(scanrate='1.0')
+ValidationError: 1 validation error for CyclicVoltammetry
+scanrate
+  Input should be a valid number [type=float_type, input_value='1.0', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.12/v/float_type
+----
+
 It also prevents setting non-existant attributes:
 
 ----
@@ -217,22 +237,13 @@ ValueError: "CyclicVoltammetry" object has no field "scanreat"
 Or unexpected values:
 
 ----
->>> cv.current_range='foo'
-ValidationError: 1 validation error for CyclicVoltammetry
-current_range
-  Input should be a valid dictionary or instance of CurrentRange [type=model_type, input_value='foo', input_type=str]
-    For further information visit https://errors.pydantic.dev/2.12/v/model_type
+>>> cp = ps.ChronoPotentiometry(applied_current_range='1GA')
+ValidationError: 1 validation error for ChronoPotentiometry
+applied_current_range
+  Input should be '100pA', '1nA', ... or '1A' [type=literal_error, input_value='1GA', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.12/v/literal_error
 ----
 
-https://docs.pydantic.dev/latest/concepts/strict_mode/['Strict' mode] helps catching variable errors, for example when you set a string when a number (float) is expected:
-
-----
->>> cv = ps.CyclicVoltammetry(scanrate='1.0')
-ValidationError: 1 validation error for CyclicVoltammetry
-scanrate
-  Input should be a valid number [type=float_type, input_value='1.0', input_type=str]
-    For further information visit https://errors.pydantic.dev/2.12/v/float_type
-----
 
 == Starting a measurement
 
