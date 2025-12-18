@@ -1092,6 +1092,11 @@ class MM:
         assert measurement
         assert isinstance(measurement, ps.data.Measurement)
 
+        params = measurement.method.to_settings()
+        stages = [stage.stage_type for stage in params.stages]
+
+        assert stages == ['ConstantE', 'ConstantI', 'SweepE', 'OpenCircuit', 'Impedance']
+
         for curve in measurement.curves:
             assert curve.n_points >= 5
 

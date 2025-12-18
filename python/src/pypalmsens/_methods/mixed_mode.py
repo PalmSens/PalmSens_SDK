@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from abc import ABCMeta, abstractmethod
-from typing import ClassVar, Literal
+from typing import Annotated, ClassVar, Literal
 
 from PalmSens import Method as PSMethod
 from PalmSens.Techniques import MixedMode as PSMixedMode
@@ -10,9 +10,7 @@ from typing_extensions import override
 
 from .._shared import single_to_double
 from . import mixins
-from ._shared import (
-    CURRENT_RANGE,
-)
+from ._shared import CURRENT_RANGE
 from .base import BaseTechnique
 from .base_model import BaseModel
 
@@ -273,6 +271,12 @@ class Impedance(BaseStage):
         self.max_equilibration_time = single_to_double(psstage.MaxEqTime)
 
 
+StageType = Annotated[
+    ConstantE | ConstantI | SweepE | OpenCircuit | Impedance,
+    Field(discriminator='stage_type'),
+]
+
+
 class MixedMode(
     BaseTechnique,
     mixins.CurrentRangeMixin,
@@ -316,7 +320,7 @@ class MixedMode(
     cycles: int = 1
     """Number of times to go through all stages."""
 
-    stages: list[ConstantE | ConstantI | SweepE | OpenCircuit | Impedance] = Field(
+    stages: list[StageType] = Field(
         default_factory=list,
     )
     """List of stages to run through."""
