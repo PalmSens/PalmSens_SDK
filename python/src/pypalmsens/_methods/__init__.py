@@ -6,9 +6,8 @@ from ._shared import (
     AllowedCurrentRanges,
     AllowedPotentialRanges,
 )
-from .base import BaseTechnique
+from .base import BaseSettings, BaseTechnique
 from .method import Method
-from .settings import BaseSettings
 
 __all__ = [
     'CURRENT_RANGE',

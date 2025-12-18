@@ -37,18 +37,18 @@ def test_id():
 
 
 def test_validation():
-    cv = ps.CyclicVoltammetry(
-        current_range={
-            'min': ps.settings.CURRENT_RANGE.cr_10_uA,
-            'max': ps.settings.CURRENT_RANGE.cr_10_mA,
-            'start': ps.settings.CURRENT_RANGE.cr_1_mA,
-        }
-    )
+    cr_dict = {
+        'min': 'cr_10_uA',
+        'max': 'cr_10_mA',
+        'start': 'cr_1_mA',
+    }
+
+    cv = ps.CyclicVoltammetry(current_range=cr_dict)
 
     assert isinstance(cv.current_range, ps.settings.CurrentRange)
-    assert cv.current_range.min.name == 'cr_10_uA'
-    assert cv.current_range.max.name == 'cr_10_mA'
-    assert cv.current_range.start.name == 'cr_1_mA'
+    assert cv.current_range.min == 'cr_10_uA'
+    assert cv.current_range.max == 'cr_10_mA'
+    assert cv.current_range.start == 'cr_1_mA'
 
     m = cv._to_psmethod()
 

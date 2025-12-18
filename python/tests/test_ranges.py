@@ -3,8 +3,8 @@ from __future__ import annotations
 import pytest
 from PalmSens import AutoRanging, AutoRangingPotential
 
-import pypalmsens
-from pypalmsens.settings import CURRENT_RANGE, POTENTIAL_RANGE
+import pypalmsens as ps
+from pypalmsens._methods import CURRENT_RANGE, POTENTIAL_RANGE
 
 
 def test_current_range():
@@ -32,8 +32,8 @@ def test_method_current_range():
     crmax = 'cr_1_mA'
     crstart = 'cr_100_uA'
 
-    method = pypalmsens.CyclicVoltammetry(
-        current_range=pypalmsens.settings.CurrentRange(
+    method = ps.CyclicVoltammetry(
+        current_range=ps.settings.CurrentRange(
             min=crmin,
             max=crmax,
             start=crstart,
@@ -57,8 +57,8 @@ def test_method_potential_range():
     potmax = 'pr_100_mV'
     potstart = 'pr_10_mV'
 
-    method = pypalmsens.ChronoPotentiometry(
-        potential_range=pypalmsens.settings.PotentialRange(
+    method = ps.ChronoPotentiometry(
+        potential_range=ps.settings.PotentialRange(
             min=potmin,
             max=potmax,
             start=potstart,
@@ -117,9 +117,9 @@ def test_method_potential_range_clipping():
 def test_fixed_current_range():
     cr = 'cr_100_uA'
 
-    method = pypalmsens.CyclicVoltammetry(current_range=cr)
+    method = ps.CyclicVoltammetry(current_range=cr)
 
-    assert isinstance(method.current_range, pypalmsens.settings.CurrentRange)
+    assert isinstance(method.current_range, ps.settings.CurrentRange)
     assert method.current_range.min == cr
     assert method.current_range.max == cr
     assert method.current_range.start == cr
@@ -128,9 +128,9 @@ def test_fixed_current_range():
 def test_fixed_potential_range():
     pr = 'pr_10_mV'
 
-    method = pypalmsens.ChronoPotentiometry(potential_range=pr)
+    method = ps.ChronoPotentiometry(potential_range=pr)
 
-    assert isinstance(method.potential_range, pypalmsens.settings.PotentialRange)
+    assert isinstance(method.potential_range, ps.settings.PotentialRange)
     assert method.potential_range.min == pr
     assert method.potential_range.max == pr
     assert method.potential_range.start == pr
