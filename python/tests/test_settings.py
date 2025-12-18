@@ -51,7 +51,7 @@ def test_set_extra_value_mask():
 def test_AutorangingCurrentSettings():
     obj = Techniques.CyclicVoltammetry()
 
-    params = ps.settings.CurrentRange(max='cr_100_uA', min='cr_100_nA', start='cr_10_uA')
+    params = ps.settings.CurrentRange(max='100uA', min='100nA', start='10uA')
     params._update_psmethod(obj)
 
     assert obj.Ranging.MaximumCurrentRange.Description == '100 uA'
@@ -68,9 +68,9 @@ def test_AutorangingPotentialSettings():
     obj = Techniques.Potentiometry()
 
     params = ps.settings.PotentialRange(
-        max='pr_100_mV',
-        min='pr_1_mV',
-        start='pr_10_mV',
+        max='100mV',
+        min='1mV',
+        start='10mV',
     )
     params._update_psmethod(obj)
 
@@ -132,9 +132,9 @@ def test_BipotSettings():
     params = ps.settings.BiPot(
         mode='offset',
         potential=10.0,
-        current_range_max='cr_100_uA',
-        current_range_min='cr_10_nA',
-        current_range_start='cr_10_uA',
+        current_range_max='100uA',
+        current_range_min='10nA',
+        current_range_start='10uA',
     )
     params._update_psmethod(obj)
 

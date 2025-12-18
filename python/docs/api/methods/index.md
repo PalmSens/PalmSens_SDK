@@ -15,9 +15,9 @@ For example to set up a CV experiment:
 ...     scanrate = 5,
 ...     n_scans = 2,
 ...     current_range = ps.settings.CurrentRange(
-...         max = 'cr_1_mA',
-...         min = 'cr_100_nA',
-...         start = 'cr_100_uA',
+...         max = '1mA',
+...         min = '100nA',
+...         start = '100uA',
 ...     ),
 ... )
 ```

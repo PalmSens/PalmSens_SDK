@@ -13,13 +13,15 @@ from typing_extensions import override
 from .._shared import single_to_double
 from . import mixins
 from ._shared import (
-    CURRENT_RANGE,
-    POTENTIAL_RANGE,
     AllowedCurrentRanges,
     AllowedPotentialRanges,
     ELevel,
     ILevel,
+    cr_enum_to_string,
+    cr_string_to_enum,
     get_extra_value_mask,
+    pr_enum_to_string,
+    pr_string_to_enum,
     set_extra_value_mask,
 )
 from .base import BaseTechnique
@@ -149,7 +151,7 @@ class FastCyclicVoltammetry(
 
     id: ClassVar[str] = 'fcv'
 
-    current_range: AllowedCurrentRanges = 'cr_1_uA'
+    current_range: AllowedCurrentRanges = '1uA'
     """Fixed current range.
 
     See `pypalmsens.settings.AllowedCurrentRanges` for options."""
@@ -193,7 +195,7 @@ class FastCyclicVoltammetry(
     def _update_psmethod(self, psmethod: PSMethod, /):
         """Update method with fast cyclic voltammetry settings."""
 
-        psmethod.Ranging = PSFixedCurrentRange(CURRENT_RANGE[self.current_range]._to_psobj())
+        psmethod.Ranging = PSFixedCurrentRange(cr_string_to_enum(self.current_range))
         psmethod.EquilibrationTime = self.equilibration_time
         psmethod.BeginPotential = self.begin_potential
         psmethod.Vtx1Potential = self.vertex1_potential
@@ -206,7 +208,7 @@ class FastCyclicVoltammetry(
 
     @override
     def _update_params(self, psmethod: PSMethod, /):
-        self.current_range = CURRENT_RANGE._from_psobj(psmethod.Ranging.StartCurrentRange).name
+        self.current_range = cr_enum_to_string(psmethod.Ranging.StartCurrentRange)
         self.equilibration_time = single_to_double(psmethod.EquilibrationTime)
         self.begin_potential = single_to_double(psmethod.BeginPotential)
         self.vertex1_potential = single_to_double(psmethod.Vtx1Potential)
@@ -819,7 +821,7 @@ class FastAmperometry(
 
     id: ClassVar[str] = 'fam'
 
-    current_range: AllowedCurrentRanges = 'cr_100_nA'
+    current_range: AllowedCurrentRanges = '100nA'
     """Fixed current range.
 
     See `pypalmsens.settings.AllowedCurrentRanges` for options."""
@@ -849,7 +851,7 @@ class FastAmperometry(
     @override
     def _update_psmethod(self, psmethod: PSMethod, /):
         """Update method with fast amperometry settings."""
-        psmethod.Ranging = PSFixedCurrentRange(CURRENT_RANGE[self.current_range]._to_psobj())
+        psmethod.Ranging = PSFixedCurrentRange(cr_string_to_enum(self.current_range))
         psmethod.EquilibrationTime = self.equilibration_time
         psmethod.EqPotentialFA = self.equilibration_potential
         psmethod.IntervalTime = self.interval_time
@@ -858,7 +860,7 @@ class FastAmperometry(
 
     @override
     def _update_params(self, psmethod: PSMethod, /):
-        self.current_range = CURRENT_RANGE._from_psobj(psmethod.Ranging.StartCurrentRange).name
+        self.current_range = cr_enum_to_string(psmethod.Ranging.StartCurrentRange)
         self.equilibration_time = single_to_double(psmethod.EquilibrationTime)
         self.equilibration_potential = single_to_double(psmethod.EqPotentialFA)
         self.interval_time = single_to_double(psmethod.IntervalTime)
@@ -1162,7 +1164,7 @@ class OpenCircuitPotentiometry(
     record_we_current: bool = False
     """Record working electrode current."""
 
-    record_we_current_range: AllowedCurrentRanges = 'cr_1_uA'
+    record_we_current_range: AllowedCurrentRanges = '1uA'
     """Record working electrode current range.
 
     See `pypalmsens.settings.AllowedCurrentRanges` for options."""
@@ -1172,7 +1174,7 @@ class OpenCircuitPotentiometry(
         """Update method with open circuit potentiometry settings."""
         psmethod.IntervalTime = self.interval_time
         psmethod.RunTime = self.run_time
-        psmethod.AppliedCurrentRange = CURRENT_RANGE[self.record_we_current_range]._to_psobj()
+        psmethod.AppliedCurrentRange = cr_string_to_enum(self.record_we_current_range)
 
         set_extra_value_mask(
             obj=psmethod,
@@ -1184,9 +1186,7 @@ class OpenCircuitPotentiometry(
     def _update_params(self, psmethod: PSMethod, /):
         self.interval_time = single_to_double(psmethod.IntervalTime)
         self.run_time = single_to_double(psmethod.RunTime)
-        self.record_we_current_range = CURRENT_RANGE._from_psobj(
-            psmethod.AppliedCurrentRange
-        ).name
+        self.record_we_current_range = cr_enum_to_string(psmethod.AppliedCurrentRange)
 
         msk = get_extra_value_mask(psmethod)
 
@@ -1230,7 +1230,7 @@ class ChronoPotentiometry(
     So if 10 uA is the `applied_current_range` and 1.5 is given as current value,
     the applied current will be 15 uA."""
 
-    applied_current_range: AllowedCurrentRanges = 'cr_100_mA'
+    applied_current_range: AllowedCurrentRanges = '100mA'
     """Applied current range.
 
     See `pypalmsens.settings.AllowedCurrentRanges` for options."""
@@ -1256,11 +1256,11 @@ class ChronoPotentiometry(
     def _update_psmethod(self, psmethod: PSMethod, /):
         """Update method with chronopotentiometry settings."""
         psmethod.Current = self.current
-        psmethod.AppliedCurrentRange = CURRENT_RANGE[self.applied_current_range]._to_psobj()
+        psmethod.AppliedCurrentRange = cr_string_to_enum(self.applied_current_range)
         psmethod.IntervalTime = self.interval_time
         psmethod.RunTime = self.run_time
 
-        psmethod.AppliedCurrentRange = CURRENT_RANGE[self.applied_current_range]._to_psobj()
+        psmethod.AppliedCurrentRange = cr_string_to_enum(self.applied_current_range)
 
         set_extra_value_mask(
             obj=psmethod,
@@ -1272,9 +1272,7 @@ class ChronoPotentiometry(
     @override
     def _update_params(self, psmethod: PSMethod, /):
         self.current = single_to_double(psmethod.Current)
-        self.applied_current_range = CURRENT_RANGE._from_psobj(
-            psmethod.AppliedCurrentRange
-        ).name
+        self.applied_current_range = cr_enum_to_string(psmethod.AppliedCurrentRange)
         self.interval_time = single_to_double(psmethod.IntervalTime)
         self.run_time = single_to_double(psmethod.RunTime)
 
@@ -1314,7 +1312,7 @@ class StrippingChronoPotentiometry(
 
     id: ClassVar[str] = 'scp'
 
-    potential_range: AllowedPotentialRanges = 'pr_500_mV'
+    potential_range: AllowedPotentialRanges = '500mV'
     """Fixed potential range.
 
     See `pypalmsens.settings.AllowedPotentialRanges` for options."""
@@ -1330,7 +1328,7 @@ class StrippingChronoPotentiometry(
     otherwise it is chemical constant current stripping.
     """
 
-    applied_current_range: AllowedCurrentRanges = 'cr_100_uA'
+    applied_current_range: AllowedCurrentRanges = '100uA'
     """Applied current range.
 
     See `pypalmsens.settings.AllowedCurrentRanges` for options."""
@@ -1353,11 +1351,11 @@ class StrippingChronoPotentiometry(
     def _update_psmethod(self, psmethod: PSMethod, /):
         """Update method with stripping chrono potentiometry settings."""
         psmethod.RangingPotential = PSFixedPotentialRange(
-            POTENTIAL_RANGE[self.potential_range]._to_psobj()
+            pr_string_to_enum(self.potential_range)
         )
 
         psmethod.Istrip = self.current
-        psmethod.AppliedCurrentRange = CURRENT_RANGE[self.applied_current_range]._to_psobj()
+        psmethod.AppliedCurrentRange = cr_string_to_enum(self.applied_current_range)
         psmethod.MeasurementTime = self.measurement_time
         psmethod.EndPotential = self.end_potential
 
@@ -1367,14 +1365,10 @@ class StrippingChronoPotentiometry(
 
     @override
     def _update_params(self, psmethod: PSMethod, /):
-        self.potential_range = POTENTIAL_RANGE._from_psobj(
-            psmethod.RangingPotential.StartPotentialRange
-        ).name
+        self.potential_range = pr_enum_to_string(psmethod.RangingPotential.StartPotentialRange)
 
         self.current = single_to_double(psmethod.Current)
-        self.applied_current_range = CURRENT_RANGE._from_psobj(
-            psmethod.AppliedCurrentRange
-        ).name
+        self.applied_current_range = cr_enum_to_string(psmethod.AppliedCurrentRange)
         self.measurement_time = single_to_double(psmethod.MeasurementTime)
         self.end_potential = single_to_double(psmethod.EndPotential)
 
@@ -1399,7 +1393,7 @@ class LinearSweepPotentiometry(
 
     id: ClassVar[str] = 'lsp'
 
-    applied_current_range: AllowedCurrentRanges = 'cr_100_uA'
+    applied_current_range: AllowedCurrentRanges = '100uA'
     """Applied current range.
 
     See `pypalmsens.settings.AllowedCurrentRanges` for options."""
@@ -1436,7 +1430,7 @@ class LinearSweepPotentiometry(
     @override
     def _update_psmethod(self, psmethod: PSMethod, /):
         """Update method with lineas sweep potentiometry settings."""
-        psmethod.AppliedCurrentRange = CURRENT_RANGE[self.applied_current_range]._to_psobj()
+        psmethod.AppliedCurrentRange = cr_string_to_enum(self.applied_current_range)
 
         psmethod.BeginCurrent = self.current_begin
         psmethod.EndCurrent = self.current_end
@@ -1451,9 +1445,7 @@ class LinearSweepPotentiometry(
 
     @override
     def _update_params(self, psmethod: PSMethod, /):
-        self.applied_current_range = CURRENT_RANGE._from_psobj(
-            psmethod.AppliedCurrentRange
-        ).name
+        self.applied_current_range = cr_enum_to_string(psmethod.AppliedCurrentRange)
 
         self.current_begin = single_to_double(psmethod.BeginCurrent)
         self.current_end = single_to_double(psmethod.EndCurrent)
@@ -1493,7 +1485,7 @@ class MultiStepPotentiometry(
 
     id: ClassVar[str] = 'mp'
 
-    applied_current_range: AllowedCurrentRanges = 'cr_1_uA'
+    applied_current_range: AllowedCurrentRanges = '1uA'
     """Applied current range.
 
     See `pypalmsens.settings.AllowedCurrentRanges` for options."""
@@ -1521,7 +1513,7 @@ class MultiStepPotentiometry(
     @override
     def _update_psmethod(self, psmethod: PSMethod, /):
         """Update method with multistep potentiometry settings."""
-        psmethod.AppliedCurrentRange = CURRENT_RANGE[self.applied_current_range]._to_psobj()
+        psmethod.AppliedCurrentRange = cr_string_to_enum(self.applied_current_range)
         psmethod.IntervalTime = self.interval_time
         psmethod.nCycles = self.n_cycles
         psmethod.Levels.Clear()
@@ -1543,9 +1535,7 @@ class MultiStepPotentiometry(
 
     @override
     def _update_params(self, psmethod: PSMethod, /):
-        self.applied_current_range = CURRENT_RANGE._from_psobj(
-            psmethod.AppliedCurrentRange
-        ).name
+        self.applied_current_range = cr_enum_to_string(psmethod.AppliedCurrentRange)
 
         self.interval_time = single_to_double(psmethod.IntervalTime)
         self.n_cycles = psmethod.nCycles
@@ -1953,7 +1943,7 @@ class GalvanostaticImpedanceSpectroscopy(
 
     id: ClassVar[str] = 'gis'
 
-    applied_current_range: AllowedCurrentRanges = 'cr_100_uA'
+    applied_current_range: AllowedCurrentRanges = '100uA'
     """Applied current range.
 
     See `pypalmsens.settings.AllowedCurrentRanges` for options."""
@@ -1982,7 +1972,7 @@ class GalvanostaticImpedanceSpectroscopy(
 
         psmethod.ScanType = enumScanType.Fixed
         psmethod.FreqType = enumFrequencyType.Scan
-        psmethod.AppliedCurrentRange = CURRENT_RANGE[self.applied_current_range]._to_psobj()
+        psmethod.AppliedCurrentRange = cr_string_to_enum(self.applied_current_range)
         psmethod.EquilibrationTime = self.equilibration_time
         psmethod.Iac = self.ac_current
         psmethod.Idc = self.dc_current
@@ -1992,9 +1982,7 @@ class GalvanostaticImpedanceSpectroscopy(
 
     @override
     def _update_params(self, psmethod: PSMethod, /):
-        self.applied_current_range = CURRENT_RANGE._from_psobj(
-            psmethod.AppliedCurrentRange
-        ).name
+        self.applied_current_range = cr_enum_to_string(psmethod.AppliedCurrentRange)
         self.equilibration_time = single_to_double(psmethod.EquilibrationTime)
         self.ac_current = single_to_double(psmethod.Iac)
         self.dc_current = single_to_double(psmethod.Idc)
@@ -2015,7 +2003,7 @@ class FastGalvanostaticImpedanceSpectroscopy(
 
     id: ClassVar[str] = 'fgis'
 
-    applied_current_range: AllowedCurrentRanges = 'cr_100_uA'
+    applied_current_range: AllowedCurrentRanges = '100uA'
     """Applied current range.
 
     See `pypalmsens.settings.AllowedCurrentRanges` for options."""
@@ -2042,7 +2030,7 @@ class FastGalvanostaticImpedanceSpectroscopy(
     @override
     def _update_psmethod(self, psmethod: PSMethod, /):
         """Update method with fast galvanic impedance spectroscopy settings."""
-        psmethod.AppliedCurrentRange = CURRENT_RANGE[self.applied_current_range]._to_psobj()
+        psmethod.AppliedCurrentRange = cr_string_to_enum(self.applied_current_range)
         psmethod.Iac = self.ac_current
         psmethod.Idc = self.dc_current
         psmethod.FixedFrequency = self.frequency
@@ -2051,9 +2039,7 @@ class FastGalvanostaticImpedanceSpectroscopy(
 
     @override
     def _update_params(self, psmethod: PSMethod, /):
-        self.applied_current_range = CURRENT_RANGE._from_psobj(
-            psmethod.AppliedCurrentRange
-        ).name
+        self.applied_current_range = cr_enum_to_string(psmethod.AppliedCurrentRange)
         self.ac_current = single_to_double(psmethod.Iac)
         self.dc_current = single_to_double(psmethod.Idc)
         self.frequency = single_to_double(psmethod.FixedFrequency)

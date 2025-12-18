@@ -122,9 +122,9 @@ For example:
 >>> cv = ps.CyclicVoltammetry()
 >>> cv.current_range
 CurrentRange(
-    max = 'cr_10_mA',
-    min = 'cr_1_uA',
-    start = 'cr_100_uA',
+    max = '10mA',
+    min = '1uA',
+    start = '100uA',
 )
 ----
 
@@ -135,14 +135,14 @@ There are two ways to modify the current ranges, for example, if you want so set
 ----
 >>> cv = ps.CyclicVoltammetry(
 ...     current_range=ps.settings.current_range(
-...         start='cr_10_uA'
+...         start='10uA'
 ...     )
 ... )
 >>> cv.current_range
 CurrentRange(
-    max = 'cr_10_mA',
-    min = 'cr_1_uA',
-    start = 'cr_10_uA', # <1>
+    max = '10mA',
+    min = '1uA',
+    start = '10uA', # <1>
 )
 ----
 <1> Only the start value was set, so the min/max are populated with the defaults.
@@ -151,7 +151,7 @@ CurrentRange(
 +
 ----
 >>> cv = ps.CyclicVoltammetry()
->>> cv.current_range.start = 'cr_10_uA'
+>>> cv.current_range.start = '10uA'
 ----
 
 [TIP]
@@ -163,13 +163,13 @@ This automatically expands into the `CurrentRange` object with `min`, `max`, and
 
 ----
 >>> cv = ps.CyclicVoltammetry(
-...    current_range='cr_10_uA'
+...    current_range='10uA'
 ... )
 >>> cv.current_range
 CurrentRange(
-    max = 'cr_10_uA',
-    min = 'cr_10_uA',
-    start = 'cr_10_uA',
+    max = '10uA',
+    min = '10uA',
+    start = '10uA',
 )
 ----
 ====
@@ -188,10 +188,10 @@ This means is automatically converts dictionaries to the correct type (if the fi
 >>> import pypalmsens as ps
 
 >>> cv = ps.CyclicVoltammetry(
-...     current_range = {'min':'cr_10_mA', 'max':'cr_1_uA', 'start':'cr_100_uA'}
+...     current_range = {'min':'10mA', 'max':'1uA', 'start':'100uA'}
 ... )
 >>> cv.current_range
-CurrentRange(max=<CURRENT_RANGE.cr_10_mA: 8>, min=<CURRENT_RANGE.cr_1_uA: 4>, start=<CURRENT_RANGE.cr_100_uA: 6>)
+CurrentRange(max='10mA', min='1uA', start='100uA')
 ----
 
 It is also helps prevents setting non-existant variables and guard against typos:

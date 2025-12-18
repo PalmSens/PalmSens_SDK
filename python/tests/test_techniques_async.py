@@ -32,11 +32,11 @@ async def test_get_instrument_serial(manager):
 async def test_read_current(manager):
     await manager.set_cell(True)
 
-    await manager.set_current_range('cr_1_uA')
+    await manager.set_current_range('1uA')
     val1 = await manager.read_current()
     assert val1
 
-    await manager.set_current_range('cr_10_uA')
+    await manager.set_current_range('10uA')
     val2 = await manager.read_current()
     assert val2
 

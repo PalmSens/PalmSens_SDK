@@ -10,12 +10,14 @@ from typing_extensions import override
 
 from .._shared import single_to_double
 from ._shared import (
-    CURRENT_RANGE,
-    POTENTIAL_RANGE,
     AllowedCurrentRanges,
     AllowedPotentialRanges,
     convert_bools_to_int,
     convert_int_to_bools,
+    cr_enum_to_string,
+    cr_string_to_enum,
+    pr_enum_to_string,
+    pr_string_to_enum,
 )
 from .base import BaseSettings
 
@@ -23,70 +25,64 @@ from .base import BaseSettings
 class CurrentRange(BaseSettings):
     """Set the autoranging current."""
 
-    max: AllowedCurrentRanges = 'cr_10_mA'
+    max: AllowedCurrentRanges = '10mA'
     """Maximum current range.
 
     See `pypalmsens.settings.AllowedCurrentRanges` for options."""
 
-    min: AllowedCurrentRanges = 'cr_1_uA'
+    min: AllowedCurrentRanges = '1uA'
     """Minimum current range.
 
     See `pypalmsens.settings.AllowedCurrentRanges` for options."""
 
-    start: AllowedCurrentRanges = 'cr_100_uA'
+    start: AllowedCurrentRanges = '100uA'
     """Start current range.
 
     See `pypalmsens.settings.AllowedCurrentRanges` for options."""
 
     @override
     def _update_psmethod(self, psmethod: PSMethod, /):
-        psmethod.Ranging.MaximumCurrentRange = CURRENT_RANGE[self.max]._to_psobj()
-        psmethod.Ranging.MinimumCurrentRange = CURRENT_RANGE[self.min]._to_psobj()
-        psmethod.Ranging.StartCurrentRange = CURRENT_RANGE[self.start]._to_psobj()
+        psmethod.Ranging.MaximumCurrentRange = cr_string_to_enum(self.max)
+        psmethod.Ranging.MinimumCurrentRange = cr_string_to_enum(self.min)
+        psmethod.Ranging.StartCurrentRange = cr_string_to_enum(self.start)
 
     @override
     def _update_params(self, psmethod: PSMethod, /):
-        self.max = CURRENT_RANGE._from_psobj(psmethod.Ranging.MaximumCurrentRange).name
-        self.min = CURRENT_RANGE._from_psobj(psmethod.Ranging.MinimumCurrentRange).name
-        self.start = CURRENT_RANGE._from_psobj(psmethod.Ranging.StartCurrentRange).name
+        self.max = cr_enum_to_string(psmethod.Ranging.MaximumCurrentRange)
+        self.min = cr_enum_to_string(psmethod.Ranging.MinimumCurrentRange)
+        self.start = cr_enum_to_string(psmethod.Ranging.StartCurrentRange)
 
 
 class PotentialRange(BaseSettings):
     """Set the autoranging potential."""
 
-    max: AllowedPotentialRanges = 'pr_1_V'
+    max: AllowedPotentialRanges = '1V'
     """Maximum potential range.
 
     See `pypalmsens.settings.AllowedPotentialRanges` for options."""
 
-    min: AllowedPotentialRanges = 'pr_1_mV'
+    min: AllowedPotentialRanges = '1mV'
     """Minimum potential range.
 
     See `pypalmsens.settings.AllowedPotentialRanges` for options."""
 
-    start: AllowedPotentialRanges = 'pr_1_V'
+    start: AllowedPotentialRanges = '1V'
     """Start potential range.
 
     See `pypalmsens.settings.AllowedPotentialRanges` for options."""
 
     @override
     def _update_psmethod(self, psmethod: PSMethod, /):
-        psmethod.RangingPotential.MaximumPotentialRange = POTENTIAL_RANGE[self.max]._to_psobj()
-        psmethod.RangingPotential.MinimumPotentialRange = POTENTIAL_RANGE[self.min]._to_psobj()
-        psmethod.RangingPotential.StartPotentialRange = POTENTIAL_RANGE[self.start]._to_psobj()
+        psmethod.RangingPotential.MaximumPotentialRange = pr_string_to_enum(self.max)
+        psmethod.RangingPotential.MinimumPotentialRange = pr_string_to_enum(self.min)
+        psmethod.RangingPotential.StartPotentialRange = pr_string_to_enum(self.start)
 
     @override
     def _update_params(self, psmethod: PSMethod, /):
         print(self.min)
-        self.max = POTENTIAL_RANGE._from_psobj(
-            psmethod.RangingPotential.MaximumPotentialRange
-        ).name
-        self.min = POTENTIAL_RANGE._from_psobj(
-            psmethod.RangingPotential.MinimumPotentialRange
-        ).name
-        self.start = POTENTIAL_RANGE._from_psobj(
-            psmethod.RangingPotential.StartPotentialRange
-        ).name
+        self.max = pr_enum_to_string(psmethod.RangingPotential.MaximumPotentialRange)
+        self.min = pr_enum_to_string(psmethod.RangingPotential.MinimumPotentialRange)
+        self.start = pr_enum_to_string(psmethod.RangingPotential.StartPotentialRange)
         print(self.min)
 
 
@@ -173,17 +169,17 @@ class BiPot(BaseSettings):
     potential: float = 0.0
     """Set the bipotential in V."""
 
-    current_range_max: AllowedCurrentRanges = 'cr_10_mA'
+    current_range_max: AllowedCurrentRanges = '10mA'
     """Maximum bipotential current range in mA.
 
     Use `CURRENT_RANGE` to define the range."""
 
-    current_range_min: AllowedCurrentRanges = 'cr_1_uA'
+    current_range_min: AllowedCurrentRanges = '1uA'
     """Minimum bipotential current range.
 
     Use `CURRENT_RANGE` to define the range."""
 
-    current_range_start: AllowedCurrentRanges = 'cr_100_uA'
+    current_range_start: AllowedCurrentRanges = '100uA'
     """Start bipotential current range.
 
     Use `CURRENT_RANGE` to define the range."""
@@ -193,29 +189,17 @@ class BiPot(BaseSettings):
         bipot_num = self._MODES.index(self.mode)
         psmethod.BipotModePS = PalmSens.Method.EnumPalmSensBipotMode(bipot_num)
         psmethod.BiPotPotential = self.potential
-        psmethod.BipotRanging.MaximumCurrentRange = CURRENT_RANGE[
-            self.current_range_max
-        ]._to_psobj()
-        psmethod.BipotRanging.MinimumCurrentRange = CURRENT_RANGE[
-            self.current_range_min
-        ]._to_psobj()
-        psmethod.BipotRanging.StartCurrentRange = CURRENT_RANGE[
-            self.current_range_start
-        ]._to_psobj()
+        psmethod.BipotRanging.MaximumCurrentRange = cr_string_to_enum(self.current_range_max)
+        psmethod.BipotRanging.MinimumCurrentRange = cr_string_to_enum(self.current_range_min)
+        psmethod.BipotRanging.StartCurrentRange = cr_string_to_enum(self.current_range_start)
 
     @override
     def _update_params(self, psmethod: PSMethod, /):
         self.mode = self._MODES[int(psmethod.BipotModePS)]
         self.potential = single_to_double(psmethod.BiPotPotential)
-        self.current_range_max = CURRENT_RANGE._from_psobj(
-            psmethod.BipotRanging.MaximumCurrentRange
-        ).name
-        self.current_range_min = CURRENT_RANGE._from_psobj(
-            psmethod.BipotRanging.MinimumCurrentRange
-        ).name
-        self.current_range_start = CURRENT_RANGE._from_psobj(
-            psmethod.BipotRanging.StartCurrentRange
-        ).name
+        self.current_range_max = cr_enum_to_string(psmethod.BipotRanging.MaximumCurrentRange)
+        self.current_range_min = cr_enum_to_string(psmethod.BipotRanging.MinimumCurrentRange)
+        self.current_range_start = cr_enum_to_string(psmethod.BipotRanging.StartCurrentRange)
 
 
 class PostMeasurement(BaseSettings):

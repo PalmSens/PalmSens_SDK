@@ -32,11 +32,11 @@ def test_get_instrument_serial(manager):
 def test_read_current(manager):
     manager.set_cell(True)
 
-    manager.set_current_range('cr_1_uA')
+    manager.set_current_range('1uA')
     val1 = manager.read_current()
     assert val1
 
-    manager.set_current_range('cr_10_uA')
+    manager.set_current_range('10uA')
     val2 = manager.read_current()
     assert val2
 
@@ -72,7 +72,7 @@ class CV:
         'step_potential': 0.25,
         'scanrate': 5,
         'n_scans': 2,
-        'current_range': {'max': 'cr_1_mA', 'min': 'cr_100_nA', 'start': 'cr_100_uA'},
+        'current_range': {'max': '1mA', 'min': '100nA', 'start': '100uA'},
     }
 
     @staticmethod
@@ -111,7 +111,7 @@ class FCV:
         'n_scans': 3,
         'n_avg_scans': 2,
         'n_equil_scans': 2,
-        'current_range': 'cr_10_uA',
+        'current_range': '10uA',
     }
 
     @staticmethod
@@ -152,7 +152,7 @@ class LSV:
         'end_potential': 1.0,
         'step_potential': 0.1,
         'scanrate': 2.0,
-        'current_range': {'max': 'cr_1_mA', 'min': 'cr_100_nA', 'start': 'cr_100_uA'},
+        'current_range': {'max': '1mA', 'min': '100nA', 'start': '100uA'},
     }
 
     @staticmethod
@@ -212,7 +212,7 @@ class ACV:
         'ac_potential': 0.25,
         'frequency': 200.0,
         'scanrate': 0.2,
-        'current_range': {'max': 'cr_1_mA', 'min': 'cr_100_nA', 'start': 'cr_100_uA'},
+        'current_range': {'max': '1mA', 'min': '100nA', 'start': '100uA'},
     }
 
     @staticmethod
@@ -249,7 +249,7 @@ class SWV:
         'frequency': 10.0,
         'amplitude': 0.05,
         'record_forward_and_reverse_currents': True,
-        'current_range': {'max': 'cr_1_mA', 'min': 'cr_100_nA', 'start': 'cr_100_uA'},
+        'current_range': {'max': '1mA', 'min': '100nA', 'start': '100uA'},
     }
 
     @staticmethod
@@ -273,10 +273,10 @@ class CP:
     id = 'pot'
     kwargs = {
         'current': 0.0,
-        'applied_current_range': 'cr_100_uA',
+        'applied_current_range': '100uA',
         'interval_time': 0.1,
         'run_time': 1.0,
-        'potential_range': {'max': 'pr_1_V', 'min': 'pr_10_mV', 'start': 'pr_1_V'},
+        'potential_range': {'max': '1V', 'min': '10mV', 'start': '1V'},
     }
 
     @staticmethod
@@ -298,9 +298,9 @@ class SCP:
     id = 'scp'
     kwargs = {
         'current': 0.1,
-        'applied_current_range': 'cr_100_uA',
+        'applied_current_range': '100uA',
         'measurement_time': 1.0,
-        'potential_range': 'pr_100_mV',
+        'potential_range': '100mV',
         'pretreatment': {'deposition_time': 1, 'deposition_potential': 0.1},
     }
 
@@ -322,10 +322,10 @@ class SCP:
 class LSP:
     id = 'lsp'
     kwargs = {
-        'applied_current_range': 'cr_100_uA',
+        'applied_current_range': '100uA',
         'current_step': 0.1,
         'scan_rate': 8.0,
-        'potential_range': {'max': 'pr_1_V', 'min': 'pr_10_mV', 'start': 'pr_1_V'},
+        'potential_range': {'max': '1V', 'min': '10mV', 'start': '1V'},
     }
 
     @staticmethod
@@ -348,7 +348,7 @@ class OCP:
     kwargs = {
         'interval_time': 0.1,
         'run_time': 1.0,
-        'potential_range': {'max': 'pr_1_V', 'min': 'pr_10_mV', 'start': 'pr_1_V'},
+        'potential_range': {'max': '1V', 'min': '10mV', 'start': '1V'},
     }
 
     @staticmethod
@@ -877,7 +877,7 @@ class FIS:
 class GIS:
     id = 'gis'
     kwargs = {
-        'applied_current_range': 'cr_10_uA',
+        'applied_current_range': '10uA',
         'equilibration_time': 0.0,
         'n_frequencies': 7,
         'max_frequency': 1e5,
@@ -936,7 +936,7 @@ class GIS:
 class FGIS:
     id = 'fgis'
     kwargs = {
-        'applied_current_range': 'cr_10_uA',
+        'applied_current_range': '10uA',
         'run_time': 0.3,
     }
 
@@ -1040,7 +1040,7 @@ class MM:
                 'stage_type': 'ConstantI',
                 'potential_limits': {'max': 1, 'min': -1},
                 'current': 1.0,
-                'applied_current_range': 'cr_100_nA',
+                'applied_current_range': '100nA',
                 'run_time': 0.1,
             },
             {
