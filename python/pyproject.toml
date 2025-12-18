@@ -116,7 +116,8 @@ allow_redefinition = true
 ignore_missing_imports = true
 
 [tool.pyright]
-include = ["src/pypalmsens", "tests", "examples"]
+include = ["src/pypalmsens", "tests"]
+exclude = ["examples"]
 ignore = ["src/PalmSens-stubs"]
 reportMissingModuleSource = false
 reportAttributeAccessIssue = false
@@ -124,6 +125,7 @@ reportUnknownMemberType = false
 reportUnknownVariableType = false
 reportUnknownArgumentType = false
 reportPrivateUsage = false
+
 
 [tool.bumpversion]
 current_version = "1.4.0"

@@ -14,11 +14,11 @@ For example to set up a CV experiment:
 ...     step_potential = 0.25,
 ...     scanrate = 5,
 ...     n_scans = 2,
-...     current_range = ps.settings.CurrentRange(
-...         max = '1mA',
-...         min = '100nA',
-...         start = '100uA',
-...     ),
+...     current_range = {
+...         'max': '1mA',
+...         'min': '100nA',
+...         'start': '100uA',
+...     },
 ... )
 ```
 

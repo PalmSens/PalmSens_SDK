@@ -121,11 +121,7 @@ For example:
 ----
 >>> cv = ps.CyclicVoltammetry()
 >>> cv.current_range
-CurrentRange(
-    max = '10mA',
-    min = '1uA',
-    start = '100uA',
-)
+CurrentRange(max = '10mA', min = '1uA', start = '100uA')
 ----
 
 There are two ways to modify the current ranges, for example, if you want so set the start current at 10 μA.
@@ -133,17 +129,9 @@ There are two ways to modify the current ranges, for example, if you want so set
 1. By passing current ranges as an argument during initialization
 +
 ----
->>> cv = ps.CyclicVoltammetry(
-...     current_range=ps.settings.current_range(
-...         start='10uA'
-...     )
-... )
+>>> cv = ps.CyclicVoltammetry(current_range={'start':'10uA'})
 >>> cv.current_range
-CurrentRange(
-    max = '10mA',
-    min = '1uA',
-    start = '10uA', # <1>
-)
+CurrentRange(max='10mA', min='1uA', start='10uA') # <1>
 ----
 <1> Only the start value was set, so the min/max are populated with the defaults.
 
@@ -162,15 +150,9 @@ you can save yourself some typing by passing the current range string directly.
 This automatically expands into the `CurrentRange` object with `min`, `max`, and `start` equal.
 
 ----
->>> cv = ps.CyclicVoltammetry(
-...    current_range='10uA'
-... )
+>>> cv = ps.CyclicVoltammetry(current_range='10uA')
 >>> cv.current_range
-CurrentRange(
-    max = '10uA',
-    min = '10uA',
-    start = '10uA',
-)
+CurrentRange(max = '10uA',min = '10uA',start = '10uA')
 ----
 ====
 
