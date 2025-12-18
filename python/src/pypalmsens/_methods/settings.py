@@ -170,17 +170,17 @@ class BiPot(BaseSettings):
     current_range_max: AllowedCurrentRanges = '10mA'
     """Maximum bipotential current range in mA.
 
-    Use `CURRENT_RANGE` to define the range."""
+    See `pypalmsens.settings.AllowedCurrentRanges` for options."""
 
     current_range_min: AllowedCurrentRanges = '1uA'
     """Minimum bipotential current range.
 
-    Use `CURRENT_RANGE` to define the range."""
+    See `pypalmsens.settings.AllowedCurrentRanges` for options."""
 
     current_range_start: AllowedCurrentRanges = '100uA'
     """Start bipotential current range.
 
-    Use `CURRENT_RANGE` to define the range."""
+    See `pypalmsens.settings.AllowedCurrentRanges` for options."""
 
     @override
     def _update_psmethod(self, psmethod: PSMethod, /):
