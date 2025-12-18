@@ -6,7 +6,6 @@ from typing import ClassVar, Literal
 from PalmSens import Method as PSMethod
 from PalmSens.Techniques import MixedMode as PSMixedMode
 from pydantic import Field
-from pydantic.types import Annotated
 from typing_extensions import override
 
 from .._shared import single_to_double
@@ -25,7 +24,7 @@ class BaseStage(BaseModel, metaclass=ABCMeta):
 
     def __init_subclass__(cls, **kwargs) -> None:
         super().__init_subclass__(**kwargs)
-        cls._registry[cls.stage_type] = cls
+        cls._registry[cls.__name__] = cls
 
     @classmethod
     def from_stage_type(cls, id: str) -> BaseStage:
@@ -274,11 +273,6 @@ class Impedance(BaseStage):
         self.max_equilibration_time = single_to_double(psstage.MaxEqTime)
 
 
-StageType = Annotated[
-    ConstantE | ConstantI | SweepE | OpenCircuit | Impedance, Field(discriminator='stage_type')
-]
-
-
 class MixedMode(
     BaseTechnique,
     mixins.CurrentRangeMixin,
@@ -322,7 +316,7 @@ class MixedMode(
     cycles: int = 1
     """Number of times to go through all stages."""
 
-    stages: list[StageType] = Field(
+    stages: list[ConstantE | ConstantI | SweepE | OpenCircuit | Impedance] = Field(
         default_factory=list,
     )
     """List of stages to run through."""
