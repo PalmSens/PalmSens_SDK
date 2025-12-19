@@ -36,6 +36,8 @@
 		<Item Name="BasicExampleExportCSV.vi" Type="VI" URL="../BasicExampleExportCSV.vi"/>
 		<Item Name="BasicExampleOCP.vi" Type="VI" URL="../BasicExampleOCP.vi"/>
 		<Item Name="BasicUIExample.vi" Type="VI" URL="../BasicUIExample.vi"/>
+		<Item Name="eistest.vi" Type="VI" URL="../eistest.vi"/>
+		<Item Name="geistest.vi" Type="VI" URL="../geistest.vi"/>
 		<Item Name="MethodSCRIPTExample.vi" Type="VI" URL="../MethodSCRIPTExample.vi"/>
 		<Item Name="MultiChannelExample.vi" Type="VI" URL="../MultiChannelExample.vi"/>
 		<Item Name="MultiChannelMES4HWSyncExample.vi" Type="VI" URL="../MultiChannelMES4HWSyncExample.vi"/>
