@@ -50,7 +50,7 @@ def announce(tag: str):
 
 
 def bump_version(sdk: str, version: str):
-    workdir = ROOT / "sdk"
+    workdir = ROOT / sdk
 
     with work_directory(workdir):
         sp.check_call(
