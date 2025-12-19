@@ -84,19 +84,19 @@ def prepare_pr(sdk: str, version: str, base_branch="main"):
     body = PR_BODY.format(version=version, sdk=sdk, tag=tag)
     print(body)
 
-    # sp.run(
-    #     [
-    #         "gh",
-    #         "pr",
-    #         "create",
-    #         f"--base={base_branch}",
-    #         f"--head={release_branch}",
-    #         f"--title=Release {sdk}-{version}",
-    #         f"--body={body}",
-    #         "--draft",
-    #     ],
-    #     check=True,
-    # )
+    sp.run(
+        [
+            "gh",
+            "pr",
+            "create",
+            f"--base={base_branch}",
+            f"--head={release_branch}",
+            f"--title=Release {sdk}-{version}",
+            f"--body={body}",
+            "--draft",
+        ],
+        check=True,
+    )
 
 
 if __name__ == "__main__":
