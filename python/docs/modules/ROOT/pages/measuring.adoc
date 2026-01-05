@@ -1,6 +1,7 @@
 = Connecting and Measuring
 :source-language: python
 :api: api:attachment$index.html
+:api-data: api:attachment$data/index.html
 :api-inst: api:attachment$instrument/index.html
 :api-inst-async: api:attachment$instrument_async/index.html
 
@@ -152,13 +153,13 @@ Alternatively, you can use `data.last_datapoint()` or `data.new_datapoints()` to
 
 Since `data.x` and `data.y` are `ps.data.DataArrays`, you can access these directly for your own code.
 `data.start` is an index pointing at the first at the first element of the array, and `data.index` at the last.
-The data arrays contain the complete data for the measurement. See ... for more information.
+The data arrays contain the complete data for the measurement. See xref:{api-data}#pypalmsens.data.CallbackData[`CallbackData`] for more information.
 
 The type of data returned depends on the measurement.
 For non-impedemetric technique, this will be time (s), potential (V), or current (μA) for x, and current (μA) or potential (V) for y.
 Query the data array directly (`DataArray.unit`, `DataArray.quantity`) for these data.
 
-For impedemetric techniques, the callback returns the full eis dataset (TODO link EIS dataset)
+For impedemetric techniques, the callback returns the EIS xref:data.adoc#_dataset[Dataset]. See xref:{api-data}#pypalmsens.data.CallbackDataEIS[`CallbackDataEIS`] for more information.
 
 ----
 >>> def callback(data):
