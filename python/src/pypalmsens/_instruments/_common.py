@@ -5,7 +5,7 @@ import warnings
 from dataclasses import dataclass, field
 from functools import partial
 from math import floor
-from typing import TYPE_CHECKING, Protocol, TypeVar
+from typing import TYPE_CHECKING, Protocol, Sequence, TypeVar
 
 import System
 from PalmSens.Comm import enumDeviceType
@@ -39,8 +39,16 @@ class CallbackData:
         """Return last measured data point."""
         return {
             'index': self.index,
-            self.x_array.name: self.x_array[-1],
-            self.y_array.name: self.x_array[-1],
+            'x': self.x_array[-1],
+            'y': self.y_array[-1],
+        }
+
+    def new_datapoints(self) -> dict[str, int | Sequence[float]]:
+        """Return new data points since last callback."""
+        return {
+            'start': self.index,
+            'x': self.x_array[self.start :],
+            'y': self.y_array[self.start :],
         }
 
     @override
@@ -65,6 +73,14 @@ class CallbackDataEIS:
         """Return last measured data point."""
         ret = {array.name: array[-1] for array in self.data.arrays()}
         ret['index'] = self.index
+        return ret
+
+    def new_datapoints(self) -> dict[str, int | Sequence[float]]:
+        """Return new data points since last callback."""
+        ret: dict[str, int | Sequence[float]] = {
+            array.name: array[self.start :] for array in self.data.arrays()
+        }
+        ret['start'] = self.start
         return ret
 
     @override
