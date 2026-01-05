@@ -1,10 +1,9 @@
 from __future__ import annotations
 
-from collections.abc import Sequence
 from dataclasses import dataclass
 from typing import Protocol
 
-from typing_extensions import override
+from typing_extensions import Generator, override
 
 from .._data.data_array import DataArray
 from .._data.dataset import DataSet
@@ -34,13 +33,14 @@ class CallbackData:
             'y': self.y_array[-1],
         }
 
-    def new_datapoints(self) -> dict[str, int | Sequence[float]]:
+    def new_datapoints(self) -> Generator[dict[str, float]]:
         """Return new data points since last callback."""
-        return {
-            'start': self.index,
-            'x': self.x_array[self.start :],
-            'y': self.y_array[self.start :],
-        }
+        for i in range(self.start, self.index):
+            yield {
+                'x': self.x_array[i],
+                'y': self.y_array[i],
+                'index': i,
+            }
 
     @override
     def __str__(self):
@@ -66,13 +66,12 @@ class CallbackDataEIS:
         ret['index'] = self.index
         return ret
 
-    def new_datapoints(self) -> dict[str, int | Sequence[float]]:
+    def new_datapoints(self) -> Generator[dict[str, float]]:
         """Return new data points since last callback."""
-        ret: dict[str, int | Sequence[float]] = {
-            array.name: array[self.start :] for array in self.data.arrays()
-        }
-        ret['start'] = self.start
-        return ret
+        for i in range(self.start, self.index):
+            ret = {array.name: array[i] for array in self.data.arrays()}
+            ret['index'] = i
+            yield ret
 
     @override
     def __str__(self):
