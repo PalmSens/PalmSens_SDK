@@ -12,29 +12,70 @@ from PalmSens.Comm import enumDeviceType
 from typing_extensions import override
 
 from .. import __sdk_version__
-from .._data import DataArray
+from .._data import DataArray, DataSet
 
 if TYPE_CHECKING:
     from PalmSens.Devices import Device as PSDevice
     from PalmSens.Devices import DeviceCapabilities
 
 
-@dataclass
+@dataclass(slots=True)
 class CallbackData:
-    x: DataArray
-    """Data for the x variable."""
+    x_array: DataArray
+    """Data array for the x variable."""
 
-    y: DataArray
-    """Data for the y variable."""
+    y_array: DataArray
+    """Data array for the y variable."""
 
     start: int
     """Start index for the new data."""
+
+    @property
+    def index(self) -> int:
+        """Index of last point."""
+        return len(self.x_array) - 1
+
+    def last_datapoint(self) -> dict[str, float]:
+        """Return last measured data point."""
+        return {
+            'index': self.index,
+            self.x_array.name: self.x_array[-1],
+            self.y_array.name: self.x_array[-1],
+        }
+
+    @override
+    def __str__(self):
+        return str(self.last_datapoint())
+
+
+@dataclass(slots=True)
+class CallbackDataEIS:
+    data: DataSet
+    """EIS dataset."""
+
+    start: int
+    """Start index for the new data."""
+
+    @property
+    def index(self) -> int:
+        """Index of last point."""
+        return self.data.n_points - 1
+
+    def last_datapoint(self) -> dict[str, float]:
+        """Return last measured data point."""
+        ret = {array.name: array[-1] for array in self.data.arrays()}
+        ret['index'] = self.index
+        return ret
+
+    @override
+    def __str__(self):
+        return str(self.last_datapoint())
 
 
 class Callback(Protocol):
     """Type signature for callback."""
 
-    def __call__(self, data: CallbackData): ...
+    def __call__(self, data: CallbackData | CallbackDataEIS): ...
 
 
 T = TypeVar('T')

@@ -10,14 +10,13 @@ from PalmSens.Comm import CommManager
 from System import EventHandler
 from System.Threading.Tasks import Task
 
-from .._data._shared import ArrayType
+from .._data import DataSet
 from ..data import DataArray, Measurement
-from ._common import Callback, CallbackData, create_future
+from ._common import Callback, CallbackData, CallbackDataEIS, create_future
 
 if TYPE_CHECKING:
     from PalmSens import Measurement as PSMeasurement
     from PalmSens import Method as PSMethod
-    from PalmSens.Data import DataArray as PSDataArray
 
 
 class MeasurementManagerAsync:
@@ -186,8 +185,8 @@ class MeasurementManagerAsync:
         assert self.callback
 
         data = CallbackData(
-            x=DataArray(psarray=curve.XAxisDataArray),
-            y=DataArray(psarray=curve.YAxisDataArray),
+            x_array=DataArray(psarray=curve.XAxisDataArray),
+            y_array=DataArray(psarray=curve.YAxisDataArray),
             start=args.StartIndex,
         )
 
@@ -206,32 +205,14 @@ class MeasurementManagerAsync:
 
     def eis_data_data_added_callback(self, eis_data: Plottables.EISData, args):
         """Called when a new EIS data points is obtained. Requires a callback."""
-
-        def func(eis_data: Plottables.EISData, args, callback: Callback):
-            callback({'data': eis_data, 'start': args.Index, 'args': args})
-            return
-
-            start = args.Index
-            count = 1
-
-            data: list[dict[str, float | str]] = []
-            arrays: list[PSDataArray] = [array for array in eis_data.EISDataSet.GetDataArrays()]
-            for i in range(start, start + count):
-                point: dict[str, float | str] = {'index': i + 1}
-
-                for array in arrays:
-                    array_type = ArrayType(array.ArrayType)
-
-                    if array_type in (ArrayType.Frequency, ArrayType.ZRe, ArrayType.ZIm):
-                        key = array_type.name.lower()
-                        point[key] = array[i].Value
-
-                data.append(point)
-
-            callback(data)
-
         assert self.callback
-        _ = self.loop.call_soon_threadsafe(func, eis_data, args, self.callback)
+
+        data = CallbackDataEIS(
+            data=DataSet(psdataset=eis_data.EISDataSet),
+            start=args.Index,
+        )
+
+        _ = self.loop.call_soon_threadsafe(self.callback, data)
 
     def eis_data_finished_callback(self, eis_data: Plottables.EISData, args):
         """Unsubscribes to EIS data events."""
