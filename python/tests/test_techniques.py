@@ -8,6 +8,7 @@ import pytest
 from pydantic import ValidationError
 
 import pypalmsens as ps
+from pypalmsens._data import DataArray
 from pypalmsens._methods import BaseTechnique
 
 logger = logging.getLogger(__name__)
@@ -1183,6 +1184,30 @@ def test_measure(manager, method):
 
 @pytest.mark.instrument
 def test_callback(manager):
+    points = []
+
+    def callback(data):
+        points.append(data)
+
+    params = ps.LinearSweepVoltammetry(scanrate=1)
+    _ = manager.measure(params, callback=callback)
+
+    assert len(points) == 11
+
+    point = points[-1]
+    assert point.start == 10
+
+    assert isinstance(point.x, DataArray)
+    assert point.x.name == 'potential'
+    assert len(point.x) == 11
+
+    assert isinstance(point.y, DataArray)
+    assert point.y.name == 'current'
+    assert len(point.y) == 11
+
+
+@pytest.mark.instrument
+def test_callback_new_eis(manager):
     points = []
 
     def callback(data):
