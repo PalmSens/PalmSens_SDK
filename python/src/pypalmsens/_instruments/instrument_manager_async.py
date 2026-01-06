@@ -9,9 +9,10 @@ from typing import TYPE_CHECKING, Any, Coroutine
 import clr
 import PalmSens
 import System
+from PalmSens import AsyncEventHandler, MuxModel
 from PalmSens import Method as PSMethod
-from PalmSens import MuxModel
 from PalmSens.Comm import CommManager, MuxType
+from System.Threading.Tasks import Task
 from typing_extensions import AsyncIterator, override
 
 from .._methods import (
@@ -378,6 +379,70 @@ class InstrumentManagerAsync:
             )
 
         return serial.ToString()
+
+    def subscribe_status_async(self, callback=None):
+        print('register status event')
+        self.loop = asyncio.get_running_loop()
+        self.status_callback = callback
+
+        # def callback(foo):
+        #     print(foo)
+
+        self.xcallback = callback
+
+        self.status_idle_handler_async: AsyncEventHandler = AsyncEventHandler(
+            self.idle_status_callback_async
+        )
+
+        self._comm.ReceiveStatusAsync += self.idle_status_callback_async
+
+    def unsubscribe_status_async(self):
+        self._comm.ReceiveStatusAsync -= self.idle_status_callback_async
+        print('unregister status event')
+
+    def idle_status_callback_async(self, sender, args):
+        print('hello from event')
+
+        self.sender = sender
+        self.args = args
+
+        def _callback():
+            print('default callback')
+            status = args.GetStatus()
+
+            potential = status.PotentialReading
+            current = status.CurrentReading
+
+            print(potential.Value, current.Value, status.ToString())
+            print('pretreatment phase:', status.PretreatmentPhase)
+            print('device state', args.DeviceState)
+
+        # print(123)
+
+        # _callback()
+        # print(args)
+
+        # print(self.status_callback)
+        # self.status_callback()
+
+        # callback()
+
+        _ = self.loop.call_soon_threadsafe(self.status_callback, args)
+
+        print('done\n')
+        return Task.CompletedTask
+
+    def listen(self, t=5):
+        async def func():
+            self.loop = asyncio.get_running_loop()
+
+            self.subscribe_status_async(print)
+
+            await asyncio.sleep(t)
+
+            self.unsubscribe_status_async()
+
+        asyncio.run(func())
 
     def validate_method(self, method: PSMethod | BaseTechnique) -> None:
         """Validate method.
