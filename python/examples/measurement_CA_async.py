@@ -7,17 +7,6 @@ def new_data_callback(data):
     print(data.last_datapoint())
 
 
-def status_callback(args):
-    status = args.GetStatus()
-
-    potential = status.PotentialReading
-    current = status.CurrentReading
-
-    print(potential.Value, current.Value, status.ToString())
-    print('pretreatment phase:', status.PretreatmentPhase)
-    print('device state', args.DeviceState)
-
-
 async def main():
     instruments = await ps.discover_async()
     print(instruments)
@@ -26,9 +15,9 @@ async def main():
         serial = await manager.get_instrument_serial()
         print(serial)
 
-        manager.subscribe_status(status_callback)
+        manager.subscribe_status(print)
 
-        await asyncio.sleep(4)
+        await asyncio.sleep(20)
 
         method = ps.ChronoAmperometry(
             pretreatment=ps.settings.Pretreatment(
@@ -42,7 +31,7 @@ async def main():
 
         measurement = await manager.measure(method, callback=new_data_callback)
 
-        await asyncio.sleep(2)
+        await asyncio.sleep(20)
 
         manager.unsubscribe_status()
 
