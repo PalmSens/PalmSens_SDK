@@ -217,11 +217,18 @@ class BiPot(BaseSettings):
         self.mode = self._MODES[int(psmethod.BipotModePS)]
         self.potential = single_to_double(psmethod.BiPotPotential)
 
-        self.current_range = BipotCurrentRange(
-            max=cr_enum_to_string(psmethod.BipotRanging.MaximumCurrentRange),
-            min=cr_enum_to_string(psmethod.BipotRanging.MinimumCurrentRange),
-            start=cr_enum_to_string(psmethod.BipotRanging.StartCurrentRange),
-        )
+        crmax = cr_enum_to_string(psmethod.BipotRanging.MaximumCurrentRange)
+        crmin = cr_enum_to_string(psmethod.BipotRanging.MinimumCurrentRange)
+        crstart = cr_enum_to_string(psmethod.BipotRanging.StartCurrentRange)
+
+        if crmax == crmin == crstart:
+            self.current_range = crmin
+        else:
+            self.current_range = BipotCurrentRange(
+                max=crmax,
+                min=crmin,
+                start=crstart,
+            )
 
 
 class PostMeasurement(BaseSettings):
