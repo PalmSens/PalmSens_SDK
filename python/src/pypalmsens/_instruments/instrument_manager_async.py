@@ -22,7 +22,7 @@ from .._methods import (
 )
 from ..data import Measurement
 from ._common import Instrument, create_future, firmware_warning
-from .callback import Callback
+from .callback import Callback, Status
 from .measurement_manager_async import MeasurementManagerAsync
 
 WINDOWS = sys.platform == 'win32'
@@ -381,37 +381,26 @@ class InstrumentManagerAsync:
         return serial.ToString()
 
     def subscribe_status(self, callback, /):
-        print('register status event')
-        self.loop = asyncio.get_running_loop()
-        self.status_callback = callback
+        """Register callback for idle status events."""
+        self._loop = asyncio.get_running_loop()
+        self._status_callback = callback
 
         self.status_idle_handler_async: AsyncEventHandler = AsyncEventHandler(
-            self.idle_status_callback_async
+            self._idle_status_callback
         )
 
-        self._comm.ReceiveStatusAsync += self.idle_status_callback_async
+        self._comm.ReceiveStatusAsync += self._idle_status_callback
 
     def unsubscribe_status(self):
-        self._comm.ReceiveStatusAsync -= self.idle_status_callback_async
-        print('unregister status event')
+        """Unregister callback from idle status events."""
+        self._comm.ReceiveStatusAsync -= self._idle_status_callback
 
-    def idle_status_callback_async(self, sender, args):
-        assert self.status_callback
+    def _idle_status_callback(self, sender, args):
+        """Event handler helper function to schedule the callback."""
+        assert self._status_callback
 
-        _ = self.loop.call_soon_threadsafe(self.status_callback, args)
+        _ = self._loop.call_soon_threadsafe(self._status_callback, Status(args))
         return Task.CompletedTask
-
-    def listen(self, t=5):
-        async def func():
-            self.loop = asyncio.get_running_loop()
-
-            self.subscribe_status_async(print)
-
-            await asyncio.sleep(t)
-
-            self.unsubscribe_status_async()
-
-        asyncio.run(func())
 
     def validate_method(self, method: PSMethod | BaseTechnique) -> None:
         """Validate method.
