@@ -155,7 +155,7 @@ class VersusOCP(BaseSettings):
         self.stability_criterion = single_to_double(psmethod.OCPStabilityCriterion)
 
 
-class BipotCurrentRange(BaseModel):
+class BiPotCurrentRange(BaseModel):
     """Set the BiPot auto ranging current."""
 
     max: AllowedCurrentRanges = '10mA'
@@ -187,7 +187,7 @@ class BiPot(BaseSettings):
     potential: float = 0.0
     """Set the bipotential in V."""
 
-    current_range: AllowedCurrentRanges | BipotCurrentRange = '1uA'
+    current_range: AllowedCurrentRanges | BiPotCurrentRange = '1uA'
     """Set the bipotential current range.
 
     Can be a fixed current range or a ranging current. See the specifications for your instrument.
@@ -224,7 +224,7 @@ class BiPot(BaseSettings):
         if crmax == crmin == crstart:
             self.current_range = crmin
         else:
-            self.current_range = BipotCurrentRange(
+            self.current_range = BiPotCurrentRange(
                 max=crmax,
                 min=crmin,
                 start=crstart,

@@ -10,6 +10,7 @@ from ._methods._shared import (
 )
 from ._methods.settings import (
     BiPot,
+    BiPotCurrentRange,
     ChargeLimits,
     CurrentLimits,
     CurrentRange,
@@ -31,6 +32,7 @@ __all__ = [
     'AllowedCurrentRanges',
     'AllowedPotentialRanges',
     'BiPot',
+    'BiPotCurrentRange',
     'ChargeLimits',
     'CurrentLimits',
     'CurrentRange',
