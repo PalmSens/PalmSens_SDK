@@ -9,9 +9,11 @@ from typing import Iterator
 import clr
 import PalmSens
 import System
+from PalmSens import AsyncEventHandler, MuxModel
 from PalmSens import Method as PSMethod
-from PalmSens import MuxModel
 from PalmSens.Comm import CommManager, MuxType
+from System import EventHandler
+from System.Threading.Tasks import Task
 from typing_extensions import override
 
 from .._methods import (
@@ -217,6 +219,85 @@ class InstrumentManager:
             return False
         else:
             return True
+
+    def subscribe_status(self, callback):
+        self.status_idle_handler: EventHandler = EventHandler(self.idle_status_callback)
+        self._comm.ReceiveStatus += self.status_idle_handler
+
+        print('hello')
+
+    def unsubscribe_status(self):
+        self._comm.ReceiveStatus -= self.status_idle_handler
+        print('bye')
+
+    def idle_status_callback(self, sender, args):
+        print('hello from event')
+
+        self.sender = sender
+        self.args = args
+
+        def callback():
+            status = args.GetStatus()
+
+            potential = status.PotentialReading
+            current = status.CurrentReading
+
+            print(potential.Value, current.Value, status.ToString())
+            print('pretreatment phase:', status.PretreatmentPhase)
+            print('device state', args.DeviceState)
+
+        callback()
+
+        _ = self.loop.call_soon_threadsafe(callback)
+        return Task.CompletedTask
+
+    def subscribe_status_async(self, callback):
+        self.status_idle_handler_async: AsyncEventHandler = AsyncEventHandler(
+            self.idle_status_callback_async
+        )
+        self._comm.ReceiveStatusAsync += self.idle_status_callback_async
+
+        print('hello async')
+
+    def unsubscribe_status_async(self):
+        self._comm.ReceiveStatusAsync -= self.idle_status_callback_async
+        print('bye async')
+
+    def idle_status_callback_async(self, sender, args):
+        print('hello from event')
+
+        self.sender = sender
+        self.args = args
+
+        def callback():
+            status = args.GetStatus()
+
+            potential = status.PotentialReading
+            current = status.CurrentReading
+
+            print(potential.Value, current.Value, status.ToString())
+            print('pretreatment phase:', status.PretreatmentPhase)
+            print('device state', args.DeviceState)
+
+        callback()
+
+        # _ = self.loop.call_soon_threadsafe(callback)
+
+        print('hello')
+
+        return Task.CompletedTask
+
+    def listen(self):
+        async def func():
+            self.subscribe_status_async(print)
+
+            for x in range(200):
+                await asyncio.sleep(0.1)
+                print(x)
+
+            self.unsubscribe_status_async()
+
+        asyncio.run(func())
 
     def ensure_connection(self):
         """Raises connection error if the instrument is not connected."""
