@@ -5,7 +5,7 @@ from typing import Literal
 import PalmSens
 from PalmSens import Method as PSMethod
 from PalmSens import MuxMethod as PSMuxMethod
-from pydantic import Field
+from pydantic import Field, field_validator
 from typing_extensions import override
 
 from .._shared import single_to_double
@@ -20,6 +20,7 @@ from ._shared import (
     pr_string_to_enum,
 )
 from .base import BaseSettings
+from .base_model import BaseModel
 
 
 class CurrentRange(BaseSettings):
@@ -154,6 +155,25 @@ class VersusOCP(BaseSettings):
         self.stability_criterion = single_to_double(psmethod.OCPStabilityCriterion)
 
 
+class BipotCurrentRange(BaseModel):
+    """Set the BiPot auto ranging current."""
+
+    max: AllowedCurrentRanges = '10mA'
+    """Maximum current range.
+
+    See `pypalmsens.settings.AllowedCurrentRanges` for options."""
+
+    min: AllowedCurrentRanges = '1uA'
+    """Minimum current range.
+
+    See `pypalmsens.settings.AllowedCurrentRanges` for options."""
+
+    start: AllowedCurrentRanges = '100uA'
+    """Start current range.
+
+    See `pypalmsens.settings.AllowedCurrentRanges` for options."""
+
+
 class BiPot(BaseSettings):
     """Set the bipot settings."""
 
@@ -167,37 +187,39 @@ class BiPot(BaseSettings):
     potential: float = 0.0
     """Set the bipotential in V."""
 
-    current_range_max: AllowedCurrentRanges = '10mA'
-    """Maximum bipotential current range in mA.
+    current_range: BipotCurrentRange = Field(default='1uA', validate_default=True)
+    """Set the bipotential current range.
+
+    Can be a fixed current range or a ranging current. See the specifications for your instrument.
+    Internally, a fixed current range is represented by an autoranging current with equal min/max ranges.
 
     See `pypalmsens.settings.AllowedCurrentRanges` for options."""
 
-    current_range_min: AllowedCurrentRanges = '1uA'
-    """Minimum bipotential current range.
-
-    See `pypalmsens.settings.AllowedCurrentRanges` for options."""
-
-    current_range_start: AllowedCurrentRanges = '100uA'
-    """Start bipotential current range.
-
-    See `pypalmsens.settings.AllowedCurrentRanges` for options."""
+    @field_validator('current_range', mode='before')
+    @classmethod
+    def current_converter(
+        cls, value: AllowedCurrentRanges | BipotCurrentRange
+    ) -> BipotCurrentRange:
+        if isinstance(value, str):
+            return BipotCurrentRange(min=value, max=value, start=value)
+        return value
 
     @override
     def _update_psmethod(self, psmethod: PSMethod, /):
         bipot_num = self._MODES.index(self.mode)
         psmethod.BipotModePS = PalmSens.Method.EnumPalmSensBipotMode(bipot_num)
         psmethod.BiPotPotential = self.potential
-        psmethod.BipotRanging.MaximumCurrentRange = cr_string_to_enum(self.current_range_max)
-        psmethod.BipotRanging.MinimumCurrentRange = cr_string_to_enum(self.current_range_min)
-        psmethod.BipotRanging.StartCurrentRange = cr_string_to_enum(self.current_range_start)
+        psmethod.BipotRanging.MaximumCurrentRange = cr_string_to_enum(self.current_range.max)
+        psmethod.BipotRanging.MinimumCurrentRange = cr_string_to_enum(self.current_range.min)
+        psmethod.BipotRanging.StartCurrentRange = cr_string_to_enum(self.current_range.start)
 
     @override
     def _update_params(self, psmethod: PSMethod, /):
         self.mode = self._MODES[int(psmethod.BipotModePS)]
         self.potential = single_to_double(psmethod.BiPotPotential)
-        self.current_range_max = cr_enum_to_string(psmethod.BipotRanging.MaximumCurrentRange)
-        self.current_range_min = cr_enum_to_string(psmethod.BipotRanging.MinimumCurrentRange)
-        self.current_range_start = cr_enum_to_string(psmethod.BipotRanging.StartCurrentRange)
+        self.current_range.max = cr_enum_to_string(psmethod.BipotRanging.MaximumCurrentRange)
+        self.current_range.min = cr_enum_to_string(psmethod.BipotRanging.MinimumCurrentRange)
+        self.current_range.start = cr_enum_to_string(psmethod.BipotRanging.StartCurrentRange)
 
 
 class PostMeasurement(BaseSettings):
