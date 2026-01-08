@@ -287,6 +287,13 @@ class InstrumentManagerAsync:
 
         firmware_warning(self._comm.Capabilities)
 
+    def status(self) -> Status:
+        """Get status."""
+        return Status(
+            self._comm.get_Status(),
+            device_state=str(self._comm.get_State()),  # type:ignore
+        )
+
     async def set_cell(self, cell_on: bool) -> None:
         """Turn the cell on or off.
 
@@ -378,20 +385,23 @@ class InstrumentManagerAsync:
         self._loop = asyncio.get_running_loop()
 
         self.status_idle_handler_async: AsyncEventHandler = AsyncEventHandler(
-            self._idle_status_callback
+            self._idle_status_handler
         )
 
-        self._comm.ReceiveStatusAsync += self._idle_status_callback
+        self._comm.ReceiveStatusAsync += self._idle_status_handler
 
     def unregister_status_callback(self):
         """Unregister callback from idle status events."""
-        self._comm.ReceiveStatusAsync -= self._idle_status_callback
+        self._comm.ReceiveStatusAsync -= self._idle_status_handler
+        del self._status_callback
 
-    def _idle_status_callback(self, sender, args) -> Task.CompletedTask:
+    def _idle_status_handler(self, sender, args) -> Task.CompletedTask:
         """Event handler helper function to schedule the callback."""
         assert self._status_callback
 
-        _ = self._loop.call_soon_threadsafe(self._status_callback, Status(args))
+        status = Status._from_event_args(args)
+
+        _ = self._loop.call_soon_threadsafe(self._status_callback, status)
         return Task.CompletedTask
 
     def validate_method(self, method: PSMethod | BaseTechnique) -> None:
@@ -609,4 +619,5 @@ class InstrumentManagerAsync:
             return
 
         await create_future(self._comm.DisconnectAsync())
+        self._comm.Dispose()
         del self._comm

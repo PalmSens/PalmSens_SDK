@@ -30,6 +30,12 @@ def test_get_instrument_serial(manager):
 
 
 @pytest.mark.instrument
+def test_status(manager):
+    status = manager.status()
+    assert status.device_state == 'Idle'
+
+
+@pytest.mark.instrument
 def test_read_current(manager):
     manager.set_cell(True)
 

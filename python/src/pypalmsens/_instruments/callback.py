@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
-from typing import Literal, Protocol, final
+from dataclasses import dataclass, field
+from typing import Literal, Protocol
 
 import PalmSens
 from PalmSens.Comm import StatusEventArgs
@@ -135,26 +135,26 @@ class CurrentReading:
         )
 
 
-@final
+@dataclass(slots=True)
 class Status:
-    def __init__(self, args: StatusEventArgs):
-        self._args = args
-        self._status = args.GetStatus()
+    _status: PalmSens.Comm.Status = field(repr=False)
+    device_state: Literal[
+        'Unknown', 'Idle', 'Measurement', 'Download', 'Pretreatment', 'Error', 'MeasOCP'
+    ] = 'Unknown'
+    """Device state."""
+
+    @classmethod
+    def _from_event_args(cls, args: StatusEventArgs) -> Status:
+        return cls(
+            _status=args.GetStatus(),
+            device_state=str(args.DeviceState),  # type:ignore
+        )
 
     @override
     def __str__(self):
         return str(
             {'current': str(self.current_reading), 'potential': str(self.potential_reading)}
         )
-
-    @property
-    def device_state(
-        self,
-    ) -> Literal[
-        'Unknown', 'Idle', 'Measurement', 'Download', 'Pretreatment', 'Error', 'MeasOCP'
-    ]:
-        """Device state."""
-        return str(self._args.DeviceState)  # type:ignore
 
     @property
     def pretreatment_phase(
@@ -194,7 +194,7 @@ class Status:
         return CurrentReading._from_psobject(self._status.CurrentReadingWE2)
 
     @property
-    def AuxInput(self) -> float:
+    def aux_input(self) -> float:
         """Raw aux input."""
         return self._status.AuxInput
 

@@ -21,7 +21,7 @@ from .._methods import (
 )
 from ..data import Measurement
 from ._common import Instrument, create_future, firmware_warning
-from .callback import Callback
+from .callback import Callback, Status
 from .instrument_manager_async import discover_async
 from .measurement_manager_async import MeasurementManagerAsync
 
@@ -229,6 +229,13 @@ class InstrumentManager:
         self._comm = asyncio.run(_connect(self.instrument.device))
 
         firmware_warning(self._comm.Capabilities)
+
+    def status(self) -> Status:
+        """Get status."""
+        return Status(
+            self._comm.get_Status(),
+            device_state=str(self._comm.get_State()),  # type:ignore
+        )
 
     def set_cell(self, cell_on: bool):
         """Turn the cell on or off.

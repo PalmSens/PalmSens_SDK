@@ -142,11 +142,11 @@ async def test_discover_async():
 async def test_idle_status_callback_async():
     points = []
 
-    def append_point(data):
-        points.append(data)
+    def callback(status):
+        points.append(status)
 
     async with await ps.connect_async() as manager:
-        manager.subscribe_status(append_point)
+        manager.register_status_callback(callback)
 
         await asyncio.sleep(1)
 
@@ -161,6 +161,8 @@ async def test_idle_status_callback_async():
         )
         _ = await manager.measure(method)
         await asyncio.sleep(1)
+
+        manager.unregister_status_callback()
 
     assert len(points) == 6
 
