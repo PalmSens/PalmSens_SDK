@@ -198,7 +198,7 @@ class Status:
     @property
     def AuxInput(self) -> float:
         """Raw aux input."""
-        return self._status.AuxInput()
+        return self._status.AuxInput
 
     @property
     def aux_input_as_voltage(self) -> float:
