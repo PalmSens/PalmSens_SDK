@@ -28,7 +28,7 @@ async def main():
     print(instruments)
 
     async with await ps.connect_async(instruments[0]) as manager:
-        manager.subscribe_status(idle_status_callback)
+        manager.register_status_callback(idle_status_callback)
 
         # While sleeping, the callback reports the
         # idle current/potential every second
@@ -50,7 +50,7 @@ async def main():
 
         await asyncio.sleep(5)
 
-        manager.unsubscribe_status()
+        manager.unregister_status_callback()
 
     print(measurement)
 

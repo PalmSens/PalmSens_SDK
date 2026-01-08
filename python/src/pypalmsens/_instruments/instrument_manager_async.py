@@ -220,6 +220,7 @@ class InstrumentManagerAsync:
 
         self._comm: CommManager
         self._status_callback: CallbackStatus
+        self._loop: asyncio.AbstractEventLoop
 
     @override
     def __repr__(self):
@@ -374,6 +375,7 @@ class InstrumentManagerAsync:
             The function to call when triggered
         """
         self._status_callback = callback
+        self._loop = asyncio.get_running_loop()
 
         self.status_idle_handler_async: AsyncEventHandler = AsyncEventHandler(
             self._idle_status_callback
@@ -389,7 +391,7 @@ class InstrumentManagerAsync:
         """Event handler helper function to schedule the callback."""
         assert self._status_callback
 
-        _ = asyncio.get_running_loop().call_soon_threadsafe(self._status_callback, Status(args))
+        _ = self._loop.call_soon_threadsafe(self._status_callback, Status(args))
         return Task.CompletedTask
 
     def validate_method(self, method: PSMethod | BaseTechnique) -> None:
