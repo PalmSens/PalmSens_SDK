@@ -15,25 +15,13 @@ async def main():
         serial = await manager.get_instrument_serial()
         print(serial)
 
-        manager.subscribe_status(print)
-
-        await asyncio.sleep(20)
-
         method = ps.ChronoAmperometry(
-            pretreatment=ps.settings.Pretreatment(
-                conditioning_time=5,
-                deposition_time=5,
-            ),
             interval_time=0.02,
             potential=1.0,
             run_time=2.0,
         )
 
         measurement = await manager.measure(method, callback=new_data_callback)
-
-        await asyncio.sleep(20)
-
-        manager.unsubscribe_status()
 
     print(measurement)
 

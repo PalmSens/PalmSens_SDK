@@ -143,11 +143,9 @@ class Status:
 
     @override
     def __str__(self):
-        state = self.device_state
-        if self.device_state == 'Pretreatment':
-            state += f' ({self.pretreatment_phase})'
-
-        return f'{self.current_reading} | {self.potential_reading} | {state}'
+        return str(
+            {'current': str(self.current_reading), 'potential': str(self.potential_reading)}
+        )
 
     @property
     def device_state(
