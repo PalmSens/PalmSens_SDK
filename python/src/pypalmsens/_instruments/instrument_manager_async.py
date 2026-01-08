@@ -22,7 +22,7 @@ from .._methods import (
 )
 from ..data import Measurement
 from ._common import Instrument, create_future, firmware_warning
-from .callback import Callback, Status
+from .callback import Callback, CallbackStatus, Status
 from .measurement_manager_async import MeasurementManagerAsync
 
 WINDOWS = sys.platform == 'win32'
@@ -188,10 +188,9 @@ async def measure_async(
     callback: Callback, optional
         If specified, call this function on every new set of data points.
         New data points are batched, and contain all points since the last
-        time it was called. Each point is a dictionary containing
-        `frequency`, `z_re`, `z_im` for impedimetric techniques and
-        `index`, `x`, `x_unit`, `x_type`, `y`, `y_unit` and `y_type` for
-        non-impedimetric techniques.
+        time it was called. Each point is an instance of `ps.data.CallbackData`
+        for non-impedimetric or  `ps.data.CallbackDataEIS`
+        for impedimetric measurments.
 
     Returns
     -------
@@ -213,29 +212,14 @@ class InstrumentManagerAsync:
     ----------
     instrument: Instrument
         Instrument to connect to, use `discover()` to find connected instruments.
-    callback : Callback, optional
-        Deprecated. Pass your callback to `InstrumentManagerAsync.measure()` directly instead.
     """
 
-    def __init__(self, instrument: Instrument, *, callback: None | Callback = None):
-        if callback:
-            warnings.warn(
-                (
-                    'Passing a callback to the instrument manager is '
-                    'deprecated and will be removed in a future version. '
-                    'Use `InstrumentManager.measure(..., callback=callback)` '
-                    'instead.'
-                ),
-                DeprecationWarning,
-            )
-
-        self.callback: None | Callback = callback
-        """This callback is called on every data point."""
-
+    def __init__(self, instrument: Instrument):
         self.instrument: Instrument = instrument
         """Instrument to connect to."""
 
         self._comm: CommManager
+        self._status_callback: CallbackStatus
 
     @override
     def __repr__(self):
@@ -380,9 +364,15 @@ class InstrumentManagerAsync:
 
         return serial.ToString()
 
-    def subscribe_status(self, callback, /):
-        """Register callback for idle status events."""
-        self._loop = asyncio.get_running_loop()
+    def register_status_callback(self, callback: CallbackStatus, /):
+        """Register callback for idle status events.
+
+        The callback is triggered when the current/potential are updated
+        durinig idle state or pretreatment phases.
+
+        callback: CallbackStatus
+            The function to call when triggered
+        """
         self._status_callback = callback
 
         self.status_idle_handler_async: AsyncEventHandler = AsyncEventHandler(
@@ -391,15 +381,15 @@ class InstrumentManagerAsync:
 
         self._comm.ReceiveStatusAsync += self._idle_status_callback
 
-    def unsubscribe_status(self):
+    def unregister_status_callback(self):
         """Unregister callback from idle status events."""
         self._comm.ReceiveStatusAsync -= self._idle_status_callback
 
-    def _idle_status_callback(self, sender, args):
+    def _idle_status_callback(self, sender, args) -> Task.CompletedTask:
         """Event handler helper function to schedule the callback."""
         assert self._status_callback
 
-        _ = self._loop.call_soon_threadsafe(self._status_callback, Status(args))
+        _ = asyncio.get_running_loop().call_soon_threadsafe(self._status_callback, Status(args))
         return Task.CompletedTask
 
     def validate_method(self, method: PSMethod | BaseTechnique) -> None:
@@ -433,16 +423,13 @@ class InstrumentManagerAsync:
         callback: Callback, optional
             If specified, call this function on every new set of data points.
             New data points are batched, and contain all points since the last
-            time it was called. Each point is a dictionary containing
-            `frequency`, `z_re`, `z_im` for impedimetric techniques and
-            `index`, `x`, `x_unit`, `x_type`, `y`, `y_unit` and `y_type` for
-            non-impedimetric techniques.
+            time it was called. Each point is an instance of `ps.data.CallbackData`
+            for non-impedimetric or  `ps.data.CallbackDataEIS`
+            for impedimetric measurments.
         sync_event: asyncio.Event
             Event for hardware synchronization. Do not use directly.
             Instead, initiate hardware sync via `InstrumentPoolAsync.measure()`.
         """
-        callback = callback or self.callback
-
         psmethod = method._to_psmethod()
 
         self.ensure_connection()

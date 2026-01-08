@@ -211,3 +211,9 @@ class Status:
     @property
     def noise(self) -> float:
         return self._status.Noise
+
+
+class CallbackStatus(Protocol):
+    """Type signature for idle status callback."""
+
+    def __call__(self, status: Status): ...
