@@ -8,8 +8,9 @@ from PalmSens import MuxMethod as PSMuxMethod
 from pydantic import Field
 from typing_extensions import override
 
-from .._shared import single_to_double
-from ._shared import (
+from .._helpers import single_to_double
+from .base import BaseSettings
+from .shared import (
     AllowedCurrentRanges,
     AllowedPotentialRanges,
     convert_bools_to_int,
