@@ -2,15 +2,6 @@
 
 from __future__ import annotations
 
-from ._methods._shared import (
-    AllowedCurrentRanges,
-    AllowedDeviceState,
-    AllowedPotentialRanges,
-    AllowedReadingStatus,
-    AllowedTimingStatus,
-    ELevel,
-    ILevel,
-)
 from ._methods.settings import (
     BiPot,
     ChargeLimits,
@@ -28,6 +19,15 @@ from ._methods.settings import (
     PotentialRange,
     Pretreatment,
     VersusOCP,
+)
+from ._methods.shared import (
+    AllowedCurrentRanges,
+    AllowedDeviceState,
+    AllowedPotentialRanges,
+    AllowedReadingStatus,
+    AllowedTimingStatus,
+    ELevel,
+    ILevel,
 )
 
 __all__ = [

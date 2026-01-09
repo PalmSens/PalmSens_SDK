@@ -14,7 +14,7 @@ from ..settings import (
     AllowedReadingStatus,
     AllowedTimingStatus,
 )
-from ._shared import ArrayType
+from .shared import ArrayType
 
 if TYPE_CHECKING:
     from PalmSens.Data import DataArray as PSDataArray

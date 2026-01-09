@@ -10,7 +10,7 @@ from typing_extensions import override
 
 from .._data.data_array import DataArray
 from .._data.dataset import DataSet
-from .._methods._shared import cr_enum_to_string, pr_enum_to_string
+from .._methods.shared import cr_enum_to_string, pr_enum_to_string
 from ..settings import (
     AllowedCurrentRanges,
     AllowedDeviceState,

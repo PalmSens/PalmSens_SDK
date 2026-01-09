@@ -7,9 +7,9 @@ from PalmSens.Plottables import Curve as PSCurve
 from typing_extensions import override
 
 from ..settings import AllowedCurrentRanges, AllowedReadingStatus, AllowedTimingStatus
-from ._shared import ArrayType
 from .curve import Curve
 from .data_array import DataArray
+from .shared import ArrayType
 
 if TYPE_CHECKING:
     import pandas as pd

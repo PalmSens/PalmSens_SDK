@@ -6,7 +6,7 @@ from typing import Literal
 
 import PalmSens
 
-from .._shared import single_to_double
+from .._helpers import single_to_double
 from .base_model import BaseModel
 
 AllowedTimingStatus = Literal['Unknown', 'OK', 'OverStep']
