@@ -1,5 +1,4 @@
 name: matlab
-version: '1.0.0'
 title: Matlab SDK
 nav:
 - modules/ROOT/nav.adoc

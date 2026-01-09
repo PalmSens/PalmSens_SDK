@@ -1,5 +1,4 @@
 name: labview
-version: '1.0.0'
 title: Labview SDK
 nav:
 - modules/ROOT/nav.adoc
