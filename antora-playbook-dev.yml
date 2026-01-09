@@ -1,0 +1,32 @@
+site:
+  title: PalmSens for Developers
+  start_page: start::index.adoc
+content:
+  sources:
+    - url: .
+      start_path: docs/start
+    - url: .
+      version: true
+      start_path: python/docs
+    - url: .
+      start_path: matlab/docs
+      version: true
+    - url: .
+      start_path: labview/docs
+      version: true
+    - url: .
+      start_path: maui/docs
+      version: true
+urls:
+  latest_version_segment: latest
+ui:
+  bundle:
+    url: https://gitlab.com/antora/antora-ui-default/-/jobs/artifacts/HEAD/raw/build/ui-bundle.zip?job=bundle-stable
+    snapshot: true
+  supplemental_files: ./docs/supplemental-ui
+antora:
+  extensions:
+    - require: '@antora/collector-extension'
+      enabled: true
+    - require: '@antora/lunr-extension'
+      enabled: true
