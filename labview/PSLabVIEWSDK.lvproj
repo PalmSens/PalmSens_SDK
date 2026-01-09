@@ -31,9 +31,11 @@
 			<Item Name="PalmSens.lvclass" Type="LVClass" URL="../PalmSens/PalmSens.lvclass"/>
 			<Item Name="ProcessActiveMeasurements.vi" Type="VI" URL="../PalmSens/ProcessActiveMeasurements.vi"/>
 			<Item Name="ProcessCurveData.vi" Type="VI" URL="../PalmSens/ProcessCurveData.vi"/>
+			<Item Name="SimpleCurveAdded Event Callback.vi" Type="VI" URL="../PalmSens/SimpleCurveAdded Event Callback.vi"/>
 		</Item>
 		<Item Name="BasicExample.vi" Type="VI" URL="../BasicExample.vi"/>
 		<Item Name="BasicExampleExportCSV.vi" Type="VI" URL="../BasicExampleExportCSV.vi"/>
+		<Item Name="BasicExampleMux.vi" Type="VI" URL="../BasicExampleMux.vi"/>
 		<Item Name="BasicExampleOCP.vi" Type="VI" URL="../BasicExampleOCP.vi"/>
 		<Item Name="BasicUIExample.vi" Type="VI" URL="../BasicUIExample.vi"/>
 		<Item Name="MethodSCRIPTExample.vi" Type="VI" URL="../MethodSCRIPTExample.vi"/>
