@@ -4,7 +4,10 @@ from __future__ import annotations
 
 from ._methods._shared import (
     AllowedCurrentRanges,
+    AllowedDeviceState,
     AllowedPotentialRanges,
+    AllowedReadingStatus,
+    AllowedTimingStatus,
     ELevel,
     ILevel,
 )
@@ -30,6 +33,9 @@ from ._methods.settings import (
 __all__ = [
     'AllowedCurrentRanges',
     'AllowedPotentialRanges',
+    'AllowedTimingStatus',
+    'AllowedReadingStatus',
+    'AllowedDeviceState',
     'BiPot',
     'ChargeLimits',
     'CurrentLimits',

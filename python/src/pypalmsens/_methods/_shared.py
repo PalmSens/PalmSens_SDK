@@ -9,6 +9,12 @@ import PalmSens
 from .._shared import single_to_double
 from .base_model import BaseModel
 
+AllowedTimingStatus = Literal['Unknown', 'OK', 'OverStep']
+AllowedReadingStatus = Literal['OK', 'Overload', 'Underload', 'OverloadWarning']
+AllowedDeviceState = Literal[
+    'Unknown', 'Idle', 'Measurement', 'Download', 'Pretreatment', 'Error', 'MeasOCP'
+]
+
 AllowedCurrentRanges = Literal[
     '100pA',
     '1nA',
