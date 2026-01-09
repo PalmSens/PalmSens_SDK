@@ -73,9 +73,9 @@ def cr_enum_to_string(enum: PalmSens.CurrentRange) -> AllowedCurrentRanges:
 def pr_string_to_enum(s: AllowedPotentialRanges) -> PalmSens.PotentialRange:
     """Convert literal string to PotentialRange."""
     attr = f'pr{s}'
-    cr = getattr(PalmSens.PotentialRanges, attr)
+    pr = getattr(PalmSens.PotentialRanges, attr)
 
-    return PalmSens.PotentialRange(cr)
+    return PalmSens.PotentialRange(pr)
 
 
 def pr_enum_to_string(enum: PalmSens.PotentialRange) -> AllowedPotentialRanges:
