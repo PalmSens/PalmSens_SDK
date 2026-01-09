@@ -124,6 +124,9 @@ class DataArray(Sequence[float]):
 
     def as_current_range(self) -> list[AllowedCurrentRanges]:
         """Return current range as list of strings."""
+        if self.type is not ArrayType.Current:
+            raise ValueError(f'Invalid array type: {self.type}, expected: {ArrayType.Current}')
+
         clr_type = clr.GetClrType(CurrentReading)
         field_info = clr_type.GetField('CurrentRange')
 
@@ -131,6 +134,9 @@ class DataArray(Sequence[float]):
 
     def as_reading_status(self) -> list[AllowedReadingStatus]:
         """Return reading status as list of strings."""
+        if self.type is not ArrayType.Current:
+            raise ValueError(f'Invalid array type: {self.type}, expected: {ArrayType.Current}')
+
         clr_type = clr.GetClrType(CurrentReading)
         field_info = clr_type.GetField('ReadingStatus')
 
@@ -138,6 +144,9 @@ class DataArray(Sequence[float]):
 
     def as_timing_status(self) -> list[AllowedTimingStatus]:
         """Return timing status as list of strings."""
+        if self.type is not ArrayType.Current:
+            raise ValueError(f'Invalid array type: {self.type}, expected: {ArrayType.Current}')
+
         clr_type = clr.GetClrType(CurrentReading)
         field_info = clr_type.GetField('TimingStatus')
 
