@@ -8,13 +8,14 @@ on:
 
 jobs:
   build:
-    name: Add maui zip to release
+    name: Package release
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v4
       with:
         persist-credentials: false
+        ref: ${{ github.ref_name }}
 
     - name: Zip maui directory
       run: |

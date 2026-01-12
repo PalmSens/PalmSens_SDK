@@ -1,26 +1,23 @@
 import pypalmsens as ps
 
 
-def new_data_callback(new_data):
-    for point in new_data:
-        print(point)
+def new_data_callback(data):
+    print(data.last_datapoint())
 
 
 instruments = ps.discover()
 print(instruments)
 
 with ps.connect(instruments[0]) as manager:
-    manager.callback = new_data_callback
-
     serial = manager.get_instrument_serial()
     print(serial)
 
     method = ps.CyclicVoltammetry(
-        current_range=ps.settings.CurrentRange(
-            max=ps.settings.CURRENT_RANGE.cr_1_A,  # 1 A range
-            min=ps.settings.CURRENT_RANGE.cr_1_uA,  # 1 µA range
-            start=ps.settings.CURRENT_RANGE.cr_1_mA,  # 1 mA range
-        ),
+        current_range={
+            'max': '1A',  # 1 A range
+            'min': '1uA',  # 1 µA range
+            'start': '1mA',  # 1 mA range
+        },
         equilibration_time=2,  # seconds
         begin_potential=-2,  # V
         vertex1_potential=-2,  # V
@@ -30,6 +27,6 @@ with ps.connect(instruments[0]) as manager:
         n_scans=3,  # number of scans
     )
 
-    measurement = manager.measure(method)
+    measurement = manager.measure(method, callback=new_data_callback)
 
 print(measurement)

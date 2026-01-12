@@ -9,7 +9,7 @@ using System.Collections.ObjectModel;
 using PalmSens.Core.Simplified.MAUI;
 using Device = PalmSens.Devices.Device;
 
-namespace PalmSensPeakDetection
+namespace PeakDetectionApp
 {
     public partial class MainPage : ContentPage
     {
@@ -17,7 +17,7 @@ namespace PalmSensPeakDetection
         private IReadOnlyList<Device> _availableDevices;
         private Device _selectedDevice;
         private readonly PSCommSimple _psCommSimple;
-        
+
         public MainPage(
             PSCommSimpleMaui psCommSimple,
             IPlatformInvoker platformInvoker)
@@ -26,7 +26,7 @@ namespace PalmSensPeakDetection
             InitializeComponent();
             BindingContext = this;
 
-            psCommSimple.Initialize();  // This needs to be called after the main page has been initialized
+            psCommSimple.Initialize(this);  // This needs to be called after the main page has been initialized
             this._psCommSimple = psCommSimple;
 
             _psCommSimple.StateChanged += OnStateChanged;

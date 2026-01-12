@@ -1,4 +1,5 @@
 [![Tests](https://github.com/PalmSens/PalmSens_SDK/actions/workflows/python-tests.yml/badge.svg)](https://github.com/PalmSens/PalmSens_SDK/actions/workflows/python-tests.yml)
+![Coverage](https://img.shields.io/badge/coverage-95%25-brightgreen)
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/pypalmsens)](https://pypi.org/project/pypalmsens/)
 [![PyPI](https://img.shields.io/pypi/v/pypalmsens.svg?style=flat)](https://pypi.org/project/pypalmsens/)
 
@@ -7,9 +8,9 @@
 <p align="center">
     <a href="https://sdk.palmsens.com/maui/latest" target="_blank">
         <picture>
-          <source media="(prefers-color-scheme: dark)" srcset="./docs/modules/ROOT/images/banner_dark.svg">
-          <source media="(prefers-color-scheme: light)" srcset="./docs/modules/ROOT/images/banner.svg">
-          <img alt="PalmSens banner" src="./docs/modules/ROOT/images/banner.svg" width="80%">
+          <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/PalmSens/PalmSens_SDK/refs/heads/main/python/docs/modules/ROOT/images/banner_dark.svg">
+          <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/PalmSens/PalmSens_SDK/refs/heads/main/python/docs/modules/ROOT/images/banner.svg">
+          <img alt="PalmSens banner" src="https://raw.githubusercontent.com/PalmSens/PalmSens_SDK/refs/heads/main/python/docs/modules/ROOT/images/banner.svg" width="80%">
         </picture>
     </a>
 </p>

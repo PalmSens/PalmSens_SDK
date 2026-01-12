@@ -10,7 +10,7 @@ using System.Collections.ObjectModel;
 using PalmSens.Core.Simplified.MAUI;
 using Device = PalmSens.Devices.Device;
 
-namespace PalmSensEISFIt
+namespace EISFitApp
 {
     public partial class MainPage : ContentPage
     {
@@ -27,7 +27,7 @@ namespace PalmSensEISFIt
             InitializeComponent();
             BindingContext = this;
 
-            psCommSimple.Initialize();  // This needs to be called after the main page has been initialized
+            psCommSimple.Initialize(this);  // This needs to be called after the main page has been initialized
             this._psCommSimple = psCommSimple;
 
             InitPlot();

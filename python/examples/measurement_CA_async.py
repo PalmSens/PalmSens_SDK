@@ -3,9 +3,8 @@ import asyncio
 import pypalmsens as ps
 
 
-def new_data_callback(new_data):
-    for point in new_data:
-        print(point)
+def new_data_callback(data):
+    print(data.last_datapoint())
 
 
 async def main():
@@ -13,19 +12,16 @@ async def main():
     print(instruments)
 
     async with await ps.connect_async(instruments[0]) as manager:
-        manager.callback = new_data_callback
-
         serial = await manager.get_instrument_serial()
         print(serial)
 
-        # Chronoamperometry measurement using helper class
         method = ps.ChronoAmperometry(
             interval_time=0.02,
             potential=1.0,
             run_time=2.0,
         )
 
-        measurement = await manager.measure(method)
+        measurement = await manager.measure(method, callback=new_data_callback)
 
     print(measurement)
 

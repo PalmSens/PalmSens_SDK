@@ -4,8 +4,8 @@ import csv
 import functools
 
 
-def stream_to_csv_callback(new_data, csv_writer):
-    for point in new_data:
+def stream_to_csv_callback(data, csv_writer):
+    for point in data.new_datapoints():
         csv_writer.writerow([point['index'], point['x'], point['y']])
 
 
@@ -13,13 +13,12 @@ async def stream_to_csv(manager, *, method):
     """Measure with a custom csv writer callback."""
     serial = await manager.get_instrument_serial()
 
-    with open(f'{serial}.csv', 'w', newline='') as csv_file:
-        csv_writer = csv.writer(csv_file, delimiter=' ')
+    with open(f'{serial}.csv', 'w') as csv_file:
+        csv_writer = csv.writer(csv_file)
 
         callback = functools.partial(stream_to_csv_callback, csv_writer=csv_writer)
-        manager.callback = callback
 
-        measurement = await manager.measure(method)
+        measurement = await manager.measure(method, callback=callback)
 
     print(f'Wrote data to {csv_file.name}')
 
@@ -33,7 +32,7 @@ async def main():
         run_time=5.0,
     )
 
-    instruments = await ps.discover_async(ftdi=True)
+    instruments = await ps.discover_async()
 
     print(instruments)
 

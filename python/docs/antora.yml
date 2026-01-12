@@ -1,5 +1,4 @@
 name: python
-version: '1.3.3'
 title: PyPalmSens
 nav:
 - modules/ROOT/nav.adoc
