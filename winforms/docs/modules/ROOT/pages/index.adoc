@@ -19,30 +19,32 @@ The WinForms SDK currently targets https://learn.microsoft.com/en-us/dotnet/core
 
 image::device_shots.svg[Device shot, width=80%]
 
-// == Features
+== Features
 
-// These projects contain a simplified open source wrapper for the xref:start:ROOT:core.adoc[`PalmSens.Core`] libraries.
+These projects contain a simplified open source wrapper for the xref:start:ROOT:core.adoc[`PalmSens.Core`] libraries.
 
-// * `PalmSens.Core.Simplified`
-// * `PalmSens.Core.Simplified.MAUI`
-// * `PalmSens.Core.Simplified.Android`
-// * `PalmSens.Core.Simplified.WinUI`
-// * `PalmSens.Core.Simplified.iOS`
+* `PalmSens.Core.Simplified`
+* `PalmSens.Core.Simplified.WinForms`
 
-// The simplified wrappers give you quick and easy access to all the basic functions of the PalmSens/EmStat devices and automatically handles most potential threading issues for you:
+The simplified wrappers give you quick and easy access to all the basic functions of the PalmSens/EmStat devices and automatically handles most potential threading issues for you:
 
-// * Connecting
-// * Manual control of the cell
-// * Running measurements
-// * Accessing and processing measured data
-// * Analyzing and manipulating data
+* Connecting
+* Manual control of the cell
+* Running measurements
+* Accessing and processing measured data
+* Analyzing and manipulating data
 
-// Methods and data structures are referenced from the xref:start:ROOT:core.adoc[`PalmSens.Core`] libraries.
+Methods and data structures are referenced from the xref:start:ROOT:core.adoc[`PalmSens.Core`] libraries.
 
-// In addition, the projects contain a simple open source plot control that you can use to plot your measurements in real-time.
-// They are based on the open-source http://www.oxyplot.org/[OxyPlot library].
+In addition, the projects contain a simple open source plot control that you can use to plot your measurements in real-time.
+They are based on the open-source http://www.oxyplot.org/[OxyPlot library].
 
-// * `SDKPlot.NET`
-// * `SDKPlot.Maui`
+* `SDKPlot`
+* `SDKPlot.WinForms`
+
+These libraries required when using the SDKs plot:
+
+- `OxyPlot.dll`
+- `OxyPlot.WindowsForms.dll`
 
 Click xref:examples.adoc[here for a list of example apps] to help you get started.
