@@ -3,22 +3,22 @@
 
 Download the latest release from https://github.com/PalmSens/PalmSens_SDK/releases[here].
 
-Developing native, cross-platform .NET Multi-platform App UI (.NET MAUI) apps requires Visual Studio 2022 17.12 or greater, or the latest Visual Studio Code with the .NET MAUI extension.
+Developing WinForms apps requires Visual Studio 2017 or newer, or the latest Visual Studio Code.
 
-See https://learn.microsoft.com/en-us/dotnet/maui/get-started/installation[this page] for installation instructions and how to get started with MAUI.
+See https://learn.microsoft.com/en-us/visualstudio/ide/create-csharp-winform-visual-studio[this page] for installation instructions and how to get started with WinForms.
 
 [#add-sdk-to-solution]
 == Add SDK project to your solution
 
 In Visual Studio, click on your solution and go to menu:File[Add > Existing Project].
-Navigate to the project (`.csproj`) you want to add, e.g. `PSLibraries/PalmSens.Core.Simplified.Maui/PalmSens.Core.Simplified.MAUI.csproj`.
+Navigate to the project (`.csproj`) you want to add, e.g. `PSLibraries/PalmSens.Core.Simplified.WinForms/PalmSens.Core.Simplified.WinForms.csproj`.
 
 image::add_to_solution.png[]
 
 == Add SDK references to the project
 
 In Visual Studio, click on your project and go to menu:Project[Add Project Reference].
-Select the reference(s) you want to add, e.g. `PalmSens.Core.Simplified.MAUI`.
+Select the reference(s) you want to add, e.g. `PalmSens.Core.Simplified.WinForms`.
 
 image::add_to_project.png[]
 
@@ -26,18 +26,37 @@ Reference external libraries (`.dll` files) by selecting them via the
 'Browse' button and reference project files (.csproj) by xref#add-sdk-to-solution[adding them
 to your solution] and referencing the project.
 
-If you use the simplified wrapper to control your devices, reference the `PalmSens.Core.Simplified.csproj` and `PalmSens.Core.Simplified.MAUI.csproj` should be referenced.
-To use the plot helpers, reference the `SDKPlot.csproj`, `SDKPlot.Maui.csproj` projects.
+The `PalmSens.Core.dll` and `PalmSens.Core.Windows.dll` libraries should always be referenced.
 
-The `PalmSens.Core` libraries are available from https://nuget.org[nuget.org].
+If you use the simplified wrapper to control your devices, reference the `PalmSens.Core.Simplified.csproj` and `PalmSens.Core.Simplified.WinForms.csproj` should be referenced.
+To use the plot helpers, reference the `SDKPlot.csproj`, `SDKPlot.WinForms.csproj` projects.
 
-- https://www.nuget.org/packages/PalmSens.Core[PalmSens.Core]
-- https://www.nuget.org/packages/PalmSens.Core.Android[PalmSens.Core.Android]
-- https://www.nuget.org/packages/PalmSens.Core.Windows[PalmSens.Core.Windows]
+If your project does not build please make sure that:
+1. You target .NET Framework 4.7.2 or higher
+2. You use visual studio 2017 or higher
+3. .NET standard 2.0 is available.
 
-The `PalmSens.Core` libraries are referenced by the Simplified wrapper, and do not need to be referenced explicitly.
+image::select_target_framework.png[]
 
-You can use `net9.0` as the target .NET runtime.
+== Add PSCommSimpleWinforms or PS component to your user interface
+
+
+First, import the `PalmSens.Core.Simplified.csproj` and `PalmSens.Core.Simplified.WinForms.csproj` into your solution and build the `PalmSens.Core.Simplified.WinForms` project.
+Then reference these projects in your project.
+Next, go to the designer of your `Main Form` and look for the `PSCommSimpleWinforms` component in your toolbox.
+Drag and drop this component on top of your `Form`.
+To develop for a multi channel instrument use the `PSMultiCommSimpleWinForms` component instead.
+
+image::commsimple_component.png[]
+
+Finally, select the `PSCommSimpleWinforms`/ `PSMultiCommSimpleWinForms` component in your form, go to the properties window and set the property Parent to reference the current form.
+This is necessary for the `PalmSens.Core.Simplified` wrapper to automatically handle potential threading issues for you.
+
+[cols=".^a,.^a", frame=none, grid=none]
+|===
+| image::blank_form.png[]
+| image::form_add_parent.png[]
+|===
 
 [#compatibility]
 == Compatible devices and firmware
