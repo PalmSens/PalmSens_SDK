@@ -72,6 +72,11 @@ To get the device’s status updates subscribe to the `ReceiveStatus` event afte
 psCommSimpleWinForms.ReceiveStatus += PsCommSimple_ReceiveStatus;
 ----
 
+Either subscribe to the `ReceiveStatus` event of the `psCommSimpleWinForms` component via the designer or programmatically.
+It is not required to be connected to a device first.
+
+image::receive_status.png[ReceiveStatus event in form designer]
+
 The status is obtained from the event’s `StatusEventArgs`, e.g:.
 
 ----
