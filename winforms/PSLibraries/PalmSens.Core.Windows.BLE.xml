@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<doc>
+  <assembly>
+    <name>PalmSens.Core.Windows.BLE</name>
+  </assembly>
+  <members>
+    <member name="T:PalmSens.Windows.Devices.BLEDeviceInfo">
+      <summary>
+                Display class used to represent a BluetoothLEDevice in the Device list
+            </summary>
+    </member>
+  </members>
+</doc>
