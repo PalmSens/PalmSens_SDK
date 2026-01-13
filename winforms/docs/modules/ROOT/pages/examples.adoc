@@ -34,6 +34,7 @@ Shows how to make a connection and run a measurement on different multiplexer ch
 Auxilliary/BiPot Example::
 Shows how to measure additional data from the auxiliary port or a bipot.
 
+[#example-internal]
 Internal Storage Example::
 Shows how to navigate and access files on the internal storage of a EmStat Pico Development Board, Sensit BT, EmStat4 and PalmSens4.
 
