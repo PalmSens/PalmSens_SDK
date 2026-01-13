@@ -23,7 +23,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataExample", "Examples\Dat
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FirmwareExample", "Examples\FirmwareExample\FirmwareExample.csproj", "{480D4712-A1A3-4AB6-BC97-CF098C68F028}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InternalStorageExampleAsync", "Examples\InternalStorageAsyncExample\InternalStorageExampleAsync.csproj", "{803E5D92-1DBD-49EB-98EF-B7B6236D21F8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InternalStorageAsyncExample", "Examples\InternalStorageAsyncExample\InternalStorageAsyncExample.csproj", "{803E5D92-1DBD-49EB-98EF-B7B6236D21F8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InternalStorageExample", "Examples\InternalStorageExample\InternalStorageExample.csproj", "{144C2B39-1361-45C4-BFA1-04E426604EFD}"
 EndProject
