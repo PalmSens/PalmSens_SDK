@@ -1,0 +1,13 @@
+name: winforms
+version: '1.0.0'
+title: WinForms SDK
+nav:
+- modules/ROOT/nav.adoc
+# - modules/api/nav.adoc
+# ext:
+#   collector:
+#     run: docfx winforms/docs/api/docfx.json
+#     scan:
+#       clean: true
+#       dir: winforms/docs/api/_site
+#       into: modules/api/attachments/
