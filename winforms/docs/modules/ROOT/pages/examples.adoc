@@ -14,7 +14,7 @@ To make a new app using one of the example apps as a template:
 4. Right click menu:Solution[Add > Existing Project], select `MyNewApp.csproj` file
 5. Update namespace (find-replace), `BasicExample` -> `MyNewApp`
 
-=== Example apps
+== Example apps
 
 Basic Example::
 Shows how to make a connection and run a measurement, with a minimum amount of code.
@@ -25,6 +25,7 @@ Shows how to make a connection, run a measurement and plot the results.
 Electrochemical Impedance Spectroscopy Plot Example::
 Shows how to make a connection, run an Electrochemical Impedance Spectroscopy measurement and plot the results.
 
+[#example-data]
 Import, Analyze and Save Data Example::
 Shows how to load and measurements and methods from and to `.pssession` and `.psmethod` files, and how to smooth data, manipulate data and detect peaks.
 
@@ -38,9 +39,11 @@ Shows how to measure additional data from the auxiliary port or a bipot.
 Internal Storage Example::
 Shows how to navigate and access files on the internal storage of a EmStat Pico Development Board, Sensit BT, EmStat4 and PalmSens4.
 
+[#example-eis-fit]
 Electrochemical Impedance Spectroscopy Fit Example::
 Shows how perform an equivalent circuit analysis on an EIS frequency scan measurement.
 
+[#example-peaks]
 Peak Detection Example::
 Shows how to perform an advanced peak detection for Linear Sweep Voltammetry and Cyclic Voltammetry measurements.
 
