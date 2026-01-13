@@ -32,7 +32,7 @@ namespace PalmSens.Core.Simplified.WinForms
         public PSMultiCommSimpleWinForms()
         {
             InitializeComponent();
-            PalmSens.Windows.CoreDependencies.Init(); //Initiates PSSDK threading dependencies
+            PalmSens.Windows.CoreDependencies.Init(); //Initiates threading dependencies
             InitAsyncFunctionality(Environment.ProcessorCount); //Initiate the asynchronous functions in the SDK
             _psMultiCommSimple = new PSMultiCommSimple(this);
         }
@@ -154,8 +154,8 @@ namespace PalmSens.Core.Simplified.WinForms
         /// </value>
         public bool EnableBluetooth
         {
-            get => _deviceHandler.EnableBluetooth; 
-            set => _deviceHandler.EnableBluetooth = value; 
+            get => _deviceHandler.EnableBluetooth;
+            set => _deviceHandler.EnableBluetooth = value;
         }
 
         /// <summary>
@@ -166,8 +166,8 @@ namespace PalmSens.Core.Simplified.WinForms
         /// </value>
         public bool EnableSerialPort
         {
-            get => _deviceHandler.EnableSerialPort; 
-            set => _deviceHandler.EnableSerialPort = value; 
+            get => _deviceHandler.EnableSerialPort;
+            set => _deviceHandler.EnableSerialPort = value;
         }
 
         /// <summary>
@@ -523,7 +523,7 @@ namespace PalmSens.Core.Simplified.WinForms
         public Task<(CommManager Comm, int ChannelIndex, Exception Exception)[]> Connect(Device[] devices, int[] channelIndices = null) => _deviceHandler.ConnectAsync(devices, channelIndices);
 
         /// <summary>
-        /// Disconnects from channels with the specified CommManagers. 
+        /// Disconnects from channels with the specified CommManagers.
         /// Warning use the platform independent method Disconnect() instead.
         /// Otherwise the generic PSMultiCommSimple does not unsubscribe from the CommManagers correctly
         /// which may result in it not being released from the memory.

@@ -31,7 +31,7 @@ namespace PalmSens.Core.Simplified.WinForms
         public PSCommSimpleWinForms()
         {
             InitializeComponent();
-            PalmSens.Windows.CoreDependencies.Init(); //Initiates PSSDK threading dependencies
+            PalmSens.Windows.CoreDependencies.Init(); //Initiates threading dependencies
             InitAsyncFunctionality(Environment.ProcessorCount); //Initiate the asynchronous functions in the SDK
             _psCommSimple = new PSCommSimple(this);
         }
@@ -241,7 +241,7 @@ namespace PalmSens.Core.Simplified.WinForms
         /// </summary>
         public void TurnCellOn()
         {
-            _psCommSimple.TurnCellOn();            
+            _psCommSimple.TurnCellOn();
         }
 
         /// <summary>
@@ -514,7 +514,7 @@ namespace PalmSens.Core.Simplified.WinForms
         {
             _psCommSimple.ValidateMethod(method, out isValidMethod, out errors);
         }
-        
+
         /// <summary>
         /// Get an internal storage handler that will read the current connected device stored files. This is only for devices that have internal storage.
         /// </summary>
@@ -548,7 +548,7 @@ namespace PalmSens.Core.Simplified.WinForms
         }
 
         /// <summary>
-        /// Disconnects from device with the specified CommManager. 
+        /// Disconnects from device with the specified CommManager.
         /// Warning use the platform independent method Disconnect() instead.
         /// Otherwise the generic PSCommSimple does not unsubscribe from the CommManager correctly
         /// which may result in it not being released from the memory.
@@ -560,7 +560,7 @@ namespace PalmSens.Core.Simplified.WinForms
         }
 
         /// <summary>
-        /// Disconnects from device with the specified CommManager. 
+        /// Disconnects from device with the specified CommManager.
         /// Warning use the platform independent method Disconnect() instead.
         /// Otherwise the generic PSCommSimple does not unsubscribe from the CommManager correctly
         /// which may result in it not being released from the memory.
