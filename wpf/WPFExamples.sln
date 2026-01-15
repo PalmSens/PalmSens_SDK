@@ -11,7 +11,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PalmSens.Core.Simplified.WP
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SDKPlot.WPF", "PSLibraries\SDKPlot.WPF\SDKPlot.WPF.csproj", "{E0E1CCCF-2967-4FA3-B012-942710C4B96C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BasicAsyncExample", "Examples\BasicAsyncExample\BasicAsyncExample.csproj", "{B6736531-F315-45A2-8ABD-19E4C751D3D5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BasicExample", "Examples\BasicExample\BasicExample.csproj", "{B6736531-F315-45A2-8ABD-19E4C751D3D5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiChannelExample", "Examples\MultiChannelExample\MultiChannelExample.csproj", "{CDD828E9-5857-4ABE-A7D0-0DDC37F431E2}"
 EndProject
