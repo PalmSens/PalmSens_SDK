@@ -5,18 +5,18 @@ content:
   sources:
     - url: .
       start_path: docs/start
-    # - url: .
-    #   version: true
-    #   start_path: python/docs
-    # - url: .
-    #   start_path: matlab/docs
-    #   version: true
-    # - url: .
-    #   start_path: labview/docs
-    #   version: true
-    # - url: .
-    #   start_path: maui/docs
-    #   version: true
+    - url: .
+      version: true
+      start_path: python/docs
+    - url: .
+      start_path: matlab/docs
+      version: true
+    - url: .
+      start_path: labview/docs
+      version: true
+    - url: .
+      start_path: maui/docs
+      version: true
     - url: .
       start_path: winforms/docs
       version: true

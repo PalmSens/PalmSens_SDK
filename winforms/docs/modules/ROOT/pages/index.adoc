@@ -8,14 +8,12 @@ image::banner.svg[PalmSens banner, width=80%]
 {empty} +
 {empty}
 
-With this WinForms SDK you develop Windows applications in Visual Studio using https://dotnet.microsoft.com/en-us/apps/maui[.NET MAUI].
+With this WinForms SDK you develop Windows applications in Visual Studio using https://learn.microsoft.com/en-us/dotnet/desktop/winforms/overview/[WinForms].
 
 WinForms, is a free, open-source graphical user interface (GUI) class library for building Windows desktop applications,
-included as a part of Microsoft .NET, .NET Framework or Mono, providing a platform to write client desktop applications.
+included as a part of Microsoft .NET, .NET Framework or Mono.
 
 https://github.com/PalmSens/PalmSens_SDK/releases[Click here to download the latest release].
-
-The WinForms SDK currently targets https://learn.microsoft.com/en-us/dotnet/core/whats-new/dotnet-9/overview[.NET 9].
 
 image::device_shots.svg[Device shot, width=80%]
 
