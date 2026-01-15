@@ -160,5 +160,3 @@ To load a measurement from a `IInternalStorageFile` use the `GetMeasurement` met
 ----
 SimpleMeasurement measurement = files[0].GetMeasurement();
 ----
-
-For a practical application, please refer to the xref:examples.adoc#example-internal[Internal storage example].
