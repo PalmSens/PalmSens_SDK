@@ -6,7 +6,7 @@ This chapter covers how retrieve, manipulate, and analyze datafrom a measurement
 
 == Obtaining the measured values
 
-When a measurement is started by calling the `psCommSimpleWinForms.Measure` method a reference to the instance of that `SimpleMeasurement` class is returned.
+When a measurement is started by calling the `psCommSimpleWPF.Measure` method a reference to the instance of that `SimpleMeasurement` class is returned.
 The `SimpleMeasurement` class references instances of the `SimpleCurve` class in the `SimpleMeasurement.SimpleCurveCollection` property.
 
 The `SimpleCurve` class is used to analyze and manipulate the data. Generate new instances of the `SimpleCurve` class by calling the `SimpleMeasurement.NewSimpleCurve` method.

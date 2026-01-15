@@ -14,11 +14,11 @@ using PalmSens.Devices;
 ----
 
 The first line returns an array of all the connected devices, and the second connects to the first device in the array of connected devices.
-When Bluetooth devices should also be discovered set `psCommSimpleWinForms.EnableBluetooth = true` first.
+When Bluetooth devices should also be discovered set `psCommSimpleWPF.EnableBluetooth = true` first.
 
 ----
-Device[] devices = psCommSimpleWinForms.ConnectedDevices;
-psCommSimpleWinForms.Connect(devices[0]);
+Device[] devices = psCommSimpleWPF.ConnectedDevices;
+psCommSimpleWPF.Connect(devices[0]);
 ----
 
 === Async functionality
@@ -36,14 +36,14 @@ SynchronizationContextRemover.Init(nCores > 1 ? nCores - 1 : 1);
 Discovery of Bluetooth devices is disabled by default, it can be enabled by setting the EnableBluetooth proprety to true.
 
 ----
-psCommSimpleWinForms.EnableBluetooth = true;
+psCommSimpleWPF.EnableBluetooth = true;
 ----
 
 To be able to use Bluetooth in your project you should reference the `32.Feet.NET` NuGet package in your project (https://www.nuget.org/packages/32feet.NET/).
 Bluetooth Classic works on all supported platforms (Windows 10+). Bluetooth Low Energy (BLE) only works on Windows 10+.
 
-To enable BLE you should add references to the `PalmSens.Core.Windows.BLE.dll` library (included in the `PSLibraries` folder) in your project and the `PalmSens.Core.Simplified.WinForms` project.
-Finally, you will also need to respectively uncomment the following lines in the `ScanDevices` and the `ScanDevicesAsync` methods of the `DeviceHandler` class in the `PalmSens.Core.Simplified.WinForms` project.
+To enable BLE you should add references to the `PalmSens.Core.Windows.BLE.dll` library (included in the `PSLibraries` folder) in your project and the `PalmSens.Core.Simplified.WPF` project.
+Finally, you will also need to respectively uncomment the following lines in the `ScanDevices` and the `ScanDevicesAsync` methods of the `DeviceHandler` class in the `PalmSens.Core.Simplified.WPF` project.
 
 ----
 discFuncs.Add(BLEDevice.DiscoverDevices);
@@ -69,10 +69,10 @@ The `status` object that is received using this event contains the following inf
 To get the device’s status updates subscribe to the `ReceiveStatus` event after connecting to a device.
 
 ----
-psCommSimpleWinForms.ReceiveStatus += PsCommSimple_ReceiveStatus;
+psCommSimpleWPF.ReceiveStatus += PsCommSimple_ReceiveStatus;
 ----
 
-Either subscribe to the `ReceiveStatus` event of the `psCommSimpleWinForms` component via the designer or programmatically.
+Either subscribe to the `ReceiveStatus` event of the `psCommSimpleWPF` component via the designer or programmatically.
 It is not required to be connected to a device first.
 
 image::receive_status.png[ReceiveStatus event in form designer]
@@ -93,17 +93,17 @@ The potential can be set manually in potentiostatic mode and the current can be 
 The following examples show how to manually set a potential.
 
 The `psCommSimple` component must be connected to a device before you can set its potential and control the cell.
-To turn the cell off call `psCommSimpleWinForms.TurnCellOff()`.
+To turn the cell off call `psCommSimpleWPF.TurnCellOff()`.
 
 ----
-psCommSimpleWinForms.SetCellPotential(1f);
-psCommSimpleWinForms.TurnCellOn();
+psCommSimpleWPF.SetCellPotential(1f);
+psCommSimpleWPF.TurnCellOn();
 ----
 
 == Device Capabilities
 
-The capabilities of a connected device can either accessed via the `CommManager.Capabilities` or the `psCommSimpleWinForms.Capabilities` property.
+The capabilities of a connected device can either accessed via the `CommManager.Capabilities` or the `psCommSimpleWPF.Capabilities` property.
 
 The `DeviceCapabilities` contains properties such as its maximum potential, supported current ranges and support for specific features (galvanostat/impedance/bipot).
 
-The `DeviceCapabilities` can also be used to determine whether a certain method is compatible with a device using either `method.Validate(DeviceCapabilities)` or `psCommSimpleWinForms.ValidateMethod(method)`.
+The `DeviceCapabilities` can also be used to determine whether a certain method is compatible with a device using either `method.Validate(DeviceCapabilities)` or `psCommSimpleWPF.ValidateMethod(method)`.

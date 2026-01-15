@@ -1,4 +1,4 @@
-= PalmSens WinForms Documentation
+= PalmSens WPF Documentation
 
 {empty} +
 {empty}
@@ -8,10 +8,9 @@ image::banner.svg[PalmSens banner, width=80%]
 {empty} +
 {empty}
 
-With this WinForms SDK you develop Windows applications in Visual Studio using https://learn.microsoft.com/en-us/dotnet/desktop/winforms/overview/[WinForms].
+With this WPF SDK you develop Windows applications in Visual Studio using https://learn.microsoft.com/en-us/dotnet/desktop/wpf/overview/[WPF].
 
-WinForms, is a free, open-source graphical user interface (GUI) class library for building Windows desktop applications,
-included as a part of Microsoft .NET, .NET Framework or Mono.
+Windows Presentation Foundation (WPF) is a free and open-source user interface framework for Windows-based desktop applications.
 
 https://github.com/PalmSens/PalmSens_SDK/releases[Click here to download the latest release].
 
@@ -22,7 +21,7 @@ image::device_shots.svg[Device shot, width=80%]
 These projects contain a simplified open source wrapper for the xref:start:ROOT:core.adoc[`PalmSens.Core`] libraries.
 
 * `PalmSens.Core.Simplified`
-* `PalmSens.Core.Simplified.WinForms`
+* `PalmSens.Core.Simplified.WPF`
 
 The simplified wrappers give you quick and easy access to all the basic functions of the PalmSens/EmStat devices and automatically handles most potential threading issues for you:
 
@@ -38,7 +37,7 @@ In addition, the projects contain a simple open source plot control that you can
 They are based on the open-source http://www.oxyplot.org/[OxyPlot library].
 
 * `SDKPlot`
-* `SDKPlot.WinForms`
+* `SDKPlot.WPF`
 
 These libraries required when using the SDKs plot:
 
