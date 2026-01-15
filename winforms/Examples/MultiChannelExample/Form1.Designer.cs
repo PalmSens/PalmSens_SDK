@@ -1,4 +1,4 @@
-﻿namespace MultiChannelExample
+namespace MultiChannelExample
 {
     partial class Form1
     {

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -33,7 +33,7 @@ namespace MultiChannelExample
         /// <summary>
         /// The connected PalmSens & EmStat devices
         /// </summary>
-        private Device[] _connectedDevices = new Device[0];
+        private IReadOnlyList<Device> _connectedDevices = new Device[0];
 
         /// <summary>
         /// Gets the selected channels.
@@ -96,8 +96,8 @@ namespace MultiChannelExample
             _methodCV.BeginPotential = -.5f; //Sets the potential to start the scan from
             _methodCV.Vtx1Potential = -.5f; //Sets the first potential where the scan direction reverses
             _methodCV.Vtx2Potential = .5f; //Sets the second potential where the scan direction reverses
-            _methodCV.StepPotential = 0.0005f; //Sets the step size
-            _methodCV.Scanrate = .01f; //Sets the scan rate to 1 V/s
+            _methodCV.StepPotential = 0.05f; //Sets the step size
+            _methodCV.Scanrate = 1f; //Sets the scan rate to 1 V/s
             _methodCV.nScans = 5; //Sets the number of scans
 
             _methodCV.EquilibrationTime = 1f; //Equilabrates the cell at the defined potential for 1 second before starting the measurement
