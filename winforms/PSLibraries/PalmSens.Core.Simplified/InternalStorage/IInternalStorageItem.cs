@@ -1,4 +1,4 @@
-﻿using PalmSens.Data;
+using PalmSens.Data;
 
 namespace PalmSens.Core.Simplified.InternalStorage
 {

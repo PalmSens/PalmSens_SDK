@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Forms;
@@ -10,7 +10,7 @@ using PalmSens.Core.Simplified.InternalStorage;
 
 namespace PalmSens.Core.Simplified.WinForms
 {
-    public partial class PSCommSimpleWinForms: Component, IPlatform, IDisposable
+    public partial class PSCommSimpleWinForms: Component, IPlatform, IPlatformInvoker, IDisposable
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="PSCommSimpleWinForms"/> class.
@@ -31,9 +31,9 @@ namespace PalmSens.Core.Simplified.WinForms
         public PSCommSimpleWinForms()
         {
             InitializeComponent();
-            PalmSens.Windows.CoreDependencies.Init(); //Initiates threading dependencies
+            PalmSens.Windows.CoreDependencies.Init(); //Initiates PSSDK threading dependencies
             InitAsyncFunctionality(Environment.ProcessorCount); //Initiate the asynchronous functions in the SDK
-            _psCommSimple = new PSCommSimple(this);
+            _psCommSimple = new PSCommSimple(this, this as IPlatformInvoker);
         }
 
         #region Properties
@@ -103,7 +103,7 @@ namespace PalmSens.Core.Simplified.WinForms
         /// <value>
         /// The connected devices.
         /// </value>
-        public Device[] ConnectedDevices => _deviceHandler.ConnectedDevices;
+        public IReadOnlyList<Device> ConnectedDevices => _deviceHandler.ConnectedDevices;
 
         /// <summary>
         /// Returns an array of connected devices.
@@ -112,7 +112,7 @@ namespace PalmSens.Core.Simplified.WinForms
         /// The connected devices.
         /// </value>
         [Obsolete("Please use GetConnectedDevicesAsync method instead")]
-        public Task<Device[]> ConnectedDevicesAsync() => _deviceHandler.GetConnectedDevicesAsync();
+        public Task<IReadOnlyList<Device>> ConnectedDevicesAsync() => _deviceHandler.GetConnectedDevicesAsync();
 
         /// <summary>
         /// Gets the state of the connected device.
@@ -187,22 +187,22 @@ namespace PalmSens.Core.Simplified.WinForms
         /// <summary>
         /// Returns an array of connected devices.
         /// </summary>
-        public async Task<Device[]> GetConnectedDevicesAsync() => await _deviceHandler.GetConnectedDevicesAsync();
+        public async Task<IReadOnlyList<Device>> GetConnectedDevicesAsync() => await _psCommSimple.GetAvailableDevicesAsync();
 
         /// <summary>
         /// Connects to the device with the highest priority.
         /// </summary>
         public void Connect()
         {
-            _psCommSimple.Comm = _deviceHandler.Connect();
+            _psCommSimple.Connect();
         }
 
         /// <summary>
         /// Connects to the device with the highest priority.
         /// </summary>
-        public async Task ConnectAsync()
+        public Task ConnectAsync()
         {
-            _psCommSimple.Comm = await _deviceHandler.ConnectAsync();
+            return _psCommSimple.ConnectAsync();
         }
 
         /// <summary>
@@ -211,16 +211,16 @@ namespace PalmSens.Core.Simplified.WinForms
         /// <param name="device">The device.</param>
         public void Connect(Device device)
         {
-            _psCommSimple.Comm = _deviceHandler.Connect(device);
+            _psCommSimple.Connect(device);
         }
 
         /// <summary>
         /// Connects to the specified device.
         /// </summary>
         /// <param name="device">The device.</param>
-        public async Task ConnectAsync(Device device)
+        public Task ConnectAsync(Device device)
         {
-            _psCommSimple.Comm = (await _deviceHandler.ConnectAsync(device)).Comm;
+            return _psCommSimple.ConnectAsync(device);
         }
 
         /// <summary>
@@ -502,6 +502,24 @@ namespace PalmSens.Core.Simplified.WinForms
         public Task SetDigitalOutputAsync(int bitMask, int configGPIO) =>
             _psCommSimple.SetDigitalOutputAsync(bitMask, configGPIO);
 
+        ///// <summary>
+        ///// Configures the instrument for the connected multiplexer model
+        ///// </summary>
+        ///// <param name="multiPlexerModel">The type of mux connected to the instrument</param>
+        ///// <param name="mux8R2Settings">Optional parameter to configure the mux8r2 settings for manual control</param>
+        //public void SetMuxModel(MuxModel multiPlexerModel, Method.MuxSettings mux8R2Settings = null)
+        //{
+        //    _psCommSimple.SetMuxModel(multiPlexerModel, mux8R2Settings);
+        //}
+
+        ///// <summary>
+        ///// Configures the instrument for the connected multiplexer model
+        ///// </summary>
+        ///// <param name="multiPlexerModel">The type of mux connected to the instrument</param>
+        ///// <param name="mux8R2Settings">Optional parameter to configure the mux8r2 settings for manual control</param>
+        //public Task SetMuxModelAsync(MuxModel multiPlexerModel, Method.MuxSettings mux8R2Settings = null) =>
+        //    _psCommSimple.SetMuxModelAsync(multiPlexerModel, mux8R2Settings);
+
         /// <summary>
         /// Validates whether the specified method is compatible with the capabilities of the connected device.
         /// </summary>
@@ -528,6 +546,21 @@ namespace PalmSens.Core.Simplified.WinForms
         #endregion
 
         #region Platform interface
+
+        public IReadOnlyList<Device> AvailableDevices => _deviceHandler.ConnectedDevices;
+
+        public Task<IReadOnlyList<Device>> GetAvailableDevices() => _deviceHandler.GetConnectedDevicesAsync();
+
+        async Task<CommManager> IPlatform.ConnectAsync(Device device)
+        {
+            return _psCommSimple.Comm = (await _deviceHandler.ConnectAsync(device));
+        }
+
+        CommManager IPlatform.Connect(Device device)
+        {
+            return _psCommSimple.Comm = _deviceHandler.Connect();
+        }
+
         /// <summary>
         /// Invokes event to UI thread if required.
         /// </summary>

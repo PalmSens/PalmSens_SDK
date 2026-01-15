@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -74,7 +74,7 @@ namespace SDKPlot
             PeakLines = new LineSeries()
             {
                 RenderInLegend = false,
-                Color = OxyColors.Gray,                
+                Color = OxyColors.Gray,
                 BrokenLineStyle = LineStyle.Dash,
                 MarkerType = MarkerType.None,
                 YAxisKey = simpleCurvePlotData.YAxisKey

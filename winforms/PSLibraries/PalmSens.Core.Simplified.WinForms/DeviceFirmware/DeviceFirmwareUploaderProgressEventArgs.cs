@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace PalmSens.Core.Simplified.WinForms.DeviceFirmware
 {

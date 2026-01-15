@@ -1,5 +1,6 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using OxyPlot.Series;
 using PalmSens.Core.Simplified;
@@ -7,7 +8,7 @@ using PalmSens.Core.Simplified.Data;
 
 namespace SDKPlot.WinForms
 {
-    public partial class Plot : UserControl, IPlatformInvoker
+    public partial class Plot : UserControl, IPlotInvoker
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Plot"/> class.
@@ -15,7 +16,7 @@ namespace SDKPlot.WinForms
         public Plot()
         {
             InitializeComponent();
-            _corePlot = new CorePlot(this as IPlatformInvoker);
+            _corePlot = new CorePlot(this as IPlotInvoker);
             this.plotView.Model = _corePlot.PlotModel;
         }
 
@@ -220,7 +221,7 @@ namespace SDKPlot.WinForms
         /// <param name="update">if set to <c>true</c> the plot is [updated].</param>
         public void AddSimpleCurve(SimpleCurve simpleCurve, bool useSecondaryYAxis = false, bool update = true)
         {
-            _corePlot.AddSimpleCurve(simpleCurve, useSecondaryYAxis, update);
+            _corePlot.AddSimpleCurve(simpleCurve, useSecondaryYAxis: useSecondaryYAxis,  update: update);
         }
 
         /// <summary>
@@ -231,7 +232,7 @@ namespace SDKPlot.WinForms
         /// <param name="update">if set to <c>true</c> the plot is [updated].</param>
         public void AddSimpleCurves(List<SimpleCurve> simpleCurves, bool useSecondaryYAxis = false, bool update = true)
         {
-            _corePlot.AddSimpleCurves(simpleCurves, useSecondaryYAxis, update);
+            _corePlot.AddSimpleCurves(simpleCurves, useSecondaryYAxis: useSecondaryYAxis, update: update);
         }
 
         /// <summary>
@@ -242,7 +243,7 @@ namespace SDKPlot.WinForms
         /// <param name="update">if set to <c>true</c> the plot is [updated].</param>
         public void AddSimpleCurves(SimpleCurve[] simpleCurves, bool useSecondaryYAxis = false, bool update = true)
         {
-            _corePlot.AddSimpleCurves(simpleCurves, useSecondaryYAxis, update);
+            _corePlot.AddSimpleCurves(simpleCurves, useSecondaryYAxis: useSecondaryYAxis, update: update);
         }
 
         /// <summary>
@@ -358,6 +359,24 @@ namespace SDKPlot.WinForms
                 return true;
             }
             return false;
+        }
+
+        public Task Invoke(Action action)
+        {
+            return Task.Run(() =>
+            {
+                if (InvokeRequired)
+                {
+                    base.Invoke(action);
+                }
+
+                action();
+            });
+        }
+
+        public void DoEvents()
+        {
+            Application.DoEvents();
         }
         #endregion
     }

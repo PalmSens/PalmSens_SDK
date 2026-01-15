@@ -1,4 +1,4 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 using PalmSens.Core.Simplified.Data;
 
 namespace PalmSens.Core.Simplified.InternalStorage

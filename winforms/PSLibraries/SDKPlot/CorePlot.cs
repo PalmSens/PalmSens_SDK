@@ -1,4 +1,4 @@
-﻿using OxyPlot;
+using OxyPlot;
 using OxyPlot.Annotations;
 using OxyPlot.Axes;
 using OxyPlot.Series;
@@ -6,21 +6,34 @@ using PalmSens.Analysis;
 using PalmSens.Core.Simplified;
 using PalmSens.Core.Simplified.Data;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using PalmSens;
+using PalmSens.Core.Simplified.InternalStorage;
+using PalmSens.Data;
+using PalmSens.Techniques;
 
 namespace SDKPlot
 {
-    public class CorePlot
+    public class CorePlot: IDisposable
     {
-        public CorePlot(IPlatformInvoker platformInvoker)
+        public CorePlot(IPlotInvoker plotInvoker)
         {
-            _platformInvoker = platformInvoker;
+            _plotInvoker = plotInvoker;
             PlotModel = new PlotModel();
+
+            _cts = new CancellationTokenSource();
+            _ = Task.Run(() => ConsumeLiveDataQueue(_cts.Token));
+            _signal = new AsyncAutoResetEvent();
         }
 
         #region Plot Properties
-        private readonly IPlatformInvoker _platformInvoker;
+        private readonly IPlotInvoker _plotInvoker;
+        private readonly CancellationTokenSource _cts;
+        private readonly AsyncAutoResetEvent _signal;
 
         /// <summary>
         /// The plot model that contains the information for the PlotView
@@ -44,6 +57,14 @@ namespace SDKPlot
         /// The x axis
         /// </summary>
         protected Axis _xAxis = new LinearAxis() { Position = AxisPosition.Bottom };
+
+        /// <summary>
+        /// The bottom X Axis
+        /// </summary>
+        public Axis XAxis
+        {
+            get => _xAxis;
+        }
 
         /// <summary>
         /// Gets or sets the x axis label.
@@ -90,6 +111,14 @@ namespace SDKPlot
         protected Axis _yAxis = new LinearAxis() { Position = AxisPosition.Left };
 
         /// <summary>
+        /// The bottom X Axis
+        /// </summary>
+        public Axis YAxis
+        {
+            get => _yAxis;
+        }
+
+        /// <summary>
         /// Gets or sets the y axis label.
         /// </summary>
         /// <value>
@@ -127,7 +156,7 @@ namespace SDKPlot
         }
 
         /// <summary>
-        /// The secondary y axis 
+        /// The secondary y axis
         /// </summary>
         protected Axis _yAxisSecondary = new LinearAxis() { Position = AxisPosition.Right, Key = "YSecondary" };
 
@@ -441,7 +470,7 @@ namespace SDKPlot
             if(simpleCurve == null)
                 throw new ArgumentNullException("The specified SimpleCurve cannot be null");
             return _simpleCurvesInPlot.ContainsKey(simpleCurve);
-        } 
+        }
 
         /// <summary>
         /// Adds the specified SimpleCurve to the plot.
@@ -451,12 +480,12 @@ namespace SDKPlot
         /// <param name="update">if set to <c>true</c> the plot is [updated].</param>
         /// <exception cref="System.ArgumentNullException">The specified SimpleCurve cannot be null</exception>
         /// <exception cref="System.ArgumentException">Plot allready contains the specified SimpleCurve</exception>
-        public virtual void AddSimpleCurve(SimpleCurve simpleCurve, bool useSecondaryYAxis = false, bool update = true)
+        public virtual void AddSimpleCurve(SimpleCurve simpleCurve, Method method = null, bool useSecondaryYAxis = false, bool update = true)
         {
             if (simpleCurve == null)
                 throw new ArgumentNullException("The specified SimpleCurve cannot be null");
             if (_simpleCurvesInPlot.ContainsKey(simpleCurve))
-                throw new ArgumentException("Plot allready contains the specified SimpleCurve");
+                throw new ArgumentException("Plot already contains the specified SimpleCurve");
 
             if (!simpleCurve.IsFinished && update) //Subscribe to the events that allow plot to update in realtime during a measurement
             {
@@ -465,12 +494,50 @@ namespace SDKPlot
             }
             simpleCurve.DetectedPeaks += SimpleCurve_DetectedPeaks; //Subscribe to event that updates the plot with detected peaks
 
+            if (_dataSeries.Count == 0 && method != null)
+            {
+                if (method is CyclicVoltammetry cyclicVoltammetry)
+                {
+                    if (simpleCurve.XAxisDataType == DataArrayType.Potential)
+                    {
+                        XAxis.Maximum = Math.Max(cyclicVoltammetry.Vtx1Potential, cyclicVoltammetry.Vtx2Potential);
+                        XAxis.Minimum = Math.Min(cyclicVoltammetry.Vtx1Potential, cyclicVoltammetry.Vtx2Potential);
+                        if (simpleCurve.YAxisDataType == DataArrayType.Current)
+                        {
+                            YAxis.Maximum = cyclicVoltammetry.Ranging.MaximumCurrentRange.Factor * 10;
+                            YAxis.Minimum = -YAxis.Maximum;
+                        }
+                    }
+                }
+                else if (method is PotentialMethod potentialMethod)
+                {
+                    if (simpleCurve.XAxisDataType == DataArrayType.Potential)
+                    {
+                        XAxis.Maximum = Math.Max(potentialMethod.BeginPotential, potentialMethod.EndPotential);
+                        XAxis.Minimum = Math.Min(potentialMethod.BeginPotential, potentialMethod.EndPotential);
+                        if (simpleCurve.YAxisDataType == DataArrayType.Current)
+                        {
+                            YAxis.Maximum = potentialMethod.Ranging.MaximumCurrentRange.Factor * 10;
+                            YAxis.Minimum = -YAxis.Maximum;
+                        }
+                    }
+                }
+                else if (method is TimeMethod timeMethod)
+                {
+                    if (simpleCurve.XAxisDataType == DataArrayType.Time)
+                    {
+                        XAxis.Maximum = timeMethod.RunTime;
+                        XAxis.Minimum = 0;
+                    }
+                }
+            }
+
             //Set the SimpleCurve units on the axes
-            XAxisLabel = simpleCurve.XUnit;
+            XAxisLabel = $"{simpleCurve.XUnit} [{simpleCurve.Curve.XUnit.ToString()}]";
             if (useSecondaryYAxis)
-                YAxisSecondaryLabel = simpleCurve.YUnit;
+                YAxisSecondaryLabel = $"{simpleCurve.YUnit} [{simpleCurve.Curve.YUnit.ToString()}]";
             else
-                YAxisLabel = simpleCurve.YUnit;
+                YAxisLabel = $"{simpleCurve.YUnit} [{simpleCurve.Curve.YUnit.ToString()}]";
 
             //Get the data from the SimpleCurve
             double[] x = simpleCurve.XAxisValues;
@@ -506,30 +573,16 @@ namespace SDKPlot
         /// <summary>
         /// Adds a collection of SimpleCurves to the plot.
         /// </summary>
-        /// <param name="simpleCurves">List of SimpleCurves.</param>
-        /// <param name="useSecondaryYAxis">if set to <c>true</c> [use secondary y axis].</param>
-        /// <param name="update">if set to <c>true</c> the plot is [updated].</param>
-        /// <exception cref="System.ArgumentNullException">The list of SimpleCurves cannot be null</exception>
-        public void AddSimpleCurves(List<SimpleCurve> simpleCurves, bool useSecondaryYAxis = false, bool update = true)
-        {
-            if (simpleCurves == null)
-                throw new ArgumentNullException("The list of SimpleCurves cannot be null");
-            AddSimpleCurves(simpleCurves.ToArray(), useSecondaryYAxis, update);
-        }
-
-        /// <summary>
-        /// Adds a collection of SimpleCurves to the plot.
-        /// </summary>
         /// <param name="simpleCurves">Array of SimpleCurves.</param>
         /// <param name="useSecondaryYAxis">if set to <c>true</c> [use secondary y axis].</param>
         /// <param name="update">if set to <c>true</c> the plot is [updated].</param>
         /// <exception cref="System.ArgumentNullException">The array of SimpleCurves cannot be null</exception>
-        public void AddSimpleCurves(SimpleCurve[] simpleCurves, bool useSecondaryYAxis = false, bool update = true)
+        public void AddSimpleCurves(IEnumerable<SimpleCurve> simpleCurves, Method method = null, bool useSecondaryYAxis = false, bool update = true)
         {
             if (simpleCurves == null)
                 throw new ArgumentNullException("The array of SimpleCurves cannot be null");
             foreach (SimpleCurve simpleCurve in simpleCurves)
-                AddSimpleCurve(simpleCurve, useSecondaryYAxis, update);
+                AddSimpleCurve(simpleCurve, method, useSecondaryYAxis, update);
         }
 
         /// <summary>
@@ -562,7 +615,7 @@ namespace SDKPlot
             if (!_simpleCurvesInPlot.TryGetValue(simpleCurve, out data))
                 throw new Exception("Could not get lineseries associated with the SimpleCurve");
 
-            _dataSeries.Remove(data); //Remove the lineseries from the list of series in the plot            
+            _dataSeries.Remove(data); //Remove the lineseries from the list of series in the plot
             _simpleCurvesInPlot.Remove(simpleCurve); //Remove the SimpleCurve from the dictionary of SimplCurves in the plot
 
             if (update)
@@ -601,7 +654,10 @@ namespace SDKPlot
         /// </summary>
         public virtual void ClearSimpleCurves(bool update = true)
         {
-            RemoveSimpleCurves(_simpleCurvesInPlot.Keys.ToArray(), update);
+            lock(PlotModel.SyncRoot)
+            {
+                RemoveSimpleCurves(_simpleCurvesInPlot.Keys.ToArray(), update);
+            }
         }
 
         /// <summary>
@@ -753,8 +809,7 @@ namespace SDKPlot
         }
 
         #region SimpleCurve Events
-        protected DateTime _lastUpdated;
-        private SimpleCurve _lastSender;
+        private ConcurrentDictionary<object, bool> _curvesPlotDataPending = new ConcurrentDictionary<object, bool>();
 
         /// <summary>
         /// Adds the NewDataAdded of the SimpleCurve to the plot.
@@ -763,32 +818,75 @@ namespace SDKPlot
         /// <param name="e">The <see cref="PalmSens.Data.ArrayDataAddedEventArgs"/> instance containing the event data.</param>
         protected virtual void SimpleCurve_NewDataAdded(object sender, PalmSens.Data.ArrayDataAddedEventArgs e)
         {
-            if (_platformInvoker.InvokeIfRequired(new PalmSens.Plottables.Curve.NewDataAddedEventHandler(SimpleCurve_NewDataAdded), sender, e)) //Recast event to UI thread when necessary
-                return;
-            if ((DateTime.Now - _lastUpdated).Milliseconds < 25 && sender == _lastSender)
-                return;
-            
-            SimpleCurve simpleCurve = sender as SimpleCurve;
-            _lastSender = simpleCurve;
+            if (!_curvesPlotDataPending.ContainsKey(sender))
+            {
+                _curvesPlotDataPending.TryAdd(sender, true);
+            }
 
-            //Retrieve the SimpleCurve's respective lineseries from the dictionary of SimpleCurves in the plot
-            LineSeries data;
-            if (!_simpleCurvesInPlot.TryGetValue(simpleCurve, out data))
-                return;
+            _signal.Set();
+        }
 
-            //Gets the data from the SimpleCurve
-            double[] x = simpleCurve.XAxisValues;
-            double[] y = simpleCurve.YAxisValues;
+        private void OnSimpleCurveNewData(IEnumerable<SimpleCurve> curves)
+        {
+            lock (PlotModel.SyncRoot)
+            {
+                foreach (var simpleCurve in curves)
+                {
+                    //Retrieve the SimpleCurve's respective lineseries from the dictionary of SimpleCurves in the plot
+                    LineSeries data;
+                    if (!_simpleCurvesInPlot.TryGetValue(simpleCurve, out data))
+                        return;
 
-            int nPoints = (x.Length > y.Length) ? y.Length : x.Length;
-            data.Points.Clear();
+                    //Gets the data from the SimpleCurve
+                    double[] x = simpleCurve.XAxisValues;
+                    double[] y = simpleCurve.YAxisValues;
 
-            for (int i = 0; i < nPoints; i++)
-                data.Points.Add(new DataPoint(x[i], y[i]));
+                    int nPoints = (x.Length > y.Length) ? y.Length : x.Length;
+                    data.Points.Clear();
 
-             PlotModel.InvalidatePlot(true); //Updates the plot
+                    for (int i = data.Points.Count; i < nPoints; i++)
+                    {
+                        data.Points.Add(new DataPoint(x[i], y[i]));
+                    }
 
-            _lastUpdated = DateTime.Now;
+                    data.XAxis.Maximum = data.XAxis.Maximum < data.MaxX ? data.MaxX : data.XAxis.Maximum;
+                    data.XAxis.Minimum = data.XAxis.Minimum > data.MinX ? data.MinX : data.XAxis.Minimum;
+                    data.YAxis.Maximum = data.YAxis.Maximum < data.MaxY ? data.MaxY : data.YAxis.Maximum;
+                    data.YAxis.Maximum = data.YAxis.Minimum > data.MinY ? data.MinY : data.YAxis.Maximum;
+                }
+            }
+
+            PlotModel.InvalidatePlot(true); //Updates the plot
+        }
+
+        private async Task ConsumeLiveDataQueue(CancellationToken cancellationToken)
+        {
+            try
+            {
+                while (!cancellationToken.IsCancellationRequested)
+                {
+                    await _signal.WaitAsync();
+                    cancellationToken.ThrowIfCancellationRequested();
+
+                    var keys =
+                        _curvesPlotDataPending.Keys.ToArray();
+                    var curves = new List<SimpleCurve>();
+
+                    foreach (var key in
+                             keys)
+                    {
+                        if (_curvesPlotDataPending.TryRemove(key, out _))
+                        {
+                            curves.Add(key as SimpleCurve);
+                        }
+                    }
+
+                    await _plotInvoker.Invoke(() => { OnSimpleCurveNewData(curves); });
+                    _plotInvoker.DoEvents();
+                    await Task.Delay(TimeSpan.FromMilliseconds(20), cancellationToken);
+                }
+            }
+            catch (OperationCanceledException) { }
         }
 
         /// <summary>
@@ -798,7 +896,7 @@ namespace SDKPlot
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         protected void SimpleCurve_DetectedPeaks(object sender, EventArgs e)
         {
-            if (_platformInvoker.InvokeIfRequired(new EventHandler(SimpleCurve_DetectedPeaks), sender, e)) //Recast event to UI thread when necessary
+            if (_plotInvoker.InvokeIfRequired(new EventHandler(SimpleCurve_DetectedPeaks), sender, e)) //Recast event to UI thread when necessary
                 return;
             UpdateSimpleCurvePeaks(sender as SimpleCurve);
         }
@@ -810,11 +908,18 @@ namespace SDKPlot
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         protected virtual void SimpleCurve_CurveFinished(object sender, EventArgs e)
         {
-            if (_platformInvoker.InvokeIfRequired(new EventHandler(SimpleCurve_CurveFinished), sender, e)) //Recast event to UI thread when necessary
+            if (_plotInvoker.InvokeIfRequired(new EventHandler(SimpleCurve_CurveFinished), sender, e)) //Recast event to UI thread when necessary
                 return;
             SimpleCurve simpleCurve = sender as SimpleCurve;
             simpleCurve.NewDataAdded -= SimpleCurve_NewDataAdded;
             simpleCurve.CurveFinished -= SimpleCurve_CurveFinished;
+
+            if (!_curvesPlotDataPending.ContainsKey(sender))
+            {
+                _curvesPlotDataPending.TryAdd(sender, true);
+            }
+
+            _signal.Set();
         }
         #endregion
         #endregion
@@ -835,10 +940,24 @@ namespace SDKPlot
             switch (type)
             {
                 case AxisType.Linear:
-                    axis = new LinearAxis() { Position = axis.Position, Key = axis.Key, Title = axis.Title };
+                    axis = new LinearAxis()
+                    {
+                        Position = axis.Position,
+                        Key = axis.Key,
+                        Title = axis.Title,
+                        Maximum = axis.Maximum,
+                        Minimum = axis.Minimum
+                    };
                     break;
                 case AxisType.Logarithmic:
-                    axis = new LogarithmicAxis() { Position = axis.Position, Key = axis.Key, Title = axis.Title };
+                    axis = new LogarithmicAxis()
+                    {
+                        Position = axis.Position,
+                        Key = axis.Key,
+                        Title = axis.Title,
+                        Maximum = axis.Maximum,
+                        Minimum = axis.Minimum
+                    };
                     break;
             }
             axis.AxislineColor = _axesColor;
@@ -853,12 +972,12 @@ namespace SDKPlot
         /// <summary>
         /// Updates the plot.
         /// </summary>
-        public virtual void UpdatePlot()
+        public virtual void UpdatePlot(bool force = false)
         {
             //Clear the the plot
             PlotModel.Series.Clear();
             PlotModel.Annotations.Clear();
-            if (_dataSeries == null || _dataSeries.Count == 0)
+            if (!force && (_dataSeries == null || _dataSeries.Count == 0))
             {
                 PlotModel.InvalidatePlot(true);
                 return;
@@ -866,17 +985,20 @@ namespace SDKPlot
 
             bool hideSecondaryAxis = true;
             PlotModel.PlotAreaBackground = _plotBackgroundColor;
-            PlotModel.Legends.Select(legend => legend.TextColor = _legendTextColor);
+            PlotModel.LegendTextColor = _legendTextColor;
 
             //Add the data to the plot
-            foreach (Series data in _dataSeries)
+            if(_dataSeries != null)
             {
-                PlotModel.Series.Add(data);
-                (data as LineSeries).MarkerType = _markerType;
-                (data as LineSeries).MarkerSize = _markerSize;
-                data.Background = _plotBackgroundColor;
-                if ((data as LineSeries).YAxisKey == _yAxisSecondary.Key)
-                    hideSecondaryAxis = false;
+                foreach (Series data in _dataSeries)
+                {
+                    PlotModel.Series.Add(data);
+                    (data as LineSeries).MarkerType = _markerType;
+                    (data as LineSeries).MarkerSize = _markerSize;
+                    data.Background = _plotBackgroundColor;
+                    if ((data as LineSeries).YAxisKey == _yAxisSecondary.Key)
+                        hideSecondaryAxis = false;
+                }
             }
 
             //Add annotations to the plot
@@ -891,7 +1013,67 @@ namespace SDKPlot
                 PlotModel.Axes.Add(UpdateAxes(_yAxisSecondary, _yAxisSecondaryType));
 
             PlotModel.InvalidatePlot(true);
-            _lastUpdated = DateTime.Now;
+        }
+
+        public void Dispose()
+        {
+            _cts?.Cancel();
+            _signal?.Set();
+            _cts?.Dispose();
+        }
+    }
+
+    public interface IPlotInvoker : IPlatformInvoker
+    {
+        /// <summary>
+        /// Invokes if required.
+        /// </summary>
+        /// <param name="method">The method.</param>
+        /// <param name="args">The arguments.</param>
+        /// <returns></returns>
+        Task Invoke(Action action);
+
+        void DoEvents();
+    }
+
+    internal class AsyncAutoResetEvent
+    {
+        private readonly static Task s_completed = Task.FromResult(true);
+        private readonly Queue<TaskCompletionSource<bool>> m_waits = new Queue<TaskCompletionSource<bool>>();
+        private bool m_signaled;
+
+        public Task WaitAsync()
+        {
+            lock (m_waits)
+            {
+                if (m_signaled)
+                {
+                    m_signaled = false;
+                    return s_completed;
+                }
+                else
+                {
+                    var tcs = new TaskCompletionSource<bool>();
+                    m_waits.Enqueue(tcs);
+                    return tcs.Task;
+                }
+            }
+        }
+
+        public void Set()
+        {
+            TaskCompletionSource<bool> toRelease = null;
+            lock (m_waits)
+            {
+                if (m_waits.Count > 0)
+                    toRelease = m_waits.Dequeue();
+                else if (!m_signaled)
+                    m_signaled = true;
+            }
+            if (toRelease != null)
+            {
+                toRelease.SetResult(true);
+            }
         }
     }
 

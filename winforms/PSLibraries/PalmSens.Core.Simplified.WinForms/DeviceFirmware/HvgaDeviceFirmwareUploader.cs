@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Globalization;
 using System.Linq;
 using System.Threading;
@@ -27,7 +27,7 @@ namespace PalmSens.Core.Simplified.WinForms.DeviceFirmware
             try
             {
                 //EmStat4 encrypt time per file length, assuming this scales linearly
-                if (_isEmStat4) Uploader.EncryptRate = 0.117f; 
+                if (_isEmStat4) Uploader.EncryptRate = 0.117f;
 
                 OnMessage(FirmwareUploadStatus.Uploading, "Uploading firmware v" + firmware.Version.ToString("0.000", CultureInfo.InvariantCulture));
                 Uploader.Upload(firmware);
@@ -44,7 +44,7 @@ namespace PalmSens.Core.Simplified.WinForms.DeviceFirmware
             if (_isEmStat4)
             {
                 //Wait for ES4 to decrypt firmware (reconnecting while it is still decrypting will give the wrong com port)
-                await Task.Delay(3000); 
+                await Task.Delay(3000);
                 OnMessage(FirmwareUploadStatus.UploadCompleted, "Resetting device");
                 // Reconnect to the device after device has been decrypted.
                 await Device.ReconnectAsync(3000);

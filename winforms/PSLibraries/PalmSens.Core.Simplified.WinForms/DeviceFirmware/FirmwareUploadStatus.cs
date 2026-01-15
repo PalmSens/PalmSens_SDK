@@ -1,4 +1,4 @@
-﻿namespace PalmSens.Core.Simplified.WinForms.DeviceFirmware
+namespace PalmSens.Core.Simplified.WinForms.DeviceFirmware
 {
     /// <summary>
     /// Upload status enum.

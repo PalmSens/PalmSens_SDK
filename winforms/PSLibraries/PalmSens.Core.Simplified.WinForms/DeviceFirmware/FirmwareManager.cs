@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -163,7 +163,7 @@ namespace PalmSens.Core.Simplified.WinForms.DeviceFirmware
 
             if (_firmware is FirmwareBin)
                 toStringBuilder.AppendLine($"   Firmware Version: {Version:#0.000}");
-            else 
+            else
                 toStringBuilder.AppendLine($"   Firmware Version: {Version:0.0}");
 
             toStringBuilder.Append("   Supported devices: ").Append(DeviceType[0]);

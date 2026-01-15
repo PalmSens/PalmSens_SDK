@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -11,7 +11,7 @@ using PalmSens.Core.Simplified.InternalStorage;
 
 namespace PalmSens.Core.Simplified.WinForms
 {
-    public partial class PSMultiCommSimpleWinForms : Component, IPlatformMulti, IDisposable
+    public partial class PSMultiCommSimpleWinForms : Component, IPlatformMulti, IPlatformInvoker, IDisposable
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="PSMultiCommSimpleWinForms"/> class.
@@ -32,9 +32,10 @@ namespace PalmSens.Core.Simplified.WinForms
         public PSMultiCommSimpleWinForms()
         {
             InitializeComponent();
-            PalmSens.Windows.CoreDependencies.Init(); //Initiates threading dependencies
+            PalmSens.Windows.CoreDependencies.Init(); //Initiates PSSDK threading dependencies
             InitAsyncFunctionality(Environment.ProcessorCount); //Initiate the asynchronous functions in the SDK
-            _psMultiCommSimple = new PSMultiCommSimple(this);
+            PalmSens.Devices.Device.InitAsyncQueues(); //Use queue for communication to improve stability
+            _psMultiCommSimple = new PSMultiCommSimple(this, this as IPlatformInvoker);
         }
 
         #region Properties
@@ -73,6 +74,8 @@ namespace PalmSens.Core.Simplified.WinForms
         /// The channel handler class which handles the connection to the channel
         /// </summary>
         private DeviceHandler _deviceHandler = new DeviceHandler();
+
+        private IReadOnlyList<Device> _availableDevices;
 
         /// <summary>
         /// Gets the CommManager for the current connection.
@@ -215,7 +218,7 @@ namespace PalmSens.Core.Simplified.WinForms
         /// <summary>
         /// Returns an array of connected channels.
         /// </summary>
-        public Task<Device[]> GetConnectedDevicesAsync() => _deviceHandler.GetConnectedDevicesAsync();
+        public Task<IReadOnlyList<Device>> GetConnectedDevicesAsync() => _deviceHandler.GetConnectedDevicesAsync();
 
         /// <summary>
         /// Connects to the specified channels.
@@ -303,13 +306,13 @@ namespace PalmSens.Core.Simplified.WinForms
         /// </summary>
         /// <param name="channel">The channel.</param>
         /// <returns></returns>
-        public Task<(float Potential, int ChannelIndex, Exception Exception)[]> ReadCellPotentialAsync(int[] channels) => _psMultiCommSimple.ReadCellPotentialAsync(channels);
+        public Task<IList<(float Potential, int ChannelIndex, Exception Exception)>> ReadCellPotentialAsync(int[] channels) => _psMultiCommSimple.ReadCellPotentialAsync(channels);
 
         /// <summary>
         /// Reads the cell potential on all channels.
         /// </summary>
         /// <returns></returns>
-        public Task<(float Potential, int ChannelIndex, Exception Exception)[]> ReadCellPotentialAsync() => _psMultiCommSimple.ReadCellPotentialAsync();
+        public Task<IList<(float Potential, int ChannelIndex, Exception Exception)>> ReadCellPotentialAsync() => _psMultiCommSimple.ReadCellPotentialAsync();
 
         /// <summary>
         /// Sets the cell current on the specified channel.
@@ -345,13 +348,13 @@ namespace PalmSens.Core.Simplified.WinForms
         /// Reads the cell current on the specified channels.
         /// </summary>
         /// <returns></returns>
-        public Task<(float Current, int ChannelIndex, Exception Exception)[]> ReadCellCurrentAsync(int[] channels) => _psMultiCommSimple.ReadCellCurrentAsync(channels);
+        public Task<IList<(float Current, int ChannelIndex, Exception Exception)>> ReadCellCurrentAsync(int[] channels) => _psMultiCommSimple.ReadCellCurrentAsync(channels);
 
         /// <summary>
         /// Reads the cell current on all channels.
         /// </summary>
         /// <returns></returns>
-        public Task<(float Current, int ChannelIndex, Exception Exception)[]> ReadCellCurrentAsync() => _psMultiCommSimple.ReadCellCurrentAsync();
+        public Task<IList<(float Current, int ChannelIndex, Exception Exception)>> ReadCellCurrentAsync() => _psMultiCommSimple.ReadCellCurrentAsync();
 
         /// <summary>
         /// Sets the current range on the specified channel.
@@ -391,7 +394,7 @@ namespace PalmSens.Core.Simplified.WinForms
         /// <returns>
         /// A SimpleMeasurement instance containing all the data related to the measurement.
         /// </returns>
-        public Task<(SimpleMeasurement measurement, int channelIndex, Exception exception)[]> MeasureAsync(Method method, int[] channels, int muxChannel) => _psMultiCommSimple.MeasureAsync(method, channels, muxChannel);
+        public Task<IList<(SimpleMeasurement measurement, int channelIndex, Exception exception)>> MeasureAsync(Method method, int[] channels, int muxChannel) => _psMultiCommSimple.MeasureAsync(method, channels, muxChannel);
 
         /// <summary>
         /// Runs a measurement as specified in the method on all channels.
@@ -402,7 +405,7 @@ namespace PalmSens.Core.Simplified.WinForms
         /// <returns>
         /// A SimpleMeasurement instance containing all the data related to the measurement.
         /// </returns>
-        public Task<(SimpleMeasurement measurement, int channelIndex, Exception exception)[]> MeasureAllChannelsAsync(Method method, int muxChannel) => _psMultiCommSimple.MeasureAllChannelsAsync(method, muxChannel);
+        public Task<IList<(SimpleMeasurement measurement, int channelIndex, Exception exception)>> MeasureAllChannelsAsync(Method method, int muxChannel) => _psMultiCommSimple.MeasureAllChannelsAsync(method, muxChannel);
 
         /// <summary>
         /// Runs a measurement as specified in the method on the specified channel.
@@ -419,7 +422,7 @@ namespace PalmSens.Core.Simplified.WinForms
         /// <returns>
         /// A SimpleMeasurement instance containing all the data related to the measurement.
         /// </returns>
-        public Task<(SimpleMeasurement measurement, int channelIndex, Exception exception)[]> MeasureAsync(Method method, int[] channels) => _psMultiCommSimple.MeasureAsync(method, channels);
+        public Task<IList<(SimpleMeasurement measurement, int channelIndex, Exception exception)>> MeasureAsync(Method method, int[] channels) => _psMultiCommSimple.MeasureAsync(method, channels);
 
         /// <summary>
         /// Runs a measurement as specified in the method on the specified channel.
@@ -429,7 +432,67 @@ namespace PalmSens.Core.Simplified.WinForms
         /// <returns>
         /// A SimpleMeasurement instance containing all the data related to the measurement.
         /// </returns>
-        public Task<(SimpleMeasurement measurement, int channelIndex, Exception exception)[]> MeasureAllChannelsAsync(Method method) => _psMultiCommSimple.MeasureAllChannelsAsync(method);
+        public Task<IList<(SimpleMeasurement measurement, int channelIndex, Exception exception)>> MeasureAllChannelsAsync(Method method) => _psMultiCommSimple.MeasureAllChannelsAsync(method);
+
+        /// <summary>
+        /// Awaits a measurement as specified in the method until completion on the specified channel.
+        /// </summary>
+        /// <param name="method">The method containing the measurement parameters.</param>
+        /// <param name="channel">The channel.</param>
+        /// <param name="muxChannel">The mux channel to measure on.</param>
+        /// <returns>
+        /// A SimpleMeasurement instance containing all the data related to the measurement.
+        /// </returns>
+        public Task<SimpleMeasurement> AwaitMeasurementCompletionAsync(Method method, int channel, int muxChannel, TaskBarrier taskBarrier = null) => _psMultiCommSimple.AwaitMeasurementCompletionAsync(method, channel, muxChannel);
+
+        /// <summary>
+        /// Awaits a measurement as specified in the method until completion on the specified collection of channels.
+        /// </summary>
+        /// <param name="method">The method containing the measurement parameters.</param>
+        /// <param name="channels">The channels.</param>
+        /// <param name="muxChannel">The mux channel to measure on.</param>
+        /// <returns>
+        /// A SimpleMeasurement instance containing all the data related to the measurement.
+        /// </returns>
+        public Task<IList<(SimpleMeasurement measurement, int channelIndex, Exception exception)>> AwaitMeasurementCompletionAsync(Method method, int[] channels, int muxChannel) => _psMultiCommSimple.AwaitMeasurementCompletionAsync(method, channels, muxChannel);
+
+        /// <summary>
+        /// Awaits a measurement as specified in the method until completion on all channels.
+        /// </summary>
+        /// <param name="method">The method containing the measurement parameters.</param>
+        /// <param name="channels">The channels.</param>
+        /// <param name="muxChannel">The mux channel to measure on.</param>
+        /// <returns>
+        /// A SimpleMeasurement instance containing all the data related to the measurement.
+        /// </returns>
+        public Task<IList<(SimpleMeasurement measurement, int channelIndex, Exception exception)>> AwaitMeasurementCompletionAllChannelsAsync(Method method, int muxChannel) => _psMultiCommSimple.AwaitMeasurementCompletionAllChannelsAsync(method, muxChannel);
+
+        /// <summary>
+        /// Awaits a measurement as specified in the method until completion on the specified channel.
+        /// </summary>
+        /// <param name="method">The method containing the measurement parameters.</param>
+        /// <returns>A SimpleMeasurement instance containing all the data related to the measurement.</returns>
+        public Task<SimpleMeasurement> AwaitMeasurementCompletionAsync(Method method, int channel) => _psMultiCommSimple.AwaitMeasurementCompletionAsync(method, channel);
+
+        /// <summary>
+        /// Awaits a measurement as specified in the method until completion on the specified channel.
+        /// </summary>
+        /// <param name="method">The method containing the measurement parameters.</param>
+        /// <param name="channels">The channels.</param>
+        /// <returns>
+        /// A SimpleMeasurement instance containing all the data related to the measurement.
+        /// </returns>
+        public Task<IList<(SimpleMeasurement measurement, int channelIndex, Exception exception)>> AwaitMeasurementCompletionAsync(Method method, int[] channels) => _psMultiCommSimple.AwaitMeasurementCompletionAsync(method, channels);
+
+        /// <summary>
+        /// Awaits a measurement as specified in the method until completion on the specified channel.
+        /// </summary>
+        /// <param name="method">The method containing the measurement parameters.</param>
+        /// <param name="channels">The channels.</param>
+        /// <returns>
+        /// A SimpleMeasurement instance containing all the data related to the measurement.
+        /// </returns>
+        public Task<IList<(SimpleMeasurement measurement, int channelIndex, Exception exception)>> AwaitMeasurementCompletionAllChannelsAsync(Method method) => _psMultiCommSimple.AwaitMeasurementCompletionAllChannelsAsync(method);
 
         /// <summary>
         /// Aborts the active measurement on the specified channel.
@@ -513,6 +576,10 @@ namespace PalmSens.Core.Simplified.WinForms
             return false;
         }
 
+        public IReadOnlyList<Device> AvailableDevices => _deviceHandler.ConnectedDevices;
+
+        public Task<IReadOnlyList<Device>> GetAvailableDevices() => _deviceHandler.GetConnectedDevicesAsync();
+
         /// <summary>
         /// Connects to the specified channels.
         /// Warning use the platform independent method Connect() instead.
@@ -520,7 +587,7 @@ namespace PalmSens.Core.Simplified.WinForms
         /// </summary>
         /// <param name="devices">Array devices to connect to.</param>
         /// <param name="channelIndices">Array of unique indices for the specified channel (0, 1, 2, 3... by default)</param>
-        public Task<(CommManager Comm, int ChannelIndex, Exception Exception)[]> Connect(Device[] devices, int[] channelIndices = null) => _deviceHandler.ConnectAsync(devices, channelIndices);
+        public Task<IList<(CommManager Comm, int ChannelIndex, Exception Exception)>> Connect(IList<Device> devices, IList<int> channelIndices = null) => _deviceHandler.ConnectAsync(devices, channelIndices);
 
         /// <summary>
         /// Disconnects from channels with the specified CommManagers.
@@ -529,7 +596,13 @@ namespace PalmSens.Core.Simplified.WinForms
         /// which may result in it not being released from the memory.
         /// </summary>
         /// <param name="comms">The comm.</param>
-        public Task<IEnumerable<(int channelIndex, Exception exception)>> Disconnect(IEnumerable<CommManager> comms) => _deviceHandler.Disconnect(comms, false);
+        public Task<IList<(int ChannelIndex, Exception Exception)>> Disconnect(IList<CommManager> comms) => _deviceHandler.Disconnect(comms, false);
+
+        public Task<Device> MatchDevices(Device deviceInErrorState)
+        {
+            throw new NotImplementedException();
+        }
+
         #endregion
 
         #region events
@@ -594,6 +667,7 @@ namespace PalmSens.Core.Simplified.WinForms
         public new void Dispose()
         {
             _psMultiCommSimple.Dispose();
+            PalmSens.Devices.Device.DisposeAsyncQueues();
             base.Dispose();
         }
     }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,7 +19,7 @@ namespace PalmSens.Core.Simplified.InternalStorage
         /// <param name="muxChannel">Specify the mux channel, default is -1</param>
         /// <returns>The measurement.</returns>
         SimpleMeasurement GetMeasurement(MeasType measType, int muxChannel = -1);
-        
+
         /// <summary>
         /// Get the measurement for this file.
         /// </summary>
@@ -42,7 +42,7 @@ namespace PalmSens.Core.Simplified.InternalStorage
         }
 
         #region IInternalStorageFileLoader Members
-        
+
         /// <summary>
         /// Get the measurement for this file.
         /// </summary>
@@ -56,7 +56,7 @@ namespace PalmSens.Core.Simplified.InternalStorage
                 return null;
 
             var clientConnection = _clientConnection;
-            Buffer buff = new OfflineBuffer(dataStr);
+            var buff = new OfflineBuffer(dataStr);
             buff = CheckVersion(buff, clientConnection);
 
             var meas = LoadMeasurement(m, _clientConnection, buff, measType, muxChannel);
@@ -64,7 +64,7 @@ namespace PalmSens.Core.Simplified.InternalStorage
 
             return new SimpleMeasurement(meas);
         }
-        
+
         /// <summary>
         /// Get the measurement for this file.
         /// </summary>
@@ -78,7 +78,7 @@ namespace PalmSens.Core.Simplified.InternalStorage
                 return null;
 
             var clientConnection = _clientConnection;
-            Buffer buff = new OfflineBuffer(dataStr);
+            var buff = new OfflineBuffer(dataStr);
             buff = await CheckVersionAsync(buff, clientConnection);
 
             var meas = await LoadMeasurementAsync(m, _clientConnection, buff, measType, muxChannel);
@@ -104,7 +104,7 @@ namespace PalmSens.Core.Simplified.InternalStorage
         /// </summary>
         /// <param name="buff">The buff.</param>
         /// <param name="clientConnection">The comm clientConnection.</param>
-        private Buffer CheckVersion(Buffer buff, ClientConnection clientConnection)
+        private OfflineBuffer CheckVersion(OfflineBuffer buff, ClientConnection clientConnection)
         {
             double fwVersionMeasurement;
             if ((char) buff.Peek() != 't')
@@ -129,7 +129,7 @@ namespace PalmSens.Core.Simplified.InternalStorage
         /// </summary>
         /// <param name="buff">The buff.</param>
         /// <param name="clientConnection">The comm clientConnection.</param>
-        private async Task<Buffer> CheckVersionAsync(Buffer buff, ClientConnection clientConnection)
+        private async Task<OfflineBuffer> CheckVersionAsync(OfflineBuffer buff, ClientConnection clientConnection)
         {
             double fwVersionMeasurement;
             if ((char) await buff.PeekAsync() != 't')

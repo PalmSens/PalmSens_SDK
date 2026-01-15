@@ -1,4 +1,4 @@
-﻿using PalmSens.Data;
+using PalmSens.Data;
 using PalmSens.Plottables;
 using System;
 using System.Collections;

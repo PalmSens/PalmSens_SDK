@@ -1,8 +1,9 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using PalmSens.Comm;
 using PalmSens.Devices;
@@ -23,18 +24,40 @@ namespace PalmSens.Core.Simplified
         /// </summary>
         /// <param name="platform">The reference to the platform specific PSCommSimple class.</param>
         /// <exception cref="System.ArgumentNullException">Platform cannot be null</exception>
-        public PSCommSimple(IPlatform platform)
+        public PSCommSimple(IPlatform platform, IPlatformInvoker platformInvoker)
         {
             if (platform == null)
                 throw new ArgumentNullException("Platform cannot be null");
             _platform = platform;
+            _platformInvoker = platformInvoker;
         }
 
         #region Properties
         /// <summary>
-        /// The platform specific interface for WinForms, WPF and Xamarin support
+        /// The platform specific interface implementing the layers to communicate with the instrument
         /// </summary>
         private IPlatform _platform = null;
+
+        /// <summary>
+        /// The platform specific interface implementing the dispatch of events to the UI thread
+        /// </summary>
+        private IPlatformInvoker _platformInvoker = null;
+
+        /// <summary>
+        /// Returns an array of connected devices.
+        /// </summary>
+        /// <value>
+        /// The connected devices.
+        /// </value>
+        public IReadOnlyList<Device> AvailableDevices => _platform.AvailableDevices;
+
+        /// <summary>
+        /// Returns an array of connected devices.
+        /// </summary>
+        /// <value>
+        /// The connected devices.
+        /// </value>
+        public Task<IReadOnlyList<Device>> GetAvailableDevicesAsync() => _platform.GetAvailableDevices();
 
         /// <summary>
         /// The connected device's CommManager
@@ -186,7 +209,7 @@ namespace PalmSens.Core.Simplified
         private Measurement _activeMeasurement;
 
         /// <summary>
-        /// Gets or sets the active measurement manages the subscription to its events, 
+        /// Gets or sets the active measurement manages the subscription to its events,
         /// the active simple measurement and the active curves.
         /// </summary>
         /// <value>
@@ -210,6 +233,40 @@ namespace PalmSens.Core.Simplified
         #endregion
 
         #region Functions
+        /// <summary>
+        /// Connects to the device with the highest priority.
+        /// </summary>
+        public void Connect()
+        {
+            Connect(AvailableDevices.First());
+        }
+
+        /// <summary>
+        /// Connects to the device with the highest priority.
+        /// </summary>
+        public Task ConnectAsync()
+        {
+            return ConnectAsync(AvailableDevices.First());
+        }
+
+        /// <summary>
+        /// Connects to the specified device.
+        /// </summary>
+        /// <param name="device">The device.</param>
+        public void Connect(Device device)
+        {
+            Comm = _platform.Connect(device);
+        }
+
+        /// <summary>
+        /// Connects to the specified device.
+        /// </summary>
+        /// <param name="device">The device.</param>
+        public async Task ConnectAsync(Device device)
+        {
+            Comm = await _platform.ConnectAsync(device);
+        }
+
         /// <summary>
         /// Disconnects from the connected device.
         /// </summary>
@@ -337,8 +394,8 @@ namespace PalmSens.Core.Simplified
                 {
                     CommManager commSender = sender as CommManager;
                     ActiveMeasurement = e.NewMeasurement;
-                    
-                    if (e.NewMeasurement is ImpedimetricMeasurementBase eis)
+
+                    if (e.NewMeasurement is ImpedimetricMeasurementBase || e.NewMeasurement is ImpedimetricMeasBaseMS)
                         _activeSimpleMeasurement.NewSimpleCurve(PalmSens.Data.DataArrayType.ZRe, PalmSens.Data.DataArrayType.ZIm, "Nyquist", true); //Create a nyquist curve by default
 
                     tcs.SetResult(_activeSimpleMeasurement);
@@ -352,7 +409,9 @@ namespace PalmSens.Core.Simplified
                     throw new Exception($"Could not start measurement: {errorString}");
                 }
 
+                comm.ClientConnection.Semaphore.Release();
                 SimpleMeasurement result = await tcs.Task;
+                await comm.ClientConnection.Semaphore.WaitAsync();
                 comm.BeginMeasurementAsync -= asyncEventHandler;
 
                 return result;
@@ -441,7 +500,7 @@ namespace PalmSens.Core.Simplified
                 if (_comm.State != CommManager.DeviceState.Idle)
                     throw new Exception("Device must be in idle mode for manual control");
                 if (_comm.CellOn)
-                    return; 
+                    return;
                 _comm.CellOn = true; });
         }
 
@@ -458,7 +517,7 @@ namespace PalmSens.Core.Simplified
                 if (comm.CellOn)
                     return Task.CompletedTask;
                 return comm.SetCellOnAsync(true);
-            });            
+            });
         }
 
         /// <summary>
@@ -472,7 +531,7 @@ namespace PalmSens.Core.Simplified
                 if (_comm.State != CommManager.DeviceState.Idle)
                     throw new Exception("Device must be in idle mode for manual control");
                 if (!_comm.CellOn)
-                    return; 
+                    return;
                 _comm.CellOn = false;
             });
         }
@@ -503,7 +562,7 @@ namespace PalmSens.Core.Simplified
         {
             Run(() => {
                 if (_comm.State != CommManager.DeviceState.Idle)
-                    throw new Exception("Device must be in idle mode for manual control"); 
+                    throw new Exception("Device must be in idle mode for manual control");
                 _comm.Potential = potential;
             });
         }
@@ -533,7 +592,7 @@ namespace PalmSens.Core.Simplified
         {
             return Run<float>(() => {
                 if (_comm.State != CommManager.DeviceState.Idle)
-                    throw new Exception("Device must be in idle mode for manual control"); 
+                    throw new Exception("Device must be in idle mode for manual control");
                 return _comm.Potential;
             });
         }
@@ -547,7 +606,7 @@ namespace PalmSens.Core.Simplified
         public Task<float> ReadCellPotentialAsync()
         {
             return RunAsync<float>((CommManager comm) => {
-                if (comm.State != CommManager.DeviceState.Idle) 
+                if (comm.State != CommManager.DeviceState.Idle)
                     throw new Exception("Device must be in idle mode for manual control");
                 return comm.GetPotentialAsync();
             });
@@ -566,7 +625,7 @@ namespace PalmSens.Core.Simplified
                 if (_comm.State != CommManager.DeviceState.Idle)
                     throw new Exception("Device must be in idle mode for manual control");
                 if (!Capabilities.IsGalvanostat)
-                    throw new Exception("Device does not support Galvanostat mode"); 
+                    throw new Exception("Device does not support Galvanostat mode");
                 _comm.Current = current;
             });
         }
@@ -598,7 +657,7 @@ namespace PalmSens.Core.Simplified
         {
             return Run<float>(() => {
                 if (_comm.State != CommManager.DeviceState.Idle)
-                    throw new Exception("Device must be in idle mode for manual control"); 
+                    throw new Exception("Device must be in idle mode for manual control");
                 return _comm.Current;
             });
         }
@@ -628,7 +687,7 @@ namespace PalmSens.Core.Simplified
         {
             Run(() => {
                 if (_comm.State != CommManager.DeviceState.Idle)
-                    throw new Exception("Device must be in idle mode for manual control"); 
+                    throw new Exception("Device must be in idle mode for manual control");
                 _comm.CurrentRange = currentRange;
             });
         }
@@ -974,12 +1033,12 @@ namespace PalmSens.Core.Simplified
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="StatusEventArgs" /> instance containing the device status.</param>
-        /// <exception cref="System.NullReferenceException">Platform not set.</exception>
+        /// <exception cref="System.NullReferenceException">PlatformInvoker not set.</exception>
         private void Comm_ReceiveStatus(object sender, StatusEventArgs e)
         {
-            if (_platform == null)
-                throw new NullReferenceException("Platform not set.");
-            if (_platform.InvokeIfRequired(new StatusEventHandler(Comm_ReceiveStatus), sender, e)) //Recast event to UI thread when necessary
+            if (_platformInvoker == null)
+                throw new NullReferenceException("PlatformInvoker not set.");
+            if (_platformInvoker.InvokeIfRequired(new StatusEventHandler(Comm_ReceiveStatus), sender, e)) //Recast event to UI thread when necessary
                 return;
             ReceiveStatus?.Invoke(this, e);
         }
@@ -989,7 +1048,7 @@ namespace PalmSens.Core.Simplified
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="StatusEventArgs" /> instance containing the device status.</param>
-        /// <exception cref="System.NullReferenceException">Platform not set.</exception>
+        /// <exception cref="System.NullReferenceException">PlatformInvoker not set.</exception>
         private Task Comm_ReceiveStatusAsync(object sender, StatusEventArgs e)
         {
             Comm_ReceiveStatus(sender, e);
@@ -1006,12 +1065,12 @@ namespace PalmSens.Core.Simplified
         /// </summary>
         /// <param name="sender">The sender.</param>
         /// <param name="newMeasurement">The new measurement.</param>
-        /// <exception cref="System.NullReferenceException">Platform not set.</exception>
+        /// <exception cref="System.NullReferenceException">PlatformInvoker not set.</exception>
         private void Comm_BeginMeasurement(object sender, ActiveMeasurement newMeasurement)
         {
-            if (_platform == null)
-                throw new NullReferenceException("Platform not set.");
-            if (_platform.InvokeIfRequired(new CommManager.BeginMeasurementEventHandler(Comm_BeginMeasurement), sender, newMeasurement)) //Recast event to UI thread when necessary
+            if (_platformInvoker == null)
+                throw new NullReferenceException("PlatformInvoker not set.");
+            if (_platformInvoker.InvokeIfRequired(new CommManager.BeginMeasurementEventHandler(Comm_BeginMeasurement), sender, newMeasurement)) //Recast event to UI thread when necessary
                 return;
             MeasurementStarted?.Invoke(this, EventArgs.Empty);
         }
@@ -1021,7 +1080,7 @@ namespace PalmSens.Core.Simplified
         /// </summary>
         /// <param name="sender">The sender.</param>
         /// <param name="e">The new measurement.</param>
-        /// <exception cref="System.NullReferenceException">Platform not set.</exception>
+        /// <exception cref="System.NullReferenceException">PlatformInvoker not set.</exception>
         private Task Comm_BeginMeasurementAsync(object sender, CommManager.BeginMeasurementEventArgsAsync e)
         {
             Comm_BeginMeasurement(sender, e.NewMeasurement);
@@ -1038,15 +1097,15 @@ namespace PalmSens.Core.Simplified
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
-        /// <exception cref="System.NullReferenceException">Platform not set.</exception>
+        /// <exception cref="System.NullReferenceException">PlatformInvoker not set.</exception>
         private void Comm_EndMeasurement(object _, EventArgs e)
         {
-            if (_platform == null)
-                throw new NullReferenceException("Platform not set.");
+            if (_platformInvoker == null)
+                throw new NullReferenceException("PlatformInvoker not set.");
 
             ActiveMeasurement = null;
 
-            if (!_platform.InvokeIfRequired(
+            if (!_platformInvoker.InvokeIfRequired(
                 (EventHandler<Exception>)((sender, ex) =>
                 {
                     MeasurementEnded?.Invoke(sender, ex);
@@ -1061,7 +1120,7 @@ namespace PalmSens.Core.Simplified
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
-        /// <exception cref="System.NullReferenceException">Platform not set.</exception>
+        /// <exception cref="System.NullReferenceException">PlatformInvoker not set.</exception>
         private Task Comm_EndMeasurementAsync(object sender, CommManager.EndMeasurementAsyncEventArgs e)
         {
             Comm_EndMeasurement(sender, e);
@@ -1073,15 +1132,15 @@ namespace PalmSens.Core.Simplified
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="CurveEventArgs"/> instance containing the event data.</param>
-        /// <exception cref="System.NullReferenceException">Platform not set.</exception>
+        /// <exception cref="System.NullReferenceException">PlatformInvoker not set.</exception>
         private void Comm_BeginReceiveCurve(object _, CurveEventArgs e)
         {
-            if (_platform == null)
-                throw new NullReferenceException("Platform not set.");
+            if (_platformInvoker == null)
+                throw new NullReferenceException("PlatformInvoker not set.");
 
             var activeSimpleCurve = SetActiveSimpleCurve(e.GetCurve());
 
-            if (!_platform.InvokeIfRequired(
+            if (!_platformInvoker.InvokeIfRequired(
                 (SimpleCurveStartReceivingDataHandler) ((sender, simpleCuve) =>
                 {
                     if (simpleCuve != null) SimpleCurveStartReceivingData?.Invoke(sender, simpleCuve);
@@ -1113,12 +1172,12 @@ namespace PalmSens.Core.Simplified
         /// </summary>
         /// <param name="sender">The sender.</param>
         /// <param name="CurrentState">State of the current.</param>
-        /// <exception cref="System.NullReferenceException">Platform not set.</exception>
+        /// <exception cref="System.NullReferenceException">PlatformInvoker not set.</exception>
         private void Comm_StateChanged(object sender, CommManager.DeviceState CurrentState)
         {
-            if (_platform == null)
-                throw new NullReferenceException("Platform not set."); 
-            if (_platform.InvokeIfRequired(new CommManager.StatusChangedEventHandler(Comm_StateChanged), sender, CurrentState)) //Recast event to UI thread when necessary
+            if (_platformInvoker == null)
+                throw new NullReferenceException("PlatformInvoker not set.");
+            if (_platformInvoker.InvokeIfRequired(new CommManager.StatusChangedEventHandler(Comm_StateChanged), sender, CurrentState)) //Recast event to UI thread when necessary
                 return;
             StateChanged?.Invoke(this, CurrentState);
         }
@@ -1128,7 +1187,7 @@ namespace PalmSens.Core.Simplified
         /// </summary>
         /// <param name="sender">The sender.</param>
         /// <param name="e">State of the current.</param>
-        /// <exception cref="System.NullReferenceException">Platform not set.</exception>
+        /// <exception cref="System.NullReferenceException">PlatformInvoker not set.</exception>
         private Task Comm_StateChangedAsync(object sender, CommManager.StateChangedAsyncEventArgs e)
         {
             Comm_StateChanged(sender, e.State);
@@ -1148,15 +1207,15 @@ namespace PalmSens.Core.Simplified
         /// <exception cref="System.NotImplementedException"></exception>
         private void Comm_Disconnected(object _, EventArgs e)
         {
-            if (_platform == null)
-                throw new NullReferenceException("Platform not set.");
+            if (_platformInvoker == null)
+                throw new NullReferenceException("PlatformInvoker not set.");
 
             _comm?.Dispose();
             Comm = null;
             var ex = _commErrorException;
             _commErrorException = null;
 
-            if (!_platform.InvokeIfRequired(
+            if (!_platformInvoker.InvokeIfRequired(
                 (DisconnectedEventHandler) ((sender, exception) =>
                 {
                     Disconnected?.Invoke(sender, exception);
