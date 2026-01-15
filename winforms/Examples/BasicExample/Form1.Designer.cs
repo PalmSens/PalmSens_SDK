@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace BasicExample
+namespace BasicAsyncExample
 {
     partial class Form1
     {

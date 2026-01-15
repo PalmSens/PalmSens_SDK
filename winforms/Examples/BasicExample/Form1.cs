@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using PalmSens;
 using PalmSens.Comm;
@@ -7,7 +8,7 @@ using PalmSens.Core.Simplified.Data;
 using PalmSens.Devices;
 using PalmSens.Techniques;
 
-namespace BasicExample
+namespace BasicAsyncExample
 {
     public partial class Form1 : Form
     {
@@ -17,7 +18,7 @@ namespace BasicExample
 
             InitLSVMethod(); //Create the linear sweep voltammetry method that defines the measurement parameters
             InitDataGrid(); //Set up the columns for the datagridview control
-            DiscoverConnectedDevices(); //Populate the connected device combobox control
+            DiscoverConnectedDevicesAsync(); //Populate the connected device combobox control
         }
 
         /// <summary>
@@ -73,21 +74,24 @@ namespace BasicExample
             _methodLSV.EndPotential = 0.5f - 0.05f; //Sets the potential for the sweep to stop at
             _methodLSV.StepPotential = 0.05f; //Sets the step size
             _methodLSV.Scanrate = 0.1f; //Sets the scan rate to 0.1 V/s
-            _methodLSV.SaveOnDevice = false;
 
             _methodLSV.EquilibrationTime = 1f; //Equilabrates the cell at the defined potential for 1 second before starting the measurement
             _methodLSV.Ranging.StartCurrentRange = new CurrentRange(CurrentRanges.cr1uA); //Starts equilabration in the 1µA current range
             _methodLSV.Ranging.MinimumCurrentRange = new CurrentRange(CurrentRanges.cr10nA); //Min current range 10nA
             _methodLSV.Ranging.MaximumCurrentRange = new CurrentRange(CurrentRanges.cr1mA); //Max current range 1mA
+            _methodLSV.SaveOnDevice = false;
+            _methodLSV.ToMethodScript(new EmStatPicoCapabilities());
         }
 
         /// <summary>
         /// Discovers the connected PalmSens & EmStat devices and adds them to the combobox control.
         /// </summary>
-        private void DiscoverConnectedDevices()
+        private async Task DiscoverConnectedDevicesAsync()
         {
+            btnRefresh.Enabled = false;
+            lbConsole.Items.Add("Searching for connected devices.");
             cmbDevices.Items.Clear();
-            _connectedDevices = psCommSimpleWinForms.ConnectedDevices; //Discover connected devices
+            _connectedDevices = await psCommSimpleWinForms.GetConnectedDevicesAsync(); //Discover connected devices
 
             foreach (Device d in _connectedDevices)
                 cmbDevices.Items.Add(d.ToString()); //Add connected devices to control
@@ -97,6 +101,7 @@ namespace BasicExample
             lbConsole.Items.Add($"Found {nDevices} device(s).");
 
             btnConnect.Enabled = nDevices > 0;
+            btnRefresh.Enabled = true;
         }
 
         /// <summary>
@@ -104,9 +109,9 @@ namespace BasicExample
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
-        private void btnRefresh_Click(object sender, EventArgs e)
+        private async void btnRefresh_Click(object sender, EventArgs e)
         {
-            DiscoverConnectedDevices(); //Add connected devices to the devices combobox control
+            await DiscoverConnectedDevicesAsync(); //Add connected devices to the devices combobox control
         }
 
         /// <summary>
@@ -114,8 +119,9 @@ namespace BasicExample
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
-        private void btnConnect_Click(object sender, EventArgs e)
+        private async void btnConnect_Click(object sender, EventArgs e)
         {
+            btnConnect.Enabled = false;
             if (!psCommSimpleWinForms.Connected) //Determine whether a device is currently connected
             {
                 if (cmbDevices.SelectedIndex == -1)
@@ -124,7 +130,7 @@ namespace BasicExample
                 try
                 {
                     //Connect to the device selected in the devices combobox control
-                    psCommSimpleWinForms.Connect(_connectedDevices[cmbDevices.SelectedIndex]);
+                    await psCommSimpleWinForms.ConnectAsync(_connectedDevices[cmbDevices.SelectedIndex]);
                     lbConsole.Items.Add($"Connected to {psCommSimpleWinForms.ConnectedDevice.ToString()}");
                 }
                 catch (Exception ex)
@@ -134,7 +140,7 @@ namespace BasicExample
             }
             else
             {
-                psCommSimpleWinForms.Disconnect(); //Disconnect from the connected device
+                await psCommSimpleWinForms.DisconnectAsync(); //Disconnect from the connected device
             }
 
             //Update UI based on connection status
@@ -142,6 +148,7 @@ namespace BasicExample
             btnRefresh.Enabled = !psCommSimpleWinForms.Connected;
             btnConnect.Text = psCommSimpleWinForms.Connected ? "Disconnect" : "Connect";
             btnMeasure.Enabled = psCommSimpleWinForms.Connected;
+            btnConnect.Enabled = true;
         }
 
         /// <summary>
@@ -149,14 +156,15 @@ namespace BasicExample
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
-        private void btnMeasure_Click(object sender, EventArgs e)
+        private async void btnMeasure_Click(object sender, EventArgs e)
         {
+            btnMeasure.Enabled = false;
             if (psCommSimpleWinForms.DeviceState == PalmSens.Comm.CommManager.DeviceState.Idle) //Determine whether the device is currently idle or measuring
             {
                 try
                 {
                     InitDataGrid(); //Reset the data grid view control
-                    _activeMeasurement = psCommSimpleWinForms.Measure(_methodLSV); //Start measurement defined in the method
+                    _activeMeasurement = await psCommSimpleWinForms.MeasureAsync(_methodLSV); //Start measurement defined in the method
                 }
                 catch (Exception ex)
                 {
@@ -167,13 +175,14 @@ namespace BasicExample
             {
                 try
                 {
-                    psCommSimpleWinForms.AbortMeasurement(); //Abort the active measurement
+                    await psCommSimpleWinForms.AbortMeasurementAsync(); //Abort the active measurement
                 }
                 catch (Exception ex)
                 {
                     lbConsole.Items.Add(ex.Message);
                 }
             }
+            btnMeasure.Enabled = true;
         }
 
         /// <summary>
@@ -181,7 +190,7 @@ namespace BasicExample
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="PalmSens.Comm.StatusEventArgs"/> instance containing the event data.</param>
-        private void psCommSimpleWinForms_ReceiveStatus(object sender, PalmSens.Comm.StatusEventArgs e)
+        private async void psCommSimpleWinForms_ReceiveStatus(object sender, PalmSens.Comm.StatusEventArgs e)
         {
             Status status = e.GetStatus(); //Get the PalmSens.Comm.Status instance from the event data
             double potential = status.PotentialReading.Value; //Get the potential
@@ -259,6 +268,11 @@ namespace BasicExample
         /// <param name="e">The <see cref="PalmSens.Data.ArrayDataAddedEventArgs"/> instance containing the event data.</param>
         private void activeSimpleCurve_NewDataAdded(object sender, PalmSens.Data.ArrayDataAddedEventArgs e)
         {
+            if (InvokeRequired) //Data is parsed asynchronously in the case this event was raised on a different thread it must be invoked back onto the UI thread
+            {
+                BeginInvoke(new PalmSens.Plottables.Curve.NewDataAddedEventHandler(activeSimpleCurve_NewDataAdded), sender, e);
+                return;
+            }
             SimpleCurve activeSimpleCurve = sender as SimpleCurve;
             int startIndex = e.StartIndex; //The index of the first new data point added to the curve
             int count = e.Count; //The number of new data points added to the curve
@@ -284,6 +298,11 @@ namespace BasicExample
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void activeSimpleCurve_CurveFinished(object sender, EventArgs e)
         {
+            if (InvokeRequired) //Data is parsed asynchronously in the case this event was raised on a different thread it must be invoked back onto the UI thread
+            {
+                BeginInvoke(new EventHandler(activeSimpleCurve_CurveFinished), sender, e);
+                return;
+            }
             SimpleCurve activeSimpleCurve = sender as SimpleCurve;
 
             //Unsubscribe from the curves events to avoid memory leaks
