@@ -882,10 +882,10 @@ namespace SDKPlot
 
             bool hideSecondaryAxis = true;
             PlotModel.PlotAreaBackground = _plotBackgroundColor;
-            PlotModel.LegendTextColor = _legendTextColor;
+            PlotModel.Legends.Select(legend => legend.TextColor = _legendTextColor);
 
             //Add the data to the plot
-            if(_dataSeries != null)
+            if (_dataSeries != null)
             {
                 foreach (Series data in _dataSeries)
                 {
