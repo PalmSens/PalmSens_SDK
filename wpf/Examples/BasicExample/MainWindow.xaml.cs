@@ -31,7 +31,7 @@ namespace BasicExample
             InitializeComponent();
             DataContext = this; //Set the DataContext, needed to bind the measured data to the DataGrid control
             InitLSVMethod(); //Create the linear sweep voltammetry method that defines the measurement parameters
-            DiscoverConnectedDevicesAsync(); //Populate the connected device combobox control
+            _ = DiscoverConnectedDevicesAsync(); //Populate the connected device combobox control
         }
 
         /// <summary>

@@ -202,15 +202,15 @@ namespace SDKPlot.WPF
         }
 
         /// <summary>
-        /// The background color property
+        /// Gets or sets the color of the legend text.
         /// </summary>
-        public static readonly new DependencyProperty BackgroundProperty =
-            DependencyProperty.Register("Background", typeof(SolidColorBrush), typeof(Plot), new PropertyMetadata(null));
-
+        /// <value>
+        /// The color of the legend text.
+        /// </value>
         public OxyColor LegendTextColor
         {
-            get { return PlotModel.LegendTextColor; }
-            set { PlotModel.LegendTextColor = value; }
+            get { return _corePlot.LegendTextColor; }
+            set { _corePlot.LegendTextColor = value; }
         }
         #endregion
 
