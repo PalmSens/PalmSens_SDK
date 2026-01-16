@@ -62,6 +62,6 @@
                                   MeasurementEnded="PsMultiCommSimpleWPF_MeasurementEnded"
                                   MeasurementStarted="PsMultiCommSimpleWPF_MeasurementStarted"
                                   StateChanged="PsMultiCommSimpleWPF_StateChanged"
-                                  Disconnected="psMultiCommSimpleWPF_Disconnected"/>
+                                  Disconnected="PsMultiCommSimpleWPF_Disconnected"/>
     </Grid>
 </Window>

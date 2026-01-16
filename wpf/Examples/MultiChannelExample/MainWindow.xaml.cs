@@ -364,7 +364,7 @@ namespace MultiChannelExample
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="System.EventArgs" /> instance containing the event data.</param>
-        private void psMultiCommSimpleWinForms_Disconnected(object sender, Exception exception, int channel, Device device)
+        private void PsMultiCommSimpleWPF_Disconnected(object sender, Exception exception, int channel, Device device)
         {
             if (exception != null)
             {
