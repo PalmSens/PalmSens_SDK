@@ -15,7 +15,7 @@ included as a part of Microsoft .NET, .NET Framework or Mono.
 
 https://github.com/PalmSens/PalmSens_SDK/releases[Click here to download the latest release].
 
-image::device_shots.svg[Device shot, width=80%]
+image::basic_example.png[Example measurement app, width=50%]
 
 == Features
 
@@ -39,10 +39,5 @@ They are based on the open-source http://www.oxyplot.org/[OxyPlot library].
 
 * `SDKPlot`
 * `SDKPlot.WinForms`
-
-These libraries required when using the SDKs plot:
-
-- `OxyPlot.dll`
-- `OxyPlot.WindowsForms.dll`
 
 Click xref:examples.adoc[here for a list of example apps] to help you get started.
