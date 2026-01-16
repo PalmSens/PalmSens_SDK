@@ -1,12 +1,13 @@
-﻿using System;
-using System.Drawing;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using PalmSens;
+﻿using PalmSens;
 using PalmSens.Comm;
 using PalmSens.Core.Simplified.Data;
 using PalmSens.Devices;
 using PalmSens.Techniques;
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace BasicAsyncExample
 {
@@ -18,7 +19,7 @@ namespace BasicAsyncExample
 
             InitLSVMethod(); //Create the linear sweep voltammetry method that defines the measurement parameters
             InitDataGrid(); //Set up the columns for the datagridview control
-            DiscoverConnectedDevicesAsync(); //Populate the connected device combobox control
+            _= DiscoverConnectedDevicesAsync(); //Populate the connected device combobox control
         }
 
         /// <summary>
@@ -29,7 +30,7 @@ namespace BasicAsyncExample
         /// <summary>
         /// The connected PalmSens & EmStat devices
         /// </summary>
-        private Device[] _connectedDevices = new Device[0];
+        private IReadOnlyList<Device> _connectedDevices = new Device[0];
 
         /// <summary>
         /// The active SimpleMeasurement
@@ -190,7 +191,7 @@ namespace BasicAsyncExample
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="PalmSens.Comm.StatusEventArgs"/> instance containing the event data.</param>
-        private async void psCommSimpleWinForms_ReceiveStatus(object sender, PalmSens.Comm.StatusEventArgs e)
+        private void psCommSimpleWinForms_ReceiveStatus(object sender, PalmSens.Comm.StatusEventArgs e)
         {
             Status status = e.GetStatus(); //Get the PalmSens.Comm.Status instance from the event data
             double potential = status.PotentialReading.Value; //Get the potential
