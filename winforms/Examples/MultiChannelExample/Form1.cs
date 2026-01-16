@@ -22,7 +22,7 @@ namespace MultiChannelExample
 
             InitCVMethod(); //Create the cyclic voltammetry method that defines the measurement parameters
             InitPlot(); //Resets and initiates the plot control
-            DiscoverConnectedDevicesAsync(); //Populate the connected device combobox control
+            _ = DiscoverConnectedDevicesAsync(); //Populate the connected device combobox control
         }
 
         /// <summary>
