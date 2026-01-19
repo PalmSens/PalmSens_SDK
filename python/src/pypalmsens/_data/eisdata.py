@@ -5,6 +5,8 @@ from typing import TYPE_CHECKING, final
 
 from typing_extensions import override
 
+from .._methods import cr_enum_to_string
+from ..settings import AllowedCurrentRanges
 from .data_array import DataArray
 from .dataset import DataSet
 
@@ -14,54 +16,54 @@ if TYPE_CHECKING:
 
 class EISValueType(Enum):
     X = 0
-    """X values"""
+    """X values."""
     Freq = 1
-    """FixedFrequency values"""
+    """FixedFrequency values."""
     Logf = 2
-    """Log(F) values"""
+    """Log(F) values."""
     LogZ = 3
-    """Log(Z) values"""
+    """Log(Z) values."""
     Edc = 4
-    """E DC values"""
+    """E DC values."""
     mEdc = 5
-    """Mean E DC values"""
+    """Mean E DC values."""
     Eac = 6
-    """E AC values"""
+    """E AC values."""
     Time = 7
-    """I values"""
+    """I values."""
     Idc = 8
-    """E values"""
+    """E values."""
     Iac = 9
-    """I AC values"""
+    """I AC values."""
     miDC = 10
-    """measured I DC values"""
+    """measured I DC values."""
     ZRe = 11
-    """Z' values"""
+    """Z' values."""
     ZIm = 12
-    """-Z'' values"""
+    """-Z'' values."""
     Z = 13
-    """Z values"""
+    """Z values."""
     MinPhase = 14
-    """-Phase values"""
+    """-Phase values."""
     Rct = 15
-    """RCT values"""
+    """RCT values."""
     LogY = 16
-    """E or t values"""
+    """E or t values."""
     YRe = 17
-    """Y' values"""
+    """Y' values."""
     YIm = 18
-    """Y'' values"""
+    """Y'' values."""
     Y = 19
-    """Y (Admittance) values"""
+    """Y (Admittance) values."""
     Cs = 20
-    """Cs (Capacitance in Series) values"""
+    """Cs (Capacitance in Series) values."""
     CsRe = 21
-    """Cs Real values"""
+    """Cs Real values."""
     CsIm = 22
-    """-Cs imaginary values"""
+    """-Cs imaginary values."""
     iDCinRange = 23
     AuxInput = 24
-    """AuxInput values"""
+    """AuxInput values."""
 
 
 @final
@@ -180,9 +182,11 @@ class EISData:
         """Complete list of data arrays."""
         return list(self.dataset.values())
 
-    def current_range(self) -> list[str]:
+    def current_range(self) -> list[AllowedCurrentRanges]:
         """Current ranges for the measurement."""
-        return [self._pseis.GetCurrentRange(val).Description for val in range(self.n_points)]
+        return [
+            cr_enum_to_string(self._pseis.GetCurrentRange(val)) for val in range(self.n_points)
+        ]
 
     @property
     def cdc(self) -> str:

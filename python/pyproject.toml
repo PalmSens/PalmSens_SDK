@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 # https://packaging.python.org/en/latest/specifications/declaring-project-metadata/
 [project]
 name = "PyPalmSens"
-version = "1.3.3"
+version = "1.6.0"
 description = "Python SDK for PalmSens instruments"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -34,10 +34,8 @@ classifiers = [
     "Topic :: Scientific/Engineering",
 ]
 dependencies = [
-    'attrs',
-    'cattrs',
+    'pydantic',
     'numpy',
-    'packaging',
     'pythonnet',
     'typing-extensions',
 ]
@@ -64,6 +62,13 @@ publishing = [
     "build",
 ]
 
+docs = [
+    "mkdocs",
+    "mkdocs-material",
+    "mkdocstrings",
+    "mkdocstrings-python",
+]
+
 [tool.setuptools]
 package-dir = {"" = "src"}
 
@@ -74,7 +79,6 @@ source = ["pypalmsens"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 markers = [
-    "examples: Mark tests that run the examples.",
     "instrument: Mark tests that need an instrument connection."
 ]
 log_cli = false
@@ -113,23 +117,25 @@ indent-style = "space"
 quote-style = "single"
 
 [tool.mypy]
-files = ["src", "tests", "examples"]
+files = ["src/pypalmsens", "tests", "examples"]
 exclude = ["typings", "scr/PalmSens-stubs"]
 allow_redefinition = true
 ignore_missing_imports = true
 
 [tool.pyright]
-include = ["src/pypalmsens", "tests", "examples"]
-ignore = ["src/PalmSens-stubs"]
+include = ["src/pypalmsens", "tests"]
+ignore = ["typings", "src/PalmSens-stubs", "examples"]
 reportMissingModuleSource = false
 reportAttributeAccessIssue = false
 reportUnknownMemberType = false
 reportUnknownVariableType = false
 reportUnknownArgumentType = false
 reportPrivateUsage = false
+enableTypeIgnoreComments = true
+reportIgnoreCommentWithoutRule = false
 
 [tool.bumpversion]
-current_version = "1.3.3"
+current_version = "1.6.0"
 
 [[tool.bumpversion.files]]
 filename = "src/pypalmsens/__init__.py"
@@ -140,8 +146,3 @@ replace = "__version__ = '{new_version}'"
 filename = "pyproject.toml"
 search = "version = \"{current_version}\""
 replace = "version = \"{new_version}\""
-
-[[tool.bumpversion.files]]
-filename = "docs/antora.yml"
-search = "version: '{current_version}'"
-replace = "version: '{new_version}'"

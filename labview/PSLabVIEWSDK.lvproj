@@ -38,6 +38,8 @@
 		<Item Name="BasicExampleMux.vi" Type="VI" URL="../BasicExampleMux.vi"/>
 		<Item Name="BasicExampleOCP.vi" Type="VI" URL="../BasicExampleOCP.vi"/>
 		<Item Name="BasicUIExample.vi" Type="VI" URL="../BasicUIExample.vi"/>
+		<Item Name="EISExample.vi" Type="VI" URL="../EISExample.vi"/>
+		<Item Name="GEISExample.vi" Type="VI" URL="../GEISExample.vi"/>
 		<Item Name="MethodSCRIPTExample.vi" Type="VI" URL="../MethodSCRIPTExample.vi"/>
 		<Item Name="MultiChannelExample.vi" Type="VI" URL="../MultiChannelExample.vi"/>
 		<Item Name="MultiChannelMES4HWSyncExample.vi" Type="VI" URL="../MultiChannelMES4HWSyncExample.vi"/>

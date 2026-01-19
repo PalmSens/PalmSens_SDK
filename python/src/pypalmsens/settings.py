@@ -2,14 +2,9 @@
 
 from __future__ import annotations
 
-from ._methods._shared import (
-    CURRENT_RANGE,
-    POTENTIAL_RANGE,
-    ELevel,
-    ILevel,
-)
 from ._methods.settings import (
     BiPot,
+    BiPotCurrentRange,
     ChargeLimits,
     CurrentLimits,
     CurrentRange,
@@ -26,24 +21,37 @@ from ._methods.settings import (
     Pretreatment,
     VersusOCP,
 )
+from ._methods.shared import (
+    AllowedCurrentRanges,
+    AllowedDeviceState,
+    AllowedPotentialRanges,
+    AllowedReadingStatus,
+    AllowedTimingStatus,
+    ELevel,
+    ILevel,
+)
 
 __all__ = [
+    'AllowedCurrentRanges',
+    'AllowedPotentialRanges',
+    'AllowedTimingStatus',
+    'AllowedReadingStatus',
+    'AllowedDeviceState',
     'BiPot',
+    'BiPotCurrentRange',
     'ChargeLimits',
-    'CURRENT_RANGE',
     'CurrentLimits',
     'CurrentRange',
     'DataProcessing',
     'DelayTriggers',
     'ELevel',
-    'ILevel',
     'EquilibrationTriggers',
     'General',
+    'ILevel',
     'IrDropCompensation',
     'MeasurementTriggers',
     'Multiplexer',
     'PostMeasurement',
-    'POTENTIAL_RANGE',
     'PotentialLimits',
     'PotentialRange',
     'Pretreatment',

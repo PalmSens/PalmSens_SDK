@@ -7,7 +7,7 @@ using System.Collections.ObjectModel;
 using PalmSens.Core.Simplified.MAUI;
 using Device = PalmSens.Devices.Device;
 
-namespace PalmSensLivePlot
+namespace LivePlotApp
 {
     public partial class MainPage : ContentPage
     {
@@ -24,7 +24,7 @@ namespace PalmSensLivePlot
             InitializeComponent();
             BindingContext = this;
 
-            psCommSimple.Initialize();  // This needs to be called after the main page has been initialized
+            psCommSimple.Initialize(this);  // This needs to be called after the main page has been initialized
             this._psCommSimple = psCommSimple;
 
             _psCommSimple.StateChanged += OnStateChanged;

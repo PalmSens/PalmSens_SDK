@@ -1,17 +1,14 @@
 import pypalmsens as ps
 
 
-def new_data_callback(new_data):
-    for point in new_data:
-        print(point)
+def new_data_callback(data):
+    print(data.last_datapoint())
 
 
 instruments = ps.discover()
 print(instruments)
 
 with ps.connect(instruments[0]) as manager:
-    manager.callback = new_data_callback
-
     n_multiplexer_channels = manager.initialize_multiplexer(2)
     manager.set_mux8r2_settings()
 
@@ -23,16 +20,16 @@ with ps.connect(instruments[0]) as manager:
         interval_time=0.5,  # seconds
         potential=1.0,  # volts
         run_time=5.0,  # seconds
-        multiplexer=ps.settings.Multiplexer(
-            mode='alternate',  # 'none', 'consecutive', 'alternate'
-            channels=[1, 2],  # 8 channels, 1 and 2 are enabled
-            connect_sense_to_working_electrode=False,
-            combine_reference_and_counter_electrodes=False,
-            use_channel_1_reference_and_counter_electrodes=False,
-            set_unselected_channel_working_electrode=0,
-        ),
+        multiplexer={
+            'mode': 'alternate',  # 'none', 'consecutive', 'alternate'
+            'channels': [1, 2],  # 8 channels, 1 and 2 are enabled
+            'connect_sense_to_working_electrode': False,
+            'combine_reference_and_counter_electrodes': False,
+            'use_channel_1_reference_and_counter_electrodes': False,
+            'set_unselected_channel_working_electrode': 0,
+        },
     )
-    measurement = manager.measure(altnernating_multiplexer_method)
+    measurement = manager.measure(altnernating_multiplexer_method, callback=new_data_callback)
     print(measurement)
 
     consecutive_multiplexer_method = ps.SquareWaveVoltammetry(
@@ -41,15 +38,15 @@ with ps.connect(instruments[0]) as manager:
         step_potential=0.01,  # volts
         amplitude=0.1,  # volts
         frequency=10,  # hertz
-        multiplexer=ps.settings.Multiplexer(
-            mode='consecutive',  # 'none', 'consecutive', 'alternate'
-            channels=[1, 2, 7, 8],  # channels 1, 2, 7 and 8 are enabled
-            connect_sense_to_working_electrode=False,
-            combine_reference_and_counter_electrodes=False,
-            use_channel_1_reference_and_counter_electrodes=False,
-            set_unselected_channel_working_electrode=0,
-        ),
+        multiplexer={
+            'mode': 'consecutive',  # 'none', 'consecutive', 'alternate'
+            'channels': [1, 2, 7, 8],  # channels 1, 2, 7 and 8 are enabled
+            'connect_sense_to_working_electrode': False,
+            'combine_reference_and_counter_electrodes': False,
+            'use_channel_1_reference_and_counter_electrodes': False,
+            'set_unselected_channel_working_electrode': 0,
+        },
     )
 
-    measurement = manager.measure(consecutive_multiplexer_method)
+    measurement = manager.measure(consecutive_multiplexer_method, callback=new_data_callback)
     print(measurement)

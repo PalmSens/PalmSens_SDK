@@ -1,5 +1,4 @@
 import asyncio
-from attrs import evolve
 import pypalmsens as ps
 
 
@@ -7,7 +6,7 @@ async def custom_loop(manager, *, method, steps):
     measurements = []
 
     for step in steps:
-        method = evolve(method, **step)
+        method = method.model_copy(step)
         measurements.append(await manager.measure(method))
 
     return measurements
@@ -20,18 +19,12 @@ async def main():
     )
 
     steps = [
-        {
-            'potential': 0.4,
-        },
-        {
-            'potential': 0.6,
-        },
-        {
-            'potential': 1.0,
-        },
+        {'potential': 0.4},
+        {'potential': 0.6},
+        {'potential': 1.0},
     ]
 
-    instruments = await ps.discover_async(ftdi=True)
+    instruments = await ps.discover_async()
 
     print(instruments)
 

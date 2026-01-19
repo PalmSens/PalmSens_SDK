@@ -2,101 +2,104 @@ from __future__ import annotations
 
 from typing import Literal
 
-import attrs
 import PalmSens
 from PalmSens import Method as PSMethod
 from PalmSens import MuxMethod as PSMuxMethod
+from pydantic import Field
 from typing_extensions import override
 
-from .._shared import single_to_double
-from ._shared import (
-    CURRENT_RANGE,
-    POTENTIAL_RANGE,
+from .._helpers import single_to_double
+from .base import BaseSettings
+from .shared import (
+    AllowedCurrentRanges,
+    AllowedPotentialRanges,
     convert_bools_to_int,
     convert_int_to_bools,
+    cr_enum_to_string,
+    cr_string_to_enum,
+    pr_enum_to_string,
+    pr_string_to_enum,
 )
 from .base import BaseSettings
+from .base_model import BaseModel
 
 
-@attrs.define
 class CurrentRange(BaseSettings):
-    """Set the autoranging current for a given method."""
+    """Set the autoranging current."""
 
-    max: CURRENT_RANGE = CURRENT_RANGE.cr_10_mA
+    max: AllowedCurrentRanges = '10mA'
     """Maximum current range.
 
-    Use `CURRENT_RANGE` to define the range."""
+    See `pypalmsens.settings.AllowedCurrentRanges` for options."""
 
-    min: CURRENT_RANGE = CURRENT_RANGE.cr_1_uA
+    min: AllowedCurrentRanges = '1uA'
     """Minimum current range.
 
-    Use `CURRENT_RANGE` to define the range."""
+    See `pypalmsens.settings.AllowedCurrentRanges` for options."""
 
-    start: CURRENT_RANGE = CURRENT_RANGE.cr_100_uA
+    start: AllowedCurrentRanges = '100uA'
     """Start current range.
 
-    Use `CURRENT_RANGE` to define the range."""
+    See `pypalmsens.settings.AllowedCurrentRanges` for options."""
 
     @override
     def _update_psmethod(self, psmethod: PSMethod, /):
-        psmethod.Ranging.MaximumCurrentRange = self.max._to_psobj()
-        psmethod.Ranging.MinimumCurrentRange = self.min._to_psobj()
-        psmethod.Ranging.StartCurrentRange = self.start._to_psobj()
+        psmethod.Ranging.MaximumCurrentRange = cr_string_to_enum(self.max)
+        psmethod.Ranging.MinimumCurrentRange = cr_string_to_enum(self.min)
+        psmethod.Ranging.StartCurrentRange = cr_string_to_enum(self.start)
 
     @override
     def _update_params(self, psmethod: PSMethod, /):
-        self.max = CURRENT_RANGE._from_psobj(psmethod.Ranging.MaximumCurrentRange)
-        self.min = CURRENT_RANGE._from_psobj(psmethod.Ranging.MinimumCurrentRange)
-        self.start = CURRENT_RANGE._from_psobj(psmethod.Ranging.StartCurrentRange)
+        self.max = cr_enum_to_string(psmethod.Ranging.MaximumCurrentRange)
+        self.min = cr_enum_to_string(psmethod.Ranging.MinimumCurrentRange)
+        self.start = cr_enum_to_string(psmethod.Ranging.StartCurrentRange)
 
 
-@attrs.define
 class PotentialRange(BaseSettings):
-    """Set the autoranging potential for a given method."""
+    """Set the autoranging potential."""
 
-    max: POTENTIAL_RANGE = POTENTIAL_RANGE.pr_1_V
+    max: AllowedPotentialRanges = '1V'
     """Maximum potential range.
 
-    Use `POTENTIAL_RANGE` to define the range."""
+    See `pypalmsens.settings.AllowedPotentialRanges` for options."""
 
-    min: POTENTIAL_RANGE = POTENTIAL_RANGE.pr_1_mV
+    min: AllowedPotentialRanges = '1mV'
     """Minimum potential range.
 
-    Use `POTENTIAL_RANGE` to define the range."""
+    See `pypalmsens.settings.AllowedPotentialRanges` for options."""
 
-    start: POTENTIAL_RANGE = POTENTIAL_RANGE.pr_1_V
+    start: AllowedPotentialRanges = '1V'
     """Start potential range.
 
-    Use `POTENTIAL_RANGE` to define the range."""
+    See `pypalmsens.settings.AllowedPotentialRanges` for options."""
 
     @override
     def _update_psmethod(self, psmethod: PSMethod, /):
-        psmethod.RangingPotential.MaximumPotentialRange = self.max._to_psobj()
-        psmethod.RangingPotential.MinimumPotentialRange = self.min._to_psobj()
-        psmethod.RangingPotential.StartPotentialRange = self.start._to_psobj()
+        psmethod.RangingPotential.MaximumPotentialRange = pr_string_to_enum(self.max)
+        psmethod.RangingPotential.MinimumPotentialRange = pr_string_to_enum(self.min)
+        psmethod.RangingPotential.StartPotentialRange = pr_string_to_enum(self.start)
 
     @override
     def _update_params(self, psmethod: PSMethod, /):
-        self.max = POTENTIAL_RANGE._from_psobj(psmethod.RangingPotential.MaximumPotentialRange)
-        self.min = POTENTIAL_RANGE._from_psobj(psmethod.RangingPotential.MinimumPotentialRange)
-        self.start = POTENTIAL_RANGE._from_psobj(psmethod.RangingPotential.StartPotentialRange)
+        self.max = pr_enum_to_string(psmethod.RangingPotential.MaximumPotentialRange)
+        self.min = pr_enum_to_string(psmethod.RangingPotential.MinimumPotentialRange)
+        self.start = pr_enum_to_string(psmethod.RangingPotential.StartPotentialRange)
 
 
-@attrs.define
 class Pretreatment(BaseSettings):
-    """Set the pretreatment settings for a given method."""
+    """Set the measurement pretreatment settings."""
 
     deposition_potential: float = 0.0
-    """Deposition potential in V"""
+    """Deposition potential in V."""
 
     deposition_time: float = 0.0
-    """Deposition time in s"""
+    """Deposition time in s."""
 
     conditioning_potential: float = 0.0
-    """Conditioning potential in V"""
+    """Conditioning potential in V."""
 
     conditioning_time: float = 0.0
-    """Conditioning time in s"""
+    """Conditioning time in s."""
 
     @override
     def _update_psmethod(self, psmethod: PSMethod, /):
@@ -113,9 +116,8 @@ class Pretreatment(BaseSettings):
         self.conditioning_time = single_to_double(psmethod.ConditioningTime)
 
 
-@attrs.define
 class VersusOCP(BaseSettings):
-    """Set the versus OCP settings for a given method."""
+    """Set the versus OCP settings."""
 
     mode: int = 0
     """Set versus OCP mode.
@@ -132,7 +134,7 @@ class VersusOCP(BaseSettings):
     """
 
     max_ocp_time: float = 20.0
-    """Maximum OCP time in s"""
+    """Maximum OCP time in s."""
 
     stability_criterion: float = 0.0
     """Stability criterion (potential/time) in mV/s.
@@ -154,9 +156,27 @@ class VersusOCP(BaseSettings):
         self.stability_criterion = single_to_double(psmethod.OCPStabilityCriterion)
 
 
-@attrs.define
+class BiPotCurrentRange(BaseModel):
+    """Set the BiPot auto ranging current."""
+
+    max: AllowedCurrentRanges = '10mA'
+    """Maximum current range.
+
+    See `pypalmsens.settings.AllowedCurrentRanges` for options."""
+
+    min: AllowedCurrentRanges = '1uA'
+    """Minimum current range.
+
+    See `pypalmsens.settings.AllowedCurrentRanges` for options."""
+
+    start: AllowedCurrentRanges = '100uA'
+    """Start current range.
+
+    See `pypalmsens.settings.AllowedCurrentRanges` for options."""
+
+
 class BiPot(BaseSettings):
-    """Set the bipot settings for a given method."""
+    """Set the bipot settings."""
 
     _MODES: tuple[Literal['constant', 'offset'], ...] = ('constant', 'offset')
 
@@ -166,50 +186,54 @@ class BiPot(BaseSettings):
     Possible values: `constant` or `offset`"""
 
     potential: float = 0.0
-    """Set the bipotential in V"""
+    """Set the bipotential in V."""
 
-    current_range_max: CURRENT_RANGE = CURRENT_RANGE.cr_10_mA
-    """Maximum bipotential current range in mA.
+    current_range: AllowedCurrentRanges | BiPotCurrentRange = '1uA'
+    """Set the bipotential current range.
 
-    Use `CURRENT_RANGE` to define the range."""
+    Can be a fixed current range or a ranging current. See the specifications for your instrument.
+    Internally, a fixed current range is represented by an autoranging current with equal min/max ranges.
 
-    current_range_min: CURRENT_RANGE = CURRENT_RANGE.cr_1_uA
-    """Minimum bipotential current range.
-
-    Use `CURRENT_RANGE` to define the range."""
-
-    current_range_start: CURRENT_RANGE = CURRENT_RANGE.cr_100_uA
-    """Start bipotential current range.
-
-    Use `CURRENT_RANGE` to define the range."""
+    See `pypalmsens.settings.AllowedCurrentRanges` for options."""
 
     @override
     def _update_psmethod(self, psmethod: PSMethod, /):
         bipot_num = self._MODES.index(self.mode)
         psmethod.BipotModePS = PalmSens.Method.EnumPalmSensBipotMode(bipot_num)
         psmethod.BiPotPotential = self.potential
-        psmethod.BipotRanging.MaximumCurrentRange = self.current_range_max._to_psobj()
-        psmethod.BipotRanging.MinimumCurrentRange = self.current_range_min._to_psobj()
-        psmethod.BipotRanging.StartCurrentRange = self.current_range_start._to_psobj()
+
+        if isinstance(self.current_range, str):
+            crmin = crmax = crstart = self.current_range
+        else:
+            crmax = self.current_range.max
+            crmin = self.current_range.min
+            crstart = self.current_range.start
+
+        psmethod.BipotRanging.MaximumCurrentRange = cr_string_to_enum(crmax)
+        psmethod.BipotRanging.MinimumCurrentRange = cr_string_to_enum(crmin)
+        psmethod.BipotRanging.StartCurrentRange = cr_string_to_enum(crstart)
 
     @override
     def _update_params(self, psmethod: PSMethod, /):
         self.mode = self._MODES[int(psmethod.BipotModePS)]
         self.potential = single_to_double(psmethod.BiPotPotential)
-        self.current_range_max = CURRENT_RANGE._from_psobj(
-            psmethod.BipotRanging.MaximumCurrentRange
-        )
-        self.current_range_min = CURRENT_RANGE._from_psobj(
-            psmethod.BipotRanging.MinimumCurrentRange
-        )
-        self.current_range_start = CURRENT_RANGE._from_psobj(
-            psmethod.BipotRanging.StartCurrentRange
-        )
+
+        crmax = cr_enum_to_string(psmethod.BipotRanging.MaximumCurrentRange)
+        crmin = cr_enum_to_string(psmethod.BipotRanging.MinimumCurrentRange)
+        crstart = cr_enum_to_string(psmethod.BipotRanging.StartCurrentRange)
+
+        if crmax == crmin == crstart:
+            self.current_range = crmin
+        else:
+            self.current_range = BiPotCurrentRange(
+                max=crmax,
+                min=crmin,
+                start=crstart,
+            )
 
 
-@attrs.define
 class PostMeasurement(BaseSettings):
-    """Set the post measurement settings for a given method."""
+    """Set the post measurement settings."""
 
     cell_on_after_measurement: bool = False
     """Enable/disable cell after measurement."""
@@ -233,9 +257,8 @@ class PostMeasurement(BaseSettings):
         self.standby_time = single_to_double(psmethod.StandbyTime)
 
 
-@attrs.define
 class CurrentLimits(BaseSettings):
-    """Set the limit settings for a given method.
+    """Set the limit settings.
 
     Depending on the method, this will:
     - Abort the measurement
@@ -276,9 +299,8 @@ class CurrentLimits(BaseSettings):
             self.min = None
 
 
-@attrs.define
 class PotentialLimits(BaseSettings):
-    """Set the limit settings for a given method.
+    """Set the limit settings.
 
     Depending on the method, this will:
     - Abort the measurement
@@ -318,9 +340,8 @@ class PotentialLimits(BaseSettings):
             self.min = None
 
 
-@attrs.define
 class ChargeLimits(BaseSettings):
-    """Set the charge limit settings for a given method."""
+    """Set the charge limit settings."""
 
     max: None | float = None
     """Set limit charge max in µC."""
@@ -355,9 +376,8 @@ class ChargeLimits(BaseSettings):
             self.min = None
 
 
-@attrs.define
 class IrDropCompensation(BaseSettings):
-    """Set the iR drop compensation settings for a given method."""
+    """Set the iR drop compensation settings."""
 
     resistance: None | float = None
     """Set the iR compensation resistance in Ω"""
@@ -378,9 +398,8 @@ class IrDropCompensation(BaseSettings):
             self.resistance = None
 
 
-@attrs.define
 class EquilibrationTriggers(BaseSettings):
-    """Set the trigger at equilibration settings for a given method.
+    """Set the trigger at equilibration settings.
 
     If enabled, set one or more digital outputs at the start of
     the equilibration period.
@@ -421,9 +440,8 @@ class EquilibrationTriggers(BaseSettings):
             self.d3 = False
 
 
-@attrs.define
 class MeasurementTriggers(BaseSettings):
-    """Set the trigger at measurement settings for a given method.
+    """Set the trigger at measurement settings.
 
     If enabled, set one or more digital outputs at the start measurement,
     """
@@ -463,9 +481,8 @@ class MeasurementTriggers(BaseSettings):
             self.d3 = False
 
 
-@attrs.define
 class DelayTriggers(BaseSettings):
-    """Set the delayed trigger at measurement settings for a given method.
+    """Set the delayed trigger at measurement settings.
 
     If enabled, set one or more digital outputs at the start measurement after a delay,
     """
@@ -515,9 +532,8 @@ class DelayTriggers(BaseSettings):
             self.d3 = False
 
 
-@attrs.define
 class Multiplexer(BaseSettings):
-    """Set the multiplexer settings for a given method."""
+    """Set the multiplexer settings."""
 
     _MODES: tuple[Literal['none', 'consecutive', 'alternate'], ...] = (
         'none',
@@ -535,7 +551,7 @@ class Multiplexer(BaseSettings):
     - `alternate`
     """
 
-    channels: list[int] = attrs.field(factory=list)
+    channels: list[int] = Field(default_factory=list)
     """Set multiplexer channels
 
     This is defined as a list of indexes for which channels to enable (max 128).
@@ -591,31 +607,32 @@ class Multiplexer(BaseSettings):
         self.set_unselected_channel_working_electrode = int(psmethod.MuxSett.UnselWE)
 
 
-@attrs.define
 class DataProcessing(BaseSettings):
-    """Set the data processing settings for a given method."""
+    """Set the data processing settings."""
 
     smooth_level: int = 0
     """Set the default curve post processing filter.
 
     Possible values:
-    * -1 = no filter
-    *  0 = spike rejection
-    *  1 = spike rejection + Savitsky-golay window 5
-    *  2 = spike rejection + Savitsky-golay window 9
-    *  3 = spike rejection + Savitsky-golay window 15
-    *  4 = spike rejection + Savitsky-golay window 25
+
+    - -1: no filter
+    - 0: spike rejection
+    - 1: spike rejection + Savitsky-golay window 5
+    - 2: spike rejection + Savitsky-golay window 9
+    - 3: spike rejection + Savitsky-golay window 15
+    - 4: spike rejection + Savitsky-golay window 25
     """
 
     min_height: float = 0.0
     """Determines the minimum peak height in µA for peak finding.
 
-    Peaks lower than this value are neglected."""
+    Peaks lower than this value are rejected."""
+
     min_width: float = 0.1
     """The minimum peak width for peak finding.
 
     The value is in the unit of the curves X axis (V).
-    Peaks narrower than this value are neglected (default: 0.1 V)."""
+    Peaks narrower than this value are rejected (default: 0.1 V)."""
 
     @override
     def _update_psmethod(self, psmethod: PSMethod, /):
@@ -630,9 +647,8 @@ class DataProcessing(BaseSettings):
         self.min_height = single_to_double(psmethod.MinPeakHeight)
 
 
-@attrs.define
 class General(BaseSettings):
-    """Sets general/other settings for a given method."""
+    """Sets general/other settings."""
 
     save_on_internal_storage: bool = False
     """Save on internal storage."""

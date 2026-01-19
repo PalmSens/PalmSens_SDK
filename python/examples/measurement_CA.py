@@ -1,17 +1,14 @@
 import pypalmsens as ps
 
 
-def new_data_callback(new_data):
-    for point in new_data:
-        print(point)
+def new_data_callback(data):
+    print(data.last_datapoint())
 
 
 instruments = ps.discover()
 print(instruments)
 
 with ps.connect(instruments[0]) as manager:
-    manager.callback = new_data_callback
-
     serial = manager.get_instrument_serial()
     print(serial)
 
@@ -22,6 +19,6 @@ with ps.connect(instruments[0]) as manager:
         run_time=10.0,
     )
 
-    measurement = manager.measure(method)
+    measurement = manager.measure(method, callback=new_data_callback)
 
 print(measurement)

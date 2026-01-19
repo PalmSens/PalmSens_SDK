@@ -1,55 +1,35 @@
 from __future__ import annotations
 
 import asyncio
-import sys
-import traceback
+import warnings
+from contextlib import contextmanager
 from time import sleep
-from typing import TYPE_CHECKING, Any
+from typing import Iterator
 
 import clr
 import PalmSens
 import System
-from PalmSens import Method, MuxModel
+from PalmSens import Method as PSMethod
+from PalmSens import MuxModel
 from PalmSens.Comm import CommManager, MuxType
-from PalmSens.Plottables import (
-    Curve,
-    CurveEventHandler,
-    EISData,
-    EISDataEventHandler,
-)
-from System import EventHandler
 from typing_extensions import override
 
-from .._data._shared import ArrayType, get_values_from_NETArray
-from .._methods import CURRENT_RANGE, BaseTechnique
+from .._methods import (
+    AllowedCurrentRanges,
+    BaseTechnique,
+    cr_string_to_enum,
+)
 from ..data import Measurement
-from ._common import Callback, Instrument, create_future, firmware_warning
+from .callback import Callback, Status
+from .instrument_manager_async import discover_async
+from .measurement_manager_async import MeasurementManagerAsync
+from .shared import Instrument, create_future, firmware_warning
 
-WINDOWS = sys.platform == 'win32'
-LINUX = not WINDOWS
-
-if WINDOWS:
-    from PalmSens.Windows.Devices import (
-        BLEDevice,
-        BluetoothDevice,
-        FTDIDevice,
-        USBCDCDevice,
-        WinUSBDevice,
-    )
-else:
-    from PalmSens.Core.Linux.Comm.Devices import FTDIDevice, SerialPortDevice
-
-
-if TYPE_CHECKING:
-    from PalmSens import Measurement as PSMeasurement
-    from PalmSens import Method as PSMethod
-    from PalmSens.Data import DataArray as PSDataArray
-    from PalmSens.Plottables import Curve as PSCurve
-    from PalmSens.Plottables import EISData as PSEISData
+warnings.simplefilter('default')
 
 
 def discover(
-    ftdi: bool = False,
+    ftdi: bool = True,
     usbcdc: bool = True,
     winusb: bool = True,
     bluetooth: bool = False,
@@ -58,7 +38,8 @@ def discover(
 ) -> list[Instrument]:
     """Discover instruments.
 
-    For PalmSens 3, EmStat 1/2/3/Go/Pico devices, use `ftdi=True`.
+    For a list of device interfaces, see:
+        https://sdk.palmsens.com/python/latest//installation.html#compatibility
 
     Parameters
     ----------
@@ -80,59 +61,16 @@ def discover(
     discovered : list[Instrument]
         List of dataclasses with discovered instruments.
     """
-    args = [''] if WINDOWS else []
-    interfaces: dict[str, Any] = {}
-
-    if ftdi:
-        interfaces['ftdi'] = FTDIDevice
-
-    if WINDOWS:
-        if usbcdc:
-            interfaces['usbcdc'] = USBCDCDevice
-
-        if winusb:
-            interfaces['winusb'] = WinUSBDevice
-
-        if bluetooth:
-            interfaces['bluetooth'] = BluetoothDevice
-            interfaces['ble'] = BLEDevice
-
-    if LINUX:
-        if serial:
-            interfaces['serial'] = SerialPortDevice
-
-    instruments: list[Instrument] = []
-
-    for name, interface in interfaces.items():
-        try:
-            devices = interface.DiscoverDevices(*args)
-        except System.DllNotFoundException as e:
-            if ignore_errors:
-                continue
-
-            if name == 'ftdi':
-                msg = (
-                    'FTDI drivers are missing, for more info see: '
-                    'https://sdk.palmsens.com/python/latest/installation.html#ftdisetup'
-                )
-                raise IOError(msg) from e
-            raise
-
-        if WINDOWS:
-            devices = devices[0]
-
-        for device in devices:
-            instruments.append(
-                Instrument(
-                    id=device.ToString(),
-                    interface=name,
-                    device=device,
-                )
-            )
-
-    instruments.sort(key=lambda instrument: instrument.id)
-
-    return instruments
+    return asyncio.run(
+        discover_async(
+            ftdi=ftdi,
+            usbcdc=usbcdc,
+            winusb=winusb,
+            bluetooth=bluetooth,
+            serial=serial,
+            ignore_errors=ignore_errors,
+        )
+    )
 
 
 def connect(
@@ -155,7 +93,7 @@ def connect(
         Return instance of `InstrumentManager` connected to the given instrument.
     """
     if not instrument:
-        available_instruments = discover(ftdi=True, ignore_errors=True)
+        available_instruments = discover(ignore_errors=True)
 
         if not available_instruments:
             raise ConnectionError('No instruments were discovered.')
@@ -173,6 +111,7 @@ def connect(
 def measure(
     method: BaseTechnique,
     instrument: None | Instrument = None,
+    callback: Callback | None = None,
 ) -> Measurement:
     """Run measurement.
 
@@ -184,6 +123,13 @@ def measure(
     instrument : Instrument, optional
         Connect to and meassure on a specific instrument.
         Use `pypalmsens.discover()` to discover instruments.
+    callback: Callback, optional
+        If specified, call this function on every new set of data points.
+        New data points are batched, and contain all points since the last
+        time it was called. Each point is a dictionary containing
+        `frequency`, `z_re`, `z_im` for impedimetric techniques and
+        `index`, `x`, `x_unit`, `x_type`, `y`, `y_unit` and `y_type` for
+        non-impedimetric techniques.
 
     Returns
     -------
@@ -191,7 +137,7 @@ def measure(
         Finished measurement.
     """
     with connect(instrument=instrument) as manager:
-        measurement = manager.measure(method)
+        measurement = manager.measure(method, callback=callback)
 
     assert measurement
 
@@ -205,26 +151,13 @@ class InstrumentManager:
     ----------
     instrument: Instrument
         Instrument to connect to, use `discover()` to find connected instruments.
-    callback: Callback, optional
-        If specified, call this function on every new set of data points.
-        New data points are batched, and contain all points since the last
-        time it was called. Each point is a dictionary containing
-        `frequency`, `z_re`, `z_im` for impedimetric techniques and
-        `index`, `x`, `x_unit`, `x_type`, `y`, `y_unit` and `y_type` for
-        non-impedimetric techniques.
     """
 
-    def __init__(self, instrument: Instrument, *, callback: None | Callback = None):
-        self.callback: None | Callback = callback
-        """This callback is called on every data point."""
-
+    def __init__(self, instrument: Instrument):
         self.instrument: Instrument = instrument
         """Instrument to connect to."""
 
-        self.__comm: CommManager | None = None
-        self.__measuring = False
-        self.__active_measurement: PSMeasurement | None = None
-        self.__active_measurement_error = None
+        self._comm: CommManager
 
     @override
     def __repr__(self):
@@ -240,28 +173,69 @@ class InstrumentManager:
     def __exit__(self, exc_type, exc_value, traceback):
         _ = self.disconnect()
 
+    def is_measuring(self) -> bool:
+        """Return True if device is measuring."""
+        return int(self._comm.State) == CommManager.DeviceState.Measurement
+
+    @contextmanager
+    def _lock(self) -> Iterator[CommManager]:
+        self.ensure_connection()
+
+        self._comm.ClientConnection.Semaphore.Wait()
+
+        try:
+            yield self._comm
+
+        except Exception:
+            raise
+
+        finally:
+            if self._comm.ClientConnection.Semaphore.CurrentCount == 0:
+                _ = self._comm.ClientConnection.Semaphore.Release()
+
     def is_connected(self) -> bool:
         """Return True if an instrument connection exists."""
-        return self.__comm is not None
+        try:
+            self._comm
+        except AttributeError:
+            return False
+        else:
+            return True
+
+    def ensure_connection(self):
+        """Raises connection error if the instrument is not connected."""
+        if not self.is_connected():
+            raise ConnectionError('Not connected to an instrument')
 
     def connect(self) -> None:
         """Connect to instrument."""
-        if self.__comm is not None:
-            raise ConnectionError(
-                'An instance of the InstrumentManager can only be connected to one instrument at a time'
-            )
+        if self.is_connected():
+            return
 
-        __instrument = self.instrument.device
-        try:
-            __instrument.Open()
-        except System.UnauthorizedAccessException as err:
-            raise ConnectionError(
-                f'Cannot open instrument connection (reason: {err.Message}). Check if the device is already in use.'
-            ) from err
+        async def _connect(psinstrument: PalmSens.Devices.Device) -> CommManager:
+            try:
+                await create_future(psinstrument.OpenAsync())
+            except System.UnauthorizedAccessException as err:
+                raise ConnectionError(
+                    f'Cannot open instrument connection (reason: {err.Message}). Check if the device is already in use.'
+                ) from err
 
-        self.__comm = CommManager(__instrument)
+            return await create_future(CommManager.CommManagerAsync(psinstrument))
 
-        firmware_warning(self.__comm.Capabilities)
+        # The comm manager needs to open async, because the measurement is handled async.
+        # Opening the comm manager in async sets some handlers in ClientConnection
+        # that are sync or async specific. This affects the measurement,
+        # receive status, and device state change events.
+        self._comm = asyncio.run(_connect(self.instrument.device))
+
+        firmware_warning(self._comm.Capabilities)
+
+    def status(self) -> Status:
+        """Get status."""
+        return Status(
+            self._comm.get_Status(),
+            device_state=str(self._comm.get_State()),  # type:ignore
+        )
 
     def set_cell(self, cell_on: bool):
         """Turn the cell on or off.
@@ -271,20 +245,8 @@ class InstrumentManager:
         cell_on : bool
             If true, turn on the cell
         """
-        if self.__comm is None:
-            raise ConnectionError('Not connected to an instrument')
-
-        self.__comm.ClientConnection.Semaphore.Wait()
-
-        try:
-            self.__comm.CellOn = cell_on
-            _ = self.__comm.ClientConnection.Semaphore.Release()
-        except Exception:
-            traceback.print_exc()
-
-            if self.__comm.ClientConnection.Semaphore.CurrentCount == 0:
-                # release lock on library (required when communicating with instrument)
-                _ = self.__comm.ClientConnection.Semaphore.Release()
+        with self._lock():
+            self._comm.CellOn = cell_on
 
     def set_potential(self, potential: float):
         """Set the potential of the cell.
@@ -294,321 +256,111 @@ class InstrumentManager:
         potential : float
             Potential in V
         """
-        if self.__comm is None:
-            raise ConnectionError('Not connected to an instrument')
+        with self._lock():
+            self._comm.Potential = potential
 
-        self.__comm.ClientConnection.Semaphore.Wait()
-
-        try:
-            self.__comm.Potential = potential
-            _ = self.__comm.ClientConnection.Semaphore.Release()
-        except Exception:
-            traceback.print_exc()
-
-            if self.__comm.ClientConnection.Semaphore.CurrentCount == 0:
-                # release lock on library (required when communicating with instrument)
-                _ = self.__comm.ClientConnection.Semaphore.Release()
-
-    def set_current_range(self, current_range: CURRENT_RANGE):
+    def set_current_range(self, current_range: AllowedCurrentRanges):
         """Set the current range for the cell.
 
         Parameters
         ----------
-        current_range: CURRENT_RANGE
-            Set the current range, use `pypalmsens.settings.CURRENT_RANGE`.
+        current_range: AllowedCurrentRanges
+            Set the current range as a string.
+            See `pypalmsens.settings.AllowedCurrentRanges` for options.
         """
-        if self.__comm is None:
-            raise ConnectionError('Not connected to an instrument')
+        with self._lock():
+            self._comm.CurrentRange = cr_string_to_enum(current_range)
 
-        self.__comm.ClientConnection.Semaphore.Wait()
-
-        try:
-            self.__comm.CurrentRange = current_range._to_psobj()
-            _ = self.__comm.ClientConnection.Semaphore.Release()
-        except Exception:
-            traceback.print_exc()
-
-            if self.__comm.ClientConnection.Semaphore.CurrentCount == 0:
-                # release lock on library (required when communicating with instrument)
-                _ = self.__comm.ClientConnection.Semaphore.Release()
-
-    def read_current(self) -> None | float:
+    def read_current(self) -> float:
         """Read the current in µA.
 
         Returns
         -------
-        float
-            Current in µA."
+        current : float
+            Current in µA.
         """
-        if self.__comm is None:
-            raise ConnectionError('Not connected to an instrument')
+        with self._lock():
+            current = self._comm.Current
 
-        self.__comm.ClientConnection.Semaphore.Wait()
+        return current
 
-        try:
-            current = self.__comm.Current  # in µA
-            _ = self.__comm.ClientConnection.Semaphore.Release()
-            return current
-        except Exception:
-            traceback.print_exc()
-
-            if self.__comm.ClientConnection.Semaphore.CurrentCount == 0:
-                # release lock on library (required when communicating with instrument)
-                _ = self.__comm.ClientConnection.Semaphore.Release()
-
-        return None
-
-    def read_potential(self) -> None | float:
+    def read_potential(self) -> float:
         """Read the potential in V.
 
         Returns
         -------
-        float
-            Potential in V."""
+        potential : float
+            Potential in V.
+        """
 
-        if self.__comm is None:
-            raise ConnectionError('Not connected to an instrument')
+        with self._lock():
+            potential = self._comm.Potential
 
-        self.__comm.ClientConnection.Semaphore.Wait()
+        return potential
 
-        try:
-            potential = self.__comm.Potential  # in V
-            _ = self.__comm.ClientConnection.Semaphore.Release()
-            return potential
-        except Exception:
-            traceback.print_exc()
-
-            if self.__comm.ClientConnection.Semaphore.CurrentCount == 0:
-                # release lock on library (required when communicating with instrument)
-                _ = self.__comm.ClientConnection.Semaphore.Release()
-
-            return None
-
-    def get_instrument_serial(self) -> None | str:
+    def get_instrument_serial(self) -> str:
         """Return instrument serial number.
 
         Returns
         -------
-        str
+        serial : str
             Instrument serial.
         """
-        if self.__comm is None:
-            raise ConnectionError('Not connected to an instrument')
+        with self._lock():
+            serial = self._comm.DeviceSerial.ToString()
 
-        self.__comm.ClientConnection.Semaphore.Wait()
+        return serial
 
-        try:
-            serial = self.__comm.DeviceSerial.ToString()
-            _ = self.__comm.ClientConnection.Semaphore.Release()
-            return serial
-        except Exception:
-            traceback.print_exc()
+    def validate_method(self, method: PSMethod | BaseTechnique) -> None:
+        """Validate method.
 
-            if self.__comm.ClientConnection.Semaphore.CurrentCount == 0:
-                # release lock on library (required when communicating with instrument)
-                _ = self.__comm.ClientConnection.Semaphore.Release()
+        Raise ValueError if the method cannot be validated."""
+        self.ensure_connection()
 
-            return None
+        if not isinstance(method, PSMethod):
+            method = method._to_psmethod()
 
-    def validate_method(self, psmethod: PSMethod) -> tuple[bool, str | None]:
-        """Validate method."""
-        if self.__comm is None:
-            raise ConnectionError('Not connected to an instrument')
-
-        errors = psmethod.Validate(self.__comm.Capabilities)
+        errors = method.Validate(self._comm.Capabilities)
 
         if any(error.IsFatal for error in errors):
-            return False, 'Method not compatible:\n' + '\n'.join(
-                [error.Message for error in errors]
-            )
+            message = '\n'.join([error.Message for error in errors])
+            raise ValueError(f'Method not compatible:\n{message}')
 
-        return True, None
-
-    def measure(self, method: BaseTechnique):
+    def measure(
+        self,
+        method: BaseTechnique,
+        *,
+        callback: Callback | None = None,
+    ) -> Measurement:
         """Start measurement using given method parameters.
 
         Parameters
         ----------
-        method: MethodParameters
+        method: Method parameters
             Method parameters for measurement
+        callback: Callback, optional
+            If specified, call this function on every new set of data points.
+            New data points are batched, and contain all points since the last
+            time it was called. Each point is an instance of `ps.data.CallbackData`
+            for non-impedimetric or  `ps.data.CallbackDataEIS`
+            for impedimetric measurments.
+
+        Returns
+        -------
+        measurement : Measurement
+            Finished measurement.
         """
         psmethod = method._to_psmethod()
-        if self.__comm is None:
-            raise ConnectionError('Not connected to an instrument')
 
-        self.__active_measurement_error = None
+        self.ensure_connection()
 
-        is_valid, message = self.validate_method(psmethod)
-        if not is_valid:
-            raise ValueError(message)
+        self.validate_method(psmethod)
 
-        loop = asyncio.new_event_loop()
-        begin_measurement_event = asyncio.Event()
-        end_measurement_event = asyncio.Event()
+        # note that the comm manager must be opened async so it sets the
+        # correct async event handlers
+        measurement_manager = MeasurementManagerAsync(comm=self._comm)
 
-        def begin_measurement(measurement: PSMeasurement):
-            self.__active_measurement = measurement
-            begin_measurement_event.set()
-
-        def end_measurement():
-            self.__measuring = False
-            end_measurement_event.set()
-
-        def curve_new_data_added(curve: PSCurve, start: int, count: int):
-            data: list[dict[str, float | str]] = []
-            for i in range(start, start + count):
-                point: dict[str, float | str] = {}
-                point['index'] = i + 1
-                point['x'] = get_values_from_NETArray(curve.XAxisDataArray, start=i, count=1)[0]
-                point['x_unit'] = curve.XUnit.ToString()
-                point['x_type'] = ArrayType(curve.XAxisDataArray.ArrayType).name
-                point['y'] = get_values_from_NETArray(curve.YAxisDataArray, start=i, count=1)[0]
-                point['y_unit'] = curve.YUnit.ToString()
-                point['y_type'] = ArrayType(curve.YAxisDataArray.ArrayType).name
-                data.append(point)
-
-            if self.callback:
-                self.callback(data)
-
-        def eis_data_new_data_added(eis_data: PSEISData, start: int, count: int):
-            data: list[dict[str, float | str]] = []
-            arrays: list[PSDataArray] = [array for array in eis_data.EISDataSet.GetDataArrays()]
-            for i in range(start, start + count):
-                point: dict[str, float | str] = {}
-                point['index'] = i + 1
-                for array in arrays:
-                    array_type = ArrayType(array.ArrayType)
-                    if array_type == ArrayType.Frequency:
-                        point['frequency'] = get_values_from_NETArray(array, start=i, count=1)[
-                            0
-                        ]
-                    elif array_type == ArrayType.ZRe:
-                        point['zre'] = get_values_from_NETArray(array, start=i, count=1)[0]
-                    elif array_type == ArrayType.ZIm:
-                        point['zim'] = get_values_from_NETArray(array, start=i, count=1)[0]
-                data.append(point)
-
-            if self.callback:
-                self.callback(data)
-
-        def comm_error():
-            self.__measuring = False
-            self.__active_measurement_error = (
-                'measurement failed due to a communication or parsing error'
-            )
-            begin_measurement_event.set()
-            end_measurement_event.set()
-
-        def begin_measurement_callback(sender, measurement: PSMeasurement):
-            loop.call_soon_threadsafe(lambda: begin_measurement(measurement))
-
-        def end_measurement_callback(sender, args):
-            loop.call_soon_threadsafe(end_measurement)
-
-        def curve_data_added_callback(curve: PSCurve, args):
-            start = args.StartIndex
-            count = curve.NPoints - start
-            loop.call_soon_threadsafe(lambda: curve_new_data_added(curve, start, count))
-
-        def curve_finished_callback(curve: PSCurve, args):
-            curve.NewDataAdded -= curve_data_added_handler
-            curve.Finished -= curve_finished_handler
-
-        def begin_receive_curve_callback(sender, args):
-            curve = args.GetCurve()
-            curve.NewDataAdded += curve_data_added_handler
-            curve.Finished += curve_finished_handler
-
-        def eis_data_data_added_callback(eis_data: PSEISData, args):
-            start = args.Index
-            count = 1
-            loop.call_soon_threadsafe(lambda: eis_data_new_data_added(eis_data, start, count))
-
-        def eis_data_finished_callback(eis_data: PSEISData, args):
-            eis_data.NewDataAdded -= eis_data_data_added_handler
-            eis_data.Finished -= eis_data_finished_handler
-
-        def begin_receive_eis_data_callback(sender, eis_data: PSEISData):
-            eis_data.NewDataAdded += eis_data_data_added_handler
-            eis_data.Finished += eis_data_finished_handler
-
-        def comm_error_callback(sender, args):
-            loop.call_soon_threadsafe(comm_error)
-
-        begin_measurement_handler = CommManager.BeginMeasurementEventHandler(
-            begin_measurement_callback
-        )
-        end_measurement_handler = EventHandler(end_measurement_callback)
-        begin_receive_curve_handler = CurveEventHandler(begin_receive_curve_callback)
-        curve_data_added_handler = Curve.NewDataAddedEventHandler(curve_data_added_callback)
-        curve_finished_handler = EventHandler(curve_finished_callback)
-        eis_data_finished_handler = EventHandler(eis_data_finished_callback)
-        begin_receive_eis_data_handler = EISDataEventHandler(begin_receive_eis_data_callback)
-        eis_data_data_added_handler = EISData.NewDataEventHandler(eis_data_data_added_callback)
-        comm_error_handler = EventHandler(comm_error_callback)
-
-        try:
-            # subscribe to events indicating the start and end of the measurement
-            self.__comm.BeginMeasurement += begin_measurement_handler
-            self.__comm.EndMeasurement += end_measurement_handler
-            self.__comm.Disconnected += comm_error_handler
-
-            if self.callback is not None:
-                self.__comm.BeginReceiveEISData += begin_receive_eis_data_handler
-                self.__comm.BeginReceiveCurve += begin_receive_curve_handler
-
-            async def await_measurement():
-                # obtain lock on library (required when communicating with instrument)
-                await create_future(self.__comm.ClientConnection.Semaphore.WaitAsync())
-
-                # send and execute the method on the instrument
-                _ = self.__comm.Measure(psmethod)
-                self.__measuring = True
-
-                # release lock on library (required when communicating with instrument)
-                _ = self.__comm.ClientConnection.Semaphore.Release()
-
-                _ = await begin_measurement_event.wait()
-                _ = await end_measurement_event.wait()
-
-            loop.run_until_complete(await_measurement())
-            loop.close()
-
-            # unsubscribe to events indicating the start and end of the measurement
-            self.__comm.BeginMeasurement -= begin_measurement_handler
-            self.__comm.EndMeasurement -= end_measurement_handler
-            self.__comm.Disconnected -= comm_error_handler
-
-            if self.callback is not None:
-                self.__comm.BeginReceiveEISData -= begin_receive_eis_data_handler
-                self.__comm.BeginReceiveCurve -= begin_receive_curve_handler
-
-            if self.__active_measurement_error is not None:
-                print(self.__active_measurement_error)
-                return None
-
-            measurement = self.__active_measurement
-            self.__active_measurement = None
-            return Measurement(psmeasurement=measurement)
-
-        except Exception:
-            traceback.print_exc()
-
-            if self.__comm.ClientConnection.Semaphore.CurrentCount == 0:
-                # release lock on library (required when communicating with instrument)
-                _ = self.__comm.ClientConnection.Semaphore.Release()
-
-            self.__active_measurement = None
-            self.__comm.BeginMeasurement -= begin_measurement_handler
-            self.__comm.EndMeasurement -= end_measurement_handler
-            self.__comm.Disconnected -= comm_error_handler
-
-            if self.callback is not None:
-                self.__comm.BeginReceiveEISData -= begin_receive_eis_data_handler
-                self.__comm.BeginReceiveCurve -= begin_receive_curve_handler
-
-            self.__measuring = False
-            return None
+        return asyncio.run(measurement_manager.measure(psmethod, callback=callback))
 
     def wait_digital_trigger(self, wait_for_high: bool):
         """Wait for digital trigger.
@@ -618,44 +370,16 @@ class InstrumentManager:
         wait_for_high: bool
             Wait for digital line high before starting
         """
-        if self.__comm is None:
-            raise ConnectionError('Not connected to an instrument')
-
-        try:
-            # obtain lock on library (required when communicating with instrument)
-            self.__comm.ClientConnection.Semaphore.Wait()
-
+        with self._lock():
             while True:
-                if self.__comm.DigitalLineD0 == wait_for_high:
+                if self._comm.DigitalLineD0 == wait_for_high:
                     break
                 sleep(0.05)
 
-            _ = self.__comm.ClientConnection.Semaphore.Release()
-
-        except Exception:
-            traceback.print_exc()
-
-            if self.__comm.ClientConnection.Semaphore.CurrentCount == 0:
-                # release lock on library (required when communicating with instrument)
-                _ = self.__comm.ClientConnection.Semaphore.Release()
-
-    def abort(self):
+    def abort(self) -> None:
         """Abort measurement."""
-        if self.__comm is None:
-            raise ConnectionError('Not connected to an instrument')
-
-        if self.__measuring is False:
-            return 0
-
-        self.__comm.ClientConnection.Semaphore.Wait()
-        try:
-            self.__comm.Abort()
-        except Exception:
-            traceback.print_exc()
-
-            if self.__comm.ClientConnection.Semaphore.CurrentCount == 0:
-                # release lock on library (required when communicating with instrument)
-                _ = self.__comm.ClientConnection.Semaphore.Release()
+        with self._lock():
+            self._comm.Abort()
 
     def initialize_multiplexer(self, mux_model: int) -> int:
         """Initialize the multiplexer.
@@ -663,53 +387,40 @@ class InstrumentManager:
         Parameters
         ----------
         mux_model: int
-            The model of the multiplexer. 0 = 8 channel, 1 = 16 channel, 2 = 32 channel.
+            The model of the multiplexer.
+            - 0 = 8 channel
+            - 1 = 16 channel
+            - 2 = 32 channel
 
         Returns
         -------
-        int
+        channels : int
             Number of available multiplexes channels
         """
-        if self.__comm is None:
-            raise ConnectionError('Not connected to an instrument')
-
-        self.__comm.ClientConnection.Semaphore.Wait()
-
-        try:
+        with self._lock():
             model = MuxModel(mux_model)
 
             if model == MuxModel.MUX8R2 and (
-                self.__comm.ClientConnection.GetType().Equals(
+                self._comm.ClientConnection.GetType().Equals(
                     clr.GetClrType(PalmSens.Comm.ClientConnectionPS4)
                 )
-                or self.__comm.ClientConnection.GetType().Equals(
+                or self._comm.ClientConnection.GetType().Equals(
                     clr.GetClrType(PalmSens.Comm.ClientConnectionMS)
                 )
             ):
-                self.__comm.ClientConnection.ReadMuxInfo()
+                self._comm.ClientConnection.ReadMuxInfo()
 
-            self.__comm.Capabilities.MuxModel = model
+            self._comm.Capabilities.MuxModel = model
 
-            if self.__comm.Capabilities.MuxModel == MuxModel.MUX8:
-                self.__comm.Capabilities.NumMuxChannels = 8
-            elif self.__comm.Capabilities.MuxModel == MuxModel.MUX16:
-                self.__comm.Capabilities.NumMuxChannels = 16
-            elif self.__comm.Capabilities.MuxModel == MuxModel.MUX8R2:
-                self.__comm.ClientConnection.ReadMuxInfo()
+            if self._comm.Capabilities.MuxModel == MuxModel.MUX8:
+                self._comm.Capabilities.NumMuxChannels = 8
+            elif self._comm.Capabilities.MuxModel == MuxModel.MUX16:
+                self._comm.Capabilities.NumMuxChannels = 16
+            elif self._comm.Capabilities.MuxModel == MuxModel.MUX8R2:
+                self._comm.ClientConnection.ReadMuxInfo()
 
-            _ = self.__comm.ClientConnection.Semaphore.Release()
-
-            return self.__comm.Capabilities.NumMuxChannels
-        except Exception:
-            traceback.print_exc()
-
-            if self.__comm.ClientConnection.Semaphore.CurrentCount == 0:
-                # release lock on library (required when communicating with instrument)
-                _ = self.__comm.ClientConnection.Semaphore.Release()
-
-            raise Exception(
-                'Failed to read MUX info. Please check the connection, restart the instrument and try again.'
-            )
+        channels = self._comm.Capabilities.NumMuxChannels
+        return channels
 
     def set_mux8r2_settings(
         self,
@@ -731,31 +442,23 @@ class InstrumentManager:
         set_unselected_channel_working_electrode: float
             Set the unselected channel working electrode to disconnected/floating (0), ground (1), or standby potential (2). Default is 0.
         """
-        if self.__comm is None:
-            raise ConnectionError('Not connected to an instrument')
+        self.ensure_connection()
 
-        if self.__comm.Capabilities.MuxModel != MuxModel.MUX8R2:
-            return
+        if self._comm.Capabilities.MuxModel != MuxModel.MUX8R2:
+            raise ValueError(
+                f"Incompatible mux model: {self._comm.Capabilities.MuxModel}, expected 'MUXR2'."
+            )
 
-        mux_settings = Method.MuxSettings(False)
+        mux_settings = PSMethod.MuxSettings(False)
         mux_settings.ConnSEWE = connect_sense_to_working_electrode
         mux_settings.ConnectCERE = combine_reference_and_counter_electrodes
         mux_settings.CommonCERE = use_channel_1_reference_and_counter_electrodes
-        mux_settings.UnselWE = Method.MuxSettings.UnselWESetting(
+        mux_settings.UnselWE = PSMethod.MuxSettings.UnselWESetting(
             set_unselected_channel_working_electrode
         )
 
-        self.__comm.ClientConnection.Semaphore.Wait()
-
-        try:
-            self.__comm.ClientConnection.SetMuxSettings(MuxType(1), mux_settings)
-            _ = self.__comm.ClientConnection.Semaphore.Release()
-        except Exception:
-            traceback.print_exc()
-
-            if self.__comm.ClientConnection.Semaphore.CurrentCount == 0:
-                # release lock on library (required when communicating with instrument)
-                _ = self.__comm.ClientConnection.Semaphore.Release()
+        with self._lock():
+            self._comm.ClientConnection.SetMuxSettings(MuxType(1), mux_settings)
 
     def set_multiplexer_channel(self, channel: int):
         """Sets the multiplexer channel.
@@ -765,26 +468,14 @@ class InstrumentManager:
         channel : int
             Index of the channel to set.
         """
-        if self.__comm is None:
-            raise ConnectionError('Not connected to an instrument')
-
-        self.__comm.ClientConnection.Semaphore.Wait()
-
-        try:
-            self.__comm.ClientConnection.SetMuxChannel(channel)
-            _ = self.__comm.ClientConnection.Semaphore.Release()
-        except Exception:
-            traceback.print_exc()
-
-            if self.__comm.ClientConnection.Semaphore.CurrentCount == 0:
-                # release lock on library (required when communicating with instrument)
-                _ = self.__comm.ClientConnection.Semaphore.Release()
+        with self._lock():
+            self._comm.ClientConnection.SetMuxChannel(channel)
 
     def disconnect(self):
         """Disconnect from the instrument."""
-        if self.__comm is None:
+        if not self.is_connected():
             return
 
-        self.__comm.Disconnect()
-        self.__comm = None
-        self.__measuring = False
+        self._comm.Disconnect()
+
+        del self._comm
