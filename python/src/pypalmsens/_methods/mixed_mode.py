@@ -360,7 +360,7 @@ class MixedMode(
 
             self.stages.append(stage)  # type: ignore
 
-        if not self.UseTriggerOnStart:
+        if not psmethod.UseTriggerOnStart:
             for stage in self.stages:
                 # triggers are not supported by Impedance stage
                 if stage.stage_type == 'Impedance':

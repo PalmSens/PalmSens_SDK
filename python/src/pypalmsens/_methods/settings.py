@@ -427,11 +427,9 @@ class EquilibrationTriggers(BaseSettings):
 
     @override
     def _update_psmethod(self, psmethod: PSMethod, /):
-        if any((self.d0, self.d1, self.d2, self.d3)):
+        if any(self):
             psmethod.UseTriggerOnEquil = True
-            psmethod.TriggerValueOnEquil = convert_bools_to_int(
-                (self.d0, self.d1, self.d2, self.d3)
-            )
+            psmethod.TriggerValueOnEquil = convert_bools_to_int(list(self))
         else:
             psmethod.UseTriggerOnEquil = False
 
@@ -482,11 +480,9 @@ class MeasurementTriggers(BaseSettings):
 
     @override
     def _update_psmethod(self, psmethod: PSMethod, /):
-        if any((self.d0, self.d1, self.d2, self.d3)):
+        if any(self):
             psmethod.UseTriggerOnStart = True
-            psmethod.TriggerValueOnStart = convert_bools_to_int(
-                (self.d0, self.d1, self.d2, self.d3)
-            )
+            psmethod.TriggerValueOnStart = convert_bools_to_int(list(self))
         else:
             psmethod.UseTriggerOnStart = False
 
@@ -545,11 +541,9 @@ class DelayTriggers(BaseSettings):
     def _update_psmethod(self, psmethod: PSMethod, /):
         psmethod.TriggerDelayPeriod = self.delay
 
-        if any((self.d0, self.d1, self.d2, self.d3)):
+        if any(self):
             psmethod.UseTriggerOnDelay = True
-            psmethod.TriggerValueOnDelay = convert_bools_to_int(
-                (self.d0, self.d1, self.d2, self.d3)
-            )
+            psmethod.TriggerValueOnDelay = convert_bools_to_int(list(self))
         else:
             psmethod.UseTriggerOnDelay = False
 
