@@ -6,7 +6,7 @@ import PalmSens
 from PalmSens import Method as PSMethod
 from PalmSens import MuxMethod as PSMuxMethod
 from pydantic import Field
-from typing_extensions import override
+from typing_extensions import Generator, override
 
 from .._helpers import single_to_double
 from .base import BaseSettings
@@ -422,6 +422,9 @@ class EquilibrationTriggers(BaseSettings):
     d3: bool = False
     """If True, enable trigger at d3 high."""
 
+    def __iter__(self) -> Generator[bool]:
+        yield from (self.d0, self.d1, self.d2, self.d3)
+
     @override
     def _update_psmethod(self, psmethod: PSMethod, /):
         if any((self.d0, self.d1, self.d2, self.d3)):
@@ -439,10 +442,14 @@ class EquilibrationTriggers(BaseSettings):
                 psmethod.TriggerValueOnEquil
             )
         else:
-            self.d0 = False
-            self.d1 = False
-            self.d2 = False
-            self.d3 = False
+            self.clear()
+
+    def clear(self):
+        """Clear triggers."""
+        self.d0 = False
+        self.d1 = False
+        self.d2 = False
+        self.d3 = False
 
 
 class MeasurementTriggers(BaseSettings):
@@ -470,6 +477,9 @@ class MeasurementTriggers(BaseSettings):
     d3: bool = False
     """If True, enable trigger at d3 high."""
 
+    def __iter__(self) -> Generator[bool]:
+        yield from (self.d0, self.d1, self.d2, self.d3)
+
     @override
     def _update_psmethod(self, psmethod: PSMethod, /):
         if any((self.d0, self.d1, self.d2, self.d3)):
@@ -487,10 +497,14 @@ class MeasurementTriggers(BaseSettings):
                 psmethod.TriggerValueOnStart
             )
         else:
-            self.d0 = False
-            self.d1 = False
-            self.d2 = False
-            self.d3 = False
+            self.clear()
+
+    def clear(self):
+        """Clear triggers."""
+        self.d0 = False
+        self.d1 = False
+        self.d2 = False
+        self.d3 = False
 
 
 class DelayTriggers(BaseSettings):
@@ -524,6 +538,9 @@ class DelayTriggers(BaseSettings):
     d3: bool = False
     """If True, enable trigger at d3 high."""
 
+    def __iter__(self) -> Generator[bool]:
+        yield from (self.d0, self.d1, self.d2, self.d3)
+
     @override
     def _update_psmethod(self, psmethod: PSMethod, /):
         psmethod.TriggerDelayPeriod = self.delay
@@ -545,10 +562,14 @@ class DelayTriggers(BaseSettings):
                 psmethod.TriggerValueOnDelay
             )
         else:
-            self.d0 = False
-            self.d1 = False
-            self.d2 = False
-            self.d3 = False
+            self.clear()
+
+    def clear(self):
+        """Clear triggers."""
+        self.d0 = False
+        self.d1 = False
+        self.d2 = False
+        self.d3 = False
 
 
 class Multiplexer(BaseSettings):
