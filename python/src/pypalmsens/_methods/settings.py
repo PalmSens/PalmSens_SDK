@@ -10,6 +10,7 @@ from typing_extensions import override
 
 from .._helpers import single_to_double
 from .base import BaseSettings
+from .base_model import BaseModel
 from .shared import (
     AllowedCurrentRanges,
     AllowedPotentialRanges,
@@ -20,8 +21,6 @@ from .shared import (
     pr_enum_to_string,
     pr_string_to_enum,
 )
-from .base import BaseSettings
-from .base_model import BaseModel
 
 
 class CurrentRange(BaseSettings):
@@ -399,10 +398,16 @@ class IrDropCompensation(BaseSettings):
 
 
 class EquilibrationTriggers(BaseSettings):
-    """Set the trigger at equilibration settings.
+    """Set the equilibration triggers.
 
-    If enabled, set one or more digital outputs at the start of
-    the equilibration period.
+    Set one or more digital outputs on the AUX port
+    at the start of equilibration.
+
+    The selected digital line(s) will be set to high when triggered
+    and remain high until the end of the equilibration.
+
+    See the instrument-specific documentation for more information about
+    the position of the digital pins on your instrument’s auxiliary port.
     """
 
     d0: bool = False
@@ -441,9 +446,16 @@ class EquilibrationTriggers(BaseSettings):
 
 
 class MeasurementTriggers(BaseSettings):
-    """Set the trigger at measurement settings.
+    """Set the measurement triggers.
 
-    If enabled, set one or more digital outputs at the start measurement,
+    Set one or more digital outputs on the AUX port
+    at the start measurement (end of equilibration).
+
+    The selected digital line(s) will be set to high when triggered
+    and remain high until the end of the measurement.
+
+    See the instrument-specific documentation for more information about
+    the position of the digital pins on your instrument’s auxiliary port.
     """
 
     d0: bool = False
@@ -482,9 +494,16 @@ class MeasurementTriggers(BaseSettings):
 
 
 class DelayTriggers(BaseSettings):
-    """Set the delayed trigger at measurement settings.
+    """Set the delayed measurement triggers.
 
-    If enabled, set one or more digital outputs at the start measurement after a delay,
+    Set one or more digital outputs on the AUX port after a delay
+    at the start measurement (end of equilibration).
+
+    The selected digital line(s) will be set to high when triggered
+    and remain high until the end of the measurement.
+
+    See the instrument-specific documentation for more information about
+    the position of the digital pins on your instrument’s auxiliary port.
     """
 
     delay: float = 0.5
