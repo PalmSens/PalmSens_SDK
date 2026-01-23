@@ -466,7 +466,7 @@ class MeasurementTriggers(BaseSettings):
                 (self.d0, self.d1, self.d2, self.d3)
             )
         else:
-            psmethod.UseTriggerOnEquil = False
+            psmethod.UseTriggerOnStart = False
 
     @override
     def _update_params(self, psmethod: PSMethod, /):
