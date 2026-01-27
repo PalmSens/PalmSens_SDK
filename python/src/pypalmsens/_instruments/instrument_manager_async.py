@@ -4,7 +4,7 @@ import asyncio
 import sys
 import warnings
 from contextlib import asynccontextmanager
-from typing import TYPE_CHECKING, Any, Coroutine, Protocol
+from typing import TYPE_CHECKING, Any, Callable, Coroutine, Protocol
 
 import clr
 import PalmSens
@@ -210,6 +210,7 @@ async def measure_async(
 
 class HasCommProtocol(Protocol):
     _comm: CommManager
+    ensure_connection: Callable[[], None]
 
 
 class SupportedMixin:
@@ -220,6 +221,7 @@ class SupportedMixin:
         -------
         methods: list[str]
         """
+        self.ensure_connection()
         capabilities = self._comm.Capabilities
         numbers = list(capabilities.SupportedMethods)
         method_ids = []
@@ -241,6 +243,7 @@ class SupportedMixin:
         -------
         current_ranges: list[AllowedCurrentRanges]
         """
+        self.ensure_connection()
         capabilities = self._comm.Capabilities
 
         return [cr_enum_to_string(cr) for cr in capabilities.SupportedRanges]
@@ -252,6 +255,7 @@ class SupportedMixin:
         -------
         current_ranges: list[AllowedCurrentRanges]
         """
+        self.ensure_connection()
         capabilities = self._comm.Capabilities
 
         return [cr_enum_to_string(cr) for cr in capabilities.SupportedAppliedRanges]
@@ -263,6 +267,7 @@ class SupportedMixin:
         -------
         current_ranges: list[AllowedCurrentRanges]
         """
+        self.ensure_connection()
         capabilities = self._comm.Capabilities
 
         return [cr_enum_to_string(cr) for cr in capabilities.SupportedBipotRanges]
@@ -274,6 +279,7 @@ class SupportedMixin:
         -------
         potential_ranges: list[AllowedPotentialRanges]
         """
+        self.ensure_connection()
         capabilities = self._comm.Capabilities
 
         return [pr_enum_to_string(pr) for pr in capabilities.SupportedPotentialRanges]
