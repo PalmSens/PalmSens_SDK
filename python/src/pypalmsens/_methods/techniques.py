@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from pathlib import Path
 from typing import ClassVar, Literal
 
 import PalmSens.Techniques as PSTechniques
@@ -2084,3 +2085,15 @@ endif
     @override
     def _update_params(self, psmethod: PSMethod, /):
         self.script = psmethod.MethodScript
+
+    @classmethod
+    def from_file(cls, name: str | Path = 'methodscript.mscr') -> MethodScript:
+        with Path(name).open('r') as f:
+            script = f.read()
+
+        return cls(script=script)
+
+    def to_file(self, name: str | Path = 'methodscript.mscr') -> None:
+        with Path(name).open('w') as f:
+            _ = f.write(self.script)
+
