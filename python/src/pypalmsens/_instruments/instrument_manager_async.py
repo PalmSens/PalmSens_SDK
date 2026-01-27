@@ -254,7 +254,7 @@ class SupportedMixin:
         return [pr_enum_to_string(pr) for pr in capabilities.SupportedPotentialRanges]
 
 
-class InstrumentManagerAsync:
+class InstrumentManagerAsync(SupportedMixin):
     """Asynchronous instrument manager for PalmSens instruments.
 
     Parameters
