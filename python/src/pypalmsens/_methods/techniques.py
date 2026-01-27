@@ -8,7 +8,7 @@ from PalmSens import FixedCurrentRange as PSFixedCurrentRange
 from PalmSens import FixedPotentialRange as PSFixedPotentialRange
 from PalmSens import Method as PSMethod
 from PalmSens.Techniques.Impedance import enumFrequencyType, enumScanType
-from pydantic import Field
+from pydantic import Field, field_validator
 from typing_extensions import override
 
 from .._helpers import single_to_double
@@ -2097,3 +2097,12 @@ endif
         with Path(name).open('w') as f:
             _ = f.write(self.script)
 
+    @field_validator('script')
+    @classmethod
+    def validate_script(cls, value: str) -> str:
+        if not (value.startswith('e\n') or value.startswith('l\n')):
+            raise ValueError('A script must start with `e\\n` or `l\\n`')
+        if not value.endswith('\n\n'):
+            raise ValueError('A script must end with 2 newlines')
+
+        return value
