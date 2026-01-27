@@ -214,7 +214,12 @@ class HasCommProtocol(Protocol):
 
 class SupportedMixin:
     def supported_methods(self: HasCommProtocol) -> list[str]:
-        """List methods supported by this device."""
+        """List methods supported by this device.
+
+        Returns
+        -------
+        methods: list[str]
+        """
         capabilities = self._comm.Capabilities
         numbers = list(capabilities.SupportedMethods)
         method_ids = []
@@ -230,25 +235,45 @@ class SupportedMixin:
         return method_ids
 
     def supported_current_ranges(self: HasCommProtocol) -> list[AllowedCurrentRanges]:
-        """List current ranges supported by this device."""
+        """List current ranges supported by this device.
+
+        Returns
+        -------
+        current_ranges: list[AllowedCurrentRanges]
+        """
         capabilities = self._comm.Capabilities
 
         return [cr_enum_to_string(cr) for cr in capabilities.SupportedRanges]
 
     def supported_applied_current_ranges(self: HasCommProtocol) -> list[AllowedCurrentRanges]:
-        """List applied current ranges supported by this device."""
+        """List applied current ranges supported by this device.
+
+        Returns
+        -------
+        current_ranges: list[AllowedCurrentRanges]
+        """
         capabilities = self._comm.Capabilities
 
         return [cr_enum_to_string(cr) for cr in capabilities.SupportedAppliedRanges]
 
     def supported_bipot_ranges(self: HasCommProtocol) -> list[AllowedCurrentRanges]:
-        """List applied current ranges supported by this device."""
+        """List applied current ranges supported by this device.
+
+        Returns
+        -------
+        current_ranges: list[AllowedCurrentRanges]
+        """
         capabilities = self._comm.Capabilities
 
         return [cr_enum_to_string(cr) for cr in capabilities.SupportedBipotRanges]
 
     def supported_potential_ranges(self: HasCommProtocol) -> list[AllowedPotentialRanges]:
-        """List applied potential ranges supported by this device."""
+        """List applied potential ranges supported by this device.
+
+        Returns
+        -------
+        potential_ranges: list[AllowedPotentialRanges]
+        """
         capabilities = self._comm.Capabilities
 
         return [pr_enum_to_string(pr) for pr in capabilities.SupportedPotentialRanges]
