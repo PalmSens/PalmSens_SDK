@@ -19,6 +19,8 @@ extra_javascript = [
   "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js",
 ]
 
+extra = { homepage = "https://sdk.palmsens.com/" }
+
 nav = [
   { "Home" = "index.md" },
   "data.md",
