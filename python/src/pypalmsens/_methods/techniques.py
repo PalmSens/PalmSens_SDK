@@ -2087,14 +2087,32 @@ endif
         self.script = psmethod.MethodScript
 
     @classmethod
-    def from_file(cls, name: str | Path = 'methodscript.mscr') -> MethodScript:
-        with Path(name).open('r') as f:
+    def from_file(cls, path: str | Path = 'methodscript.mscr') -> MethodScript:
+        """Load methodscript from file.
+
+        Parameters
+        ----------
+        path: str | Path
+            Path to methodscript file.
+
+        Returns
+        -------
+        method: MethodScript
+        """
+        with Path(path).open('r') as f:
             script = f.read()
 
         return cls(script=script)
 
-    def to_file(self, name: str | Path = 'methodscript.mscr') -> None:
-        with Path(name).open('w') as f:
+    def to_file(self, path: str | Path = 'methodscript.mscr') -> None:
+        """Save script to file.
+
+        Parameters
+        ----------
+        path: str | Path
+            Path to methodscript file.
+        """
+        with Path(path).open('w') as f:
             _ = f.write(self.script)
 
     @field_validator('script')
