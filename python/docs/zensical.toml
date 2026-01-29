@@ -75,11 +75,9 @@ paths = ["../src"]
 [project.plugins.mkdocstrings.handlers.python.options]
 # https://mkdocstrings.github.io/python/usage/#recommended-settings
 docstring_style = "numpy"
-# docstring_options = {
-#     # Discard first line of `__init__` method docstrings,
-#     # useful when merging such docstrings into their parent class'.
-#     "ignore_init_summary" = true ,
-# }
+# Discard first line of `__init__` method docstrings,
+# useful when merging such docstrings into their parent class'.
+docstring_options = { "ignore_init_summary" = true }
 # Tables are generally too large, lists will fix this.
 docstring_section_style = "list"
 # Enable relative crossrefs and scoped crossrefs, see Docstrings options.
@@ -132,47 +130,30 @@ backlinks = false  # crashes in linux
 show_bases = false
 show_inheritance_diagram = true
 
-# theme:
-#   name: material
-#   logo: assets/header_icon.svg
-#   favicon: assets/favicon.ico
+[project.theme]
+name = "material"
+logo = "assets/header_icon.svg"
+favicon = "assets/favicon.ico"
+features = [
+    "navigation.indexes",
+    "toc.follow",
+]
 
-#   features:
-#     - navigation.indexes
-#     - toc.follow
+[[project.theme.palette]]
+media = "(prefers-color-scheme)"
+toggle.icon = "lucide/sun-moon"
+toggle.name = "Switch to light mode"
 
+# Palette toggle for light mode
+[[project.theme.palette]]
+media = "(prefers-color-scheme: light)"
+scheme = "default"
+toggle.icon = "lucide/sun"
+toggle.name = "Switch to dark mode"
 
-#   palette:
-#     # Palette toggle for automatic mode
-#     - media: "(prefers-color-scheme)"
-#       toggle:
-#         icon: material/brightness-auto
-#         name: Switch to light mode
-
-#     # Palette toggle for light mode
-#     - media: "(prefers-color-scheme: light)"
-#       scheme: default
-#       primary: custom
-#       accent: custom
-#       toggle:
-#         icon: material/brightness-7
-#         name: Switch to dark mode
-
-#     # Palette toggle for dark mode
-#     - media: "(prefers-color-scheme: dark)"
-#       scheme: slate
-#       primary: custom
-#       accent: custom
-#       toggle:
-#         icon: material/brightness-4
-#         name: Switch to system preference
-
-# extra:
-#   homepage: https://sdk.palmsens.com/python/latest
-
-# plugins:
-# - search
-
-# watch:
-#   - ../src/
-#   - api/
+# Palette toggle for dark mode
+[[project.theme.palette]]
+media = "(prefers-color-scheme: dark)"
+scheme = "slate"
+toggle.icon = "lucide/moon"
+toggle.name = "Switch to system preference"
