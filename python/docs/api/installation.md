@@ -112,11 +112,11 @@ RuntimeError: Failed to create a .NET runtime (coreclr) using the
     The above exception was the direct cause of the following exception:
 
     Traceback (most recent call last):
-      File "&lt;python-input-0>", line 1, in &lt;module>
+      File "<&lt;>python-input-0>", line 1, in <&lt;>module>
         import pypalmsens as ps
-      File "/home/pi/palmsenssdk/python/src/pypalmsens/__init__.py", line 9, in &lt;module>
+      File "/home/pi/palmsenssdk/python/src/pypalmsens/__init__.py", line 9, in <&lt;>module>
         from ._lib.mono import sdk_version
-      File "/home/pi/palmsenssdk/python/src/pypalmsens/_lib/mono.py", line 13, in &lt;module>
+      File "/home/pi/palmsenssdk/python/src/pypalmsens/_lib/mono.py", line 13, in <&lt;>module>
         load('coreclr', runtime_config=str(PSSDK_DIR / 'runtimeconfig.json'))
         ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
       File "/home/pi/palmsenssdk/python/.venv/lib/python3.13/site-packages/pythonnet/__init__.py", line 135, in load
@@ -126,7 +126,7 @@ RuntimeError: Failed to create a .NET runtime (coreclr) using the
         runtime = _create_runtime_from_spec(runtime, params)
       File "/home/pi/palmsenssdk/python/.venv/lib/python3.13/site-packages/pythonnet/__init__.py", line 90, in _create_runtime_from_spec
         raise RuntimeError(
-        ...&lt;2 lines>...
+        ...<&lt;>2 lines>...
         ) from exc
     RuntimeError: Failed to create a .NET runtime (coreclr) using the
                     parameters {'runtime_config': '/home/pi/palmsenssdk/python/src/pypalmsens/_pssdk/mono/runtimeconfig.json'}.
@@ -206,4 +206,4 @@ See the chapter 'Updating firmware' in the [PSTrace user manual](https://www.pal
 [^1]: Drivers are installed with alongside the PSTrace desktop software or using [the driver installer](https://github.com/PalmSens/PalmSens_SDK/releases/download/drivers-5.12/PalmSens.Drivers.exe).
 [^2]: Available from https://ftdichip.com/drivers/d2xx-drivers/
 [^3]: The SDK communicates directly via the serial port. No drivers are necessary.
-[^4]: See [the installation instructions](installation.adoc#req-linux) for more info.
+[^4]: See [the installation instructions](installation.md#req-linux) for more info.

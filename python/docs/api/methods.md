@@ -6,45 +6,45 @@ The following methods are supported in PyPalmSens:
 
 **Voltammetric Techniques**
 
-- [Linear Sweep Voltammetry](#api:attachment$methods/linear_sweep_voltammetry/index.html)
-- [Cyclic Voltammetry](#api:attachment$methods/cyclic_voltammetry/index.html)
-- [Fast Cyclic Voltammetry](#api:attachment$methods/fast_cyclic_voltammetry/index.html)
-- [AC Voltammetry](#api:attachment$methods/a_c_voltammetry/index.html)
+- [Linear Sweep Voltammetry][pypalmsens.LinearSweepVoltammetry]
+- [Cyclic Voltammetry][pypalmsens.CyclicVoltammetry]
+- [Fast Cyclic Voltammetry][pypalmsens.FastCyclicVoltammetry]
+- [AC Voltammetry][pypalmsens.ACVoltammetry]
 
 **Pulsed Techniques**
 
-- [Differential Pulse Voltammetry](#api:attachment$methods/differential_pulse_voltammetry/index.html)
-- [Square Wave Voltammetry](#api:attachment$methods/square_wave_voltammetry/index.html)
-- [Normal Pulse Voltammetry](#api:attachment$methods/normal_pulse_voltammetry/index.html)
+- [Differential Pulse Voltammetry][pypalmsens.DifferentialPulseVoltammetry]
+- [Square Wave Voltammetry][pypalmsens.SquareWaveVoltammetry]
+- [Normal Pulse Voltammetry][pypalmsens.NormalPulseVoltammetry]
 
 **Amperometric Techniques**
 
-- [Chronoamperometry](#api:attachment$methods/chrono_amperometry/index.html)
-- [Multistep Amperometry](#api:attachment$methods/multi_step_amperometry/index.html)
-- [Fast Amperometry](#api:attachment$methods/fast_amperometry/index.html)
-- [Pulsed Amperometric Detection](#api:attachment$methods/pulsed_amperometric_detection/index.html)
-- [Multiple Pulse Amperometry](#api:attachment$methods/multiple_pulse_amperometry/index.html)
+- [Chronoamperometry][pypalmsens.ChronoAmperometry]
+- [Multistep Amperometry][pypalmsens.MultiStepAmperometry]
+- [Fast Amperometry][pypalmsens.FastAmperometry]
+- [Pulsed Amperometric Detection][pypalmsens.PulsedAmperometricDetection]
+- [Multiple Pulse Amperometry][pypalmsens.MultiplePulseAmperometry]
 
 **Potentiometric Techniques**
 
-- [Open Circuit Potentiometry](#api:attachment$methods/open_circuit_potentiometry/index.html)
-- [Chronopotentiometry](#api:attachment$methods/chrono_potentiometry/index.html)
-- [Linear Sweep Potentiometry](#api:attachment$methods/linear_sweep_potentiometry/index.html)
-- [Multistep Potentiometry](#api:attachment$methods/multi_step_potentiometry/index.html)
-- [Stripping Chronopotentiometry](#api:attachment$methods/stripping_chrono_potentiometry/index.html)
+- [Open Circuit Potentiometry][pypalmsens.OpenCircuitPotentiometry]
+- [Chronopotentiometry][pypalmsens.ChronoPotentiometry]
+- [Linear Sweep Potentiometry][pypalmsens.LinearSweepPotentiometry]
+- [Multistep Potentiometry][pypalmsens.MultiStepPotentiometry]
+- [Stripping Chronopotentiometry][pypalmsens.StrippingChronoPotentiometry]
 
 **Coulometric techniques**
 
-- [Chronocoulometry](#api:attachment$methods/chrono_coulometry/index.html)
+- [Chronocoulometry][pypalmsens.ChronoCoulometry]
 
 **Other**
 
-- [Impedance Spectroscopy](#api:attachment$methods/impedance_spectroscopy/index.html)
-- [Fast Impedance Spectroscopy](#api:attachment$methods/fast_impedance_spectroscopy/index.html)
-- [Galvanostatic Impedance Spectroscopy](#api:attachment$methods/galvanostatic_impedance_spectroscopy/index.html)
-- [Fast Galvanostatic Impedance Spectroscopy](#api:attachment$methods/fast_galvanostatic_impedance_spectroscopy/index.html)
-- [Mixed Mode](#api:attachment$methods/mixed_mode/index.html)
-- [Method Script](#api:attachment$methods/method_script/index.html)
+- [Impedance Spectroscopy][pypalmsens.ImpedanceSpectroscopy]
+- [Fast Impedance Spectroscopy][pypalmsens.FastImpedanceSpectroscopy]
+- [Galvanostatic Impedance Spectroscopy][pypalmsens.GalvanostaticImpedanceSpectroscopy]
+- [Fast Galvanostatic Impedance Spectroscopy][pypalmsens.FastGalvanostaticImpedanceSpectroscopy]
+- [Mixed Mode][pypalmsens.mixed_mode.MixedMode]
+- [Method Script][pypalmsens.MethodScript]
 
 ## Setting up a method
 
@@ -101,7 +101,7 @@ False
 
 !!! TIP
 
-    The VSCode Debug Console or another Python REPL environment like [IPython](assets/https://ipython.readthedocs.io) will auto complete on the properties and functions.
+    The VSCode Debug Console or another Python REPL environment like [IPython](https://ipython.readthedocs.io) will auto complete on the properties and functions.
 
     ![Debug console in VSCode](assets/ipython_autocomplete.png){ width="80%" }
 
@@ -109,7 +109,7 @@ False
 ### Common settings
 
 Many settings are shared between methods.
-For a full listing, see the [method settings API reference](#api:attachment$methods/settings/index.html).
+For a full listing, see the [pypalmsens.settings][].
 
 If you don’t specify any arguments, the default values are loaded.
 These are accessible via attributes on the methods.
@@ -125,20 +125,21 @@ CurrentRange(max = '10mA', min = '1uA', start = '100uA')
 There are two ways to modify the current ranges, for example, if you want so set the start current at 10 μA.
 
 1. By passing current ranges as an argument during initialization
-+
-```python
->>> cv = ps.CyclicVoltammetry(current_range={'start':'10uA'})
->>> cv.current_range
-CurrentRange(max='10mA', min='1uA', start='10uA') # &lt;1>
-```
-&lt;1> Only the start value was set, so the min/max are populated with the defaults.
+
+    ```python
+    >>> cv = ps.CyclicVoltammetry(current_range={'start':'10uA'})
+    >>> cv.current_range
+    CurrentRange(max='10mA', min='1uA', start='10uA') # (1)!
+    ```
+
+    1. Only the start value was set, so the min/max are populated with the defaults.
 
 2. By updating the attributes (after initialization)
-+
-```python
->>> cv = ps.CyclicVoltammetry()
->>> cv.current_range.start = '10uA'
-```
+
+    ```python
+    >>> cv = ps.CyclicVoltammetry()
+    >>> cv.current_range.start = '10uA'
+    ```
 
 !!! TIP "Fixed ranges"
 

@@ -2,7 +2,7 @@
 
 This page shows how to use `pypalmsens` to interface with your measurement data.
 
-The [`ps.data`](#api:attachment$data/index.html) submodule contains wrappers for the PyPalmSens .NET SDK libraries.
+The [pypalmsens.data][] submodule contains wrappers for the PyPalmSens .NET SDK libraries.
 These are the same libraries that power the [PSTrace](https://www.palmsens.com/software/ps-trace/) software.
 
 ## Measurement
@@ -46,7 +46,7 @@ There are two ways to access the data.
 `m.dataset` returns the raw data that were measured, analogous to the _Data_ tab in PSTrace.
 `m.curves` returns a list of [Curve](#Curve) objects, which represent the plots.
 
-For more information, see the [Measurement reference](api:attachment$data/index.html#pypalmsens.data.Measurement).
+For more information, see the [pypalmsens.data.Measurement][].
 
 ## Curve
 
@@ -80,7 +80,7 @@ This depends on [matplotlib](https://matplotlib.org/) being available.
 >>> fig.show()
 ```
 
-1. This returns a [matplotlib Figure](https://matplotlib.org/stable/api/_as_gen/matplotlib.figure.Figure.html).
+1. This returns a [matplotlib.figure.Figure][].
 
 This results in this plot:
 
@@ -108,9 +108,9 @@ For more info on this algorithm, see [this Wikipedia page](https://en.wikipedia.
 !!! NOTE "Peak finding"
 
     Depending on your data, the peak finder may not always find peaks on the first try.
-    Sometimes the parameters need to be tuned, see [`.find_peaks()`](api:attachment$data/index.html#pypalmsens.data.Curve.find_peaks) for more information.
+    Sometimes the parameters need to be tuned, see [pypalmsens.data.Curve.find_peaks][] for more information.
 
-You can do filtering using [`.smooth()`](api:attachment$data/index.html#pypalmsens.data.Curve.smooth). Note that this updates the curve in-place.
+You can do filtering using [pypalmsens.data.Curve.smooth][]. Note that this updates the curve in-place.
 
 ```python
 >>> curve.smooth(smooth_level=1)
@@ -141,7 +141,7 @@ array([0.352146, 0.351192, ..., 0.19908 , 0.199557])
 1. Convert to list...
 2. ...or numpy array
 
-For more information, see the [Curve reference](api:attachment$data/index.html#pypalmsens.data.Curve).
+For more information, see [pypalmsens.data.Curve][].
 
 ## Peak
 
@@ -172,7 +172,7 @@ Many peak properties are accessible from this object.
 
 1. The peak value is the height of the peak relative to the baseline
 
-For more information, see the [Peak reference](api:attachment$data/index.html#pypalmsens.data.Peak).
+For more information, see [pypalmsens.data.Peak][].
 
 ## DataSet
 
@@ -234,7 +234,7 @@ Therefore, arrays can be selected by name...
 
 ```python
 >>> dataset.array_types
-{&lt;ArrayType.Current: 2>, &lt;ArrayType.Potential: 1>, &lt;ArrayType.Time: 0>}
+{<ArrayType.Current: 2>, <ArrayType.Potential: 1>, <ArrayType.Time: 0>}
 >>> dataset.arrays_by_type(ps.data.ArrayType.Current)
 [DataArray(name=current, unit=µA, n_points=219)]
 ```
@@ -274,7 +274,7 @@ Curve(title=My curve, n_points=219)
 
 1. Any combination of these will work
 
-For more information, see the [DataSet reference](api:attachment$data/index.html#pypalmsens.data.DataSet).
+For more information, see [pypalmsens.data.DataSet][].
 
 ## DataArray
 
@@ -294,7 +294,7 @@ An array stores some data about itself:
 >>> array.name
 'current'
 >>> array.type
-&lt;ArrayType.Current: 2>
+<ArrayType.Current: 2>
 >>> array.unit
 'µA'
 >>> array.quantity
@@ -338,7 +338,7 @@ Arrays can be converted to lists or numpy arrays:
 array([0.352146, 0.351192, ..., 0.19908 , 0.199557])
 ```
 
-For more information, see the [DataArray reference](api:attachment$data/index.html#pypalmsens.data.DataArray).
+For more information, see [pypalmsens.data.DataArray][].
 
 ## EISData
 
@@ -383,7 +383,7 @@ If you previously fitted a circuit model in PSTrace, you can retrieve the CDC va
 [132.146, 11009.9, 3710.55, 3.77887, 0.971414, 6.23791e-07, 0.961612]
 ```
 
-And use these to [fit a circuit model](circuit_fitting.adoc):
+And use these to [fit a circuit model](circuit_fitting.md):
 
 ```python
 >>> model = ps.fitting.CircuitModel(cdc=eis_data.cdc)
@@ -444,4 +444,4 @@ Subscans can be accessed via the `.subscans()` method.
 
 The subscans are themselves [EISData](#EISData) objects.
 
-For more information, see the [EISData reference](api:attachment$data/index.html#pypalmsens.data.EISData).
+For more information, see [pypalmsens.data.EISData][].

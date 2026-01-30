@@ -18,7 +18,7 @@ The session file contains the measurement data, whereas the method file contains
 
 ## Loading and saving a method file (`.psmethod`)
 
-The [`load_method_file()`](api:attachment$io/index.html#pypalmsens.load_method_file) can be used to load method files.
+[pypalmsens.load_method_file][] can be used to load method files.
 This returns a 'Method' dataclass with all the method parameters.
 
 ```python
@@ -36,7 +36,7 @@ LinearSweepVoltammetry(
 )
 ```
 
-Save the method using [`save_method_file()`](api:attachment$io/index.html#pypalmsens.save_method_file).
+Save the method using [pypalmsens.save_method_file][].
 
 ```python
 >>> ps.save_method_file(method, 'PSDummyCell_LSV.psmethod')
@@ -49,7 +49,7 @@ Save the method using [`save_method_file()`](api:attachment$io/index.html#pypalm
 Data from measurements can be loaded from and stored to `.pssession` files.
 This contains a session with one or more measurements containing its respective method and curves.
 
-The [`load_session_file()`](api:attachment$io/index.html#pypalmsens.load_session_file) function can be used to load session files.
+[pypalmsens.load_session_file][] can be used to load session files.
 It returns a list of measurements, which contains the dataset and curves.
 The dataset is a list of raw data in array form, whereas the curves resemble the plots.
 In PSTrace or PSTrace Express these would be the 'Data' and the 'Plot' tab, respectively.

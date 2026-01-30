@@ -1,6 +1,6 @@
 # Equivalent Circuit Fitting
 
-[`CircuitModel`](api:attachment$fitting/index.html#pypalmsens.fitting.CircuitModel) fits the equivalent circuit specified with the CDC descriptor code.
+[pypalmsens.fitting.CircuitModel][] fits the equivalent circuit specified with the CDC descriptor code.
 Optional settings are fixing the value of a parameter, setting the min/max bounds for a parameter,
 specifying the frequency range to fit, limitting the number of iterations, delta error term or delta parameter term.
 
@@ -23,9 +23,9 @@ FitResult(cdc='R(RC)', parameters=[564.65, 10077.11, 3.327e-08], chisq=0.00040, 
 (CDC). Note that the code must be in all caps. For more information, see
 [this link](https://www.utwente.nl/en/tnw/ims/publications/downloads/cdc-explained.pdf).
 
-`result` is an instance of [`FitResult`](api:attachment$fitting/index.html#pypalmsens.fitting.FitResult), a dataclass with fit values,
+`result` is an instance of [pypalmsens.fitting.FitResult][], a dataclass with fit values,
 errors, and other fitting data.
-You can pass `result.parameters` back to [`CircuitModel.fit()`](api:attachment$fitting/index.html#pypalmsens.fitting.CircuitModel.fit) to redo the fit:
+You can pass `result.parameters` back to [pypalmsens.fitting.CircuitModel.fit][]) to redo the fit:
 
 ```python
 >>> result = ps.fitting.CircuitModel(cdc=cdc, parameters=result.parameters)
@@ -34,7 +34,7 @@ You can pass `result.parameters` back to [`CircuitModel.fit()`](api:attachment$f
 ## Parameters
 
 If you want to tune the parameters, like fixing values or setting
-bounds, you can use set them using the [`Parameters`](api:attachment$fitting/index.html#pypalmsens.fitting.Parameters) class.
+bounds, you can use set them using the [pypalmsens.fitting.Parameters][] class.
 `model.default_parameters` grabs the default parameters for the CDC.
 These can be modified, for example:
 
