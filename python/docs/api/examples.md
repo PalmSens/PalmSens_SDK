@@ -1,9 +1,7 @@
-= Examples
-:source-language: python
+# Examples
+The following examples are also available in the [examples directory](https://github.com/PalmSens/PalmSens_SDK/tree/main/python).
 
-The following examples are also available in the https://github.com/PalmSens/PalmSens_SDK/tree/main/python[examples directory].
-
-== Load and save data
+## Load and save data
 
 This example shows how to load/save methods and measurements and how to inspect the data.
 
@@ -12,7 +10,7 @@ This example shows how to load/save methods and measurements and how to inspect 
 include::example$load_save_data.py[]
 ----
 
-== Manual control
+## Manual control
 
 This example shows how to discover devices, establish a connection and control an instrument manually.
 
@@ -21,7 +19,7 @@ This example shows how to discover devices, establish a connection and control a
 include::example$manual_control.py[]
 ----
 
-== Manual control async
+## Manual control async
 
 This example shows how to discover devices, establish a connection and control an instrument manually using the asynchronous instrument manager.
 
@@ -30,7 +28,7 @@ This example shows how to discover devices, establish a connection and control a
 include::example$manual_control_async.py[]
 ----
 
-== Measure CA
+## Measure CA
 
 This example shows how to set up and run a chronoamperometry measurement.
 
@@ -39,7 +37,7 @@ This example shows how to set up and run a chronoamperometry measurement.
 include::example$measurement_CA.py[]
 ----
 
-== Measure CA async
+## Measure CA async
 
 This example shows how to set up and run a chronoamperometry measurement using the asynchronous instrument manager.
 
@@ -48,7 +46,7 @@ This example shows how to set up and run a chronoamperometry measurement using t
 include::example$measurement_CA_async.py[]
 ----
 
-== Measure CV
+## Measure CV
 
 This example shows how to set up and run a cyclic voltammetry measurement.
 
@@ -57,7 +55,7 @@ This example shows how to set up and run a cyclic voltammetry measurement.
 include::example$measurement_CV.py[]
 ----
 
-== Measure EIS
+## Measure EIS
 
 This example shows how to set up and run a EIS measurement.
 
@@ -66,7 +64,7 @@ This example shows how to set up and run a EIS measurement.
 include::example$measurement_EIS.py[]
 ----
 
-== Mixed Mode
+## Mixed Mode
 
 This example shows how to set up a Mixed Mode measurement for a typicial charge / discharge cycle of a common Lithium battery.
 Note that the example has a reduced number of cycles and maximum run time.
@@ -76,7 +74,7 @@ Note that the example has a reduced number of cycles and maximum run time.
 include::example$mixed_mode.py[]
 ----
 
-== MethodSCRIPT sandbox
+## MethodSCRIPT sandbox
 
 This example shows how to set up and run a MethodSCRIPT Sandbox measurement.
 
@@ -85,7 +83,7 @@ This example shows how to set up and run a MethodSCRIPT Sandbox measurement.
 include::example$measurement_MethodSCRIPT_sandbox.py[]
 ----
 
-== Status callback
+## Status callback
 
 This example shows how to set up a callback to read out the idle status updates (current/potential) and store the pretreatment data.
 
@@ -94,7 +92,7 @@ This example shows how to set up a callback to read out the idle status updates 
 include::example$measurement_status_callback.py[]
 ----
 
-== Stream data to CSV
+## Stream data to CSV
 
 This example shows how to set up and run a chronoamperometry measurement and write the results to a CSV file in real-time.
 
@@ -103,7 +101,7 @@ This example shows how to set up and run a chronoamperometry measurement and wri
 include::example$measurement_stream_to_csv.py[]
 ----
 
-== SWV versus OCP
+## SWV versus OCP
 
 This example shows how to set up and run a square wave voltammetry measurement versus OCP.
 
@@ -112,7 +110,7 @@ This example shows how to set up and run a square wave voltammetry measurement v
 include::example$measurement_SWV_vs_OCP.py[]
 ----
 
-== Multiplexer
+## Multiplexer
 
 This example shows how to set up and control a multiplexer and run consecutive and alternating multiplexer measurments.
 
@@ -122,7 +120,7 @@ include::example$multiplexer.py[]
 ----
 
 [#multichannel_basic]
-== Multichannel measurement
+## Multichannel measurement
 
 This example shows how to connect to a collection of instruments and run a chronoamperometry measurement on all channels simultaneously.
 
@@ -132,7 +130,7 @@ include::example$multichannel_measurement.py[]
 ----
 
 [#multichannel_csv_writer]
-== Multichannel CSV writer
+## Multichannel CSV writer
 
 This example shows how to connect to a how to use a callback to automatically store data to a csv file while collecting data from collection of instruments.
 
@@ -142,7 +140,7 @@ include::example$multichannel_csv_callback.py[]
 ----
 
 [#multichannel_custom_loop]
-== Multichannel custom loop
+## Multichannel custom loop
 
 This example shows how to run and set up a sequence of measurements on a collection of channels simultaneously.
 
@@ -152,7 +150,7 @@ include::example$multichannel_custom_loop.py[]
 ----
 
 [#multichannel_hw_sync]
-== Multichannel HW sync
+## Multichannel HW sync
 
 On multi-channel devices that support it, hardware sync can be used to synchronize measurements between multiple channels.
 When synchronization is enabled the follower device will wait until the main channel enables synchronisation.
@@ -166,7 +164,7 @@ At the moment this only works with async.
 
 In addition, your pool of instruments must contain:
 
-* channels from a single https://www.palmsens.com/knowledgebase-article/multichannel-potentiostat/[multi-channel instrument]
+* channels from a single [multi-channel instrument](https://www.palmsens.com/knowledgebase-article/multichannel-potentiostat/)
 * the first (main) channel of the instrument
 * at least one follower channel
 
