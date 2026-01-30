@@ -101,9 +101,9 @@ False
 
 !!! TIP
 
-    The VSCode Debug Console or another Python REPL environment like [IPython](https://ipython.readthedocs.io) will auto complete on the properties and functions.
+    The VSCode Debug Console or another Python REPL environment like [IPython](assets/https://ipython.readthedocs.io) will auto complete on the properties and functions.
 
-    image::ipython_autocomplete.png[Debug console in VSCode]
+    ![Debug console in VSCode](assets/ipython_autocomplete.png){ width="80%" }
 
 
 ### Common settings

@@ -234,7 +234,7 @@ PSTrace includes an option to make use MethodSCRIPT™ Sandbox to write and run 
 This is a great place to test MethodSCRIPT™ measurements to see what the result would be.
 That script can then be used in the MethodScriptSandbox technique in the SDK as demonstrated below.
 
-image::method_script_editor.png[Graphical editor for MethodSCRIPT™]
+![Graphical editor for MethodSCRIPT™](assets/method_script_editor.png){ width="80%" }
 
 ## Multichannel measurements
 

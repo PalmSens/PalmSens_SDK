@@ -84,7 +84,7 @@ This depends on [matplotlib](https://matplotlib.org/) being available.
 
 This results in this plot:
 
-image::dpv_figure_1.png[Image of DPV plot]
+![Image of DPV plot](assets/dpv_figure_1.png){ width="80%" }
 
 The data has a single peak stored in the measurement. You can retrieve it using:
 

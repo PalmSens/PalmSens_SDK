@@ -44,7 +44,7 @@ Save the method using [`save_method_file()`](api:attachment$io/index.html#pypalm
 
 ## Loading and saving data
 
-image::pssession.png[Data in pssession files]
+![Data in pssession files](assets/pssession.png){ width="80%" }
 
 Data from measurements can be loaded from and stored to `.pssession` files.
 This contains a session with one or more measurements containing its respective method and curves.
