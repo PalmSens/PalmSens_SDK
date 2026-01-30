@@ -1,5 +1,5 @@
 = Methods
-:api-techniques: api:attachment$methods
+:api-techniques: attachment$reference/methods
 :source-language: python
 
 [NOTE]

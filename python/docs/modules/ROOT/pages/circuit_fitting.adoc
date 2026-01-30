@@ -1,6 +1,6 @@
 = Equivalent Circuit Fitting
 :source-language: python
-:api-fitting: api:attachment$fitting/index.html
+:api-fitting: attachment$reference/fitting/index.html
 
 [NOTE]
 ====

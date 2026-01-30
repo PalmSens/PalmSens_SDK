@@ -1,9 +1,9 @@
 = Connecting and Measuring
 :source-language: python
-:api: api:attachment$index.html
-:api-data: api:attachment$data/index.html
-:api-inst: api:attachment$instrument/index.html
-:api-inst-async: api:attachment$instrument_async/index.html
+:api: attachment$reference/index.html
+:api-data: attachment$reference/data/index.html
+:api-inst: attachment$reference/instrument/index.html
+:api-inst-async: attachment$reference/instrument_async/index.html
 
 [NOTE]
 

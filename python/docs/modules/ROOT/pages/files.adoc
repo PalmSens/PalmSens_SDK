@@ -1,6 +1,6 @@
 = Working with files
 :source-language: python
-:api-io: api:attachment$io/index.html
+:api-io: attachment$reference/io/index.html
 
 [NOTE]
 ====
