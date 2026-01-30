@@ -1,6 +1,11 @@
 = Methods
-:api-techniques: api:attachment$methods
+:api-techniques: attachment$reference/methods
 :source-language: python
+
+[NOTE]
+====
+This page has moved: xref:attachment$methods/index.html[Methods]
+====
 
 == Supported methods
 

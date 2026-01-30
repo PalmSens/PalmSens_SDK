@@ -1,6 +1,11 @@
 = Installation
 :experimental: true
 
+[NOTE]
+====
+This page has moved: xref:attachment$installation/index.html[Installation]
+====
+
 To install:
 
 ```

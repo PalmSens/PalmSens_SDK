@@ -6,39 +6,48 @@ docs_dir: api
 
 nav:
   - Home: index.md
+  - installation.md
+  - files.md
   - data.md
-  - fitting.md
-  - io.md
-  - instrument.md
-  - instrument_async.md
+  - measuring.md
+  - methods.md
+  - circuit_fitting.md
+  - examples.md
   - Techniques:
-    - methods/index.md
-    - Shared settings: methods/settings.md
-    - methods/enums.md
-    - methods/a_c_voltammetry.md
-    - methods/chrono_amperometry.md
-    - methods/chrono_coulometry.md
-    - methods/chrono_potentiometry.md
-    - methods/cyclic_voltammetry.md
-    - methods/differential_pulse_voltammetry.md
-    - Impedance Spectroscopy: methods/impedance_spectroscopy.md
-    - methods/fast_amperometry.md
-    - methods/fast_cyclic_voltammetry.md
-    - methods/fast_galvanostatic_impedance_spectroscopy.md
-    - methods/fast_impedance_spectroscopy.md
-    - methods/galvanostatic_impedance_spectroscopy.md
-    - methods/linear_sweep_potentiometry.md
-    - methods/linear_sweep_voltammetry.md
-    - methods/method_script.md
-    - methods/mixed_mode.md
-    - methods/multi_step_amperometry.md
-    - methods/multi_step_potentiometry.md
-    - methods/multiple_pulse_amperometry.md
-    - methods/normal_pulse_voltammetry.md
-    - methods/open_circuit_potentiometry.md
-    - methods/pulsed_amperometric_detection.md
-    - methods/square_wave_voltammetry.md
-    - methods/stripping_chrono_potentiometry.md
+    - reference/methods/index.md
+    - Shared settings: reference/methods/settings.md
+    - reference/methods/enums.md
+    - reference/methods/a_c_voltammetry.md
+    - reference/methods/chrono_amperometry.md
+    - reference/methods/chrono_coulometry.md
+    - reference/methods/chrono_potentiometry.md
+    - reference/methods/cyclic_voltammetry.md
+    - reference/methods/differential_pulse_voltammetry.md
+    - Impedance Spectroscopy: reference/methods/impedance_spectroscopy.md
+    - reference/methods/fast_amperometry.md
+    - reference/methods/fast_cyclic_voltammetry.md
+    - reference/methods/fast_galvanostatic_impedance_spectroscopy.md
+    - reference/methods/fast_impedance_spectroscopy.md
+    - reference/methods/galvanostatic_impedance_spectroscopy.md
+    - reference/methods/linear_sweep_potentiometry.md
+    - reference/methods/linear_sweep_voltammetry.md
+    - reference/methods/method_script.md
+    - reference/methods/mixed_mode.md
+    - reference/methods/multi_step_amperometry.md
+    - reference/methods/multi_step_potentiometry.md
+    - reference/methods/multiple_pulse_amperometry.md
+    - reference/methods/normal_pulse_voltammetry.md
+    - reference/methods/open_circuit_potentiometry.md
+    - reference/methods/pulsed_amperometric_detection.md
+    - reference/methods/square_wave_voltammetry.md
+    - reference/methods/stripping_chrono_potentiometry.md
+  - Reference:
+    - reference/index.md
+    - reference/data.md
+    - reference/io.md
+    - reference/instrument.md
+    - reference/instrument_async.md
+    - reference/fitting.md
   - 🔗 Source code: https://github.com/palmsens/palmsens_sdk
   - 🔗 Issues: https://github.com/palmsens/palmsens_sdk/issues
 
