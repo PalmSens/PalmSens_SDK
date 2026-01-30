@@ -2,6 +2,8 @@ name: python
 version: '1.6.1'
 title: PyPalmSens
 start_page: redirect.adoc
+nav:
+  - modules/ROOT/nav.adoc
 ext:
   collector:
   - run: zensical build -f python/docs/zensical.toml
