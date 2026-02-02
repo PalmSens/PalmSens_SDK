@@ -1,9 +1,11 @@
 [project]
 site_name = "PyPalmSens"
 site_url = "https://sdk.palmsens.com"
+site_description = "PyPalmSens: a Python library for automating electrochemistry with PalmSens instruments"
 repo_url = "https://github.com/palmsens/palmsens_sdk"
 repo_name = "GitHub"
 docs_dir = "docs/mkdocs"
+copyright = "&copy; 2025 PalmSens BV"
 
 nav = [
   { "Home" = "index.md" },
@@ -55,7 +57,6 @@ nav = [
   { "Issues ↗" = "https://github.com/palmsens/palmsens_sdk/issues" },
 ]
 
-extra = { homepage = "https://sdk.palmsens.com/" }
 
 extra_css = [
     # Include a copy of mkdocstrings.css
@@ -71,6 +72,20 @@ extra_javascript = [
   "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js",
 ]
 
+[project.extra]
+homepage = "https://sdk.palmsens.com/"
+
+[[project.extra.social]]
+icon = "fontawesome/brands/github"
+link = "https://github.com/PalmSens/PalmSens_SDK"
+
+[[project.extra.social]]
+icon = "fontawesome/brands/python"
+link = "https://pypi.org/project/pypalmsens/"
+
+[[project.extra.social]]
+icon = "fontawesome/solid/paper-plane"
+link = "https://www.palmsens.com/contact"
 
 [project.theme]
 name = "material"
@@ -80,6 +95,7 @@ favicon = "assets/favicon.ico"
 features = [
     "content.code.annotate",
     "content.footnote.tooltips",
+    "content.tooltips",
     "navigation.indexes",
     "toc.follow",
 ]
@@ -105,6 +121,7 @@ accent = "custom"
 toggle.icon = "lucide/moon"
 toggle.name = "Switch to system preference"
 
+[project.markdown_extensions.abbr]
 [project.markdown_extensions.admonition]
 [project.markdown_extensions.attr_list]
 [project.markdown_extensions.footnotes]
