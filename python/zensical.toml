@@ -5,22 +5,6 @@ repo_url = "https://github.com/palmsens/palmsens_sdk"
 repo_name = "GitHub"
 docs_dir = "docs/mkdocs"
 
-extra_css = [
-    # Include a copy of mkdocstrings.css
-    # This is a work-around for Antora not publishing
-    # Underscore files (i.e. assets/_mkdocstrings.css)
-    # https://github.com/PalmSens/PalmSens_SDK/issues/176
-    "stylesheets/mkdocstrings.css",
-    "stylesheets/extra.css",
-]
-
-extra_javascript = [
-  "https://polyfill.io/v3/polyfill.min.js?features:es6",
-  "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js",
-]
-
-extra = { homepage = "https://sdk.palmsens.com/" }
-
 nav = [
   { "Home" = "index.md" },
   "installation.md",
@@ -71,19 +55,28 @@ nav = [
   { "Issues ↗" = "https://github.com/palmsens/palmsens_sdk/issues" },
 ]
 
-[project.markdown_extensions.admonition]
-[project.markdown_extensions.pymdownx.details]
-[project.markdown_extensions.pymdownx.snippets]
-[project.markdown_extensions.pymdownx.superfences]
-[project.markdown_extensions.footnotes]
-[project.markdown_extensions.attr_list]
-[project.markdown_extensions.md_in_html]
-[project.markdown_extensions.pymdownx.blocks.caption]
+extra = { homepage = "https://sdk.palmsens.com/" }
+
+extra_css = [
+    # Include a copy of mkdocstrings.css
+    # This is a work-around for Antora not publishing
+    # Underscore files (i.e. assets/_mkdocstrings.css)
+    # https://github.com/PalmSens/PalmSens_SDK/issues/176
+    "stylesheets/mkdocstrings.css",
+    "stylesheets/extra.css",
+]
+
+extra_javascript = [
+  "https://polyfill.io/v3/polyfill.min.js?features:es6",
+  "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js",
+]
+
 
 [project.theme]
 name = "material"
 logo = "assets/header_icon.svg"
 favicon = "assets/favicon.ico"
+
 features = [
     "content.code.annotate",
     "content.footnote.tooltips",
@@ -96,19 +89,31 @@ media = "(prefers-color-scheme)"
 toggle.icon = "lucide/sun-moon"
 toggle.name = "Switch to light mode"
 
-# Palette toggle for light mode
 [[project.theme.palette]]
 media = "(prefers-color-scheme: light)"
 scheme = "default"
+primary = "custom"
+accent = "custom"
 toggle.icon = "lucide/sun"
 toggle.name = "Switch to dark mode"
 
-# Palette toggle for dark mode
 [[project.theme.palette]]
 media = "(prefers-color-scheme: dark)"
 scheme = "slate"
+primary = "custom"
+accent = "custom"
 toggle.icon = "lucide/moon"
 toggle.name = "Switch to system preference"
+
+[project.markdown_extensions.admonition]
+[project.markdown_extensions.attr_list]
+[project.markdown_extensions.footnotes]
+[project.markdown_extensions.md_in_html]
+[project.markdown_extensions.pymdownx.blocks.caption]
+[project.markdown_extensions.pymdownx.details]
+[project.markdown_extensions.pymdownx.snippets]
+check_paths = true
+[project.markdown_extensions.pymdownx.superfences]
 
 [project.plugins.mkdocstrings.handlers.python]
 # https://mkdocstrings.github.io/usage/
@@ -117,7 +122,7 @@ inventories = [
     "https://numpy.org/doc/stable/objects.inv",
     "https://matplotlib.org/stable/objects.inv",
 ]
-paths = ["../src"]
+paths = ["src"]
 
 [project.plugins.mkdocstrings.handlers.python.options]
 # https://mkdocstrings.github.io/python/usage/#recommended-settings
