@@ -3,3 +3,6 @@ version: ~
 title: PalmSens SDK
 nav:
 - modules/ROOT/nav.adoc
+- modules/dotnet/nav.adoc
+- modules/api/nav.adoc
+- modules/ROOT/nav-last.adoc

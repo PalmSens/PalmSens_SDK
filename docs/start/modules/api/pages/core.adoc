@@ -1,4 +1,4 @@
-= `PalmSens.Core`
+= PalmSens.Core
 
 The PalmSens SDK is built on the following libraries and projects:
 
