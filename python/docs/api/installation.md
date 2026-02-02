@@ -12,8 +12,7 @@ pip install pypalmsens
 * .NET Framework 4.7.2
 * Drivers included with PSTrace 5, MultiTrace 4, PSTrace Xpress or the [driver installer](https://github.com/PalmSens/PalmSens_SDK/releases/download/drivers-5.12/PalmSens.Drivers.exe).
 
-[#req-linux]
-## Requirements (Linux and MacOS)
+## Requirements (Linux and MacOS)  {#req-linux}
 
 * [Python version 3.10 or newer](https://python.org). Use your system’s package manager to install Python.
 * .NET Runtime 9.0 or newer. This is called something like `dotnet-runtime-9.0` in your [package manager](https://learn.microsoft.com/en-us/dotnet/core/install/linux).
@@ -53,8 +52,7 @@ This avoids errors like `can’t open device "/dev/ttyACM0": Permission denied` 
 
     See [this issue](https://github.com/PalmSens/PalmSens_SDK/issues/60) for an actual list of known issues.
 
-[#ftdisetup]
-### FTDI devices
+### FTDI devices {#ftdisetup}
 
 To set up your system to work with devices using the [FTDI chip](https://ftdichip.com/), you need to follow a few additional steps.
 To see if your device needs the FTDI drivers, see the [Compatibility table](#compatibility).
@@ -162,8 +160,8 @@ pip install pypalmsens
 
 See the [VSCode documentation](https://code.visualstudio.com/docs/python/environments#_creating-environments) for how to set this up.
 
-[#compatibility]
-## Compatible devices and firmware
+
+## Compatible devices and firmware {#compatibility}
 
 The PalmSens SDK is based on PalmSens core version 5.12.
 
@@ -206,4 +204,4 @@ See the chapter 'Updating firmware' in the [PSTrace user manual](https://www.pal
 [^1]: Drivers are installed with alongside the PSTrace desktop software or using [the driver installer](https://github.com/PalmSens/PalmSens_SDK/releases/download/drivers-5.12/PalmSens.Drivers.exe).
 [^2]: Available from https://ftdichip.com/drivers/d2xx-drivers/
 [^3]: The SDK communicates directly via the serial port. No drivers are necessary.
-[^4]: See [the installation instructions](installation.md#req-linux) for more info.
+[^4]: See [the installation instructions](#req-linux) for more info.

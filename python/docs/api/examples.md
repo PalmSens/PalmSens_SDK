@@ -107,8 +107,7 @@ This example shows how to set up and control a multiplexer and run consecutive a
 --8<-- "examples/multiplexer.py"
 ```
 
-[#multichannel_basic]
-## Multichannel measurement
+## Multichannel measurement   { #multichannel_basic }
 
 This example shows how to connect to a collection of instruments and run a chronoamperometry measurement on all channels simultaneously.
 
@@ -116,8 +115,7 @@ This example shows how to connect to a collection of instruments and run a chron
 --8<-- "examples/multichannel_measurement.py"
 ```
 
-[#multichannel_csv_writer]
-## Multichannel CSV writer
+## Multichannel CSV writer  { #multichannel_csv_writer }
 
 This example shows how to connect to a how to use a callback to automatically store data to a csv file while collecting data from collection of instruments.
 
@@ -125,8 +123,7 @@ This example shows how to connect to a how to use a callback to automatically st
 --8<-- "examples/multichannel_csv_callback.py"
 ```
 
-[#multichannel_custom_loop]
-## Multichannel custom loop
+## Multichannel custom loop  { #multichannel_custom_loop }
 
 This example shows how to run and set up a sequence of measurements on a collection of channels simultaneously.
 
@@ -134,8 +131,7 @@ This example shows how to run and set up a sequence of measurements on a collect
 --8<-- "examples/multichannel_custom_loop.py"
 ```
 
-[#multichannel_hw_sync]
-## Multichannel HW sync
+## Multichannel HW sync  { #multichannel_hw_sync }
 
 On multi-channel devices that support it, hardware sync can be used to synchronize measurements between multiple channels.
 When synchronization is enabled the follower device will wait until the main channel enables synchronisation.

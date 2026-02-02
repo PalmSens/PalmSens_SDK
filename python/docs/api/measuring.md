@@ -94,7 +94,7 @@ You can enable scanning with Bluetooth by setting:
 
 Depending on your device’s capabilities it can be used to set a potential/current and to switch current ranges.
 The potential can be set manually in potentiostatic mode and the current can be set in galvanostatic mode.
-The following example show how to manually set a potential, for more examples refer to the [`ManualControlExample`](examples.md#_manual_control) and [`ManualControlExampleAsync`](examples.md#_manual_control_async)
+The following example show how to manually set a potential, for more examples refer to the [`ManualControlExample`](examples.md#manual-control) and [`ManualControlExampleAsync`](examples.md#manual-control-async)
 scripts included with the SDK.
 
 ```python
@@ -146,7 +146,7 @@ Conditioning: potential=0.500 V, current=0.098 μA
 >>> manager.unregister_status_callback()
 ```
 
-See [pypalmsens.data.CallbackStatus][] or the provided [Status callback](examples.md#_status_callback) example for more information.
+See [pypalmsens.data.CallbackStatus][] or the provided [Status callback](examples.md#status-callback) example for more information.
 
 ## Measuring
 
@@ -199,7 +199,7 @@ The type of data returned depends on the measurement.
 For non-impedemetric technique, this will be time (s), potential (V), or current (μA) for x, and current (μA) or potential (V) for y.
 Query the data array directly (`DataArray.unit`, `DataArray.quantity`) for these data.
 
-For impedemetric techniques, the callback returns the EIS [Dataset](data.md#_dataset). See [pypalmsens.data.CallbackDataEIS][] for more information.
+For impedemetric techniques, the callback returns the EIS [Dataset](data.md#dataset). See [pypalmsens.data.CallbackDataEIS][] for more information.
 
 ```python
 >>> def callback(data):
@@ -278,7 +278,7 @@ Note that most of the functionality and method names are shared between [pypalms
 [Measurment(...), Measurement(...)]
 ```
 
-The pool takes a [Callback](#Callback) in its `measure()` method, just like a regular [pypalmsens.InstrumentManager][].
+The pool takes a [Callback](#callback) in its `measure()` method, just like a regular [pypalmsens.InstrumentManager][].
 
 ```python
 >>> async with ps.InstrumentPoolAsync(instruments) as pool:
