@@ -3,7 +3,7 @@ site_name = "PyPalmSens"
 site_url = "https://sdk.palmsens.com"
 repo_url = "https://github.com/palmsens/palmsens_sdk"
 repo_name = "GitHub"
-docs_dir = "api"
+docs_dir = "docs/mkdocs"
 
 extra_css = [
     # Include a copy of mkdocstrings.css

@@ -209,4 +209,4 @@ plugins:
 
 watch:
   - src/
-  - docs/api/
+  - docs/mkdocs/
