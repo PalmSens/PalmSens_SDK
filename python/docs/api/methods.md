@@ -39,7 +39,7 @@ The following methods are supported in PyPalmSens:
 
 **Other**
 
-- [Impedance Spectroscopy][pypalmsens.ImpedanceSpectroscopy]
+- [Impedance Spectroscopy][pypalmsens.ElectrochemicalImpedanceSpectroscopy]
 - [Fast Impedance Spectroscopy][pypalmsens.FastImpedanceSpectroscopy]
 - [Galvanostatic Impedance Spectroscopy][pypalmsens.GalvanostaticImpedanceSpectroscopy]
 - [Fast Galvanostatic Impedance Spectroscopy][pypalmsens.FastGalvanostaticImpedanceSpectroscopy]
@@ -109,7 +109,7 @@ False
 ### Common settings
 
 Many settings are shared between methods.
-For a full listing, see the [pypalmsens.settings][].
+For a full listing, see [`pypalmsens.settings`](reference/methods/settings.md).
 
 If you don’t specify any arguments, the default values are loaded.
 These are accessible via attributes on the methods.

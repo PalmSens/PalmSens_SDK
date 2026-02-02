@@ -173,7 +173,7 @@ class Status:
         return self._status.PotentialReading.Value
 
     @property
-    def potential_reading(self):
+    def potential_reading(self) -> PotentialReading:
         """Potential reading dataclass."""
         return PotentialReading._from_psobject(self._status.PotentialReading)
 
@@ -183,7 +183,7 @@ class Status:
         return self._status.CurrentReading.Value
 
     @property
-    def current_reading(self):
+    def current_reading(self) -> CurrentReading:
         """Current reading dataclass."""
         return CurrentReading._from_psobject(self._status.CurrentReading)
 
@@ -193,7 +193,7 @@ class Status:
         return self._status.CurrentReadingWE2.Value
 
     @property
-    def current_reading_we2(self):
+    def current_reading_we2(self) -> CurrentReading:
         """Current reading dataclass for WE2."""
         return CurrentReading._from_psobject(self._status.CurrentReadingWE2)
 

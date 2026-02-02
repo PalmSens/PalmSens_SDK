@@ -2,7 +2,7 @@
 
 The following chapter details how to connect to a device, read data from the device, manually controlling the potential, run measurements on the device and finally how to properly close a connection to a device.
 
-The [pypalmsens][] top-level module contains all the relevant functions and classes for discovering and controlling instruments.
+The [pypalmsens](reference/index.md) top-level module contains all the relevant functions and classes for discovering and controlling instruments.
 The [pypalmsens.InstrumentManager][] and [pypalmsens.InstrumentManagerAsync][]) class are wrappers around the PalmSens .NET libraries to connect to and control your instrument from Python.
 
 !!! CAUTION "Mains Frequency"
@@ -126,7 +126,7 @@ Idle: {'current': '0.000 * 1uA', 'potential': '0.526 V'}
 
 (1): Sleep is used here to simulate another task
 
-The callback returns a [pypalmsens.data.CallbackStatus][] object, which can be used to customize the behaviour.
+The callback returns a [pypalmsens.data.Status][] object, which can be used to customize the behaviour.
 
 For example, to print data during the pretreatment phases:
 
@@ -146,7 +146,7 @@ Conditioning: potential=0.500 V, current=0.098 μA
 >>> manager.unregister_status_callback()
 ```
 
-See [pypalmsens.data.CallbackStatus][] or the provided [Status callback](examples.md#status-callback) example for more information.
+See [pypalmsens.data.Status][] or the provided [Status callback](examples.md#status-callback) example for more information.
 
 ## Measuring
 
