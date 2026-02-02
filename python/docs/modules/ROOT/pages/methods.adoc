@@ -3,5 +3,10 @@
 ifndef::loader-assembler[]
 ++++
 <meta http-equiv="refresh" content="0; url=_attachments/methods/index.html">
+<title>Redirecting...</title>
 ++++
 endif::loader-assembler[]
+
+This page has moved xref:attachment$methods/index.html[here].
+
+You will be automatically redirected in a few seconds.
