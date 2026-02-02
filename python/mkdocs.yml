@@ -2,7 +2,7 @@ site_name: PyPalmSens
 site_url: https://sdk.palmsens.com
 repo_url: https://github.com/palmsens/palmsens_sdk
 repo_name: GitHub
-docs_dir: docs/api
+docs_dir: docs/mkdocs
 
 nav:
   - Home: index.md
@@ -59,7 +59,6 @@ theme:
   features:
     - navigation.indexes
     - toc.follow
-
 
   palette:
     # Palette toggle for automatic mode
