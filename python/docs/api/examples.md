@@ -1,153 +1,138 @@
 # Examples
+
 The following examples are also available in the [examples directory](https://github.com/PalmSens/PalmSens_SDK/tree/main/python).
 
 ## Load and save data
 
 This example shows how to load/save methods and measurements and how to inspect the data.
 
-.load_save_data.py
-----
-include::example$load_save_data.py[]
-----
+```python title="load_save_data.py"
+--8<-- "examples/load_save_data.py"
+```
 
 ## Manual control
 
 This example shows how to discover devices, establish a connection and control an instrument manually.
 
-.manual_control.py
-----
-include::example$manual_control.py[]
-----
+```python title="manual_control.py"
+--8<-- "examples/manual_control.py"
+```
 
 ## Manual control async
 
 This example shows how to discover devices, establish a connection and control an instrument manually using the asynchronous instrument manager.
 
-.manual_control_async.py
-----
-include::example$manual_control_async.py[]
-----
+```python title="manual_control_async.py"
+--8<-- "examples/manual_control_async.py"
+```
 
 ## Measure CA
 
 This example shows how to set up and run a chronoamperometry measurement.
 
-.measurement_CA.py
-----
-include::example$measurement_CA.py[]
-----
+```python title="measurement_CA.py"
+--8<-- "examples/measurement_CA.py"
+```
 
 ## Measure CA async
 
 This example shows how to set up and run a chronoamperometry measurement using the asynchronous instrument manager.
 
-.measurement_CA_async.py
-----
-include::example$measurement_CA_async.py[]
-----
+```python title="measurement_CA_async.py"
+--8<-- "examples/measurement_CA_async.py"
+```
 
 ## Measure CV
 
 This example shows how to set up and run a cyclic voltammetry measurement.
 
-.measurement_CV.py
-----
-include::example$measurement_CV.py[]
-----
+```python title="measurement_CV.py"
+--8<-- "examples/measurement_CV.py"
+```
 
 ## Measure EIS
 
 This example shows how to set up and run a EIS measurement.
 
-.measurement_EIS.py
-----
-include::example$measurement_EIS.py[]
-----
+```python title="measurement_EIS.py"
+--8<-- "examples/measurement_EIS.py"
+```
 
 ## Mixed Mode
 
 This example shows how to set up a Mixed Mode measurement for a typicial charge / discharge cycle of a common Lithium battery.
 Note that the example has a reduced number of cycles and maximum run time.
 
-.mixed_mode.py
-----
-include::example$mixed_mode.py[]
-----
+```python title="mixed_mode.py"
+--8<-- "examples/mixed_mode.py"
+```
 
 ## MethodSCRIPT sandbox
 
 This example shows how to set up and run a MethodSCRIPT Sandbox measurement.
 
-.measurement_MethodSCRIPT_sandbox.py
-----
-include::example$measurement_MethodSCRIPT_sandbox.py[]
-----
+```python title="measurement_MethodSCRIPT_sandbox.py"
+--8<-- "examples/measurement_MethodSCRIPT_sandbox.py"
+```
 
 ## Status callback
 
 This example shows how to set up a callback to read out the idle status updates (current/potential) and store the pretreatment data.
 
-.measurement_status_callback.py
-----
-include::example$measurement_status_callback.py[]
-----
+```python title="measurement_status_callback.py"
+--8<-- "examples/measurement_status_callback.py"
+```
 
 ## Stream data to CSV
 
 This example shows how to set up and run a chronoamperometry measurement and write the results to a CSV file in real-time.
 
-.measurement_stream_to_csv.py
-----
-include::example$measurement_stream_to_csv.py[]
-----
+```python title="measurement_stream_to_csv.py"
+--8<-- "examples/measurement_stream_to_csv.py"
+```
 
 ## SWV versus OCP
 
 This example shows how to set up and run a square wave voltammetry measurement versus OCP.
 
-.measurement_SWV_vs_OCP.py
-----
-include::example$measurement_SWV_vs_OCP.py[]
-----
+```python title="measurement_SWV_vs_OCP.py"
+--8<-- "examples/measurement_SWV_vs_OCP.py"
+```
 
 ## Multiplexer
 
 This example shows how to set up and control a multiplexer and run consecutive and alternating multiplexer measurments.
 
-.multiplexer.py
-----
-include::example$multiplexer.py[]
-----
+```python title="multiplexer.py"
+--8<-- "examples/multiplexer.py"
+```
 
 [#multichannel_basic]
 ## Multichannel measurement
 
 This example shows how to connect to a collection of instruments and run a chronoamperometry measurement on all channels simultaneously.
 
-.multichannel_measurement.py
-----
-include::example$multichannel_measurement.py[]
-----
+```python title="multichannel_measurement.py"
+--8<-- "examples/multichannel_measurement.py"
+```
 
 [#multichannel_csv_writer]
 ## Multichannel CSV writer
 
 This example shows how to connect to a how to use a callback to automatically store data to a csv file while collecting data from collection of instruments.
 
-.multichannel_csv_callback.py
-----
-include::example$multichannel_csv_callback.py[]
-----
+```python title="multichannel_csv_callback.py"
+--8<-- "examples/multichannel_csv_callback.py"
+```
 
 [#multichannel_custom_loop]
 ## Multichannel custom loop
 
 This example shows how to run and set up a sequence of measurements on a collection of channels simultaneously.
 
-.multichannel_custom_loop.py
-----
-include::example$multichannel_custom_loop.py[]
-----
+```python title="multichannel_custom_loop.py"
+--8<-- "examples/multichannel_custom_loop.py"
+```
 
 [#multichannel_hw_sync]
 ## Multichannel HW sync
@@ -172,7 +157,6 @@ All instruments are prepared and put in a waiting state.
 The measurements are started via a hardware sync trigger on channel 1.
 Only channel 1 (the main channel) has hardware required to trigger the other channels.
 
-.multichannel_HW_sync.py
-----
-include::example$multichannel_HW_sync.py[]
-----
+```python title="multichannel_HW_sync.py"
+--8<-- "examples/multichannel_HW_sync.py"
+```

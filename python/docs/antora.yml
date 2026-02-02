@@ -11,7 +11,3 @@ ext:
       clean: true
       dir: python/docs/site
       into: modules/ROOT/attachments/
-  # - scan:
-  #     dir: python/examples/
-  #     into: modules/ROOT/examples
-  #     files: '*.py'
