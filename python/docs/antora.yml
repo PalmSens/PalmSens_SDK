@@ -6,11 +6,8 @@ nav:
   - modules/ROOT/nav.adoc
 ext:
   collector:
-  # - run:
-  #     command: zensical build -f mkdocs.yml
-  #     dir: python
   - run:
-      command: mkdocs build -f mkdocs.yml
+      command: zensical build -f zensical.toml
       dir: python
     scan:
       clean: true
