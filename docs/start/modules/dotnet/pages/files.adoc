@@ -134,7 +134,7 @@ SimpleLoadSaveFunctions.SaveMeasurement(lsv, filepath);
 
 == Loading data from internal storage
 
-See also: xref:examples#example-internal[Internal storage example].
+See also: xref:maui:ROOT:examples#example-internal[Internal storage example].
 
 When connected to a PalmSens4, EmStat4, Sensit BT or EmStat Pico Development Board you can list and retrieve the measurements stored on its internal storage.
 The documentation on Connecting explains how to connect to a device and create an instance of a `CommManager`.
@@ -162,4 +162,4 @@ To load a measurement from a `IInternalStorageFile` use the `GetMeasurement` met
 SimpleMeasurement measurement = files[0].GetMeasurement();
 ----
 
-For a practical application, please refer to the xref:examples.adoc#example-internal[Internal storage example].
+For a practical application, please refer to the xref:maui:ROOT:examples.adoc#example-internal[Internal storage example].
