@@ -6,3 +6,10 @@ nav:
 - modules/dotnet/nav.adoc
 - modules/api/nav.adoc
 - modules/ROOT/nav-last.adoc
+ext:
+  collector:
+    run: docfx docs/start/api/docfx.json
+    scan:
+      clean: true
+      dir: docs/start/api/_site
+      into: modules/api/attachments/
