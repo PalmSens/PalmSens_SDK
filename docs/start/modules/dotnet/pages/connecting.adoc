@@ -40,9 +40,10 @@ psCommSimple.EnableBluetooth = true;
 ----
 
 To be able to use Bluetooth in your project you should reference the `32.Feet.NET` NuGet package in your project (https://www.nuget.org/packages/32feet.NET/).
-Bluetooth Classic works on all supported platforms (Windows 10+). BLE only works on Windows 10+.
+Bluetooth Classic works on all supported platforms (Windows 10+). Bluetooth Low Energy (BLE) only works on Windows 10+.
 
-To enable BLE you should add references to the `PalmSens.Core.Windows.BLE.dll` library (included in the PSLibraries folder) in `your` project and the `PalmSens.Core.Simplified` project.
+To enable BLE you should add references to the `PalmSens.Core.Windows.BLE.dll` library (included in the `PSLibraries` folder) in your project and the `PalmSens.Core.Simplified` project.
+
 Finally, you will also need to respectively uncomment the following lines in the `ScanDevices` and the `ScanDevicesAsync` methods of the `DeviceHandler` class in the `PalmSens.Core.Simplified` project.
 
 ----

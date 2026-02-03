@@ -123,7 +123,6 @@ Add these namespaces at the top of the document.
 ----
 using PalmSens;
 using PalmSens.Core.Simplified.Data;
-using PalmSens.Core.Simplified.WinForms;
 ----
 
 This saves a `SimpleMeasurement` to a `.pssession` file specified in the file path (i.e. `C:\path\to\my_data.pssession`).

@@ -38,7 +38,7 @@ SimpleMeasurement activeSimpleMeasurement = psCommSimple.Measure(method);
 == Receiving data
 
 This code shows you how to obtain a reference to the instance of the active `SimpleCurve` currently receiving data from the `SimpleCurveStartReceivingData` event.
-It also shows how to subscribe this SimpleCurve’s `NewDataAdded` and `CurveFinished` events and how these events can be used to retrieve the values of new data points from the Simple Curve as soon as they are available.
+It also shows how to subscribe this `SimpleCurve`’s `NewDataAdded` and `CurveFinished` events and how these events can be used to retrieve the values of new data points from `SimpleCurve` as soon as they are available.
 
 During a measurement the property `psCommSimple.DeviceState` property equals either `CommManager.DeviceState.Pretreatment` or `CommManager.DeviceState.Measurement`.
 
