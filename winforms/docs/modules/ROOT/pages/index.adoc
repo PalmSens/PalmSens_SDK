@@ -1,4 +1,4 @@
-= PalmSens WinForms Documentation
+= WinForms SDK Documentation
 
 {empty} +
 {empty}

@@ -1,4 +1,4 @@
-= PalmSens .NET MAUI Documentation
+= MAUI SDK Documentation
 
 {empty} +
 {empty}
