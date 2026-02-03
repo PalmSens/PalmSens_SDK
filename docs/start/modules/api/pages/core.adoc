@@ -1,22 +1,30 @@
 = PalmSens.Core
 
-The PalmSens SDK is built on the following libraries and projects:
+The most relevant parts of the `PalmSens.Core` library:
 
-* `PalmSens.Core`
-* `PalmSens.Core.Windows`
+PalmSens::
+All necessary classes and functions for performing measurements and doing analysis with PalmSens or EmStat.
 
-These libraries are provided as dlls or nuget packages and contain the namespaces with all the necessary files for using PalmSens/EmStat devices in your software.
+PalmSens.Comm::
+For Serial, USB or TCP communication with PalmSens or EmStat
 
-* `PalmSens`: All necessary classes and functions for performing measurements and doing analysis with PalmSens or EmStat.
-* `PalmSens.Comm`: For Serial, USB or TCP communication with PalmSens or EmStat
-* `PalmSens.DataFiles`: For saving and loading method and data files
-* `PalmSens.Devices`: For handling communications and device capabilities
-* `PalmSens.Techniques`: Contains all measurement techniques for PalmSens and EmStat
-* `PalmSens.Units`: Contains a collection of units used by these libraries
+PalmSens.DataFiles::
+For saving and loading method and data files
 
-The basis for handling measurements is the `PalmSens.Measurement` class, or the `PalmSens.Core.Simplified.Data.SimpleMeasurement` class when using the simplified wrapper.
+PalmSens.Devices::
+For handling communications and device capabilities
+
+PalmSens.Techniques::
+Contains all measurement techniques for PalmSens and EmStat.
+See xref:start:dotnet:techniques.adoc[this page] for more information.
+
+PalmSens.Units::
+Contains a collection of units used by these libraries
+
+The basis for handling measurements is the `PalmSens.Measurement` class, or the `PalmSens.Core.Simplified.Data.SimpleMeasurement` class intthe simplified wrapper.
 
 The measurement class contains all classes, functions, and parameters necessary for performing a measurement with a _PalmSens_ or _EmStat_ instrument.
+
 A `Measurement` has one associated method and can contain multiple curves.
 Curves are a representation of the data in the measurement used for plotting and analysis.
 

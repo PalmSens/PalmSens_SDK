@@ -1,4 +1,4 @@
-* xref:index.adoc[]
+* Documentation
 ** xref:files.adoc[]
 ** xref:data.adoc[]
 ** xref:connecting.adoc[]
