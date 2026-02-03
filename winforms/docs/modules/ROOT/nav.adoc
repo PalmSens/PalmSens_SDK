@@ -6,5 +6,6 @@
 * xref:start:dotnet:methodscript.adoc[] ↗
 * xref:start:dotnet:techniques.adoc[] ↗
 * xref:examples.adoc[]
+* xref:start:api:index.adoc[API reference ↗]
 * https://github.com/PalmSens/PalmSens_SDK/tree/main/winforms[Source code ↗]
 * https://github.com/PalmSens/PalmSens_SDK/releases/tag/winforms-1.0.0[Latest release ↗]
