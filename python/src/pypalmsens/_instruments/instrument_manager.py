@@ -126,10 +126,9 @@ def measure(
     callback: Callback, optional
         If specified, call this function on every new set of data points.
         New data points are batched, and contain all points since the last
-        time it was called. Each point is a dictionary containing
-        `frequency`, `z_re`, `z_im` for impedimetric techniques and
-        `index`, `x`, `x_unit`, `x_type`, `y`, `y_unit` and `y_type` for
-        non-impedimetric techniques.
+        time it was called. Each point is an instance of `ps.data.CallbackData`
+        for non-impedimetric or `ps.data.CallbackDataEIS`
+        for impedimetric measurments.
 
     Returns
     -------
