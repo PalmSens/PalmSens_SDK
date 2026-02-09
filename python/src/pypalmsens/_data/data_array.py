@@ -6,9 +6,10 @@ from typing import TYPE_CHECKING, overload
 import numpy as np
 from typing_extensions import override
 
-from .._methods import cr_enum_to_string
+from .._methods import cr_enum_to_string, pr_enum_to_string
 from ..settings import (
     AllowedCurrentRanges,
+    AllowedPotentialRanges,
     AllowedReadingStatus,
     AllowedTimingStatus,
 )
@@ -143,7 +144,10 @@ class CurrentArray(DataArray):
         return self.to_list()
 
     def _current_in_range(self) -> list[float]:
-        return [self._psarray.GetValue(i).ValueInRange for i in range(len(self))]
+        # Use the new `__implementation__` or `__raw_implementation__` properties to
+        # if you need to "downcast" to the implementation class.
+        # https://github.com/pythonnet/pythonnet/blob/a404d6e4d2ef6182763bd626ab08e0de4400e621/CHANGELOG.md?plain=1#L73-L77
+        return [val.__implementation__.ValueInRange for val in self._psarray]
 
     def current_in_range(self) -> list[float]:
         """Raw current value expressed in the active current range.
@@ -157,17 +161,15 @@ class CurrentArray(DataArray):
 
     def current_range(self) -> list[AllowedCurrentRanges]:
         """Return current range as list of strings."""
-        return [
-            cr_enum_to_string(self._psarray.GetValue(i).CurrentRange) for i in range(len(self))
-        ]
+        return [cr_enum_to_string(val.__implementation__.CurrentRange) for val in self._psarray]
 
     def reading_status(self) -> list[AllowedReadingStatus]:
         """Return reading status as list of strings."""
-        return [str(self._psarray.GetValue(i).ReadingStatus) for i in range(len(self))]  # type:ignore
+        return [str(val.__implementation__.ReadingStatus) for val in self._psarray]  # type:ignore
 
     def timing_status(self) -> list[AllowedTimingStatus]:
         """Return timing status as list of strings."""
-        return [str(self._psarray.GetValue(i).TimingStatus) for i in range(len(self))]  # type:ignore
+        return [str(val.__implementation__.TimingStatus) for val in self._psarray]  # type:ignore
 
     def to_dataframe(self) -> pd.DataFrame:
         """Return array as pandas dataframe.
@@ -186,6 +188,61 @@ class CurrentArray(DataArray):
                 'Current': self.current(),
                 'CurrentInRange': self.current_in_range(),
                 'CR': self.current_range(),
+                'TimingStatus': self.timing_status(),
+                'ReadingStatus': self.reading_status(),
+            }
+        )
+
+
+class PotentialArray(DataArray):
+    """Array of potential values in V.
+
+    Parameters
+    ----------
+    psarray
+        Reference to .NET DataArray object.
+    """
+
+    def potential(self) -> list[float]:
+        """Potential in V."""
+        return self.to_list()
+
+    def potential_in_range(self) -> list[float]:
+        """Raw potential value expressed in the active potential range.
+
+        `potential` = `potential_in_range` * PR, e.g. 2.0 * 100mV = 0.2V
+        """
+        return [val.__implementation__.ValueInRange for val in self._psarray]
+
+    def potential_range(self) -> list[AllowedPotentialRanges]:
+        """Return potential range as list of strings."""
+        return [pr_enum_to_string(val.__implementation__.Range) for val in self._psarray]
+
+    def reading_status(self) -> list[AllowedReadingStatus]:
+        """Return reading status as list of strings."""
+        return [str(val.__implementation__.ReadingStatus) for val in self._psarray]  # type:ignore
+
+    def timing_status(self) -> list[AllowedTimingStatus]:
+        """Return timing status as list of strings."""
+        return [str(val.__implementation.TimingStatus) for val in self._psarray]  # type:ignore
+
+    def to_dataframe(self) -> pd.DataFrame:
+        """Return array as pandas dataframe.
+
+        Requires pandas.
+
+        Returns
+        -------
+        df : pd.DataFrame
+            pandas dataframe with all arrays in dataset
+        """
+        import pandas as pd
+
+        return pd.DataFrame(
+            {
+                'Potential': self.potential(),
+                # 'PotentialInRange': self.potential_in_range(),
+                'CR': self.potential_range(),
                 'TimingStatus': self.timing_status(),
                 'ReadingStatus': self.reading_status(),
             }

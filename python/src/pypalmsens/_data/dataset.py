@@ -8,7 +8,7 @@ from typing_extensions import override
 
 from ..settings import AllowedCurrentRanges, AllowedReadingStatus, AllowedTimingStatus
 from .curve import Curve
-from .data_array import CurrentArray, DataArray
+from .data_array import CurrentArray, DataArray, PotentialArray
 from .shared import ArrayType
 
 if TYPE_CHECKING:
@@ -48,6 +48,14 @@ def _dataset_to_mapping_with_unique_keys(psdataset: PSDataSet, /) -> dict[str, D
                 | 'DCCurrent'
             ):
                 cls = CurrentArray  # type: ignore
+            case (
+                'Potential'
+                | 'BipotPotential'
+                | 'CEPotential'
+                | 'SE2vsXPotential'
+                | 'PotentialExtraRE'
+            ):
+                cls = PotentialArray  # type: ignore
             case _:
                 cls = DataArray  # type: ignore
 
