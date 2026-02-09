@@ -460,11 +460,8 @@ class InstrumentManagerAsync(SupportedMixin):
         potential_range: AllowedPotentialRanges
         """
         async with self._lock():
-            value: PalmSens.PotentialRange = await create_future(
-                self._comm.GetPotentialRangeAsync()
-            )
-
-        return pr_enum_to_string(value)
+            # no such api: self._comm.GetPotentialRangeAsync()
+            return pr_enum_to_string(self._comm.PotentialRange)
 
     async def set_potential_range(self, potential_range: AllowedPotentialRanges):
         """Set the potential range for the cell.
