@@ -104,13 +104,16 @@ class PotentialReading:
     """Potential reading data class."""
 
     potential_range: AllowedPotentialRanges
-    """Active potential range for this data point."""
+    """Active potential range (PR) for this data point."""
 
     potential: float
     """Potential in V."""
 
     potential_in_range: float
-    """Raw potential value expressed in the active potential range."""
+    """Raw potential value expressed in the active potential range.
+
+    `potential` = `potential_in_range` * PR, e.g. 2.0 * 100mV = 0.2V
+    """
 
     timing_status: AllowedTimingStatus
     """Status of the potential timing."""
@@ -138,13 +141,16 @@ class CurrentReading:
     """Current reading data class."""
 
     current_range: AllowedCurrentRanges
-    """Active current range for this data point."""
+    """Active current range (CR) for this data point."""
 
     current: float
-    """current in μA."""
+    """Current in μA."""
 
     current_in_range: float
-    """Raw current value expressed in the active current range."""
+    """Raw current value expressed in the active current range.
+
+    `current` = `current_in_range` * CR, e.g. 0.2 * 100uA = 2.0 uA
+    """
 
     timing_status: AllowedTimingStatus
     """Status of the current timing."""
