@@ -3,9 +3,7 @@ from __future__ import annotations
 from collections.abc import Sequence
 from typing import TYPE_CHECKING, overload
 
-import clr
 import numpy as np
-from PalmSens.Data import CurrentReading
 from typing_extensions import override
 
 from .._methods import cr_enum_to_string
@@ -17,6 +15,7 @@ from ..settings import (
 from .shared import ArrayType
 
 if TYPE_CHECKING:
+    import pandas as pd
     from PalmSens.Data import DataArray as PSDataArray
 
 
@@ -122,32 +121,72 @@ class DataArray(Sequence[float]):
         """OCP Value."""
         return self._psarray.OCPValue
 
-    def as_current_range(self) -> list[AllowedCurrentRanges]:
+
+class CurrentArray(DataArray):
+    """Array of current values in μA.
+
+    Note that for (m)IDC the the array value
+    is 'in range' instead of µA for backwards compatibility reasons.
+    `current()` and `current_in_range()` return the correct values.
+
+    Parameters
+    ----------
+    psarray
+        Reference to .NET DataArray object.
+    """
+
+    def current(self) -> list[float]:
+        """Current in uA."""
+        # Work-around for mIDC bug
+        if self.type is ArrayType.miDC:
+            return self._current_in_range()
+        return self.to_list()
+
+    def _current_in_range(self) -> list[float]:
+        return [self._psarray.GetValue(i).ValueInRange for i in range(len(self))]
+
+    def current_in_range(self) -> list[float]:
+        """Raw current value expressed in the active current range.
+
+        `current` = `current_in_range` * CR, e.g. 0.2 * 100uA = 2.0 uA
+        """
+        # Work-around for mIDC bug
+        if self.type is ArrayType.miDC:
+            return self.to_list()
+        return self._current_in_range()
+
+    def current_range(self) -> list[AllowedCurrentRanges]:
         """Return current range as list of strings."""
-        if self.type is not ArrayType.Current:
-            raise ValueError(f'Invalid array type: {self.type}, expected: {ArrayType.Current}')
+        return [
+            cr_enum_to_string(self._psarray.GetValue(i).CurrentRange) for i in range(len(self))
+        ]
 
-        clr_type = clr.GetClrType(CurrentReading)
-        field_info = clr_type.GetField('CurrentRange')
-
-        return [cr_enum_to_string(field_info.GetValue(val)) for val in self._psarray]
-
-    def as_reading_status(self) -> list[AllowedReadingStatus]:
+    def reading_status(self) -> list[AllowedReadingStatus]:
         """Return reading status as list of strings."""
-        if self.type is not ArrayType.Current:
-            raise ValueError(f'Invalid array type: {self.type}, expected: {ArrayType.Current}')
+        return [str(self._psarray.GetValue(i).ReadingStatus) for i in range(len(self))]  # type:ignore
 
-        clr_type = clr.GetClrType(CurrentReading)
-        field_info = clr_type.GetField('ReadingStatus')
-
-        return [field_info.GetValue(val).ToString() for val in self._psarray]
-
-    def as_timing_status(self) -> list[AllowedTimingStatus]:
+    def timing_status(self) -> list[AllowedTimingStatus]:
         """Return timing status as list of strings."""
-        if self.type is not ArrayType.Current:
-            raise ValueError(f'Invalid array type: {self.type}, expected: {ArrayType.Current}')
+        return [str(self._psarray.GetValue(i).TimingStatus) for i in range(len(self))]  # type:ignore
 
-        clr_type = clr.GetClrType(CurrentReading)
-        field_info = clr_type.GetField('TimingStatus')
+    def to_dataframe(self) -> pd.DataFrame:
+        """Return array as pandas dataframe.
 
-        return [field_info.GetValue(val).ToString() for val in self._psarray]
+        Requires pandas.
+
+        Returns
+        -------
+        df : pd.DataFrame
+            pandas dataframe with all arrays in dataset
+        """
+        import pandas as pd
+
+        return pd.DataFrame(
+            {
+                'Current': self.current(),
+                'CurrentInRange': self.current_in_range(),
+                'CR': self.current_range(),
+                'TimingStatus': self.timing_status(),
+                'ReadingStatus': self.reading_status(),
+            }
+        )
