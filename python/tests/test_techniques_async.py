@@ -41,11 +41,15 @@ async def test_read_current(manager):
 
     await manager.set_current_range('1uA')
     val1 = await manager.read_current()
+    cr1 = await manager.get_current_range()
     assert val1
+    assert cr1 == '1uA'
 
     await manager.set_current_range('10uA')
     val2 = await manager.read_current()
+    cr2 = await manager.get_current_range()
     assert val2
+    assert cr2 == '10uA'
 
     await manager.set_cell(False)
 
@@ -55,13 +59,19 @@ async def test_read_current(manager):
 async def test_read_potential(manager):
     await manager.set_cell(True)
 
+    await manager.set_potential_range('100mV')
     await manager.set_potential(1)
     val1 = await manager.read_potential()
+    pr1 = await manager.get_potential_range()
     assert val1
+    assert pr1 == '100mV'
 
+    await manager.set_potential_range('1V')
     await manager.set_potential(0)
     val2 = await manager.read_potential()
+    pr2 = await manager.get_potential_range()
     assert val2
+    assert pr2 == '1V'
 
     await manager.set_cell(False)
 
