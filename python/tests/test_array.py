@@ -64,14 +64,6 @@ def test_array_copy(array):
 
 def test_array_status(data_cv_1scan):
     array = data_cv_1scan[0].dataset.current_arrays()[0]
-    _ = array.as_current_range()
-    _ = array.as_timing_status()
-    _ = array.as_reading_status()
-
-
-def test_array_status_fail(data_cv_1scan):
-    array = data_cv_1scan[0].dataset.potential_arrays()[0]
-    with pytest.raises(ValueError):
-        _ = array.as_current_range()
-        _ = array.as_timing_status()
-        _ = array.as_reading_status()
+    _ = array.current_range()
+    _ = array.timing_status()
+    _ = array.reading_status()
