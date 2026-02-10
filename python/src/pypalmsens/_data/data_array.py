@@ -14,7 +14,7 @@ from ..settings import (
     AllowedTimingStatus,
 )
 from .data_value import CurrentReading, PotentialReading
-from .shared import ArrayType
+from .shared import AllowedArrayTypes, array_enum_to_str
 
 if TYPE_CHECKING:
     import pandas as pd
@@ -112,9 +112,9 @@ class DataArray(Sequence[float]):
         return list(self._psarray.GetValues())
 
     @property
-    def type(self) -> ArrayType:
-        """ArrayType enum."""
-        return ArrayType(self._psarray.ArrayType)
+    def type(self) -> AllowedArrayTypes:
+        """Array type as str."""
+        return array_enum_to_str(self._psarray.ArrayType)
 
     @property
     def unit(self) -> str:
@@ -148,7 +148,7 @@ class CurrentArray(DataArray):
     def current(self) -> list[float]:
         """Current in uA."""
         # Work-around for mIDC bug
-        if self.type is ArrayType.miDC:
+        if self.type == 'miDC':
             return self._current_in_range()
         return self.to_list()
 
@@ -160,8 +160,8 @@ class CurrentArray(DataArray):
 
         `current` = `current_in_range` * CR, e.g. 0.2 * 100uA = 2.0 uA
         """
-        # Work-around for mIDC bug
-        if self.type is ArrayType.miDC:
+        # Work-around for miDC bug
+        if self.type == 'miDC':
             return self.to_list()
         return self._current_in_range()
 

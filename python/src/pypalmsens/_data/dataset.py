@@ -9,7 +9,7 @@ from typing_extensions import override
 from ..settings import AllowedCurrentRanges, AllowedReadingStatus, AllowedTimingStatus
 from .curve import Curve
 from .data_array import CurrentArray, DataArray, PotentialArray
-from .shared import ArrayType
+from .shared import AllowedArrayTypes, array_enum_to_str
 
 if TYPE_CHECKING:
     import pandas as pd
@@ -20,12 +20,12 @@ if TYPE_CHECKING:
 def _dataset_to_mapping_with_unique_keys(psdataset: PSDataSet, /) -> dict[str, DataArray]:
     """Suffix non-unique keys with integer. Keys are derived from the array type."""
     arrays: list[PSDataArray] = [array for array in psdataset.GetDataArrays()]
-    array_types = [ArrayType(array.ArrayType).name for array in arrays]
+    array_types = [array_enum_to_str(array.ArrayType) for array in arrays]
 
     mapping: dict[str, DataArray] = {}
 
     for array in arrays:
-        array_type = ArrayType(array.ArrayType).name
+        array_type = array_enum_to_str(array.ArrayType)
 
         is_unique = array_types.count(array_type) == 1
 
@@ -175,7 +175,7 @@ class DataSet(Mapping[str, DataArray]):
         """
         return self._filter(key=lambda array: array.quantity == quantity)
 
-    def arrays_by_type(self, array_type: ArrayType) -> Sequence[DataArray]:
+    def arrays_by_type(self, array_type: AllowedArrayTypes) -> Sequence[DataArray]:
         """Get arrays by data type.
 
         Parameters
@@ -190,8 +190,8 @@ class DataSet(Mapping[str, DataArray]):
         return self._filter(key=lambda array: array.type == array_type)
 
     @property
-    def array_types(self) -> set[ArrayType]:
-        """Return unique set of array type (enum) for arrays in dataset."""
+    def array_types(self) -> set[AllowedArrayTypes]:
+        """Return unique set of array types for arrays in dataset."""
         return set(array.type for array in self.values())
 
     @property
@@ -206,31 +206,31 @@ class DataSet(Mapping[str, DataArray]):
 
     def current_arrays(self) -> Sequence[DataArray]:
         """Return all Current arrays."""
-        return self.arrays_by_type(ArrayType.Current)
+        return self.arrays_by_type('Current')
 
     def potential_arrays(self) -> Sequence[DataArray]:
         """Return all Potential arrays."""
-        return self.arrays_by_type(ArrayType.Potential)
+        return self.arrays_by_type('Potential')
 
     def time_arrays(self) -> Sequence[DataArray]:
         """Return all Time arrays."""
-        return self.arrays_by_type(ArrayType.Time)
+        return self.arrays_by_type('Time')
 
     def freq_arrays(self) -> Sequence[DataArray]:
         """Return all Frequency arrays."""
-        return self.arrays_by_type(ArrayType.Frequency)
+        return self.arrays_by_type('Frequency')
 
     def zre_arrays(self) -> Sequence[DataArray]:
         """Return all ZRe arrays."""
-        return self.arrays_by_type(ArrayType.ZRe)
+        return self.arrays_by_type('ZRe')
 
     def zim_arrays(self) -> Sequence[DataArray]:
         """Return all ZIm arrays."""
-        return self.arrays_by_type(ArrayType.ZIm)
+        return self.arrays_by_type('ZIm')
 
     def aux_input_arrays(self) -> Sequence[DataArray]:
         """Return all AuxInput arrays."""
-        return self.arrays_by_type(ArrayType.AuxInput)
+        return self.arrays_by_type('AuxInput')
 
     def current_range(self) -> Sequence[AllowedCurrentRanges]:
         """Return current range as list of strings."""

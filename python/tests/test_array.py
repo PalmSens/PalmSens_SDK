@@ -5,8 +5,6 @@ from math import isnan
 import numpy as np
 import pytest
 
-from pypalmsens._data.shared import ArrayType
-
 
 @pytest.fixture
 def array(data_cv_1scan):
@@ -44,7 +42,7 @@ def test_to_list(array):
 
 def test_properties(array):
     assert array.name == 'scan1channel1'
-    assert array.type is ArrayType.Charge
+    assert array.type == 'Charge'
     assert array.quantity == 'Charge'
     assert isnan(array.ocp_value)
 

@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import pytest
 
-from pypalmsens._data.shared import ArrayType
 from pypalmsens.data import DataArray
 
 
@@ -70,10 +69,10 @@ def test_array_types(dataset):
     types = dataset.array_types
     assert len(types) == 4
     assert types == {
-        ArrayType.Time,
-        ArrayType.Potential,
-        ArrayType.Current,
-        ArrayType.Charge,
+        'Time',
+        'Potential',
+        'Current',
+        'Charge',
     }
 
 
@@ -105,11 +104,11 @@ def test_arrays_by_name(dataset):
 
 
 def test_arrays_by_type(dataset):
-    lst = dataset.arrays_by_type(ArrayType.Potential)
+    lst = dataset.arrays_by_type('Potential')
     assert len(lst) == 1
-    assert lst[0].type.name == 'Potential'
+    assert lst[0].type == 'Potential'
 
-    assert not dataset.arrays_by_type(ArrayType.Unspecified)
+    assert not dataset.arrays_by_type('Unspecified')
 
 
 def test_arrays_by_quantity(dataset):
