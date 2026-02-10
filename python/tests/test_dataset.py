@@ -55,14 +55,14 @@ def test_to_dict(dataset):
 
 
 def test_list_arrays(dataset):
-    assert len(dataset.current_arrays()[0]) == 41
-    assert len(dataset.potential_arrays()[0]) == 41
-    assert len(dataset.time_arrays()[0]) == 41
+    assert len(dataset.arrays_by_type('Current')[0]) == 41
+    assert len(dataset.arrays_by_type('Potential')[0]) == 41
+    assert len(dataset.arrays_by_type('Time')[0]) == 41
 
-    assert len(dataset.freq_arrays()) == 0
-    assert len(dataset.zre_arrays()) == 0
-    assert len(dataset.zim_arrays()) == 0
-    assert len(dataset.aux_input_arrays()) == 0
+    assert len(dataset.arrays_by_type('Freq')) == 0
+    assert len(dataset.arrays_by_type('Zre')) == 0
+    assert len(dataset.arrays_by_type('Zim')) == 0
+    assert len(dataset.arrays_by_type('Aux_input')) == 0
 
 
 def test_array_types(dataset):

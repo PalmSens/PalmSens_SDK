@@ -6,7 +6,6 @@ from typing import TYPE_CHECKING, Callable, final
 from PalmSens.Plottables import Curve as PSCurve
 from typing_extensions import override
 
-from ..settings import AllowedCurrentRanges, AllowedReadingStatus, AllowedTimingStatus
 from .curve import Curve
 from .data_array import CurrentArray, DataArray, PotentialArray
 from .shared import AllowedArrayTypes, array_enum_to_str
@@ -204,52 +203,6 @@ class DataSet(Mapping[str, DataArray]):
         """Return unique set of quantities for arrays in dataset."""
         return set(arr.quantity for arr in self.values())
 
-    def current_arrays(self) -> Sequence[DataArray]:
-        """Return all Current arrays."""
-        return self.arrays_by_type('Current')
-
-    def potential_arrays(self) -> Sequence[DataArray]:
-        """Return all Potential arrays."""
-        return self.arrays_by_type('Potential')
-
-    def time_arrays(self) -> Sequence[DataArray]:
-        """Return all Time arrays."""
-        return self.arrays_by_type('Time')
-
-    def freq_arrays(self) -> Sequence[DataArray]:
-        """Return all Frequency arrays."""
-        return self.arrays_by_type('Frequency')
-
-    def zre_arrays(self) -> Sequence[DataArray]:
-        """Return all ZRe arrays."""
-        return self.arrays_by_type('ZRe')
-
-    def zim_arrays(self) -> Sequence[DataArray]:
-        """Return all ZIm arrays."""
-        return self.arrays_by_type('ZIm')
-
-    def aux_input_arrays(self) -> Sequence[DataArray]:
-        """Return all AuxInput arrays."""
-        return self.arrays_by_type('AuxInput')
-
-    def current_range(self) -> Sequence[AllowedCurrentRanges]:
-        """Return current range as list of strings."""
-        array = self.current_arrays()[-1]
-        assert isinstance(array, CurrentArray)
-        return array.current_range()
-
-    def reading_status(self) -> Sequence[AllowedReadingStatus]:
-        """Return reading status as list of strings."""
-        array = self.current_arrays()[-1]
-        assert isinstance(array, CurrentArray)
-        return array.reading_status()
-
-    def timing_status(self) -> Sequence[AllowedTimingStatus]:
-        """Return timing status as list of strings."""
-        array = self.current_arrays()[-1]
-        assert isinstance(array, CurrentArray)
-        return array.timing_status()
-
     def to_dataframe(self) -> pd.DataFrame:
         """Return dataset as pandas dataframe.
 
@@ -264,9 +217,11 @@ class DataSet(Mapping[str, DataArray]):
 
         cols, arrays = zip(*[(key, arr.to_list()) for key, arr in self.items() if len(arr)])
 
+        current = self.arrays_by_type('Current')[-1]
+
         arrays_list = list(arrays)
-        arrays_list.append(self.current_range())
-        arrays_list.append(self.reading_status())
+        arrays_list.append(current.current_range())
+        arrays_list.append(current.reading_status())
 
         cols_list = list(cols)
         cols_list.append('CR')

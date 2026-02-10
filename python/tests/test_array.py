@@ -61,7 +61,7 @@ def test_array_copy(array):
 
 
 def test_array_status(data_cv_1scan):
-    array = data_cv_1scan[0].dataset.current_arrays()[0]
+    array = data_cv_1scan[0].dataset.arrays_by_type('Current')[0]
     _ = array.current_range()
     _ = array.timing_status()
     _ = array.reading_status()
