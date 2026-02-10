@@ -218,6 +218,7 @@ class DataSet(Mapping[str, DataArray]):
         cols, arrays = zip(*[(key, arr.to_list()) for key, arr in self.items() if len(arr)])
 
         current = self.arrays_by_type('Current')[-1]
+        assert isinstance(current, CurrentArray)
 
         arrays_list = list(arrays)
         arrays_list.append(current.current_range())
