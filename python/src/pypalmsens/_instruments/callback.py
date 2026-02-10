@@ -48,7 +48,7 @@ class CallbackData:
 
     def new_datapoints(self) -> Generator[dict[str, float]]:
         """Return new data points since last callback."""
-        for i in range(self.start, self.index):
+        for i in range(self.start, self.index + 1):
             yield {
                 'x': self.x_array[i],
                 'y': self.y_array[i],
