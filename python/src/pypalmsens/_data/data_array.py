@@ -165,7 +165,7 @@ class CurrentArray(DataArray):
             return self.to_list()
         return self._current_in_range()
 
-    def current_readings(self) -> list[CurrentReading]:
+    def current_reading(self) -> list[CurrentReading]:
         """Return as list of potential reading objects."""
         return [CurrentReading._from_psobject(implementation(val)) for val in self._psarray]
 
@@ -224,7 +224,7 @@ class PotentialArray(DataArray):
         """
         return [implementation(val).ValueInRange for val in self._psarray]
 
-    def potential_readings(self) -> list[PotentialReading]:
+    def potential_reading(self) -> list[PotentialReading]:
         """Return as list of potential reading objects."""
         return [PotentialReading._from_psobject(implementation(val)) for val in self._psarray]
 
