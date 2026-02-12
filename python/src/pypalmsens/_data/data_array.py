@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from collections.abc import Sequence
-from typing import TYPE_CHECKING, overload
+from typing import TYPE_CHECKING, Any, overload
 
 import numpy as np
 from typing_extensions import override
@@ -14,7 +14,7 @@ from ..settings import (
     AllowedTimingStatus,
 )
 from .data_value import CurrentReading, PotentialReading
-from .shared import AllowedArrayTypes, array_enum_to_str
+from .shared import ArrayType
 
 if TYPE_CHECKING:
     import pandas as pd
@@ -135,7 +135,7 @@ class DataArray(Sequence[float]):
 class CurrentArray(DataArray):
     """Array of current values in μA.
 
-    Note that for (m)IDC the the array value
+    Note that for (m)IDC in EIS measurements the the array value
     is 'in range' instead of µA for backwards compatibility reasons.
     `current()` and `current_in_range()` return the correct values.
 
@@ -148,7 +148,7 @@ class CurrentArray(DataArray):
     def current(self) -> list[float]:
         """Current in uA."""
         # Work-around for mIDC bug
-        if self.type == 'miDC':
+        if self.type is ArrayType.miDC:
             return self._current_in_range()
         return self.to_list()
 
@@ -160,12 +160,28 @@ class CurrentArray(DataArray):
 
         `current` = `current_in_range` * CR, e.g. 0.2 * 100uA = 2.0 uA
         """
-        # Work-around for miDC bug
-        if self.type == 'miDC':
+        # Work-around for mIDC bug
+        if self.type is ArrayType.miDC:
             return self.to_list()
         return self._current_in_range()
 
-    def current_readings(self) -> list[CurrentReading]:
+    @override
+    def to_list(self) -> list[float]:
+        """Export data array to list."""
+        # Override to work around bug in self._psarray.GetValues()
+        # for current readings (PalmSens.Core 5.12.1114)
+        # https://github.com/PalmSens/PalmSens_SDK/pull/279#issuecomment-3877662620
+        return list(item.Value for item in self._psarray)
+
+    @override
+    def to_numpy(self) -> np.ndarray:
+        """Export data array to numpy."""
+        # Override to work around bug in self._psarray.GetValues()
+        # for current readings (PalmSens.Core 5.12.1114)
+        # https://github.com/PalmSens/PalmSens_SDK/pull/279#issuecomment-3877662620
+        return np.array(self.to_list())
+
+    def current_reading(self) -> list[CurrentReading]:
         """Return as list of potential reading objects."""
         return [CurrentReading._from_psobject(implementation(val)) for val in self._psarray]
 
@@ -181,27 +197,28 @@ class CurrentArray(DataArray):
         """Return timing status as list of strings."""
         return [str(implementation(val).TimingStatus) for val in self._psarray]  # type:ignore
 
-    def to_dataframe(self) -> pd.DataFrame:
-        """Return array as pandas dataframe.
+    def to_dict(self) -> dict[str, list[Any]]:
+        """Return array as key/value mapping.
 
-        Requires pandas.
+        The mapping can be used to create a pandas or polars dataframe.
+
+        For example:
+
+            array = measurement.dataset['Current']
+            df = pd.DataFrame(array.to_dict())
 
         Returns
         -------
-        df : pd.DataFrame
-            pandas dataframe with all arrays in dataset
+        dict[str, list[float | str]
+            Dictionary with current readings
         """
-        import pandas as pd
-
-        return pd.DataFrame(
-            {
-                'Current': self.current(),
-                'CurrentInRange': self.current_in_range(),
-                'CR': self.current_range(),
-                'TimingStatus': self.timing_status(),
-                'ReadingStatus': self.reading_status(),
-            }
-        )
+        return {
+            'Current': self.current(),
+            'CurrentInRange': self.current_in_range(),
+            'CR': self.current_range(),
+            'TimingStatus': self.timing_status(),
+            'ReadingStatus': self.reading_status(),
+        }
 
 
 class PotentialArray(DataArray):
@@ -224,7 +241,7 @@ class PotentialArray(DataArray):
         """
         return [implementation(val).ValueInRange for val in self._psarray]
 
-    def potential_readings(self) -> list[PotentialReading]:
+    def potential_reading(self) -> list[PotentialReading]:
         """Return as list of potential reading objects."""
         return [PotentialReading._from_psobject(implementation(val)) for val in self._psarray]
 
@@ -240,24 +257,25 @@ class PotentialArray(DataArray):
         """Return timing status as list of strings."""
         return [str(implementation(val).TimingStatus) for val in self._psarray]  # type:ignore
 
-    def to_dataframe(self) -> pd.DataFrame:
-        """Return array as pandas dataframe.
+    def to_dict(self) -> dict[str, list[Any]]:
+        """Return array as key/value mapping.
 
-        Requires pandas.
+        The mapping can be used to create a pandas or polars dataframe.
+
+        For example:
+
+            array = measurement.dataset['Potential']
+            df = pd.DataFrame(array.to_dict())
 
         Returns
         -------
-        df : pd.DataFrame
-            pandas dataframe with all arrays in dataset
+        dict[str, list[float | str]
+            Dictionary with potential readings
         """
-        import pandas as pd
-
-        return pd.DataFrame(
-            {
-                'Potential': self.potential(),
-                'PotentialInRange': self.potential_in_range(),
-                'CR': self.potential_range(),
-                'TimingStatus': self.timing_status(),
-                'ReadingStatus': self.reading_status(),
-            }
-        )
+        return {
+            'Potential': self.potential(),
+            'PotentialInRange': self.potential_in_range(),
+            'CR': self.potential_range(),
+            'TimingStatus': self.timing_status(),
+            'ReadingStatus': self.reading_status(),
+        }

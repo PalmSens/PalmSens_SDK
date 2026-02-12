@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from .curve import Curve
-from .data_array import DataArray
+from .data_array import CurrentArray, DataArray, PotentialArray
 from .data_value import CurrentReading, PotentialReading
 from .dataset import DataSet
 from .eisdata import EISData
@@ -10,6 +10,7 @@ from .peak import Peak
 
 __all__ = [
     'Curve',
+    'CurrentArray',
     'CurrentReading',
     'DataArray',
     'DataSet',
@@ -17,5 +18,6 @@ __all__ = [
     'EISData',
     'Measurement',
     'Peak',
+    'PotentialArray',
     'PotentialReading',
 ]

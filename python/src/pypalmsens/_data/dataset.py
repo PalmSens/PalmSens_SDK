@@ -8,7 +8,7 @@ from typing_extensions import override
 
 from .curve import Curve
 from .data_array import CurrentArray, DataArray, PotentialArray
-from .shared import AllowedArrayTypes, array_enum_to_str
+from .shared import ArrayType
 
 if TYPE_CHECKING:
     import pandas as pd
@@ -18,6 +18,24 @@ if TYPE_CHECKING:
 
 def _dataset_to_mapping_with_unique_keys(psdataset: PSDataSet, /) -> dict[str, DataArray]:
     """Suffix non-unique keys with integer. Keys are derived from the array type."""
+    CURRENT_TYPES = (
+        'Current',
+        'Iac',
+        'miDC',
+        'BipotCurrent',
+        'ForwardCurrent',
+        'ReverseCurrent',
+        'CurrentExtraWE',
+        'DCCurrent',
+    )
+    POTENTIAL_TYPES = (
+        'Potential',
+        'BipotPotential',
+        'CEPotential',
+        'SE2vsXPotential',
+        'PotentialExtraRE',
+    )
+
     arrays: list[PSDataArray] = [array for array in psdataset.GetDataArrays()]
     array_types = [array_enum_to_str(array.ArrayType) for array in arrays]
 
@@ -35,28 +53,12 @@ def _dataset_to_mapping_with_unique_keys(psdataset: PSDataSet, /) -> dict[str, D
         else:
             key = array_type
 
-        match array_type:
-            case (
-                'Current'
-                | 'Iac'
-                | 'miDC'
-                | 'BipotCurrent'
-                | 'ForwardCurrent'
-                | 'ReverseCurrent'
-                | 'CurrentExtraWE'
-                | 'DCCurrent'
-            ):
-                cls = CurrentArray  # type: ignore
-            case (
-                'Potential'
-                | 'BipotPotential'
-                | 'CEPotential'
-                | 'SE2vsXPotential'
-                | 'PotentialExtraRE'
-            ):
-                cls = PotentialArray  # type: ignore
-            case _:
-                cls = DataArray  # type: ignore
+        if array_type in CURRENT_TYPES:
+            cls = CurrentArray  # type: ignore
+        elif array_type in POTENTIAL_TYPES:
+            cls = PotentialArray  # type: ignore
+        else:
+            cls = DataArray  # type: ignore
 
         mapping[key] = cls(psarray=array)
 
@@ -174,7 +176,7 @@ class DataSet(Mapping[str, DataArray]):
         """
         return self._filter(key=lambda array: array.quantity == quantity)
 
-    def arrays_by_type(self, array_type: AllowedArrayTypes) -> Sequence[DataArray]:
+    def arrays_by_type(self, array_type: ArrayType) -> Sequence[DataArray]:
         """Get arrays by data type.
 
         Parameters
