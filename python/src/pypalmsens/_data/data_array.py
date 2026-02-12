@@ -179,7 +179,7 @@ class CurrentArray(DataArray):
         # Override to work around bug in self._psarray.GetValues()
         # for current readings (PalmSens.Core 5.12.1114)
         # https://github.com/PalmSens/PalmSens_SDK/pull/279#issuecomment-3877662620
-        return np.array(self._psarray.GetValues())
+        return np.array(self.to_list())
 
     def current_reading(self) -> list[CurrentReading]:
         """Return as list of potential reading objects."""

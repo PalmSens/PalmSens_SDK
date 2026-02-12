@@ -6,6 +6,7 @@ import numpy as np
 import pytest
 
 from pypalmsens._data.shared import ArrayType
+from pypalmsens.data import CurrentArray, PotentialArray
 
 
 @pytest.fixture
@@ -67,3 +68,31 @@ def test_array_status(data_cv_1scan):
     _ = array.current_range()
     _ = array.timing_status()
     _ = array.reading_status()
+
+
+def test_current_array(data_cv_1scan):
+    arr = data_cv_1scan[0].dataset['Current']
+    assert isinstance(arr, CurrentArray)
+
+    n_points = len(arr)
+
+    assert len(arr.current()) == n_points
+    assert len(arr.current_reading()) == n_points
+    assert len(arr.current_range()) == n_points
+    assert len(arr.reading_status()) == n_points
+    assert len(arr.timing_status()) == n_points
+    assert len(arr.to_dataframe()) == n_points
+
+
+def test_potential_array(data_cv_1scan):
+    arr = data_cv_1scan[0].dataset['Potential']
+    assert isinstance(arr, PotentialArray)
+
+    n_points = len(arr)
+
+    assert len(arr.potential()) == n_points
+    assert len(arr.potential_reading()) == n_points
+    assert len(arr.potential_range()) == n_points
+    assert len(arr.reading_status()) == n_points
+    assert len(arr.timing_status()) == n_points
+    assert len(arr.to_dataframe()) == n_points
