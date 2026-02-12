@@ -41,7 +41,7 @@ def test_to_list(dataset):
     assert isinstance(dataset.arrays(), list)
 
 
-def test_to_dict(dataset):
+def test_dict(dataset):
     dct = dict(dataset)
     assert isinstance(dct, dict)
     assert len(dct) == 4
@@ -52,6 +52,11 @@ def test_to_dict(dataset):
         'Current',
         'Charge',
     ]
+
+
+def test_to_dict(dataset):
+    dct = dataset.to_dict()
+    assert len(dct) == 6
 
 
 def test_list_arrays(dataset):
