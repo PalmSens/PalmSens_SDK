@@ -205,9 +205,9 @@ To list all arrays:
 Arrays of the same type can be retrieved through a method:
 
 ```python
->>> dataset.arrays_by_type('Current')
+>>> dataset.arrays(type='Current')
 [CurrentArray(name=current, unit=µA, n_points=219)]
->>> dataset.arrays_by_type('Potential')
+>>> dataset.arrays(type='Potential')
 [PotentialArray(name=potential, unit=V, n_points=219)]
 ```
 
@@ -217,7 +217,7 @@ Therefore, arrays can be selected by name...
 ```python
 >>> dataset.array_names
 {'current', 'potential', 'time'}
->>> dataset.arrays_by_name('time')
+>>> dataset.arrays(name='time')
 [DataArray(name=time, unit=s, n_points=219)]
 ```
 
@@ -226,7 +226,7 @@ Therefore, arrays can be selected by name...
 ```python
 >>> dataset.array_quantities
 {'Current', 'Potential', 'Time'}
->>> dataset.arrays_by_quantity('Potential')
+>>> dataset.arrays(quantity='Potential')
 [PotentialArray(name=potential, unit=V, n_points=219)]
 ```
 
@@ -235,7 +235,7 @@ Therefore, arrays can be selected by name...
 ```python
 >>> dataset.array_types
 {'Current', 'Potential', 'Time'}
->>> dataset.arrays_by_type('Current')
+>>> dataset.arrays(type='Current')
 [CurrentArray(name=current, unit=µA, n_points=219)]
 ```
 
@@ -286,7 +286,7 @@ Data arrays store a list of values, essentially representing a column in the PST
 Let’s grab the first current array:
 
 ```python
->>> array = dataset.arrays_by_type['Current'][0]
+>>> array = dataset.arrays(type='Current')[0]
 >>> array
 CurrentArray(name=current, unit=µA, n_points=219)
 ```
@@ -391,7 +391,7 @@ Like currents, potential readings also have more data associated with them.
 ['Unknown', 'Unknown', 'Unknown', ...]
 >>> array.timing_status()
 ['Unknown', 'Unknown', 'Unknown', ...]
->>> array.to_dataframe()
+>>> pd.DataFrame(array.to_dict())
     Potential  PotentialInRange  CR TimingStatus ReadingStatus
 0       -0.50             -0.50  1V      Unknown       Unknown
 1       -0.40             -0.40  1V      Unknown       Unknown
