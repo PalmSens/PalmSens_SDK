@@ -183,27 +183,6 @@ class DataSet(Mapping[str, DataArray]):
         else:
             return list(self.values())
 
-    def arrays_by_name(self, name: str) -> Sequence[DataArray]:
-        warnings.warn(
-            (f'This function has been deprecated, use `.arrays(name={name})` instead.'),
-            DeprecationWarning,
-        )
-        return self.arrays(name=name)
-
-    def arrays_by_quantity(self, quantity: str) -> Sequence[DataArray]:
-        warnings.warn(
-            (f'This function has been deprecated, use `.arrays(quantity={quantity})` instead.'),
-            DeprecationWarning,
-        )
-        return self.arrays(quantity=quantity)
-
-    def arrays_by_type(self, array_type: AllowedArrayTypes) -> Sequence[DataArray]:
-        warnings.warn(
-            (f'This function has been deprecated, use `.arrays(type={array_type})` instead.'),
-            DeprecationWarning,
-        )
-        return self.arrays(type=array_type)
-
     @property
     def array_types(self) -> set[AllowedArrayTypes]:
         """Return unique set of array types for arrays in dataset."""
@@ -218,18 +197,6 @@ class DataSet(Mapping[str, DataArray]):
     def array_quantities(self) -> set[str]:
         """Return unique set of quantities for arrays in dataset."""
         return set(arr.quantity for arr in self.values())
-
-    def to_dataframe(self) -> pd.DataFrame:
-        warnings.warn(
-            (
-                'This function has been deprecated '
-                'use `pd.DataFrame(dataset.to_dict())` instead.'
-            ),
-            DeprecationWarning,
-        )
-        import pandas as pd
-
-        return pd.DataFrame(self.to_dict())
 
     def to_dict(self) -> dict[str, list[Any]]:
         """Return dataset as key/value mapping.
@@ -254,3 +221,36 @@ class DataSet(Mapping[str, DataArray]):
         dct['ReadingStatus'] = current.reading_status()
 
         return dct
+
+    def arrays_by_name(self, name: str) -> Sequence[DataArray]:
+        warnings.warn(
+            (f'This function has been deprecated, use `.arrays(name={name})` instead.'),
+            DeprecationWarning,
+        )
+        return self.arrays(name=name)
+
+    def arrays_by_quantity(self, quantity: str) -> Sequence[DataArray]:
+        warnings.warn(
+            (f'This function has been deprecated, use `.arrays(quantity={quantity})` instead.'),
+            DeprecationWarning,
+        )
+        return self.arrays(quantity=quantity)
+
+    def arrays_by_type(self, array_type: AllowedArrayTypes) -> Sequence[DataArray]:
+        warnings.warn(
+            (f'This function has been deprecated, use `.arrays(type={array_type})` instead.'),
+            DeprecationWarning,
+        )
+        return self.arrays(type=array_type)
+
+    def to_dataframe(self) -> pd.DataFrame:
+        warnings.warn(
+            (
+                'This function has been deprecated '
+                'use `pd.DataFrame(dataset.to_dict())` instead.'
+            ),
+            DeprecationWarning,
+        )
+        import pandas as pd
+
+        return pd.DataFrame(self.to_dict())
