@@ -222,6 +222,20 @@ class DataSet(Mapping[str, DataArray]):
 
         return dct
 
+    def to_dataframe(self) -> pd.DataFrame:
+        """Return dataset as pandas DataFrame.
+        Requires pandas to be installed.
+
+        Returns
+        -------
+        df : pd.DataFrame
+            Dataframe with all arrays in dataset.
+        """
+        import pandas as pd
+
+        dct = self.to_dict()
+        return pd.DataFrame.from_dict(dct, orient='index').T
+
     def arrays_by_name(self, name: str) -> Sequence[DataArray]:
         warnings.warn(
             (f'This function has been deprecated, use `.arrays(name={name})` instead.'),
@@ -242,15 +256,3 @@ class DataSet(Mapping[str, DataArray]):
             DeprecationWarning,
         )
         return self.arrays(type=array_type)
-
-    def to_dataframe(self) -> pd.DataFrame:
-        warnings.warn(
-            (
-                'This function has been deprecated '
-                'use `pd.DataFrame(dataset.to_dict())` instead.'
-            ),
-            DeprecationWarning,
-        )
-        import pandas as pd
-
-        return pd.DataFrame(self.to_dict())

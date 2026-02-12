@@ -17,6 +17,7 @@ from .data_value import CurrentReading, PotentialReading
 from .shared import AllowedArrayTypes, array_enum_to_str
 
 if TYPE_CHECKING:
+    import pandas as pd
     from PalmSens.Data import DataArray as PSDataArray
 
 
@@ -219,6 +220,20 @@ class CurrentArray(DataArray):
             'ReadingStatus': self.reading_status(),
         }
 
+    def to_dataframe(self) -> pd.DataFrame:
+        """Return array as pandas DataFrome.
+
+        Requires pandas to be installed.
+
+        Returns
+        -------
+        df : pd.DataFrame
+            Dataframe with current readings
+        """
+        import pandas as pd
+
+        return pd.DataFrame(self.to_dict())
+
 
 class PotentialArray(DataArray):
     """Array of potential values in V.
@@ -278,3 +293,17 @@ class PotentialArray(DataArray):
             'TimingStatus': self.timing_status(),
             'ReadingStatus': self.reading_status(),
         }
+
+    def to_dataframe(self) -> pd.DataFrame:
+        """Return array as pandas DataFrome.
+
+        Requires pandas to be installed.
+
+        Returns
+        -------
+        df : pd.DataFrame
+            Dataframe with potential readings
+        """
+        import pandas as pd
+
+        return pd.DataFrame(self.to_dict())
