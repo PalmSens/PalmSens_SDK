@@ -8,7 +8,7 @@ from typing_extensions import override
 
 from .curve import Curve
 from .data_array import CurrentArray, DataArray, PotentialArray
-from .shared import ArrayType
+from .shared import AllowedArrayTypes, array_enum_to_str
 
 if TYPE_CHECKING:
     import pandas as pd
@@ -160,7 +160,7 @@ class DataSet(Mapping[str, DataArray]):
         -------
         arrays : list[DataArray]
         """
-        return self._filter(key=lambda array: array.name == name)
+        return
 
     def arrays_by_quantity(self, quantity: str) -> Sequence[DataArray]:
         """Get arrays by quantity.
@@ -174,9 +174,9 @@ class DataSet(Mapping[str, DataArray]):
         -------
         arrays : list[DataArray]
         """
-        return self._filter(key=lambda array: array.quantity == quantity)
+        return
 
-    def arrays_by_type(self, array_type: ArrayType) -> Sequence[DataArray]:
+    def arrays_by_type(self, array_type: AllowedArrayTypes) -> Sequence[DataArray]:
         """Get arrays by data type.
 
         Parameters
