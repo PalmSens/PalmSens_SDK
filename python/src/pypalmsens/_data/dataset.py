@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, Callable, final
 
 from PalmSens.Plottables import Curve as PSCurve
 from typing_extensions import override
-
+import warnings
 from .curve import Curve
 from .data_array import CurrentArray, DataArray, PotentialArray
 from .shared import AllowedArrayTypes, array_enum_to_str
@@ -140,55 +140,70 @@ class DataSet(Mapping[str, DataArray]):
 
         return Curve(pscurve=pscurve)
 
-    def arrays(self) -> Sequence[DataArray]:
-        """Return list of all arrays. Alias for `.to_list()`"""
-        return list(self.values())
+    def arrays(self, type: AllowedArrayTypes | None = None, name: str | None=None, quantity: str | None=None, hidden: bool=False) -> Sequence[DataArray]:
+        """Return list of all arrays.
 
-    def hidden_arrays(self) -> Sequence[DataArray]:
-        """Return 'hidden' arrays used for debugging."""
-        return [DataArray(psarray=psarray) for psarray in self._psdataset if psarray.Hidden]
+        By default, return all arrays.
+        Only one filter can be active at the time.
+
+        Parameters
+        ----------
+        type : str
+            Get arrays by type of the array, e.g. 'Current', 'Frequency', 'AuxInput'.
+            Use `.array_types()` to get a list of possible values.
+        name : str
+            Get arrays with given name, e.g. 'scan1', 'time'.
+            Use `.array_names()` to get a list of possible values.
+        quantity : str
+            Get arrays by quantity, e.g. 'Charge', '-Phase'.
+            Use `.array_quantities()` to get a list of possible values.
+        hidden : bool
+            Return hidden arrays used for debugging.
+
+        Returns
+        -------
+        arrays : Sequence[DataArray]
+            List of arrays.
+        """
+        if type:
+            return self._filter(key=lambda array: array.type == type)
+        elif name:
+            return self._filter(key=lambda array: array.name == name)
+        elif quantity:
+            return self._filter(key=lambda array: array.quantity == quantity)
+        elif hidden:
+            return [DataArray(psarray=psarray) for psarray in self._psdataset if psarray.Hidden]
+        else:
+            return list(self.values())
 
     def arrays_by_name(self, name: str) -> Sequence[DataArray]:
-        """Get arrays by name.
+        warnings.warn(
+            (
+                f'This function has been deprecated, use `.arrays(name={name})` instead.'
+            ),
+            DeprecationWarning,
+        )
+        return self.arrays(name=name)
 
-        Parameters
-        ----------
-        name : str
-            Name of the array.
-
-        Returns
-        -------
-        arrays : list[DataArray]
-        """
-        return
 
     def arrays_by_quantity(self, quantity: str) -> Sequence[DataArray]:
-        """Get arrays by quantity.
+        warnings.warn(
+            (
+                f'This function has been deprecated, use `.arrays(quantity={quantity})` instead.'
+            ),
+            DeprecationWarning,
+        )
+        return self.arrays(quantity=quantity)
 
-        Parameters
-        ----------
-        quantity : str
-            Quantity of the array.
-
-        Returns
-        -------
-        arrays : list[DataArray]
-        """
-        return
 
     def arrays_by_type(self, array_type: AllowedArrayTypes) -> Sequence[DataArray]:
-        """Get arrays by data type.
-
-        Parameters
-        ----------
-        array_type : str
-            Type of the array.
-
-        Returns
-        -------
-        arrays : list[DataArray]
-        """
-        return self._filter(key=lambda array: array.type == array_type)
+        warnings.warn(
+            (
+                f'This function has been deprecated, use `.arrays(type={array_type})` instead.'
+            ),
+            DeprecationWarning,
+        )
+        return self.arrays(type=array_type)
 
     @property
     def array_types(self) -> set[AllowedArrayTypes]:
