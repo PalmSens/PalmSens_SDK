@@ -81,7 +81,7 @@ def test_current_array(data_cv_1scan):
     assert len(arr.current_range()) == n_points
     assert len(arr.reading_status()) == n_points
     assert len(arr.timing_status()) == n_points
-    assert len(arr.to_dataframe()) == n_points
+    assert len(arr.to_dict()) == n_points
 
 
 def test_potential_array(data_cv_1scan):
@@ -95,4 +95,4 @@ def test_potential_array(data_cv_1scan):
     assert len(arr.potential_range()) == n_points
     assert len(arr.reading_status()) == n_points
     assert len(arr.timing_status()) == n_points
-    assert len(arr.to_dataframe()) == n_points
+    assert len(arr.to_dict()) == n_points

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from collections.abc import Sequence
-from typing import TYPE_CHECKING, overload
+from typing import TYPE_CHECKING, Any, overload
 
 import numpy as np
 from typing_extensions import override
@@ -17,7 +17,6 @@ from .data_value import CurrentReading, PotentialReading
 from .shared import ArrayType
 
 if TYPE_CHECKING:
-    import pandas as pd
     from PalmSens.Data import DataArray as PSDataArray
 
 
@@ -197,27 +196,28 @@ class CurrentArray(DataArray):
         """Return timing status as list of strings."""
         return [str(implementation(val).TimingStatus) for val in self._psarray]  # type:ignore
 
-    def to_dataframe(self) -> pd.DataFrame:
-        """Return array as pandas dataframe.
+    def to_dict(self) -> dict[str, list[Any]]:
+        """Return array as key/value mapping.
 
-        Requires pandas.
+        The mapping can be used to create a pandas or polars dataframe.
+
+        For example:
+
+            array = measurement.dataset['Current']
+            df = pd.DataFrame(array.to_dict())
 
         Returns
         -------
-        df : pd.DataFrame
-            pandas dataframe with all arrays in dataset
+        dict[str, list[float | str]
+            Dictionary with current readings
         """
-        import pandas as pd
-
-        return pd.DataFrame(
-            {
-                'Current': self.current(),
-                'CurrentInRange': self.current_in_range(),
-                'CR': self.current_range(),
-                'TimingStatus': self.timing_status(),
-                'ReadingStatus': self.reading_status(),
-            }
-        )
+        return {
+            'Current': self.current(),
+            'CurrentInRange': self.current_in_range(),
+            'CR': self.current_range(),
+            'TimingStatus': self.timing_status(),
+            'ReadingStatus': self.reading_status(),
+        }
 
 
 class PotentialArray(DataArray):
@@ -256,24 +256,25 @@ class PotentialArray(DataArray):
         """Return timing status as list of strings."""
         return [str(implementation(val).TimingStatus) for val in self._psarray]  # type:ignore
 
-    def to_dataframe(self) -> pd.DataFrame:
-        """Return array as pandas dataframe.
+    def to_dataframe(self) -> dict[str, list[Any]]:
+        """Return array as key/value mapping.
 
-        Requires pandas.
+        The mapping can be used to create a pandas or polars dataframe.
+
+        For example:
+
+            array = measurement.dataset['Potential']
+            df = pd.DataFrame(array.to_dict())
 
         Returns
         -------
-        df : pd.DataFrame
-            pandas dataframe with all arrays in dataset
+        dict[str, list[float | str]
+            Dictionary with potential readings
         """
-        import pandas as pd
-
-        return pd.DataFrame(
-            {
-                'Potential': self.potential(),
-                'PotentialInRange': self.potential_in_range(),
-                'CR': self.potential_range(),
-                'TimingStatus': self.timing_status(),
-                'ReadingStatus': self.reading_status(),
-            }
-        )
+        return {
+            'Potential': self.potential(),
+            'PotentialInRange': self.potential_in_range(),
+            'CR': self.potential_range(),
+            'TimingStatus': self.timing_status(),
+            'ReadingStatus': self.reading_status(),
+        }
