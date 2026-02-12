@@ -1,11 +1,12 @@
 from __future__ import annotations
 
+import warnings
 from collections.abc import Generator, Mapping, Sequence
-from typing import TYPE_CHECKING, Callable, final
+from typing import TYPE_CHECKING, Any, Callable, final
 
 from PalmSens.Plottables import Curve as PSCurve
 from typing_extensions import override
-import warnings
+
 from .curve import Curve
 from .data_array import CurrentArray, DataArray, PotentialArray
 from .shared import AllowedArrayTypes, array_enum_to_str
@@ -140,7 +141,13 @@ class DataSet(Mapping[str, DataArray]):
 
         return Curve(pscurve=pscurve)
 
-    def arrays(self, type: AllowedArrayTypes | None = None, name: str | None=None, quantity: str | None=None, hidden: bool=False) -> Sequence[DataArray]:
+    def arrays(
+        self,
+        type: AllowedArrayTypes | None = None,
+        name: str | None = None,
+        quantity: str | None = None,
+        hidden: bool = False,
+    ) -> Sequence[DataArray]:
         """Return list of all arrays.
 
         By default, return all arrays.
@@ -178,29 +185,21 @@ class DataSet(Mapping[str, DataArray]):
 
     def arrays_by_name(self, name: str) -> Sequence[DataArray]:
         warnings.warn(
-            (
-                f'This function has been deprecated, use `.arrays(name={name})` instead.'
-            ),
+            (f'This function has been deprecated, use `.arrays(name={name})` instead.'),
             DeprecationWarning,
         )
         return self.arrays(name=name)
 
-
     def arrays_by_quantity(self, quantity: str) -> Sequence[DataArray]:
         warnings.warn(
-            (
-                f'This function has been deprecated, use `.arrays(quantity={quantity})` instead.'
-            ),
+            (f'This function has been deprecated, use `.arrays(quantity={quantity})` instead.'),
             DeprecationWarning,
         )
         return self.arrays(quantity=quantity)
 
-
     def arrays_by_type(self, array_type: AllowedArrayTypes) -> Sequence[DataArray]:
         warnings.warn(
-            (
-                f'This function has been deprecated, use `.arrays(type={array_type})` instead.'
-            ),
+            (f'This function has been deprecated, use `.arrays(type={array_type})` instead.'),
             DeprecationWarning,
         )
         return self.arrays(type=array_type)
@@ -221,30 +220,37 @@ class DataSet(Mapping[str, DataArray]):
         return set(arr.quantity for arr in self.values())
 
     def to_dataframe(self) -> pd.DataFrame:
-        """Return dataset as pandas dataframe.
+        warnings.warn(
+            (
+                'This function has been deprecated '
+                'use `pd.DataFrame(dataset.to_dict())` instead.'
+            ),
+            DeprecationWarning,
+        )
+        import pandas as pd
 
-        Requires pandas.
+        return pd.DataFrame(self.to_dict())
+
+    def to_dict(self) -> dict[str, list[Any]]:
+        """Return dataset as key/value mapping.
+
+        The mapping can be used to create a pandas or polars dataframe.
+
+        For example:
+
+            df = pd.DataFrame(dataset.to_dict())
 
         Returns
         -------
-        df : pd.DataFrame
-            pandas dataframe with all arrays in dataset
+        dct : dict[str, list[Any]]
+            Dictionary with all arrays in dataset.
         """
-        import pandas as pd
+        dct: dict[str, Any] = {key: arr.to_list() for key, arr in self.items() if len(arr)}
 
-        cols, arrays = zip(*[(key, arr.to_list()) for key, arr in self.items() if len(arr)])
-
-        current = self.arrays_by_type('Current')[-1]
+        current = self.arrays(type='Current')[-1]
         assert isinstance(current, CurrentArray)
 
-        arrays_list = list(arrays)
-        arrays_list.append(current.current_range())
-        arrays_list.append(current.reading_status())
+        dct['CR'] = current.current_range()
+        dct['ReadingStatus'] = current.reading_status()
 
-        cols_list = list(cols)
-        cols_list.append('CR')
-        cols_list.append('ReadingStatus')
-
-        df = pd.DataFrame(arrays_list, index=cols_list).T
-
-        return df
+        return dct
