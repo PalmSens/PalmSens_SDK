@@ -251,7 +251,7 @@ you can use easily convert the dataset into a
 [DataFrame](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html):
 
 ```python
->>> df = dataset.to_dataframe()
+>>> df = pd.DataFrame(dataset.to_dict())
 >>> df
      Time Potential   Current     CR ReadingStatus
 0     0.0 -0.399962  0.352146  10 uA            OK
@@ -364,7 +364,7 @@ CurrentArray(name=scan1, unit=µA, n_points=21)
 ['Overload', 'OK', 'OK', 'OK']
 >>> array.timing_status()
 ['OK', 'OK', 'OK', ...]
->>> array.to_dataframe()
+>>> pd.DataFrame(array.to_dict())
     Current  CurrentInRange     CR TimingStatus ReadingStatus
 0  -304.951       -3.049510  100uA           OK      Overload
 1  -301.550       -0.301550    1mA           OK            OK
