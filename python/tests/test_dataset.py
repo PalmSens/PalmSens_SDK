@@ -55,14 +55,14 @@ def test_to_dict(dataset):
 
 
 def test_list_arrays(dataset):
-    assert len(dataset.arrays_by_type('Current')[0]) == 41
-    assert len(dataset.arrays_by_type('Potential')[0]) == 41
-    assert len(dataset.arrays_by_type('Time')[0]) == 41
+    assert len(dataset.arrays(type='Current')[0]) == 41
+    assert len(dataset.arrays(type='Potential')[0]) == 41
+    assert len(dataset.arrays(type='Time')[0]) == 41
 
-    assert len(dataset.arrays_by_type('Freq')) == 0
-    assert len(dataset.arrays_by_type('Zre')) == 0
-    assert len(dataset.arrays_by_type('Zim')) == 0
-    assert len(dataset.arrays_by_type('Aux_input')) == 0
+    assert len(dataset.arrays(type='Freq')) == 0
+    assert len(dataset.arrays(type='Zre')) == 0
+    assert len(dataset.arrays(type='Zim')) == 0
+    assert len(dataset.arrays(type='Aux_input')) == 0
 
 
 def test_array_types(dataset):
@@ -96,24 +96,24 @@ def test_array_quantities(dataset):
 
 
 def test_arrays_by_name(dataset):
-    lst = dataset.arrays_by_name('scan1channel1')
+    lst = dataset.arrays(name='scan1channel1')
     assert len(lst) == 3
     assert [item.quantity for item in lst] == ['Potential', 'Current', 'Charge']
 
-    assert not dataset.arrays_by_name('FAIL')
+    assert not dataset.arrays(name='FAIL')
 
 
 def test_arrays_by_type(dataset):
-    lst = dataset.arrays_by_type('Potential')
+    lst = dataset.arrays(type='Potential')
     assert len(lst) == 1
     assert lst[0].type == 'Potential'
 
-    assert not dataset.arrays_by_type('Unspecified')
+    assert not dataset.arrays(type='Unspecified')
 
 
 def test_arrays_by_quantity(dataset):
-    lst = dataset.arrays_by_quantity('Potential')
+    lst = dataset.arrays(quantity='Potential')
     assert len(lst) == 1
     assert lst[0].quantity == 'Potential'
 
-    assert not dataset.arrays_by_quantity('laitnetoP')
+    assert not dataset.arrays(quantity='laitnetoP')
