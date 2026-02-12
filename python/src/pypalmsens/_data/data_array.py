@@ -256,7 +256,7 @@ class PotentialArray(DataArray):
         """Return timing status as list of strings."""
         return [str(implementation(val).TimingStatus) for val in self._psarray]  # type:ignore
 
-    def to_dataframe(self) -> dict[str, list[Any]]:
+    def to_dict(self) -> dict[str, list[Any]]:
         """Return array as key/value mapping.
 
         The mapping can be used to create a pandas or polars dataframe.
