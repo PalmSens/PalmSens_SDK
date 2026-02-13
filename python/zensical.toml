@@ -75,6 +75,10 @@ extra_javascript = [
 [project.extra]
 homepage = "https://sdk.palmsens.com/"
 
+[project.extra.analytics]
+provider = "google"
+property = "G-3SJNPNCDHD"
+
 [[project.extra.social]]
 icon = "fontawesome/brands/github"
 link = "https://github.com/PalmSens/PalmSens_SDK"
@@ -94,6 +98,7 @@ favicon = "assets/favicon.ico"
 
 features = [
     "content.code.annotate",
+    "content.code.copy",
     "content.footnote.tooltips",
     "content.tooltips",
     "navigation.indexes",
@@ -128,6 +133,9 @@ toggle.name = "Switch to system preference"
 [project.markdown_extensions.md_in_html]
 [project.markdown_extensions.pymdownx.blocks.caption]
 [project.markdown_extensions.pymdownx.details]
+[project.markdown_extensions.pymdownx.emoji]
+emoji_index = "zensical.extensions.emoji.twemoji"
+emoji_generator = "zensical.extensions.emoji.to_svg"
 [project.markdown_extensions.pymdownx.snippets]
 check_paths = true
 [project.markdown_extensions.pymdownx.superfences]

@@ -41,11 +41,15 @@ def test_read_current(manager):
 
     manager.set_current_range('1uA')
     val1 = manager.read_current()
+    cr1 = manager.get_current_range()
     assert val1
+    assert cr1 == '1uA'
 
     manager.set_current_range('10uA')
     val2 = manager.read_current()
+    cr2 = manager.get_current_range()
     assert val2
+    assert cr2 == '10uA'
 
     manager.set_cell(False)
 
@@ -54,13 +58,19 @@ def test_read_current(manager):
 def test_read_potential(manager):
     manager.set_cell(True)
 
+    manager.set_potential_range('100mV')
     manager.set_potential(1)
     val1 = manager.read_potential()
+    pr1 = manager.get_potential_range()
     assert val1
+    assert pr1 == '100mV'
 
+    manager.set_potential_range('1V')
     manager.set_potential(0)
     val2 = manager.read_potential()
+    pr2 = manager.get_potential_range()
     assert val2
+    assert pr2 == '1V'
 
     manager.set_cell(False)
 
@@ -93,6 +103,8 @@ def test_callback(manager):
     assert point.y_array.name == 'current'
     assert len(point.y_array) == 11
 
+    assert len(list(points[0].new_datapoints())) == 11
+
 
 @pytest.mark.instrument
 def test_callback_eis(manager):
@@ -114,6 +126,8 @@ def test_callback_eis(manager):
     assert point.start == 0
     assert isinstance(point.data, DataSet)
     assert point.data.n_points == 1
+
+    assert len(list(points[0].new_datapoints())) == 1
 
 
 class CV:

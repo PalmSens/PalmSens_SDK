@@ -3,24 +3,24 @@
 from __future__ import annotations
 
 from ._data.curve import Curve
-from ._data.data_array import DataArray
+from ._data.data_array import CurrentArray, DataArray, PotentialArray
+from ._data.data_value import CurrentReading, PotentialReading
 from ._data.dataset import DataSet
 from ._data.eisdata import EISData
 from ._data.measurement import DeviceInfo, Measurement
 from ._data.peak import Peak
-from ._data.shared import ArrayType
+from ._data.shared import AllowedArrayTypes
 from ._instruments.callback import (
     CallbackData,
     CallbackDataEIS,
-    CurrentReading,
-    PotentialReading,
     Status,
 )
 
 __all__ = [
-    'ArrayType',
+    'AllowedArrayTypes',
     'CallbackData',
     'CallbackDataEIS',
+    'CurrentArray',
     'CurrentReading',
     'Curve',
     'DataArray',
@@ -29,6 +29,7 @@ __all__ = [
     'EISData',
     'Measurement',
     'Peak',
+    'PotentialArray',
     'PotentialReading',
     'Status',
 ]
