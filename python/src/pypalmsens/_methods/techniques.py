@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import urllib.request
 from pathlib import Path
 from typing import ClassVar, Literal
 
@@ -2114,6 +2115,24 @@ endif
         """
         with Path(path).open('w') as f:
             _ = f.write(self.script)
+
+    @classmethod
+    def from_url(cls, url: str) -> MethodScript:
+        """Download script over http.
+
+        Parameters
+        ----------
+        url : url
+            URL to download methodscript file from.
+
+        Returns
+        -------
+        method: MethodScript
+        """
+        with urllib.request.urlopen(url) as response:
+            script = response.read().decode()
+
+        return cls(script=script)
 
     @field_validator('script')
     @classmethod

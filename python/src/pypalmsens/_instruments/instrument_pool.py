@@ -4,6 +4,7 @@ import asyncio
 from typing import TYPE_CHECKING, Sequence
 
 from .._methods import BaseTechnique
+from .callback import Callback
 from .instrument_manager_async import InstrumentManagerAsync
 from .instrument_pool_async import InstrumentPoolAsync
 from .shared import Instrument
@@ -83,7 +84,13 @@ class InstrumentPool:
         """
         self._loop.run_until_complete(self._async.add(manager))
 
-    def measure(self, method: BaseTechnique, **kwargs) -> list[Measurement]:
+    def measure(
+        self,
+        method: BaseTechnique,
+        callback: Callback | None = None,
+        callbacks: list[Callback | None] | None = None,
+        **kwargs,
+    ) -> list[Measurement]:
         """Concurrently run measurement on all managers in the pool.
 
         For hardware synchronization, set `use_hardware_sync` on the method.
@@ -99,7 +106,16 @@ class InstrumentPool:
         ----------
         method : MethodSettings
             Method parameters for measurement.
+        callback : Callback | None
+            If specified, call this function on every new set of data points.
+            New data points are batched, and contain all points since the last
+            time it was called.
+        callbacks : list[Callback | None]
+            Specify a different callback for every channel.
+            Mutually exclusive with `callback`. Length must match the number of channels.
         **kwargs
             These keyword arguments are passed to the measure method.
         """
-        return self._loop.run_until_complete(self._async.measure(method=method, **kwargs))
+        return self._loop.run_until_complete(
+            self._async.measure(method=method, callback=callback, callbacks=callbacks, **kwargs)
+        )
