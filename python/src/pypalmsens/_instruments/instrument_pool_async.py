@@ -115,7 +115,7 @@ class InstrumentPoolAsync:
         """
         tasks: list[Awaitable[Measurement]] = []
 
-        if hasattr(method, 'general') and method.general.use_hardware_sync:
+        if method._use_hardware_sync:
             tasks = await self._measure_hw_sync(method)
         else:
             for manager in self.managers:
