@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import urllib.request
+import re
 from pathlib import Path
 from typing import ClassVar, Literal
 
@@ -2143,3 +2144,10 @@ endif
             raise ValueError('A script must end with 2 newlines')
 
         return value
+
+    @property
+    def _use_hardware_sync(self) -> bool:
+        """Return true if 'set_channel_sync 1' is set."""
+        match = re.findall(r'\n\s*(set_channel_sync\s+1)', self.script)
+
+        return match is not None

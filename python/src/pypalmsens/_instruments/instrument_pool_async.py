@@ -41,6 +41,10 @@ class InstrumentPoolAsync:
             else:
                 self.managers.append(item)
 
+    def __repr__(self):
+        ids = [manager.instrument.id for manager in self.managers]
+        return f'{self.__class__.__name__}({ids}, connected={self.is_connected()})'
+
     async def __aenter__(self):
         await self.connect()
         return self
@@ -100,7 +104,9 @@ class InstrumentPoolAsync:
     ) -> list[Measurement]:
         """Concurrently start measurement on all managers in the pool.
 
-        For hardware synchronization, set `use_hardware_sync` on the method.
+        For hardware synchronization, set `.general.use_hardware_sync` on the method.
+        For MethodSCRIPT, use 'set_channel_sync 1'.
+
         In addition, the pool must contain:
         - channels from a single multi-channel instrument only
         - the first channel of the multi-channel instrument
@@ -131,6 +137,9 @@ class InstrumentPoolAsync:
         if callbacks:
             if len(callbacks) != len(self.managers):
                 raise IndexError('Number of callbacks does not match number of channels.')
+
+        if method._use_hardware_sync:
+            tasks = await self._measure_hw_sync(method)
         else:
             callbacks = [callback or None for _ in self.managers]
 
