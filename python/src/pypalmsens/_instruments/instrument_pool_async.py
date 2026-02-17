@@ -36,6 +36,10 @@ class InstrumentPoolAsync:
             else:
                 self.managers.append(item)
 
+    def __repr__(self):
+        ids = [manager.instrument.id for manager in self.managers]
+        return f'{self.__class__.__name__}({ids}, connected={self.is_connected()})'
+
     async def __aenter__(self):
         await self.connect()
         return self

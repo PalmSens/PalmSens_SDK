@@ -37,6 +37,10 @@ class InstrumentPool:
         self.managers: list[InstrumentManagerAsync] = self._async.managers
         """List of instruments managers in the pool."""
 
+    def __repr__(self):
+        ids = [manager.instrument.id for manager in self.managers]
+        return f'{self.__class__.__name__}({ids}, connected={self.is_connected()})'
+
     def __enter__(self):
         self.connect()
         return self
