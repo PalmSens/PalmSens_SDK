@@ -556,7 +556,7 @@ class InstrumentManagerAsync(SupportedMixin):
             If specified, call this function on every new set of data points.
             New data points are batched, and contain all points since the last
             time it was called. Each point is an instance of `ps.data.CallbackData`
-            for non-impedimetric or  `ps.data.CallbackDataEIS`
+            for non-impedimetric or `ps.data.CallbackDataEIS`
             for impedimetric measurments.
         sync_event: asyncio.Event
             Event for hardware synchronization. Do not use directly.

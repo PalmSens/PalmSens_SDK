@@ -45,6 +45,9 @@ class InstrumentPoolAsync:
         ids = [manager.instrument.id for manager in self.managers]
         return f'{self.__class__.__name__}({ids}, connected={self.is_connected()})'
 
+    def __len__(self):
+        return len(self.managers)
+
     async def __aenter__(self):
         await self.connect()
         return self
@@ -98,8 +101,7 @@ class InstrumentPoolAsync:
     async def measure(
         self,
         method: BaseTechnique,
-        callback: Callback | None = None,
-        callbacks: list[Callback | None] | None = None,
+        callback: Callback | Sequence[Callback | None] | None = None,
         **kwargs,
     ) -> list[Measurement]:
         """Concurrently start measurement on all managers in the pool.
@@ -119,32 +121,29 @@ class InstrumentPoolAsync:
         ----------
         method : MethodSettings
             Method parameters for measurement.
-        callback : Callback | None
-            If specified, call this function on every new set of data points.
+        callback : list[Callback] | Callback | None
+            If specified, call these functions/this function on every new set of data points.
             New data points are batched, and contain all points since the last
             time it was called.
-        callbacks : list[Callback | None]
-            Specify a different callback for every channel.
-            Mutually exclusive with `callback`. Length must match the number of channels.
+
+            Specify a sequence of callbacks to set a different function for every channel.
+            The number of callbacks must match the number of channels.
+
+            Specify a single callback to set the same function to all channels.
         **kwargs
             These keyword parameters are passed to the measure function.
         """
         tasks: list[Awaitable[Measurement]] = []
 
-        if callback and callbacks:
-            raise ValueError('Specify either `callback` or `callbacks`.')
-
-        if callbacks:
-            if len(callbacks) != len(self.managers):
+        if isinstance(callback, Sequence):
+            if len(callback) != len(self.managers):
                 raise IndexError('Number of callbacks does not match number of channels.')
-
-        if method._use_hardware_sync:
-            tasks = await self._measure_hw_sync(method)
+            callbacks = callback
         else:
             callbacks = [callback or None for _ in self.managers]
 
-        if hasattr(method, 'general') and method.general.use_hardware_sync:
-            return await self._measure_hw_sync(method, callbacks=callbacks, **kwargs)
+        if method._use_hardware_sync:
+            return await self._measure_hw_sync(method, callbacks=callbacks)
 
         for manager, callback in zip(self.managers, callbacks):
             tasks.append(manager.measure(method, callback=callback, **kwargs))
@@ -155,7 +154,7 @@ class InstrumentPoolAsync:
     async def _measure_hw_sync(
         self,
         method: BaseTechnique,
-        callbacks: list[Callback | None],
+        callbacks: Sequence[Callback | None] | None = None,
         **kwargs,
     ) -> list[Measurement]:
         """Concurrently start measurement on all managers in the pool.
@@ -171,6 +170,9 @@ class InstrumentPoolAsync:
         """
         follower_sync_tasks = []
         tasks: list[Awaitable[Measurement]] = []
+
+        if callbacks is None:
+            callbacks = [None] * len(self)
 
         if len(self.managers) < 2:
             raise ValueError(

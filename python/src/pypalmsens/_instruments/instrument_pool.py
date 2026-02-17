@@ -42,6 +42,9 @@ class InstrumentPool:
         ids = [manager.instrument.id for manager in self.managers]
         return f'{self.__class__.__name__}({ids}, connected={self.is_connected()})'
 
+    def __len__(self):
+        return len(self.managers)
+
     def __enter__(self):
         self.connect()
         return self
@@ -112,16 +115,18 @@ class InstrumentPool:
         ----------
         method : MethodSettings
             Method parameters for measurement.
-        callback : Callback | None
-            If specified, call this function on every new set of data points.
+        callback : list[Callback] | Callback | None
+            If specified, call these functions/this function on every new set of data points.
             New data points are batched, and contain all points since the last
             time it was called.
-        callbacks : list[Callback | None]
-            Specify a different callback for every channel.
-            Mutually exclusive with `callback`. Length must match the number of channels.
+
+            Specify a sequence of callbacks to set a different function for every channel.
+            The number of callbacks must match the number of channels.
+
+            Specify a single callback to set the same function to all channels.
         **kwargs
-            These keyword arguments are passed to the measure method.
+            These keyword parameters are passed to the measure function.
         """
         return self._loop.run_until_complete(
-            self._async.measure(method=method, callback=callback, callbacks=callbacks, **kwargs)
+            self._async.measure(method=method, callback=callback, **kwargs)
         )
