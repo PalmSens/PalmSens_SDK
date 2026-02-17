@@ -4,7 +4,7 @@ import asyncio
 from typing import TYPE_CHECKING, Sequence
 
 from .._methods import BaseTechnique
-from .callback import Callback
+from .callback import Callback, CallbackEIS
 from .instrument_manager_async import InstrumentManagerAsync
 from .instrument_pool_async import InstrumentPoolAsync
 from .shared import Instrument
@@ -94,8 +94,7 @@ class InstrumentPool:
     def measure(
         self,
         method: BaseTechnique,
-        callback: Callback | None = None,
-        callbacks: list[Callback | None] | None = None,
+        callback: Sequence[Callback | CallbackEIS] | Callback | CallbackEIS | None = None,
         **kwargs,
     ) -> list[Measurement]:
         """Concurrently run measurement on all managers in the pool.
@@ -115,7 +114,7 @@ class InstrumentPool:
         ----------
         method : MethodSettings
             Method parameters for measurement.
-        callback : list[Callback] | Callback | None
+        callback : list[Callback] | Callback | CallbackEIS | None
             If specified, call these functions/this function on every new set of data points.
             New data points are batched, and contain all points since the last
             time it was called.

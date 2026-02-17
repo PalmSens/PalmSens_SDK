@@ -25,7 +25,7 @@ from .._methods import (
     pr_string_to_enum,
 )
 from ..data import Measurement
-from .callback import Callback, CallbackStatus, Status
+from .callback import Callback, CallbackEIS, CallbackStatus, Status
 from .measurement_manager_async import MeasurementManagerAsync
 from .shared import Instrument, create_future, firmware_warning
 
@@ -177,7 +177,7 @@ async def connect_async(
 async def measure_async(
     method: BaseTechnique,
     instrument: None | Instrument = None,
-    callback: Callback | None = None,
+    callback: Callback | CallbackEIS | None = None,
 ) -> Measurement:
     """Run measurement async.
 
@@ -543,7 +543,7 @@ class InstrumentManagerAsync(SupportedMixin):
         self,
         method: BaseTechnique,
         *,
-        callback: Callback | None = None,
+        callback: Callback | CallbackEIS | None = None,
         sync_event: asyncio.Event | None = None,
     ):
         """Start measurement using given method parameters.

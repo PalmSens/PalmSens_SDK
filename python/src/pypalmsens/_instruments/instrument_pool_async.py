@@ -4,7 +4,7 @@ import asyncio
 from typing import TYPE_CHECKING, Any, Awaitable, Protocol, Sequence
 
 from .._methods import BaseTechnique
-from .callback import Callback
+from .callback import Callback, CallbackEIS
 from .instrument_manager_async import InstrumentManagerAsync
 from .shared import Instrument
 
@@ -101,7 +101,7 @@ class InstrumentPoolAsync:
     async def measure(
         self,
         method: BaseTechnique,
-        callback: Callback | Sequence[Callback | None] | None = None,
+        callback: Sequence[Callback | CallbackEIS] | Callback | CallbackEIS | None = None,
         **kwargs,
     ) -> list[Measurement]:
         """Concurrently start measurement on all managers in the pool.
@@ -121,7 +121,7 @@ class InstrumentPoolAsync:
         ----------
         method : MethodSettings
             Method parameters for measurement.
-        callback : list[Callback] | Callback | None
+        callback : list[Callback] | Callback | CallbackEIS | None
             If specified, call these functions/this function on every new set of data points.
             New data points are batched, and contain all points since the last
             time it was called.
@@ -134,6 +134,8 @@ class InstrumentPoolAsync:
             These keyword parameters are passed to the measure function.
         """
         tasks: list[Awaitable[Measurement]] = []
+
+        callbacks: Sequence[Callback | CallbackEIS | None]
 
         if isinstance(callback, Sequence):
             if len(callback) != len(self.managers):
@@ -154,7 +156,7 @@ class InstrumentPoolAsync:
     async def _measure_hw_sync(
         self,
         method: BaseTechnique,
-        callbacks: Sequence[Callback | None] | None = None,
+        callbacks: Sequence[Callback | CallbackEIS | None] | None = None,
         **kwargs,
     ) -> list[Measurement]:
         """Concurrently start measurement on all managers in the pool.
@@ -163,7 +165,7 @@ class InstrumentPoolAsync:
         ----------
         method : MethodSettings
             Method parameters for measurement.
-        callbacks : list[Callback | None]
+        callbacks : list[Callback | CallbackEIS | None]
             List of callbacks, must match number of managers.
         **kwargs
             These keyword arguments are passed to the measurement function.
