@@ -9,5 +9,5 @@ ext:
     run: docfx docs/dotnet/api/docfx.json
     scan:
       clean: true
-      dir: docs/start/api/_site
+      dir: docs/dotnet/api/_site
       into: modules/api/attachments/
