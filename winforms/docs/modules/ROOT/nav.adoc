@@ -1,10 +1,10 @@
 * xref:installation.adoc[]
-* xref:dotnet:ROOT:files.adoc[] ↗
-* xref:dotnet:ROOT:data.adoc[] ↗
-* xref:dotnet:ROOT:connecting.adoc[] ↗
-* xref:dotnet:ROOT:measuring.adoc[] ↗
-* xref:dotnet:ROOT:methodscript.adoc[] ↗
-* xref:dotnet:ROOT:techniques.adoc[] ↗
+* xref:files.adoc[] ↗
+* xref:data.adoc[] ↗
+* xref:connecting.adoc[] ↗
+* xref:measuring.adoc[] ↗
+* xref:methodscript.adoc[] ↗
+* xref:techniques.adoc[] ↗
 * xref:examples.adoc[]
 * xref:dotnet:api:index.adoc[API reference ↗]
 * https://github.com/PalmSens/PalmSens_SDK/tree/main/winforms[Source code ↗]
