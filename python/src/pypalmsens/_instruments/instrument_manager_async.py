@@ -221,7 +221,7 @@ class SupportedMixin:
 
         Returns
         -------
-        methods: list[str]
+        methods: list[AllowedMethods]
             List of supported methods.
         """
         self.ensure_connection()
