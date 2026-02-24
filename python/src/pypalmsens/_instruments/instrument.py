@@ -1,19 +1,14 @@
 from __future__ import annotations
 
 import asyncio
+import sys
 import warnings
 from dataclasses import dataclass, field
-from typing import TYPE_CHECKING
+from typing import Any
 
 import PalmSens
 import System
 from typing_extensions import override
-
-if TYPE_CHECKING:
-    from PalmSens.Devices import Device as PSDevice
-
-import sys
-from typing import TYPE_CHECKING, Any
 
 from .shared import create_future
 
@@ -21,20 +16,9 @@ WINDOWS = sys.platform == 'win32'
 LINUX = not WINDOWS
 
 if WINDOWS:
-    from PalmSens.Windows.Devices import (
-        BLEDevice,
-        BluetoothDevice,
-        FTDIDevice,
-        SerialPortDevice,
-        USBCDCDevice,
-        WinUSBDevice,
-    )
+    from PalmSens.Windows import Devices as PSDevices
 else:
-    from PalmSens.Core.Linux.Comm.Devices import FTDIDevice, SerialPortDevice
-
-
-if TYPE_CHECKING:
-    pass
+    from PalmSens.Core.Linux.Comm import Devices as PSDevices
 
 
 warnings.simplefilter('default')
@@ -75,29 +59,32 @@ async def discover_async(
     """
     interfaces: dict[str, Any] = {}
 
-    if ftdi:
-        interfaces['ftdi'] = FTDIDevice
-
     if WINDOWS:
+        if ftdi:
+            interfaces['ftdi'] = PSDevices.FTDIDevice
+
         if usbcdc:
-            interfaces['usbcdc'] = USBCDCDevice
+            interfaces['usbcdc'] = PSDevices.USBCDCDevice
 
         if winusb:
-            interfaces['winusb'] = WinUSBDevice
+            interfaces['winusb'] = PSDevices.WinUSBDevice
 
         if bluetooth:
-            interfaces['bluetooth'] = BluetoothDevice
-            interfaces['ble'] = BLEDevice
+            interfaces['bluetooth'] = PSDevices.BluetoothDevice
+            interfaces['ble'] = PSDevices.BLEDevice
 
     if LINUX:
+        if ftdi:
+            interfaces['ftdi'] = PSDevices.FTDIDevice
+
         if serial:
-            interfaces['serial'] = SerialPortDevice
+            interfaces['serial'] = PSDevices.SerialPortDevice
 
     instruments: list[Instrument] = []
 
     for name, interface in interfaces.items():
         try:
-            devices: list[PalmSens.Devices.Device] = await create_future(
+            devices: list[PalmSens.PSDevices.Device] = await create_future(
                 interface.DiscoverDevicesAsync()
             )
         except System.DllNotFoundException:
@@ -116,13 +103,7 @@ async def discover_async(
             raise
 
         for device in devices:
-            instruments.append(
-                Instrument(
-                    id=device.ToString(),
-                    interface=name,
-                    device=device,
-                )
-            )
+            instruments.append(Instrument._from_device(device))
 
     instruments.sort(key=lambda instrument: instrument.id)
 
@@ -188,7 +169,7 @@ class Instrument:
     Returns -1 if instrument is not part of a multi-channel device."""
     interface: str
     """Type of the connection."""
-    device: PSDevice = field(repr=False)
+    device: PalmSens.Device.Device = field(repr=False)
     """Device connection class."""
 
     def __post_init__(self):
@@ -208,7 +189,7 @@ class Instrument:
         Parameters
         ----------
         port : str
-            Name of the port to connect to
+            Name of the port to connect to.
         baudrate : int, optional
             Set the baudrate. If None, use the default baudrate.
 
@@ -217,18 +198,21 @@ class Instrument:
         instrument : Instrument
             Instrument dataclass
         """
-
         if baudrate is None:
-            device = SerialPortDevice(port)
+            device = PSDevices.SerialPortDevice(port)
         else:
-            device = SerialPortDevice(port, baudrate=baudrate)
+            device = PSDevices.SerialPortDevice(port, baudrate=baudrate)
 
-        instrument = cls(
+        return cls._from_device(device)
+
+    @classmethod
+    def _from_device(cls, device: PalmSens.Devices.Device) -> Instrument:
+        """Construct Instrument from PalmSens device connection class."""
+        return cls(
             id=device.ToString(),
-            interface='serial',
+            interface=device.__class__.__name__.replace('Device', '').lower(),
             device=device,
         )
-        return instrument
 
     @override
     def __repr__(self):
