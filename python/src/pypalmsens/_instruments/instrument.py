@@ -24,6 +24,83 @@ else:
 warnings.simplefilter('default')
 
 
+@dataclass
+class Instrument:
+    """Dataclass holding instrument info."""
+
+    id: str = field(repr=False)
+    """Device ID of the instrument."""
+    name: str = field(init=False)
+    """Name of the instrument."""
+    channel: int = field(init=False, default=-1)
+    """Channel index if part of a multichannel device.
+
+    Returns -1 if instrument is not part of a multi-channel device."""
+    interface: str
+    """Type of the connection."""
+    device: PalmSens.Device.Device = field(repr=False)
+    """Device connection class."""
+
+    def __post_init__(self):
+        try:
+            idx = self.id.index('CH')
+        except ValueError:
+            self.name = self.id
+        else:
+            ch_str = self.id[idx : idx + 5]
+            self.channel = int(ch_str[2:])
+            self.name = self.id[:idx]
+
+    @classmethod
+    def from_port(cls, port: str, *, baudrate: int | None = None) -> Instrument:
+        """Create serial port instrument class.
+
+        Parameters
+        ----------
+        port : str
+            Name of the port to connect to.
+        baudrate : int, optional
+            Set the baudrate. If None, use the default baudrate.
+
+        Returns
+        -------
+        instrument : Instrument
+            Instrument dataclass
+        """
+        if baudrate is None:
+            device = PSDevices.SerialPortDevice(port)
+        else:
+            device = PSDevices.SerialPortDevice(port, baudrate=baudrate)
+
+        return cls._from_device(device)
+
+    @classmethod
+    def _from_device(cls, device: PalmSens.Devices.Device) -> Instrument:
+        """Construct Instrument from PalmSens device connection class."""
+        return cls(
+            id=device.ToString(),
+            interface=device.__class__.__name__.replace('Device', '').lower(),
+            device=device,
+        )
+
+    @override
+    def __repr__(self):
+        args = ''.join(
+            (
+                f'name={self.name!r}, ',
+                f'channel={self.channel}, ' if self.channel > 0 else '',
+                f'interface={self.interface!r}',
+            )
+        )
+
+        return f'{self.__class__.__name__}({args})'
+
+    @property
+    def baudrate(self) -> int:
+        """Baud rate."""
+        return self.device.baudrate
+
+
 async def discover_async(
     ftdi: bool = True,
     usbcdc: bool = True,
@@ -153,80 +230,3 @@ def discover(
             ignore_errors=ignore_errors,
         )
     )
-
-
-@dataclass
-class Instrument:
-    """Dataclass holding instrument info."""
-
-    id: str = field(repr=False)
-    """Device ID of the instrument."""
-    name: str = field(init=False)
-    """Name of the instrument."""
-    channel: int = field(init=False, default=-1)
-    """Channel index if part of a multichannel device.
-
-    Returns -1 if instrument is not part of a multi-channel device."""
-    interface: str
-    """Type of the connection."""
-    device: PalmSens.Device.Device = field(repr=False)
-    """Device connection class."""
-
-    def __post_init__(self):
-        try:
-            idx = self.id.index('CH')
-        except ValueError:
-            self.name = self.id
-        else:
-            ch_str = self.id[idx : idx + 5]
-            self.channel = int(ch_str[2:])
-            self.name = self.id[:idx]
-
-    @classmethod
-    def from_port(cls, port: str, *, baudrate: int | None = None) -> Instrument:
-        """Create serial port instrument class.
-
-        Parameters
-        ----------
-        port : str
-            Name of the port to connect to.
-        baudrate : int, optional
-            Set the baudrate. If None, use the default baudrate.
-
-        Returns
-        -------
-        instrument : Instrument
-            Instrument dataclass
-        """
-        if baudrate is None:
-            device = PSDevices.SerialPortDevice(port)
-        else:
-            device = PSDevices.SerialPortDevice(port, baudrate=baudrate)
-
-        return cls._from_device(device)
-
-    @classmethod
-    def _from_device(cls, device: PalmSens.Devices.Device) -> Instrument:
-        """Construct Instrument from PalmSens device connection class."""
-        return cls(
-            id=device.ToString(),
-            interface=device.__class__.__name__.replace('Device', '').lower(),
-            device=device,
-        )
-
-    @override
-    def __repr__(self):
-        args = ''.join(
-            (
-                f'name={self.name!r}, ',
-                f'channel={self.channel}, ' if self.channel > 0 else '',
-                f'interface={self.interface!r}',
-            )
-        )
-
-        return f'{self.__class__.__name__}({args})'
-
-    @property
-    def baudrate(self) -> int:
-        """Baud rate."""
-        return self.device.baudrate
