@@ -12,14 +12,13 @@ It provides an intuitive Python API, making it straightforward to integrate into
 
 With PyPalmSens, you can:
 
-- Connect to one or more instruments/channels
-- Automate electrochemistry measurements
-- Access and process measured data
-- Analyze and manipulate data
-- Perform peak detection
-- Do Equivalent Circuit Fitting on impedance data
-- Take manual control of the cell
-- Read and write method and data files
+- Connect to [one](measuring/#connecting-to-a-device) or [more](measuring/#multichannel-measurements) instruments/channels
+- Automate [electrochemistry measurements][methods]
+- [Access, process, and analyze](data.md) measured data
+- Perform [peak detection][pypalmsens.data.Curve.find_peaks]
+- Do [Equivalent Circuit Fitting](circuit_fitting.md) on impedance data
+- Take [manual control](examples.md/#manual-control) of the cell
+- [Read and write method and data files](files.md)
 
 To install:
 
