@@ -135,7 +135,7 @@ class DataArray(Sequence[float]):
 class CurrentArray(DataArray):
     """Array of current values in μA.
 
-    Note that for (m)IDC in EIS measurements the the array value
+    Note that for (m)iDC in EIS measurements the array value
     is 'in range' instead of µA for backwards compatibility reasons.
     `current()` and `current_in_range()` return the correct values.
 
