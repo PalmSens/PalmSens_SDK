@@ -149,37 +149,15 @@ class CurrentArray(DataArray):
         """Current in uA."""
         # Work-around for mIDC bug
         if self.type == 'miDC':
-            return self._current_in_range()
+            return [implementation(val).Value for val in self._psarray]
         return self.to_list()
-
-    def _current_in_range(self) -> list[float]:
-        return [implementation(val).ValueInRange for val in self._psarray]
 
     def current_in_range(self) -> list[float]:
         """Raw current value expressed in the active current range.
 
         `current` = `current_in_range` * CR, e.g. 0.2 * 100uA = 2.0 uA
         """
-        # Work-around for mIDC bug
-        if self.type == 'miDC':
-            return self.to_list()
-        return self._current_in_range()
-
-    @override
-    def to_list(self) -> list[float]:
-        """Export data array to list."""
-        # Override to work around bug in self._psarray.GetValues()
-        # for current readings (PalmSens.Core 5.12.1114)
-        # https://github.com/PalmSens/PalmSens_SDK/pull/279#issuecomment-3877662620
-        return list(item.Value for item in self._psarray)
-
-    @override
-    def to_numpy(self) -> np.ndarray:
-        """Export data array to numpy."""
-        # Override to work around bug in self._psarray.GetValues()
-        # for current readings (PalmSens.Core 5.12.1114)
-        # https://github.com/PalmSens/PalmSens_SDK/pull/279#issuecomment-3877662620
-        return np.array(self.to_list())
+        return [implementation(val).ValueInRange for val in self._psarray]
 
     def current_reading(self) -> list[CurrentReading]:
         """Return as list of potential reading objects."""
