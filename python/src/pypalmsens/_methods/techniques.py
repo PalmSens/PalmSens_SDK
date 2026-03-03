@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-import urllib.request
 import re
+import urllib.request
 from pathlib import Path
-from typing import ClassVar, Literal
+from typing import Literal
 
 import PalmSens.Techniques as PSTechniques
 from PalmSens import FixedCurrentRange as PSFixedCurrentRange
@@ -53,7 +53,7 @@ class CyclicVoltammetry(
     'begin_potential'.
     """
 
-    id: ClassVar[str] = 'cv'
+    id: Literal['cv'] = 'cv'
 
     equilibration_time: float = 0.0
     """Equilibration time in s."""
@@ -153,7 +153,7 @@ class FastCyclicVoltammetry(
     points / second (`scan_rate` / `step_potential` > 2500).
     """
 
-    id: ClassVar[str] = 'fcv'
+    id: Literal['fcv'] = 'fcv'
 
     current_range: AllowedCurrentRanges = '1uA'
     """Fixed current range.
@@ -244,7 +244,7 @@ class ACVoltammetry(
     resulting AC response is plotted against the potential.
     """
 
-    id: ClassVar[str] = 'acv'
+    id: Literal['acv'] = 'acv'
 
     equilibration_time: float = 0.0
     """Equilibration time in s."""
@@ -328,7 +328,7 @@ class LinearSweepVoltammetry(
     sampling time. The interval time is equal to `potential_step` / `scan_rate`.
     """
 
-    id: ClassVar[str] = 'lsv'
+    id: Literal['lsv'] = 'lsv'
 
     equilibration_time: float = 0.0
     """Equilibration time in s.
@@ -424,7 +424,7 @@ class SquareWaveVoltammetry(
     frequency (1 / `frequency`). Like DPV, the pulse amplitude is also normally in the range of 5 - 25 or 50 mV.
     """
 
-    id: ClassVar[str] = 'swv'
+    id: Literal['swv'] = 'swv'
 
     equilibration_time: float = 0.0
     """Equilibration time in s."""
@@ -526,7 +526,7 @@ class DifferentialPulseVoltammetry(
     of 5 – 50 mV.
     """
 
-    id: ClassVar[str] = 'dpv'
+    id: Literal['dpv'] = 'dpv'
 
     equilibration_time: float = 0.0
     """Equilibration time in s."""
@@ -634,7 +634,7 @@ class NormalPulseVoltammetry(
     LSV, since the diffusion layer thickness will be smaller, resulting in a higher faradaic current.
     """
 
-    id: ClassVar[str] = 'npv'
+    id: Literal['npv'] = 'npv'
 
     equilibration_time: float = 0.0
     """Equilibration time in s."""
@@ -738,7 +738,7 @@ class ChronoAmperometry(
     with constant interval times.
     """
 
-    id: ClassVar[str] = 'ad'
+    id: Literal['ad'] = 'ad'
 
     equilibration_time: float = 0.0
     """Equilibration time in s."""
@@ -823,7 +823,7 @@ class FastAmperometry(
     high sampling rates or very short interval times.
     """
 
-    id: ClassVar[str] = 'fam'
+    id: Literal['fam'] = 'fam'
 
     current_range: AllowedCurrentRanges = '100nA'
     """Fixed current range.
@@ -894,7 +894,7 @@ class MultiStepAmperometry(
     Levels can be specified using `pypalmsens.settings.ELevel`.
     """
 
-    id: ClassVar[str] = 'ma'
+    id: Literal['ma'] = 'ma'
 
     equilibration_time: float = 0.0
     """Equilibration time in s."""
@@ -993,7 +993,7 @@ class PulsedAmperometricDetection(
     the electrode surface.
     """
 
-    id: ClassVar[str] = 'pad'
+    id: Literal['pad'] = 'pad'
 
     _MODES: tuple[Literal['dc', 'pulse', 'differential'], ...] = ('dc', 'pulse', 'differential')
 
@@ -1069,7 +1069,7 @@ class MultiplePulseAmperometry(
     measured.
     """
 
-    id: ClassVar[str] = 'mpad'
+    id: Literal['mpad'] = 'mpad'
 
     equilibration_time: float = 0.0
     """Equilibration time in s."""
@@ -1150,7 +1150,7 @@ class OpenCircuitPotentiometry(
     This method is the same as `Chronopotentiometry(current=0)`.
     """
 
-    id: ClassVar[str] = 'ocp'
+    id: Literal['ocp'] = 'ocp'
 
     interval_time: float = 0.1
     """Time between two potential samples in s."""
@@ -1224,7 +1224,7 @@ class ChronoPotentiometry(
     the applied current.
     """
 
-    id: ClassVar[str] = 'pot'
+    id: Literal['pot'] = 'pot'
 
     current: float = 0.0
     """The current to apply in the given current range.
@@ -1314,7 +1314,7 @@ class StrippingChronoPotentiometry(
     stops when either the measured potential is below ‘end_potential’ or the `measurement_time` is exceeded.
     """
 
-    id: ClassVar[str] = 'scp'
+    id: Literal['scp'] = 'scp'
 
     potential_range: AllowedPotentialRanges = '500mV'
     """Fixed potential range.
@@ -1395,7 +1395,7 @@ class LinearSweepPotentiometry(
 ):
     """Create linear sweep potentiometry method parameters."""
 
-    id: ClassVar[str] = 'lsp'
+    id: Literal['lsp'] = 'lsp'
 
     applied_current_range: AllowedCurrentRanges = '100uA'
     """Applied current range.
@@ -1487,7 +1487,7 @@ class MultiStepPotentiometry(
     Levels can be specified using `pypalmsens.settings.ILevel()`.
     """
 
-    id: ClassVar[str] = 'mp'
+    id: Literal['mp'] = 'mp'
 
     applied_current_range: AllowedCurrentRanges = '1uA'
     """Applied current range.
@@ -1572,7 +1572,7 @@ class ChronoCoulometry(
     The charge is determined by integrating the current.
     """
 
-    id: ClassVar[str] = 'cc'
+    id: Literal['cc'] = 'cc'
 
     equilibration_time: float = 0.0
     """Equilibration time in s."""
@@ -1690,7 +1690,7 @@ class ElectrochemicalImpedanceSpectroscopy(
     - a repeated single frequency at specified time intervals
     """
 
-    id: ClassVar[str] = 'eis'
+    id: Literal['eis'] = 'eis'
 
     _SCAN_TYPES: tuple[Literal['potential', 'time', 'fixed'], ...] = (
         'potential',
@@ -1883,7 +1883,7 @@ class FastImpedanceSpectroscopy(
 ):
     """Create fast impedance spectroscopy method parameters."""
 
-    id: ClassVar[str] = 'fis'
+    id: Literal['fis'] = 'fis'
 
     equilibration_time: float = 0.0
     """Equilibration time in s."""
@@ -1945,7 +1945,7 @@ class GalvanostaticImpedanceSpectroscopy(
     - a single frequency at specified time intervals
     """
 
-    id: ClassVar[str] = 'gis'
+    id: Literal['gis'] = 'gis'
 
     applied_current_range: AllowedCurrentRanges = '100uA'
     """Applied current range.
@@ -2005,7 +2005,7 @@ class FastGalvanostaticImpedanceSpectroscopy(
 ):
     """Create fast galvanostatic impededance spectroscopy method parameters."""
 
-    id: ClassVar[str] = 'fgis'
+    id: Literal['fgis'] = 'fgis'
 
     applied_current_range: AllowedCurrentRanges = '100uA'
     """Applied current range.
@@ -2065,7 +2065,7 @@ class MethodScript(BaseTechnique):
         https://www.palmsens.com/methodscript/
     """
 
-    id: ClassVar[str] = 'ms'
+    id: Literal['ms'] = 'ms'
 
     script: str = """e
 wait 100m

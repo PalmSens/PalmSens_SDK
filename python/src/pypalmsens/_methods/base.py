@@ -21,7 +21,6 @@ class BaseSettings(BaseModel, metaclass=ABCMeta):
 class BaseTechnique(BaseModel, metaclass=ABCMeta):
     """Protocol to provide base methods for method classes."""
 
-    id: ClassVar[str] = ''
     _registry: ClassVar[dict[str, type[BaseTechnique]]] = {}
 
     def __init_subclass__(cls, **kwargs: Any) -> None:

@@ -316,7 +316,7 @@ class MixedMode(
     potential, and minimum potential.
     """
 
-    id: ClassVar[str] = 'mm'
+    id: Literal['mm'] = 'mm'
 
     interval_time: float = 0.1
     """Time between two samples in s."""
