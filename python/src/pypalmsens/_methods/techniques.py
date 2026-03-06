@@ -5,10 +5,7 @@ import urllib.request
 from pathlib import Path
 from typing import Literal
 
-import PalmSens.Techniques as PSTechniques
-from PalmSens import FixedCurrentRange as PSFixedCurrentRange
-from PalmSens import FixedPotentialRange as PSFixedPotentialRange
-from PalmSens import Method as PSMethod
+import PalmSens
 from PalmSens.Techniques.Impedance import enumFrequencyType, enumScanType
 from pydantic import Field, field_validator
 from typing_extensions import override
@@ -95,7 +92,7 @@ class CyclicVoltammetry(
     Reference electrode vs ground."""
 
     @override
-    def _update_psmethod(self, psmethod: PSMethod, /):
+    def _update_psmethod(self, psmethod: PalmSens.Method, /):
         """Update method with fast cyclic voltammetry settings."""
         psmethod.EquilibrationTime = self.equilibration_time
         psmethod.BeginPotential = self.begin_potential
@@ -114,7 +111,7 @@ class CyclicVoltammetry(
         )
 
     @override
-    def _update_params(self, psmethod: PSMethod, /):
+    def _update_params(self, psmethod: PalmSens.Method, /):
         self.equilibration_time = single_to_double(psmethod.EquilibrationTime)
         self.begin_potential = single_to_double(psmethod.BeginPotential)
         self.vertex1_potential = single_to_double(psmethod.Vtx1Potential)
@@ -196,10 +193,10 @@ class FastCyclicVoltammetry(
     During these scans, no data is recorded."""
 
     @override
-    def _update_psmethod(self, psmethod: PSMethod, /):
+    def _update_psmethod(self, psmethod: PalmSens.Method, /):
         """Update method with fast cyclic voltammetry settings."""
 
-        psmethod.Ranging = PSFixedCurrentRange(cr_string_to_enum(self.current_range))
+        psmethod.Ranging = PalmSens.FixedCurrentRange(cr_string_to_enum(self.current_range))
         psmethod.EquilibrationTime = self.equilibration_time
         psmethod.BeginPotential = self.begin_potential
         psmethod.Vtx1Potential = self.vertex1_potential
@@ -211,7 +208,7 @@ class FastCyclicVoltammetry(
         psmethod.nEqScans = self.n_equil_scans
 
     @override
-    def _update_params(self, psmethod: PSMethod, /):
+    def _update_params(self, psmethod: PalmSens.Method, /):
         self.current_range = cr_enum_to_string(psmethod.Ranging.StartCurrentRange)
         self.equilibration_time = single_to_double(psmethod.EquilibrationTime)
         self.begin_potential = single_to_double(psmethod.BeginPotential)
@@ -276,7 +273,7 @@ class ACVoltammetry(
     and added to the measurement as an additional curve."""
 
     @override
-    def _update_psmethod(self, psmethod: PSMethod, /):
+    def _update_psmethod(self, psmethod: PalmSens.Method, /):
         """Update method with linear sweep settings."""
         psmethod.EquilibrationTime = self.equilibration_time
         psmethod.BeginPotential = self.begin_potential
@@ -288,7 +285,7 @@ class ACVoltammetry(
         psmethod.Scanrate = self.scanrate
 
     @override
-    def _update_params(self, psmethod: PSMethod, /):
+    def _update_params(self, psmethod: PalmSens.Method, /):
         self.equilibration_time = single_to_double(psmethod.EquilibrationTime)
         self.begin_potential = single_to_double(psmethod.BeginPotential)
         self.end_potential = single_to_double(psmethod.EndPotential)
@@ -367,7 +364,7 @@ class LinearSweepVoltammetry(
     Reference electrode vs ground."""
 
     @override
-    def _update_psmethod(self, psmethod: PSMethod, /):
+    def _update_psmethod(self, psmethod: PalmSens.Method, /):
         """Update method with linear sweep settings."""
         psmethod.EquilibrationTime = self.equilibration_time
         psmethod.BeginPotential = self.begin_potential
@@ -384,7 +381,7 @@ class LinearSweepVoltammetry(
         )
 
     @override
-    def _update_params(self, psmethod: PSMethod, /):
+    def _update_params(self, psmethod: PalmSens.Method, /):
         self.equilibration_time = single_to_double(psmethod.EquilibrationTime)
         self.begin_potential = single_to_double(psmethod.BeginPotential)
         self.end_potential = single_to_double(psmethod.EndPotential)
@@ -466,7 +463,7 @@ class SquareWaveVoltammetry(
     """Record forward and reverse currents."""
 
     @override
-    def _update_psmethod(self, psmethod: PSMethod, /):
+    def _update_psmethod(self, psmethod: PalmSens.Method, /):
         """Update method with square wave voltammetry settings."""
         psmethod.EquilibrationTime = self.equilibration_time
         psmethod.BeginPotential = self.begin_potential
@@ -485,7 +482,7 @@ class SquareWaveVoltammetry(
         )
 
     @override
-    def _update_params(self, psmethod: PSMethod, /):
+    def _update_params(self, psmethod: PalmSens.Method, /):
         self.equilibration_time = single_to_double(psmethod.EquilibrationTime)
         self.begin_potential = single_to_double(psmethod.BeginPotential)
         self.end_potential = single_to_double(psmethod.EndPotential)
@@ -573,7 +570,7 @@ class DifferentialPulseVoltammetry(
     Reference electrode vs ground."""
 
     @override
-    def _update_psmethod(self, psmethod: PSMethod, /):
+    def _update_psmethod(self, psmethod: PalmSens.Method, /):
         """Update method with linear sweep settings."""
         psmethod.EquilibrationTime = self.equilibration_time
         psmethod.BeginPotential = self.begin_potential
@@ -592,7 +589,7 @@ class DifferentialPulseVoltammetry(
         )
 
     @override
-    def _update_params(self, psmethod: PSMethod, /):
+    def _update_params(self, psmethod: PalmSens.Method, /):
         self.equilibration_time = single_to_double(psmethod.EquilibrationTime)
         self.begin_potential = single_to_double(psmethod.BeginPotential)
         self.end_potential = single_to_double(psmethod.EndPotential)
@@ -679,7 +676,7 @@ class NormalPulseVoltammetry(
     Reference electrode vs ground."""
 
     @override
-    def _update_psmethod(self, psmethod: PSMethod, /):
+    def _update_psmethod(self, psmethod: PalmSens.Method, /):
         """Update method with normal pulse voltammetry settings."""
         psmethod.EquilibrationTime = self.equilibration_time
         psmethod.BeginPotential = self.begin_potential
@@ -697,7 +694,7 @@ class NormalPulseVoltammetry(
         )
 
     @override
-    def _update_params(self, psmethod: PSMethod, /):
+    def _update_params(self, psmethod: PalmSens.Method, /):
         self.equilibration_time = single_to_double(psmethod.EquilibrationTime)
         self.begin_potential = single_to_double(psmethod.BeginPotential)
         self.end_potential = single_to_double(psmethod.EndPotential)
@@ -769,7 +766,7 @@ class ChronoAmperometry(
     Reference electrode vs ground."""
 
     @override
-    def _update_psmethod(self, psmethod: PSMethod, /):
+    def _update_psmethod(self, psmethod: PalmSens.Method, /):
         """Update method with chrono amperometry settings."""
         psmethod.EquilibrationTime = self.equilibration_time
         psmethod.IntervalTime = self.interval_time
@@ -785,7 +782,7 @@ class ChronoAmperometry(
         )
 
     @override
-    def _update_params(self, psmethod: PSMethod, /):
+    def _update_params(self, psmethod: PalmSens.Method, /):
         self.equilibration_time = single_to_double(psmethod.EquilibrationTime)
         self.interval_time = single_to_double(psmethod.IntervalTime)
         self.potential = single_to_double(psmethod.Potential)
@@ -853,9 +850,9 @@ class FastAmperometry(
     """
 
     @override
-    def _update_psmethod(self, psmethod: PSMethod, /):
+    def _update_psmethod(self, psmethod: PalmSens.Method, /):
         """Update method with fast amperometry settings."""
-        psmethod.Ranging = PSFixedCurrentRange(cr_string_to_enum(self.current_range))
+        psmethod.Ranging = PalmSens.FixedCurrentRange(cr_string_to_enum(self.current_range))
         psmethod.EquilibrationTime = self.equilibration_time
         psmethod.EqPotentialFA = self.equilibration_potential
         psmethod.IntervalTime = self.interval_time
@@ -863,7 +860,7 @@ class FastAmperometry(
         psmethod.RunTime = self.run_time
 
     @override
-    def _update_params(self, psmethod: PSMethod, /):
+    def _update_params(self, psmethod: PalmSens.Method, /):
         self.current_range = cr_enum_to_string(psmethod.Ranging.StartCurrentRange)
         self.equilibration_time = single_to_double(psmethod.EquilibrationTime)
         self.equilibration_potential = single_to_double(psmethod.EqPotentialFA)
@@ -928,7 +925,7 @@ class MultiStepAmperometry(
     Reference electrode vs ground."""
 
     @override
-    def _update_psmethod(self, psmethod: PSMethod, /):
+    def _update_psmethod(self, psmethod: PalmSens.Method, /):
         """Update method with multistep amperometry settings."""
         psmethod.EquilibrationTime = self.equilibration_time
         psmethod.IntervalTime = self.interval_time
@@ -953,7 +950,7 @@ class MultiStepAmperometry(
         )
 
     @override
-    def _update_params(self, psmethod: PSMethod, /):
+    def _update_params(self, psmethod: PalmSens.Method, /):
         self.equilibration_time = single_to_double(psmethod.EquilibrationTime)
         self.interval_time = single_to_double(psmethod.IntervalTime)
         self.n_cycles = psmethod.nCycles
@@ -1030,7 +1027,7 @@ class PulsedAmperometricDetection(
     """
 
     @override
-    def _update_psmethod(self, psmethod: PSMethod, /):
+    def _update_psmethod(self, psmethod: PalmSens.Method, /):
         """Update method with pulsed amperometric detection settings."""
         psmethod.EquilibrationTime = self.equilibration_time
         psmethod.IntervalTime = self.interval_time
@@ -1040,10 +1037,10 @@ class PulsedAmperometricDetection(
         psmethod.RunTime = self.run_time
 
         mode = self._MODES.index(self.mode) + 1
-        psmethod.tMode = PSTechniques.PulsedAmpDetection.enumMode(mode)
+        psmethod.tMode = PalmSens.Techniques.PulsedAmpDetection.enumMode(mode)
 
     @override
-    def _update_params(self, psmethod: PSMethod, /):
+    def _update_params(self, psmethod: PalmSens.Method, /):
         self.equilibration_time = single_to_double(psmethod.EquilibrationTime)
         self.interval_time = single_to_double(psmethod.IntervalTime)
         self.potential = single_to_double(psmethod.Potential)
@@ -1100,7 +1097,7 @@ class MultiplePulseAmperometry(
     """Third applied potential level at which the current is recorded in V."""
 
     @override
-    def _update_psmethod(self, psmethod: PSMethod, /):
+    def _update_psmethod(self, psmethod: PalmSens.Method, /):
         """Update method with multistep amperometry settings."""
         psmethod.EquilibrationTime = self.equilibration_time
         psmethod.RunTime = self.run_time
@@ -1113,7 +1110,7 @@ class MultiplePulseAmperometry(
         psmethod.t3 = self.duration_3
 
     @override
-    def _update_params(self, psmethod: PSMethod, /):
+    def _update_params(self, psmethod: PalmSens.Method, /):
         self.equilibration_time = single_to_double(psmethod.EquilibrationTime)
         self.run_time = single_to_double(psmethod.RunTime)
 
@@ -1174,7 +1171,7 @@ class OpenCircuitPotentiometry(
     See `pypalmsens.settings.AllowedCurrentRanges` for options."""
 
     @override
-    def _update_psmethod(self, psmethod: PSMethod, /):
+    def _update_psmethod(self, psmethod: PalmSens.Method, /):
         """Update method with open circuit potentiometry settings."""
         psmethod.IntervalTime = self.interval_time
         psmethod.RunTime = self.run_time
@@ -1187,7 +1184,7 @@ class OpenCircuitPotentiometry(
         )
 
     @override
-    def _update_params(self, psmethod: PSMethod, /):
+    def _update_params(self, psmethod: PalmSens.Method, /):
         self.interval_time = single_to_double(psmethod.IntervalTime)
         self.run_time = single_to_double(psmethod.RunTime)
         self.record_we_current_range = cr_enum_to_string(psmethod.AppliedCurrentRange)
@@ -1257,7 +1254,7 @@ class ChronoPotentiometry(
     """Record working electrode current."""
 
     @override
-    def _update_psmethod(self, psmethod: PSMethod, /):
+    def _update_psmethod(self, psmethod: PalmSens.Method, /):
         """Update method with chronopotentiometry settings."""
         psmethod.Current = self.current
         psmethod.AppliedCurrentRange = cr_string_to_enum(self.applied_current_range)
@@ -1274,7 +1271,7 @@ class ChronoPotentiometry(
         )
 
     @override
-    def _update_params(self, psmethod: PSMethod, /):
+    def _update_params(self, psmethod: PalmSens.Method, /):
         self.current = single_to_double(psmethod.Current)
         self.applied_current_range = cr_enum_to_string(psmethod.AppliedCurrentRange)
         self.interval_time = single_to_double(psmethod.IntervalTime)
@@ -1352,9 +1349,9 @@ class StrippingChronoPotentiometry(
     """Override the bandwidth filter cutoff frequency (in Hz)."""
 
     @override
-    def _update_psmethod(self, psmethod: PSMethod, /):
+    def _update_psmethod(self, psmethod: PalmSens.Method, /):
         """Update method with stripping chrono potentiometry settings."""
-        psmethod.RangingPotential = PSFixedPotentialRange(
+        psmethod.RangingPotential = PalmSens.FixedPotentialRange(
             pr_string_to_enum(self.potential_range)
         )
 
@@ -1368,7 +1365,7 @@ class StrippingChronoPotentiometry(
             psmethod.Bandwidth = self.bandwidth
 
     @override
-    def _update_params(self, psmethod: PSMethod, /):
+    def _update_params(self, psmethod: PalmSens.Method, /):
         self.potential_range = pr_enum_to_string(psmethod.RangingPotential.StartPotentialRange)
 
         self.current = single_to_double(psmethod.Current)
@@ -1432,7 +1429,7 @@ class LinearSweepPotentiometry(
     """Record working electrode current."""
 
     @override
-    def _update_psmethod(self, psmethod: PSMethod, /):
+    def _update_psmethod(self, psmethod: PalmSens.Method, /):
         """Update method with lineas sweep potentiometry settings."""
         psmethod.AppliedCurrentRange = cr_string_to_enum(self.applied_current_range)
 
@@ -1448,7 +1445,7 @@ class LinearSweepPotentiometry(
         )
 
     @override
-    def _update_params(self, psmethod: PSMethod, /):
+    def _update_params(self, psmethod: PalmSens.Method, /):
         self.applied_current_range = cr_enum_to_string(psmethod.AppliedCurrentRange)
 
         self.current_begin = single_to_double(psmethod.BeginCurrent)
@@ -1515,7 +1512,7 @@ class MultiStepPotentiometry(
     Reference electrode vs ground."""
 
     @override
-    def _update_psmethod(self, psmethod: PSMethod, /):
+    def _update_psmethod(self, psmethod: PalmSens.Method, /):
         """Update method with multistep potentiometry settings."""
         psmethod.AppliedCurrentRange = cr_string_to_enum(self.applied_current_range)
         psmethod.IntervalTime = self.interval_time
@@ -1538,7 +1535,7 @@ class MultiStepPotentiometry(
         )
 
     @override
-    def _update_params(self, psmethod: PSMethod, /):
+    def _update_params(self, psmethod: PalmSens.Method, /):
         self.applied_current_range = cr_enum_to_string(psmethod.AppliedCurrentRange)
 
         self.interval_time = single_to_double(psmethod.IntervalTime)
@@ -1617,7 +1614,7 @@ class ChronoCoulometry(
     Reference electrode vs ground."""
 
     @override
-    def _update_psmethod(self, psmethod: PSMethod, /):
+    def _update_psmethod(self, psmethod: PalmSens.Method, /):
         """Update method with chrono coulometry settings."""
         psmethod.EquilibrationTime = self.equilibration_time
         psmethod.IntervalTime = self.interval_time
@@ -1639,7 +1636,7 @@ class ChronoCoulometry(
         )
 
     @override
-    def _update_params(self, psmethod: PSMethod, /):
+    def _update_params(self, psmethod: PalmSens.Method, /):
         self.equilibration_time = single_to_double(psmethod.EquilibrationTime)
         self.interval_time = single_to_double(psmethod.IntervalTime)
         self.step1_potential = single_to_double(psmethod.EFirstStep)
@@ -1823,7 +1820,7 @@ class ElectrochemicalImpedanceSpectroscopy(
     """
 
     @override
-    def _update_psmethod(self, psmethod: PSMethod, /):
+    def _update_psmethod(self, psmethod: PalmSens.Method, /):
         """Update method with electrochemical impedance spectroscopy settings."""
 
         if self.scan_type == 'potential':
@@ -1849,7 +1846,7 @@ class ElectrochemicalImpedanceSpectroscopy(
         psmethod.MaxEqTime = self.max_equilibration_time
 
     @override
-    def _update_params(self, psmethod: PSMethod, /):
+    def _update_params(self, psmethod: PalmSens.Method, /):
         self.scan_type = self._SCAN_TYPES[int(psmethod.ScanType)]
         self.frequency_type = self._FREQ_TYPES[int(psmethod.FreqType)]
         self.equilibration_time = single_to_double(psmethod.EquilibrationTime)
@@ -1904,7 +1901,7 @@ class FastImpedanceSpectroscopy(
     """Fixed frequency in Hz."""
 
     @override
-    def _update_psmethod(self, psmethod: PSMethod, /):
+    def _update_psmethod(self, psmethod: PalmSens.Method, /):
         """Update method with fas impedance spectroscopy settings."""
         psmethod.Eac = self.ac_potential
         psmethod.EquilibrationTime = self.equilibration_time
@@ -1914,7 +1911,7 @@ class FastImpedanceSpectroscopy(
         psmethod.RunTime = self.run_time
 
     @override
-    def _update_params(self, psmethod: PSMethod, /):
+    def _update_params(self, psmethod: PalmSens.Method, /):
         self.ac_potential = single_to_double(psmethod.Eac)
         self.equilibration_time = single_to_double(psmethod.EquilibrationTime)
         self.frequency = single_to_double(psmethod.FixedFrequency)
@@ -1971,7 +1968,7 @@ class GalvanostaticImpedanceSpectroscopy(
     """Number of frequencies."""
 
     @override
-    def _update_psmethod(self, psmethod: PSMethod, /):
+    def _update_psmethod(self, psmethod: PalmSens.Method, /):
         """Update method with galvanic impedance spectroscopy settings."""
 
         psmethod.ScanType = enumScanType.Fixed
@@ -1985,7 +1982,7 @@ class GalvanostaticImpedanceSpectroscopy(
         psmethod.MinFrequency = self.min_frequency
 
     @override
-    def _update_params(self, psmethod: PSMethod, /):
+    def _update_params(self, psmethod: PalmSens.Method, /):
         self.applied_current_range = cr_enum_to_string(psmethod.AppliedCurrentRange)
         self.equilibration_time = single_to_double(psmethod.EquilibrationTime)
         self.ac_current = single_to_double(psmethod.Iac)
@@ -2032,7 +2029,7 @@ class FastGalvanostaticImpedanceSpectroscopy(
     """Fixed frequency in Hz."""
 
     @override
-    def _update_psmethod(self, psmethod: PSMethod, /):
+    def _update_psmethod(self, psmethod: PalmSens.Method, /):
         """Update method with fast galvanic impedance spectroscopy settings."""
         psmethod.AppliedCurrentRange = cr_string_to_enum(self.applied_current_range)
         psmethod.Iac = self.ac_current
@@ -2042,7 +2039,7 @@ class FastGalvanostaticImpedanceSpectroscopy(
         psmethod.IntervalTime = self.interval_time
 
     @override
-    def _update_params(self, psmethod: PSMethod, /):
+    def _update_params(self, psmethod: PalmSens.Method, /):
         self.applied_current_range = cr_enum_to_string(psmethod.AppliedCurrentRange)
         self.ac_current = single_to_double(psmethod.Iac)
         self.dc_current = single_to_double(psmethod.Idc)
@@ -2080,12 +2077,12 @@ endif
         https://www.palmsens.com/methodscript/ for more information."""
 
     @override
-    def _update_psmethod(self, psmethod: PSMethod, /):
+    def _update_psmethod(self, psmethod: PalmSens.Method, /):
         """Update method with MethodScript."""
         psmethod.MethodScript = self.script
 
     @override
-    def _update_params(self, psmethod: PSMethod, /):
+    def _update_params(self, psmethod: PalmSens.Method, /):
         self.script = psmethod.MethodScript
 
     @classmethod
