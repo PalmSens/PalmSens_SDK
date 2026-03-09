@@ -24,9 +24,9 @@
     background-color: #4433cc;
 }
 
-.nav-link {
+/*.nav-link {
     color: white !important;
-}
+}*/
 
 .btn {
   --bs-btn-color: white !important;
@@ -46,12 +46,18 @@ body[data-layout="landing"] > header > nav {
 
 body > footer,
 body[data-layout="landing"] > footer {
-    color: white !important;
     padding-top: 10px;
     padding-bottom: 10px;
+    background-color: var(--palmsens-footer-background);
+    height: initial;
+}
+
+body > footer.text-secondary {
+    color: white !important;
+}
+
+body > footer.border-top {
     border-top: solid !important;
     border-top-width: 5px !important;
     border-color: var(--palmsens-classic-blue) !important;
-    background-color: var(--palmsens-footer-background);
-    height: initial;
 }
