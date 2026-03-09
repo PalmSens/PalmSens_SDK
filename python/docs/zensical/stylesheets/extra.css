@@ -1,17 +1,26 @@
+:root {
+    --palmsens-dark-blue: #00387B;
+    --palmsens-classic-blue: #2D9DD6;
+    --palmsens-secondary-background: #EBF3FA;
+    --palmsens-secondary-cta: #A28D5B;
+    --palmsens-footer-background: #0f243c;
+}
+
 [data-md-color-scheme="slate"] {
-    --md-default-bg-color:        #01233d;
-    --md-code-bg-color:           #01355C;
-    --md-primary-fg-color:        #01355C;
-    --md-accent-fg-color:         #008CCD;
-    --md-typeset-a-color:         #008CCD;
+    /*--md-default-bg-color:        #0f243c;*/
+    /*--md-code-bg-color:           #0f243c;
+    --md-code-bg-color--light:    #0f243c;
+    --md-code-bg-color--lighter:  #0f243c;*/
+    --md-primary-fg-color:        var(--palmsens-dark-blue);
+    --md-accent-fg-color:         var(--palmsens-classic-blue);
+    --md-typeset-a-color:         var(--palmsens-classic-blue);
     --md-accent-fg-color--transparent: #f1f5fb;
 }
 
 [data-md-color-scheme="default"] {
-    --md-default-bg-color:        #FFFFFF;
-    --md-primary-fg-color:        #01355C;
-    --md-accent-fg-color:         #008CCD;
-    --md-typeset-a-color:         #008CCD;
+    --md-primary-fg-color:        var(--palmsens-dark-blue);
+    --md-accent-fg-color:         var(--palmsens-classic-blue);
+    --md-typeset-a-color:         var(--palmsens-classic-blue);
     --md-accent-fg-color--transparent: #f1f5fb;
 }
 
@@ -19,22 +28,18 @@
     color: var(--md-accent-fg-color);
 }
 
-[data-md-color-scheme="slate"] .md-footer-meta {
-  background-color: var(--md-primary-fg-color);
-}
-
 .md-header {
-  color: #FFFFFF;
+  color: white;
   background-color: var(--md-primary-fg-color);
 }
 
 .md-search__button {
-  color: #FFFFFF;
+  color: white;
   background-color: var(--md-primary-fg-color);
 }
 
 .md-search__button::before {
-  background-color: #FFFFFF;
+  background-color: white;
 }
 
 .md-search__button::after {
@@ -42,6 +47,21 @@
 }
 
 .md-search__button:hover {
-    background-color: #ffffff40;
-    color: #FFFFFF;;
+    background-color: #FFFFFF40;
+    color: white;
+}
+
+.md-footer {
+  border-top: solid;
+  border-color: var(--palmsens-classic-blue);
+  background-color: var(--palmsens-footer-background);
+}
+
+.md-copyright__highlight,
+html .md-footer-meta.md-typeset a:not(:focus, :hover) {
+    color: white;
+}
+
+.md-copyright {
+    color: #FFFFFF70;
 }
