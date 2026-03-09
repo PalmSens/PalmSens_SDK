@@ -101,8 +101,8 @@ features = [
     "content.code.copy",
     "content.footnote.tooltips",
     "content.tooltips",
-    "navigation.indexes",
     "navigation.footer",
+    "navigation.indexes",
     "toc.follow",
 ]
 
