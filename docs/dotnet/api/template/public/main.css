@@ -16,14 +16,6 @@
     margin-right: 10px;
 }
 
-[data-bs-theme=dark] #logo {
-    content:url("../images/banner_dark.svg");
-}
-
-[data-bs-theme=light] #logo {
-    content:url("../images/banner.svg");
-}
-
 [data-bs-theme=dark] body {
   --bs-body-bg: var(--palmsens-footer-background) !important;
 }
