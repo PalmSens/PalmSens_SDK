@@ -20,13 +20,13 @@
   --bs-body-bg: var(--palmsens-footer-background) !important;
 }
 
-.navbar-custom {
-    background-color: #4433cc;
+.navbar-nav .nav-link.active {
+    color: white !important;
 }
 
-/*.nav-link {
-    color: white !important;
-}*/
+[data-bs-theme="dark"] .hljs {
+  background: #183a62;
+}
 
 .btn {
   --bs-btn-color: white !important;
@@ -40,7 +40,7 @@ body > header > nav,
 body[data-layout="landing"] > header > nav {
     background-color: var(--palmsens-dark-blue) !important;
     border-bottom: solid !important;
-    border-bottom-width: 5px !important;
+    border-bottom-width: 3px !important;
     border-color: var(--palmsens-classic-blue) !important;
 }
 
@@ -58,6 +58,6 @@ body > footer.text-secondary {
 
 body > footer.border-top {
     border-top: solid !important;
-    border-top-width: 5px !important;
+    border-top-width: 3px !important;
     border-color: var(--palmsens-classic-blue) !important;
 }
