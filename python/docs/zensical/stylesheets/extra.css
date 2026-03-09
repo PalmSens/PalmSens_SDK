@@ -7,14 +7,15 @@
 }
 
 [data-md-color-scheme="slate"] {
-    /*--md-default-bg-color:        #0f243c;*/
-    /*--md-code-bg-color:           #0f243c;
-    --md-code-bg-color--light:    #0f243c;
-    --md-code-bg-color--lighter:  #0f243c;*/
+
     --md-primary-fg-color:        var(--palmsens-dark-blue);
     --md-accent-fg-color:         var(--palmsens-classic-blue);
     --md-typeset-a-color:         var(--palmsens-classic-blue);
     --md-accent-fg-color--transparent: #f1f5fb;
+    --md-default-bg-color:        var(--palmsens-footer-background);
+    --md-code-bg-color:           #183a62;
+    --md-code-bg-color--light:    #183a62;
+    --md-code-bg-color--lighter:  #183a62;
 }
 
 [data-md-color-scheme="default"] {
@@ -51,7 +52,8 @@
     color: white;
 }
 
-.md-footer {
+.md-footer,
+.md-footer-meta {
   border-top: solid;
   border-color: var(--palmsens-classic-blue);
   background-color: var(--palmsens-footer-background);
