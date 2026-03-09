@@ -11,7 +11,7 @@
     --md-primary-fg-color:        var(--palmsens-dark-blue);
     --md-accent-fg-color:         var(--palmsens-classic-blue);
     --md-typeset-a-color:         var(--palmsens-classic-blue);
-    --md-accent-fg-color--transparent: #f1f5fb;
+    --md-accent-fg-color--transparent: var(--palmsens-secondary-background);
     --md-default-bg-color:        var(--palmsens-footer-background);
     --md-code-bg-color:           #183a62;
     --md-code-bg-color--light:    #183a62;
@@ -22,7 +22,7 @@
     --md-primary-fg-color:        var(--palmsens-dark-blue);
     --md-accent-fg-color:         var(--palmsens-classic-blue);
     --md-typeset-a-color:         var(--palmsens-classic-blue);
-    --md-accent-fg-color--transparent: #f1f5fb;
+    --md-accent-fg-color--transparent: var(--palmsens-secondary-background);
 }
 
 [data-md-color-scheme="default"] h1 {
@@ -52,10 +52,15 @@
     color: white;
 }
 
-.md-footer,
-.md-footer-meta {
+.md-footer {
+  padding-top: 10px;
+  padding-bottom: 10px;
   border-top: solid;
   border-color: var(--palmsens-classic-blue);
+  background-color: var(--palmsens-footer-background);
+}
+
+.md-footer-meta {
   background-color: var(--palmsens-footer-background);
 }
 
