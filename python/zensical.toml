@@ -208,4 +208,4 @@ show_signature_type_parameters = true
 backlinks = false  # crashes in linux
 # Show base classes OR inheritance diagram.
 show_bases = false
-show_inheritance_diagram = true
+show_inheritance_diagram = false
