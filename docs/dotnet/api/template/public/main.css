@@ -1,3 +1,17 @@
+:root {
+    --palmsens-dark-blue: #00387B;
+    --palmsens-classic-blue: #2D9DD6;
+    --palmsens-secondary-background: #EBF3FA;
+    --palmsens-secondary-cta: #A28D5B;
+    --palmsens-footer-background: #0f243c;
+
+    --bs-navbar-active-color: white;
+}
+
+[data-bs-theme=light] {
+   --bs-navbar-active-color: white;
+}
+
 #logo {
     margin-right: 10px;
 }
@@ -8,4 +22,44 @@
 
 [data-bs-theme=light] #logo {
     content:url("../images/banner.svg");
+}
+
+[data-bs-theme=dark] body {
+  --bs-body-bg: var(--palmsens-footer-background) !important;
+}
+
+.navbar-custom {
+    background-color: #4433cc;
+}
+
+.nav-link {
+    color: white !important;
+}
+
+.btn {
+  --bs-btn-color: white !important;
+}
+
+.btn:hover {
+  color: var(--palmsens-classic-blue) !important;
+}
+
+body > header > nav,
+body[data-layout="landing"] > header > nav {
+    background-color: var(--palmsens-dark-blue) !important;
+    border-bottom: solid !important;
+    border-bottom-width: 5px !important;
+    border-color: var(--palmsens-classic-blue) !important;
+}
+
+body > footer,
+body[data-layout="landing"] > footer {
+    color: white !important;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border-top: solid !important;
+    border-top-width: 5px !important;
+    border-color: var(--palmsens-classic-blue) !important;
+    background-color: var(--palmsens-footer-background);
+    height: initial;
 }
