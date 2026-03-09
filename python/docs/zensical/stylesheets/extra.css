@@ -32,6 +32,8 @@
 .md-header {
   color: white;
   background-color: var(--md-primary-fg-color);
+  border-bottom: solid;
+  border-color: var(--palmsens-classic-blue);
 }
 
 .md-search__button {
@@ -52,15 +54,11 @@
     color: white;
 }
 
-.md-footer {
+.md-footer-meta {
   padding-top: 10px;
   padding-bottom: 10px;
   border-top: solid;
   border-color: var(--palmsens-classic-blue);
-  background-color: var(--palmsens-footer-background);
-}
-
-.md-footer-meta {
   background-color: var(--palmsens-footer-background);
 }
 

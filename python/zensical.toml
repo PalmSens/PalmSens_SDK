@@ -102,6 +102,7 @@ features = [
     "content.footnote.tooltips",
     "content.tooltips",
     "navigation.indexes",
+    "navigation.footer",
     "toc.follow",
 ]
 
