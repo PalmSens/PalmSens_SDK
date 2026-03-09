@@ -15,6 +15,12 @@ a {
 }
 
 .navbar-nav .nav-link.active {
+    background-color: var(--palmsens-secondary-background);
+    color: var(--palmsens-dark-blue) !important;
+    border-radius: 5px;
+}
+
+.navbar-nav .nav-link {
     color: white !important;
 }
 
