@@ -4,26 +4,25 @@
     --palmsens-secondary-background: #EBF3FA;
     --palmsens-secondary-cta: #A28D5B;
     --palmsens-footer-background: #0f243c;
-
-    --bs-navbar-active-color: white;
 }
 
-[data-bs-theme=light] {
-   --bs-navbar-active-color: white;
+a {
+    color: var(--palmsens-classic-blue);
 }
 
-#logo {
-    margin-right: 10px;
-}
-
-[data-bs-theme=dark] body {
-  --bs-body-bg: var(--palmsens-footer-background) !important;
+[data-bs-theme=light] h1 {
+   color: var(--palmsens-classic-blue);
 }
 
 .navbar-nav .nav-link.active {
     color: white !important;
 }
 
+[data-bs-theme=dark] body {
+  --bs-body-bg: var(--palmsens-footer-background) !important;
+}
+
+/* Code block background */
 [data-bs-theme="dark"] .hljs {
   background: #183a62;
 }
