@@ -1,4 +1,5 @@
 = Techniques
+:source-language: csharp
 
 All applicable parameters for each technique can be found here.
 For the inheritance hierarchy of the the techniques, see xref:dotnet:api:core.adoc[].
@@ -501,7 +502,7 @@ Outdated class. PalmSens 3 and 4 only. For CV’s with sampling over 5000 data p
 |===
 
 [#api-lsp]
-== LinearSweepPotentiometry
+== Linear Sweep Potentiometry
 
 * Short name: LSP
 * Class: `PalmSens.Techniques.LinearSweepPotentiometry`
@@ -565,64 +566,315 @@ The same as <<api-cp>> as setting the `Current` to 0.
 |`System.Float`
 |===
 
-
-
-
-
-
-
-
-
 [#api-mm]
-== MixedMode
+== Mixed Mode
 
 * Short name: MIX
 * Class: `PalmSens.Techniques.MixedMode`
 * `TechniqueID`: 15
 * `MethodID`: `"mm"`
 
+Use `MixedMode.AddStage(EnumMixedModeStageType stage)` to add a stage, e.g.:
+
+----
+method = MixedMode()
+newStage = method.AddStage(MixedMode.EnumMixedModeStageType.ConstantE);
+newSTage.Potential = 1.0
+----
+
 |===
 |Property |Description |Type
 
+|nCycles
+|Number of times to go through all stages.
+|`System.Int`
+
+|IntervalTime
+|Time between two samples in s.
+|`System.Float`
+|===
+
+=== ConstantE
+
+* Class: `PalmSens.Techniques.MixedModeStageConstantE`
+
+Amperometric detection stage. Apply constant potential during this stage.
+
+|===
+|Property |Description |Type
+
+|Potential
+|Potential during measurement in V.
+|`System.Float`
+
+|RunTime
+|Run time of the stage in s.
+|`System.Float`
+|===
+
+=== ConstantI
+
+* Class: `PalmSens.Techniques.MixedModeStageConstantI`
+
+Potentiometry stage. Apply constant fixed current during this stage.
+
+|===
+|Property |Description |Type
+
+|AppliedCurrentRange
+|Applied current range.
+|`PalmSens.CurrentRange`
+
+|Current
+|The current to apply in the given current range.
+
+Note that this value acts as a multiplier in the applied current range.
+
+So if 10 uA is the applied current range and 1.5 is given as current value,
+the applied current will be 15 uA.
+|`System.Float`
+
+|RunTime
+|Run time of the stage in s.
+|`System.Float`
+|===
+
+=== SweepE
+
+* Class: `PalmSens.Techniques.MixedModeStageSweepE`
+
+Linear sweep detection stage.
+
+Ramps the voltage from `BeginPotential` to `EndPotential` during this stage.
+
+|===
+|Property |Description |Type
+
+|BeginPotential
+|Potential where the scan starts in V.
+|`System.Float`
+
+|EndPotential
+|Potential where the scan stops in V.
+|`System.Float`
+
+|StepPotential
+|Potential step in V.
+|`System.Float`
+
+|Scanrate
+|The applied scan rate.  in V/s.
+
+The applicable range depends on the value of `StepPotential`
+since the data acquisition rate is limited by the connected
+instrument.
+|`System.Float`
+|===
+
+=== OpenCircuit
+
+* Class: `PalmSens.Techniques.MixedModeStageOpenCircuit`
+
+Open Circuit stage. Measure the open circuit potential during this stage.
+
+|===
+|Property |Description |Type
+
+|RunTime
+|Run time of the stage in s.
+|`System.Float`
 
 |===
 
+=== Impedance
 
+* Class: `PalmSens.Techniques.MixedModeStageImpedance`
 
+Electostatic impedance stage. This is like EIS with a single frequency step
+
+|===
+|Property |Description |Type
+
+|Potential
+|DC potential applied during the scan in V.
+|`System.Float`
+
+|Eac
+|AC potential in V RMS.
+|`System.Float`
+
+|RunTime
+|Run time of the scan in s.
+|`System.Float`
+
+|FixedFrequency
+|Fixed frequency in Hz.
+|`System.Float`
+
+|SamplingTime
+|Minimum sampling time in s.
+|`System.Float`
+
+|MaxEqTime
+|Max equilibration time in s.
+|`System.Float`
+|===
 
 [#api-msa]
-== MultistepAmperometry
+== Multistep Amperometry
 
 * Short name: MA
 * Class: `PalmSens.Techniques.MultistepAmperometry`
 * `TechniqueID`: 12
 * `MethodID`: `"ma"`
 
+Create multi-step potentiometry method by specifying levels using `PalmSens.Techniques.ELevel`.
+
+----
+method = PalmSens.Techniques.MultistepAmperometry();
+level = PalmSens.Techniques.ELevel();
+level.Duration = 2.0;
+level.Level = 1.0;
+method.Levels.Add(level);
+----
+
 |===
 |Property |Description |Type
 
+|EquilibrationTime
+|Equilibration time in s.
+|`System.Float`
 
+|IntervalTime
+|The time between two samples in s.
+|`System.Float`
 
+|nCycles
+|Number of repetitions.
+|`System.Int`
+
+|UseSelectiveRecord
+|If True, enable record toggles for each level
+|`System.Bool`
+
+|UseLimits
+|If True, enable limit toggles for each level
+|`System.Bool`
 |===
 
+=== ELevel
 
+* Class: `PalmSens.Techniques.ELevel`
+
+|===
+|Property |Description |Type
+
+|Level
+|Level in V.
+|`System.Float`
+
+|Duration
+|Duration in s.
+|`System.Float`
+
+|Record
+|Record the current.
+|`System.Float`
+
+|UseMaxLimit
+|If True, continue with next level when `MaxLimit` is reached
+|`System.Float`
+
+|MaxLimit
+|Limit current max in µA.
+|`System.Float`
+
+|UseMinLimit
+|If True, continue with next level when `MinLimit` is reached
+|`System.Float`
+
+|MinLimit
+|Limit current min in µA.
+|`System.Float`
+|===
 
 [#api-mp]
-== MultistepPotentiometry
+== Multistep Potentiometry
 
 * Short name: MP
 * Class: `PalmSens.Techniques.MultistepPotentiometry`
 * `TechniqueID`: 13
 * `MethodID`: `"mp"`
 
+Create multi-step potentiometry method by specifying levels using `PalmSens.Techniques.ILevel`.
+
+----
+method = PalmSens.Techniques.MultistepPotentiometry();
+level = PalmSens.Techniques.ILevel();
+level.Duration = 2.0;
+level.Level = 1.0;
+method.Levels.Add(level);
+----
+
 |===
 |Property |Description |Type
 
+|AppliedCurrentRange
+|Applied current range.
+|`PalmSens.CurrentRange`
 
+|IntervalTime
+|The time between two samples in s.
+|`System.Float`
 
+|nCycles
+|Number of repetitions.
+|`System.Int`
+
+|UseSelectiveRecord
+|If True, enable record toggles for each level
+|`System.Bool`
+
+|UseLimits
+|If True, enable limit toggles for each level
+|`System.Bool`
 |===
 
+=== ILevel
 
+* Class: `PalmSens.Techniques.ILevel`
+
+|===
+|Property |Description |Type
+
+|Level
+|Level in I.
+|`System.Float`
+
+|Duration
+|Duration in s.
+|`System.Float`
+
+|Record
+|Record the potential.
+|`System.Float`
+
+|UseMaxLimit
+|If True, continue with next level when `MaxLimit` is reached
+|`System.Bool`
+
+|MaxLimit
+|Limit current max in V.
+|`System.Float`
+
+|UseMinLimit
+|If True, continue with next level when `MinLimit` is reached
+|`System.Bool`
+
+|MinLimit
+|Limit current min in V.
+|`System.Float`
+|===
 
 [#api-mpad]
 == Multiple Pulse Amperometry
@@ -814,10 +1066,10 @@ See the documentation for that class for more information how to set up the meth
 |===
 
 [#api-ms]
-== MethodScriptSandbox
+== MethodScript Sandbox
 
 The MethodSCRIPT Sandbox allows you to write your own MethodSCRIPT and run them
-on your instrument. See xref:methodscript.adoc[this page] for more information.
+on your instrument. See xref:dotnet:ROOT:methodscript.adoc[this page] for more information.
 
 * Short name: MS
 * Class: `PalmSens.Techniques.MethodScriptSandbox`
