@@ -21,9 +21,51 @@ PalmSens.Method.FromMethodID(stringvalue)
 
 Both values are indicated in this reference for each technique.
 
-The techniques are also directly available from the `PalmSens.Techniques` namespace.
+The techniques are also directly available from the `PalmSens.Techniques` namespace:
 
-Please refer to the PSTrace manual for explanations and expected values for each parameter.
+**Voltammetric Techniques**
+
+* xref:#api-lsv[PalmSens.Techniques.LinearSweepVoltammetry]
+* xref:#api-cv[PalmSens.Techniques.CyclicVoltammetry]
+* xref:#api-fcv[PalmSens.Techniques.FastCyclicVoltammetry]
+* xref:#api-acv[PalmSens.Techniques.ACVoltammetry]
+
+**Pulsed Techniques**
+
+* xref:#api-dpv[PalmSens.Techniques.DifferentialPulseVoltammetry]
+* xref:#api-swv[PalmSens.Techniques.SquareWaveVoltammetry]
+* xref:#api-npv[PalmSens.Techniques.NormalPulseVoltammetry]
+
+**Amperometric Techniques**
+
+* xref:#api-ca[PalmSens.Techniques.ChronoAmperometry]
+* xref:#api-msa[PalmSens.Techniques.MultiStepAmperometry]
+* xref:#api-fam[PalmSens.Techniques.FastAmperometry]
+* xref:#api-pad[PalmSens.Techniques.PulsedAmperometricDetection]
+* xref:#api-mpad[PalmSens.Techniques.MultiplePulseAmperometry]
+
+**Potentiometric Techniques**
+
+* xref:#api-ocp[PalmSens.Techniques.OpenCircuitPotentiometry]
+* xref:#api-pot[PalmSens.Techniques.ChronoPotentiometry]
+* xref:#api-lsp[PalmSens.Techniques.LinearSweepPotentiometry]
+* xref:#api-mp[PalmSens.Techniques.MultiStepPotentiometry]
+* xref:#api-scp[PalmSens.Techniques.StrippingChronoPotentiometry]
+
+**Coulometric techniques**
+
+* xref:#api-cc[PalmSens.Techniques.ChronoCoulometry]
+
+**Other**
+
+* xref:#api-eis[PalmSens.Techniques.ElectrochemicalImpedanceSpectroscopy]
+* xref:#api-fis[PalmSens.Techniques.FastImpedanceSpectroscopy]
+* xref:#api-gis[PalmSens.Techniques.GalvanostaticImpedanceSpectroscopy]
+* xref:#api-fgis[PalmSens.Techniques.FastGalvanostaticImpedanceSpectroscopy]
+* xref:#api-mm[PalmSens.Techniques.MixedMode]
+* xref:#api-ms[PalmSens.Techniques.MethodScript]
+
+Please refer to the https://www.palmsens.com/knowledgebase-article/pstrace-user-manual/[PSTrace manual] for explanations and expected values for each parameter.
 
 == Common properties
 
@@ -136,7 +178,7 @@ connected instrument.
 |`System.Float`
 |===
 
-[#api-1]
+[#api-dpv]
 == Differential Pulse Voltammetry
 
 * Short name: DPV
@@ -458,6 +500,49 @@ Outdated class. PalmSens 3 and 4 only. For CV’s with sampling over 5000 data p
 |`System.Float`
 |===
 
+[#api-lsp]
+== LinearSweepPotentiometry
+
+* Short name: LSP
+* Class: `PalmSens.Techniques.LinearSweepPotentiometry`
+* `TechniqueID`: 17
+* `MethodID`: `"lsp"`
+
+|===
+|Property |Description |Type
+
+|AppliedCurrentRange
+|Applied current range.
+|`PalmSens.CurrentRange`
+
+|BeginCurrent
+|Current applied at beginning of measurement.
+
+This value is multiplied by the defined current range.
+|`System.Float`
+
+|EndCurrent
+|Current applied at end of measurement.
+
+This value is multiplied by the defined current range.
+|`System.Float`
+
+|StepCurrent
+|Current step.
+
+This value is multiplied by the defined current range.
+|`System.Float`
+
+|ScanrateG
+|Scan rate (current/time) in V/s.
+
+The applicable range depends on the value of `StepCurrent` since the data
+acquisition rate is limited by the connected instrument.
+
+This value is multiplied by the defined current range.
+|`System.Float`
+|===
+
 [#api-ocp]
 == Open Circuit Potentiometry
 
@@ -479,6 +564,65 @@ The same as <<api-cp>> as setting the `Current` to 0.
 |Time between two potential samples.
 |`System.Float`
 |===
+
+
+
+
+
+
+
+
+
+[#api-mm]
+== MixedMode
+
+* Short name: MIX
+* Class: `PalmSens.Techniques.MixedMode`
+* `TechniqueID`: 15
+* `MethodID`: `"mm"`
+
+|===
+|Property |Description |Type
+
+
+|===
+
+
+
+
+[#api-msa]
+== MultistepAmperometry
+
+* Short name: MA
+* Class: `PalmSens.Techniques.MultistepAmperometry`
+* `TechniqueID`: 12
+* `MethodID`: `"ma"`
+
+|===
+|Property |Description |Type
+
+
+
+|===
+
+
+
+[#api-mp]
+== MultistepPotentiometry
+
+* Short name: MP
+* Class: `PalmSens.Techniques.MultistepPotentiometry`
+* `TechniqueID`: 13
+* `MethodID`: `"mp"`
+
+|===
+|Property |Description |Type
+
+
+
+|===
+
+
 
 [#api-mpad]
 == Multiple Pulse Amperometry
@@ -530,8 +674,8 @@ The same as <<api-cp>> as setting the `Current` to 0.
 
 The most common properties are described first.
 These are used for a typical EIS measurement, a scan over a specified range of frequencies.
-For example, using the default properties `ScanType = ImpedimetricMethod`,
-`enumScanType.FixedPotential` and `FreqType = ImpedimetricMethod.enumFrequencyType.Scan`.
+For example, using the default properties `ScanType = Impedance`,
+`enumScanType.FixedPotential` and `FreqType = Impedance.enumFrequencyType.Scan`.
 
 The additional properties used for a `TimeScan` and a `PotentialScan` are detailed separately in next sections.
 
@@ -545,7 +689,7 @@ performed, this is the recommended setting. A `TimeScan` performs repeated scans
 time interval within a specified time range. A `PotentialScan` performs
 scans where the DC Potential of the applied sine is incremented within a
 specified range. A `PotentialScan` should not be performed versus the OCP.
-|`ImpedimetricMethod.enumScanType`
+|`Impedance.enumScanType`
 
 |`Potential`
 |The DC potential of the applied sine
@@ -557,7 +701,7 @@ specified range. A `PotentialScan` should not be performed versus the OCP.
 
 |`FreqType`
 |Frequency type specifies whether to perform a scan on a range of frequencies or to measure a single frequency. The latter option can be used in combination with a TimeScan or a Potential Scan.
-|`ImpedimetricMethod.enumFrequencyType`
+|`Impedance.enumFrequencyType`
 
 |`MaxFrequency`
 |The highest frequency in the scan, also the frequency
@@ -616,6 +760,76 @@ In a Potential Scan impedance spectroscopy measurements are repeated over a rang
 |`StepPotential`
 |The size of DC potential step to iterate with.
 |`System.Float`
+|===
+
+[#api-gis]
+== Galvanostatic Electrochemical Impedance Spectroscopy
+
+* Short name: GIS
+* Class: `PalmSens.Techniques.ImpedimetricGstatMethod`
+* `TechniqueID`: 14
+* `MethodID`: `"gis"`
+
+The galvanostatic impedance method is similar to <<Electrochemical Impedance Spectroscopy>>.
+See the documentation for that class for more information how to set up the method.
+
+|===
+|Property |Description |Type
+
+|ScanType
+|Scan type specifies whether a single or multiple frequency scans are performed.
+|`Impedance.enumScanType`
+
+|FreqType
+|Frequency type specifies whether to perform a scan on a range of frequencies or to measure a single frequency.
+|`Impedance.enumFrequencyType`
+
+|AppliedCurrentRange
+|Applied current range.
+|`PalmSens.CurrentRange`
+
+|EquilibrationTime
+|Equilibration time in s.
+|`System.Float`
+
+|Iac
+|AC current in applied current range RMS.
+|`System.Float`
+
+|Idc
+|DC current in applied current range.
+|`System.Float`
+
+|nFrequencies
+|Number of frequencies.
+|`System.Float`
+
+|MaxFrequency
+|Maximum frequency in Hz.
+|`System.Float`
+
+|MinFrequency
+|Minimum frequency in Hz.
+|`System.Int`
+|===
+
+[#api-ms]
+== MethodScriptSandbox
+
+The MethodSCRIPT Sandbox allows you to write your own MethodSCRIPT and run them
+on your instrument. See xref:methodscript.adoc[this page] for more information.
+
+* Short name: MS
+* Class: `PalmSens.Techniques.MethodScriptSandbox`
+* `TechniqueID`: 19
+* `MethodID`: `"ms"`
+
+|===
+|Property |Description |Type
+
+|MethodScript
+|Script to run.
+|`System.String`
 |===
 
 == Recording extra values (BiPot, Aux, CE Potential…)
