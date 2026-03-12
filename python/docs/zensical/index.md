@@ -9,7 +9,7 @@
 
 <br/>
 
-![Image title](https://raw.githubusercontent.com/PalmSens/PalmSens_SDK/refs/heads/main/python/docs/modules/ROOT/images/banner.svg#only-light){ width="80%" }
+![Image title](./assets/banner.svg#only-light){ width="80%" }
 ![Image title](./assets/banner_dark.svg#only-dark){ width="80%" }
 
 <br/>
