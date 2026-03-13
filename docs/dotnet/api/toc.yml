@@ -1,2 +1,6 @@
-- name: API
-  href: api/
+- name: Home
+  href: index.md
+- name: PalmSens.Core.Simplified
+  href: api/PalmSens.Core.Simplified.yml
+- name: SDKPlot
+  href: api/SDKPlot.yml

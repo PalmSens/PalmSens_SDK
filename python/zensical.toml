@@ -4,8 +4,8 @@ site_url = "https://dev.palmsens.com"
 site_description = "PyPalmSens: a Python library for automating electrochemistry with PalmSens instruments"
 repo_url = "https://github.com/palmsens/palmsens_sdk"
 repo_name = "GitHub"
-docs_dir = "docs/mkdocs"
-copyright = "&copy; 2025 PalmSens BV"
+docs_dir = "docs/zensical"
+copyright = "&copy; 2026 PalmSens BV"
 
 nav = [
   { "Home" = "index.md" },
@@ -93,7 +93,7 @@ link = "https://www.palmsens.com/contact"
 
 [project.theme]
 name = "material"
-logo = "assets/header_icon.svg"
+logo = "assets/header_icon_white.svg"
 favicon = "assets/favicon.ico"
 
 features = [
@@ -101,9 +101,12 @@ features = [
     "content.code.copy",
     "content.footnote.tooltips",
     "content.tooltips",
+    "navigation.footer",
     "navigation.indexes",
     "toc.follow",
 ]
+
+custom_dir = "docs/overrides"
 
 [[project.theme.palette]]
 media = "(prefers-color-scheme)"
@@ -205,4 +208,4 @@ show_signature_type_parameters = true
 backlinks = false  # crashes in linux
 # Show base classes OR inheritance diagram.
 show_bases = false
-show_inheritance_diagram = true
+show_inheritance_diagram = false
