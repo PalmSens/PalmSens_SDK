@@ -133,9 +133,9 @@ def test_callback_eis(manager):
 class CV:
     id = 'cv'
     kwargs = {
-        'begin_potential': -1,
-        'vertex1_potential': -1,
-        'vertex2_potential': 1,
+        'begin_potential': 0.25,
+        'vertex1_potential': 0.6,
+        'vertex2_potential': -0.6,
         'step_potential': 0.25,
         'scanrate': 5,
         'n_scans': 2,
