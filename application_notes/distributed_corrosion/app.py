@@ -262,8 +262,8 @@ def main():
                     "name": "PalmSens HQ",
                     "lon": 5.149667,
                     "lat": 52.020198,
-                    "path": "data.csv",
-                }
+                    "path": "https://raw.githubusercontent.com/PalmSens/PalmSens_SDK/refs/heads/appnote-lpr/application_notes/distributed_corrosion/data.csv",
+                },
             ],
         )
 
