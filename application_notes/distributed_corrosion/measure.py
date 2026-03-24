@@ -1,3 +1,11 @@
+# /// script
+# requires-python = ">=3.11"
+# dependencies = [
+#   "pypalmsens>=1.8",
+#   "numpy",
+# ]
+# ///
+
 from pathlib import Path
 
 import numpy as np
