@@ -4,7 +4,6 @@
 #     "numpy>=2.4",
 #     "pandas>=2.3",
 #     "plotly>=6.6",
-#     "pypalmsens>=1.8",
 #     "streamlit>=1.55",
 # ]
 # ///
