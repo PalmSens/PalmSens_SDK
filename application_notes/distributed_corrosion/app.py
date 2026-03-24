@@ -90,8 +90,8 @@ class Device:
             self.data = self.load_data(path)
         assert self.data is not None
 
-    @st.cache_data
     @staticmethod
+    @st.cache_data
     def load_data(path: str):
         """Read data from path."""
         df = pd.read_csv(path)
@@ -270,7 +270,7 @@ def main():
         st.write("Use the table below to add devices or other data sources.")
 
         devices_input = st.data_editor(template, num_rows="dynamic")
-        devices = [Device(*row) for row in devices_input.values]
+        devices = [Device(**row) for _, row in devices_input.iterrows()]
 
     data = load_data(devices)
     summary = load_summary(devices)
