@@ -75,6 +75,33 @@ class Instrument:
         return cls._from_device(device)
 
     @classmethod
+    def from_ip(cls, hostname: str, port: int = 49152) -> Instrument:
+        """Create TCP instrument class.
+
+        Use this method to connect to a device that is connected to the network,
+        like a Nexus.
+
+        Parameters
+        ----------
+        hostname : str
+            Hostname or IP to connect to.
+        port : str
+            Port to connect to.
+
+        Returns
+        -------
+        instrument : Instrument
+            Instrument dataclass
+        """
+        ipaddr = System.Net.IPAddress.Parse(hostname)
+
+        endpoint = System.Net.IPEndPoint(ipaddr, port)
+
+        device = PSDevices.TCPDevice(endpoint)
+
+        return cls._from_device(device)
+
+    @classmethod
     def _from_device(cls, device: PalmSens.Devices.Device) -> Instrument:
         """Construct Instrument from PalmSens device connection class."""
         return cls(
