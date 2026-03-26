@@ -394,7 +394,7 @@ You can also manage the pool yourself by passing the _instrument managers_ direc
 ```
 
 To define your own measurement functions, you can use the [pypalmsens.InstrumentPoolAsync][] method.
-Pass a function that must take [instrument/index.html#pypalmsens.InstrumentManagerAsync) as the first argument.
+Pass a function that must take [pypalmsens.InstrumentManagerAsync][] as the first argument.
 Any other keyword arguments will be passed on.
 
 For example to run two methods in sequence:
