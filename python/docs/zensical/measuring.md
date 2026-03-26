@@ -323,6 +323,9 @@ PyPalmSens supports multichannel experiments via [pypalmsens.InstrumentPool][] a
 
 This class manages a pool of instruments ([pypalmsens.InstrumentManagerAsync][]), so that one method can be executed on all instruments at the same time.
 
+This works best with a multichannel device like the [MultiPalmSens4](https://www.palmsens.com/product/multipalmsens4/) or a [MultiEmStat4](https://www.palmsens.com/product/multi-emstat4/).
+You can also use it to manage a collection of single devices
+
 A basic multichannel measurement can be set up by passing a list of instruments, either from a multichannel device, or otherwise connected:
 
 ```python
