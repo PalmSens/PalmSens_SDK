@@ -8,6 +8,7 @@ from typing import Any
 
 import PalmSens
 import System
+from PalmSens.Comm import CommManager
 from typing_extensions import override
 
 from .shared import create_future
@@ -50,6 +51,24 @@ class Instrument:
             ch_str = self.id[idx : idx + 5]
             self.channel = int(ch_str[2:])
             self.name = self.id[:idx]
+
+    async def _connect_async(self) -> CommManager:
+        """Open connection to instrument, return `CommManager` object."""
+        try:
+            if self.interface == 'tcp':
+                # OpenAsync is not available on TCPDevices
+                self.device.Open()
+            else:
+                await create_future(self.device.OpenAsync())
+        except System.UnauthorizedAccessException as err:
+            raise ConnectionError(
+                f'Cannot open instrument connection (reason: {err.Message}). Check if the device is already in use.'
+            ) from err
+        except System.IO.IOException as err:
+            # Raised if port does not exist
+            raise IOError(err.Message) from err
+
+        return await create_future(CommManager.CommManagerAsync(self.device))
 
     @classmethod
     def from_port(cls, port: str, *, baudrate: int | None = None) -> Instrument:
