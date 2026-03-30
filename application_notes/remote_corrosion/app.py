@@ -51,16 +51,8 @@ def generate_data(n_samples: int = 1000):
     rng = pd.date_range(end=last_hour, freq="h", periods=n_samples)
 
     noise = normal(loc=0, scale=0.01, size=n_samples)
-    ocp = (
-        1
-        + np.sin(np.linspace(0, abs(normal()), n_samples) + normal(scale=np.pi))
-        + noise
-    )
-    rp = (
-        1
-        + np.sin(np.linspace(0, abs(normal()), n_samples) + normal(scale=np.pi))
-        + noise
-    )
+    ocp = 1 + np.sin(np.linspace(0, abs(normal()), n_samples) + normal(scale=np.pi)) + noise
+    rp = 1 + np.sin(np.linspace(0, abs(normal()), n_samples) + normal(scale=np.pi)) + noise
 
     return pd.DataFrame(
         {
@@ -125,9 +117,9 @@ def load_summary(devices: list[Device]) -> pd.DataFrame:
 @st.cache_data
 def load_data(devices: list[Device]) -> pd.DataFrame:
     """Load long form data for device listing."""
-    return pd.concat(
-        {loc.name: loc.data for loc in devices}, names=["name", None]
-    ).reset_index("name")
+    return pd.concat({loc.name: loc.data for loc in devices}, names=["name", None]).reset_index(
+        "name"
+    )
 
 
 def make_chart(
@@ -207,7 +199,7 @@ def create_map(data: pd.DataFrame, *, devices: list[Device]):
         lon="lon",
         color="rp",
         hover_name="name",
-        color_continuous_scale=px.colors.sequential.RdBu,
+        color_continuous_scale=px.colors.sequential.Viridis_r,
         zoom=10,
         title="Device map",
     )
@@ -237,23 +229,18 @@ def main():
         """)
     )
 
-    demo = st.checkbox(
-        label="Demo mode", value=True, help="Generate semi-random noisy data."
-    )
+    demo = st.checkbox(label="Demo mode", value=True, help="Generate semi-random noisy data.")
 
     if demo:
         col1, col2, col3 = st.columns(3)
 
         seed = col1.number_input("Random seed", value=1234)
         n_devices = col2.number_input("Number of devices", value=5, min_value=1)
-        n_samples = col3.number_input(
-            "Number of samples", value=200, step=10, min_value=10
-        )
+        n_samples = col3.number_input("Number of samples", value=200, step=10, min_value=10)
 
         np.random.seed(seed)
         devices = [
-            generate_device(f"Device #{i + 1}", n_samples=n_samples)
-            for i in range(n_devices)
+            generate_device(f"Device #{i + 1}", n_samples=n_samples) for i in range(n_devices)
         ]
     else:
         template = pd.DataFrame(
@@ -262,7 +249,7 @@ def main():
                     "name": "PalmSens HQ",
                     "lon": 5.149667,
                     "lat": 52.020198,
-                    "path": "https://raw.githubusercontent.com/PalmSens/PalmSens_SDK/refs/heads/appnote-lpr/application_notes/distributed_corrosion/data.csv",
+                    "path": "https://raw.githubusercontent.com/PalmSens/PalmSens_SDK/refs/heads/main/application_notes/remote_corrosion/data.csv",
                 },
             ],
         )
