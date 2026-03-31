@@ -1,0 +1,23 @@
+{
+  "apiUrl": "https://api.github.com/repos/PalmSens/PalmSens_SDK/releases/275533834",
+  "assets": [],
+  "author": {
+    "id": "MDQ6VXNlcjg3MzUyMA==",
+    "login": "stefsmeets"
+  },
+  "body": "PyPalmSens 1.6.0 is now available on PyPi. \r\n\r\nTo upgrade `pip install pypalmsens -U`.\r\n\r\n## Measurement callbacks\r\n\r\nThis release changes how callbacks work. The callback now receives a dataclass, making it easier to integrate into your workflows. If you use callbacks, this may require small changes to your code. See [the documentation](https://sdk.palmsens.com/python/latest/measuring.html#_callback), [the API reference](https://sdk.palmsens.com/python/latest/api/_attachments/data/#pypalmsens.data.CallbackData) or one of [the examples](https://sdk.palmsens.com/python/latest/examples.html) for more information.\r\n\r\n```python\r\n>>> def callback(data):\r\n...    print({'start': data.start, 'x': data.x[data.start:], 'y': data.y[data.start:]})\r\n\r\n>>> manager.measure(method, callback=callback)\r\n{'start': 0, 'x': [0.00, 0.01, 0.02], 'y': [-305.055, -740.935, -750.604]}\r\n```\r\n\r\n## Reading idle status\r\n\r\nYou can pass register a callback to the instrument manager to get updates from the idle status/current/bipot/aux updates. These are also passed as data classes. You can also use the callback to retrieve data during the pretreatment (conditioning and depositing) phases. See [this example](https://sdk.palmsens.com/python/latest/examples.html#_status_callback) or checkout the [documentation](https://sdk.palmsens.com/python/latest/measuring.html#_idle_status_updates).\r\n\r\n```python\r\n>>> import pypalmsens as ps\r\n>>> import asyncio\r\n\r\n>>> async def main():\r\n...     async with await ps.connect_async() as manager:\r\n...         manager.register_status_callback(print)\r\n...         await asyncio.sleep(5)\r\n...         manager.unregister_status_callback()\r\n\r\n>>> asyncio.run(main())\r\nIdle: {'current': '0.000 * 1uA', 'potential': '0.527 V'}\r\nIdle: {'current': '0.000 * 1uA', 'potential': '0.526 V'}\r\nIdle: {'current': '0.000 * 1uA', 'potential': '0.526 V'}\r\n```\r\n\r\n## Fixing Bipot settings\r\n\r\nFinally, this release fixes a bug when setting the BiPot, causing the setting not to register. This has been rectified. See [the documentation](https://sdk.palmsens.com/python/latest/api/_attachments/methods/settings/#pypalmsens.settings.BiPot) or #222 for more information. \r\n\r\nNote that the syntax for setting the bipot current range has changed, more in line with the rest of the code. Bipot now expects a fixed current range by default, which is the expected setting for almost all devices:\r\n\r\n```python\r\nbipot = ps.settings.BiPot(current_range = '1uA')\r\n```\r\n\r\nFor autoranging bipot (only available on the Nexus), you can use:\r\n\r\n```python\r\nbipot = ps.settings.BiPot(\r\n    current_range = {'min': '1uA', 'max': '10mA', 'start': '1mA'},\r\n)\r\n```\r\n\r\n## What's Changed\r\n\r\n* Return data arrays for callbacks by @stefsmeets in https://github.com/PalmSens/PalmSens_SDK/pull/219\r\n* Implement callback for Idle Status events by @stefsmeets in https://github.com/PalmSens/PalmSens_SDK/pull/223\r\n* Add timing/reading status and current ranges to DataArray by @stefsmeets in https://github.com/PalmSens/PalmSens_SDK/pull/226\r\n* Make bipot configurable for CV and set default to fixed CR by @stefsmeets in https://github.com/PalmSens/PalmSens_SDK/pull/222\r\n\r\n**Full Changelog**: https://github.com/PalmSens/PalmSens_SDK/compare/python-1.5.0...python-1.6.0",
+  "createdAt": "2026-01-09T15:20:10Z",
+  "databaseId": 275533834,
+  "id": "RE_kwDOPE2XX84QbFAK",
+  "isDraft": false,
+  "isImmutable": false,
+  "isPrerelease": false,
+  "name": "PyPalmSens 1.6.0",
+  "publishedAt": "2026-01-09T15:35:38Z",
+  "tagName": "python-1.6.0",
+  "tarballUrl": "https://api.github.com/repos/PalmSens/PalmSens_SDK/tarball/python-1.6.0",
+  "targetCommitish": "main",
+  "uploadUrl": "https://uploads.github.com/repos/PalmSens/PalmSens_SDK/releases/275533834/assets{?name,label}",
+  "url": "https://github.com/PalmSens/PalmSens_SDK/releases/tag/python-1.6.0",
+  "zipballUrl": "https://api.github.com/repos/PalmSens/PalmSens_SDK/zipball/python-1.6.0"
+}
