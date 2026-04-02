@@ -65,8 +65,8 @@ ps.measure(ps.CyclicVoltammetry(), instrument=instrument)
 This release revises how to access current reading and potential reading data (https://github.com/PalmSens/PalmSens_SDK/pull/279).
 
 It exposes the data in the concrete values in the underlying DataArray by adding 2 new derived classes derived from `ps.data.DataArray`:
-- [CurrentArray](https://sdk.palmsens.com/python/latest/_attachments/reference/data/#pypalmsens.data.CurrentArray)
-- [PotentialArray](https://sdk.palmsens.com/python/latest/_attachments/reference/data/#pypalmsens.data.PotentialArray)
+- [CurrentArray](https://dev.palmsens.com/python/latest/_attachments/reference/data/#pypalmsens.data.CurrentArray)
+- [PotentialArray](https://dev.palmsens.com/python/latest/_attachments/reference/data/#pypalmsens.data.PotentialArray)
 
 These arrays have methods to get the current / potential reading data directly, e.g. for current readings:
 
@@ -94,11 +94,11 @@ potential.potential_reading()
 potential.to_dict()
 ```
 
-See [the documentation](https://sdk.palmsens.com/python/latest/_attachments/data/#currentarray) for more information.
+See [the documentation](https://dev.palmsens.com/python/latest/_attachments/data/#currentarray) for more information.
 
 ### Supported methods and current ranges
 
-New methods on `InstrumentManager(Async)` to get the supported methods and current ranges (https://github.com/PalmSens/PalmSens_SDK/pull/279). See [the docs](https://sdk.palmsens.com/python/latest/_attachments/reference/instrument/#pypalmsens.InstrumentManager.supported_applied_current_ranges) for more information.
+New methods on `InstrumentManager(Async)` to get the supported methods and current ranges (https://github.com/PalmSens/PalmSens_SDK/pull/279). See [the docs](https://dev.palmsens.com/python/latest/_attachments/reference/instrument/#pypalmsens.InstrumentManager.supported_applied_current_ranges) for more information.
 
 ```python
 >>> import pypalmsens as ps
@@ -124,7 +124,7 @@ New methods on `InstrumentManager(Async)` to get the supported methods and curre
 If you have a multichannel instrument, this release has 2 important changes.
 
 1. We added support for hardware sync with MethodScript (https://github.com/PalmSens/PalmSens_SDK/pull/283). PyPalmSens will now recognize if you have set `set_channel_sync 1` in your script, and set up the main/follower channels.
-2. More callbacks! `InstrumentPool.measure()` / `InstrumentPoolAsync.measure()` now supports passing a list of callbacks, so you can call a different function for every channel (https://github.com/PalmSens/PalmSens_SDK/pull/271). See [this link](https://sdk.palmsens.com/python/latest/_attachments/examples/#multichannel_basic) for an example.
+2. More callbacks! `InstrumentPool.measure()` / `InstrumentPoolAsync.measure()` now supports passing a list of callbacks, so you can call a different function for every channel (https://github.com/PalmSens/PalmSens_SDK/pull/271). See [this link](https://dev.palmsens.com/python/latest/_attachments/examples/#multichannel_basic) for an example.
 
 ### What's Changed
 
@@ -172,7 +172,7 @@ method = ps.mixed_mode.MixedMode(
 
 ### Measurement callbacks
 
-This release changes how callbacks work. The callback now receives a dataclass, making it easier to integrate into your workflows. If you use callbacks, this may require small changes to your code. See [the documentation](https://sdk.palmsens.com/python/latest/measuring.html#_callback), [the API reference](https://sdk.palmsens.com/python/latest/api/_attachments/data/#pypalmsens.data.CallbackData) or one of [the examples](https://sdk.palmsens.com/python/latest/examples.html) for more information.
+This release changes how callbacks work. The callback now receives a dataclass, making it easier to integrate into your workflows. If you use callbacks, this may require small changes to your code. See [the documentation](https://dev.palmsens.com/python/latest/_attachments/measuring/#callback), [the API reference](https://dev.palmsens.com/python/latest/api/_attachments/data/#pypalmsens.data.CallbackData) or one of [the examples](https://dev.palmsens.com/python/latest/_attachments/examples/) for more information.
 
 ```python
 >>> def callback(data):
@@ -184,7 +184,7 @@ This release changes how callbacks work. The callback now receives a dataclass, 
 
 ### Reading idle status
 
-You can pass register a callback to the instrument manager to get updates from the idle status/current/bipot/aux updates. These are also passed as data classes. You can also use the callback to retrieve data during the pretreatment (conditioning and depositing) phases. See [this example](https://sdk.palmsens.com/python/latest/examples.html#_status_callback) or checkout the [documentation](https://sdk.palmsens.com/python/latest/measuring.html#_idle_status_updates).
+You can pass register a callback to the instrument manager to get updates from the idle status/current/bipot/aux updates. These are also passed as data classes. You can also use the callback to retrieve data during the pretreatment (conditioning and depositing) phases. See [this example](https://dev.palmsens.com/python/latest/_attachments/examples/#status_callback) or checkout the [documentation](https://dev.palmsens.com/python/latest/_attachments/measuring/#idle_status_updates).
 
 ```python
 >>> import pypalmsens as ps
@@ -204,7 +204,7 @@ Idle: {'current': '0.000 * 1uA', 'potential': '0.526 V'}
 
 ### Fixing Bipot settings
 
-Finally, this release fixes a bug when setting the BiPot, causing the setting not to register. This has been rectified. See [the documentation](https://sdk.palmsens.com/python/latest/api/_attachments/methods/settings/#pypalmsens.settings.BiPot) or #222 for more information.
+Finally, this release fixes a bug when setting the BiPot, causing the setting not to register. This has been rectified. See [the documentation](https://dev.palmsens.com/python/latest/api/_attachments/methods/settings/#pypalmsens.settings.BiPot) or #222 for more information.
 
 Note that the syntax for setting the bipot current range has changed, more in line with the rest of the code. Bipot now expects a fixed current range by default, which is the expected setting for almost all devices:
 
@@ -249,7 +249,7 @@ scanraet
     For further information visit https://errors.pydantic.dev/2.12/v/extra_forbidden
 ```
 
-For more examples, see [the documentation](https://sdk.palmsens.com/python/latest/methods.html#_validation).
+For more examples, see [the documentation](https://dev.palmsens.com/python/latest/_attachments/methods/#validation).
 
 ### Specifying current / potential ranges
 
@@ -273,8 +273,8 @@ cv = ps.CyclicVoltammetry(current_range={'min': '1uA', 'max': '10mA'})
 ```
 
 A list of allowed values is available via
-- [`ps.settings.AllowedCurrentRanges`](https://sdk.palmsens.com/python/latest/api/_attachments/methods/enums/)
-- [`ps.settings.AllowedPotentialRanges`](https://sdk.palmsens.com/python/latest/api/_attachments/methods/enums/)
+- [`ps.settings.AllowedCurrentRanges`](https://dev.palmsens.com/python/latest/api/_attachments/methods/enums/)
+- [`ps.settings.AllowedPotentialRanges`](https://dev.palmsens.com/python/latest/api/_attachments/methods/enums/)
 
 Thanks to how the methods are validated, a warning will be raised if an incorrect value is passed:
 
@@ -345,7 +345,7 @@ As a result, passing the callback directly to these class instantiators has been
 
 You can turn this warning off with (`ps.discover(ftdi=False)`).
 
-See the driver compatibility list [here](https://sdk.palmsens.com/python/latest#compatibility).
+See the driver compatibility list [here](https://dev.palmsens.com/python/latest/_attachments/installation/#compatibility).
 
 ### Improved error handling and locking
 
@@ -444,7 +444,7 @@ method = ps.ElectrochemicalImpedanceSpectroscopy(
 | :fontawesome-brands-python: <a href="https://pypi.org/project/pypalmsens/1.3.1">pypalmsens-1.3.1</a>
 | :fontawesome-solid-calendar: 2025-10-31
 
-This release focuses on improved support for Linux and MacOS. It contains new builds of the underlying PalmSens.Core .NET library for both x86-64 and arm. And the [documentation](https://sdk.palmsens.com/python/latest/installation.html) was updated with better installation instructions (e.g. for running the code on a Raspberry Pi).
+This release focuses on improved support for Linux and MacOS. It contains new builds of the underlying PalmSens.Core .NET library for both x86-64 and arm. And the [documentation](https://dev.palmsens.com/python/latest/_attachments/installation.html) was updated with better installation instructions (e.g. for running the code on a Raspberry Pi).
 
 ### What's Changed
 
