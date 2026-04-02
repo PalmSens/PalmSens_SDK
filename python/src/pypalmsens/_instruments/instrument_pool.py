@@ -55,9 +55,13 @@ class InstrumentPool:
     def __iter__(self):
         yield from self.managers
 
-    def connect(self) -> None:
-        """Connect all instrument managers in the pool."""
-        self._loop.run_until_complete(self._async.connect())
+    def connect(self, attempts: int = 1) -> None:
+        """Connect all instrument managers in the pool.
+
+        attempts: int, optional
+            Number of attempts to establish connection.
+        """
+        self._loop.run_until_complete(self._async.connect(attempts=attempts))
 
     def disconnect(self) -> None:
         """Disconnect all instrument managers in the pool."""
