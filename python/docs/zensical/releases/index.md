@@ -172,7 +172,7 @@ method = ps.mixed_mode.MixedMode(
 
 ### Measurement callbacks
 
-This release changes how callbacks work. The callback now receives a dataclass, making it easier to integrate into your workflows. If you use callbacks, this may require small changes to your code. See [the documentation](https://dev.palmsens.com/python/latest/_attachments/measuring/#callback), [the API reference](https://dev.palmsens.com/python/latest/api/_attachments/data/#pypalmsens.data.CallbackData) or one of [the examples](https://dev.palmsens.com/python/latest/_attachments/examples/) for more information.
+This release changes how callbacks work. The callback now receives a dataclass, making it easier to integrate into your workflows. If you use callbacks, this may require small changes to your code. See [the documentation](https://dev.palmsens.com/python/latest/_attachments/measuring/#callback), [the API reference](https://dev.palmsens.com/python/latest/_attachments/reference/data/#pypalmsens.data.CallbackData) or one of [the examples](https://dev.palmsens.com/python/latest/_attachments/examples/) for more information.
 
 ```python
 >>> def callback(data):
@@ -204,7 +204,7 @@ Idle: {'current': '0.000 * 1uA', 'potential': '0.526 V'}
 
 ### Fixing Bipot settings
 
-Finally, this release fixes a bug when setting the BiPot, causing the setting not to register. This has been rectified. See [the documentation](https://dev.palmsens.com/python/latest/api/_attachments/methods/settings/#pypalmsens.settings.BiPot) or #222 for more information.
+Finally, this release fixes a bug when setting the BiPot, causing the setting not to register. This has been rectified. See [the documentation](https://dev.palmsens.com/python/latest/_attachments/reference/methods/settings/#pypalmsens.settings.BiPot) or #222 for more information.
 
 Note that the syntax for setting the bipot current range has changed, more in line with the rest of the code. Bipot now expects a fixed current range by default, which is the expected setting for almost all devices:
 
@@ -273,8 +273,8 @@ cv = ps.CyclicVoltammetry(current_range={'min': '1uA', 'max': '10mA'})
 ```
 
 A list of allowed values is available via
-- [`ps.settings.AllowedCurrentRanges`](https://dev.palmsens.com/python/latest/api/_attachments/methods/enums/)
-- [`ps.settings.AllowedPotentialRanges`](https://dev.palmsens.com/python/latest/api/_attachments/methods/enums/)
+- [`ps.settings.AllowedCurrentRanges`](https://dev.palmsens.com/python/latest/_attachments/reference/methods/enums/#pypalmsens.settings.AllowedCurrentRanges)
+- [`ps.settings.AllowedPotentialRanges`](https://dev.palmsens.com/python/latest/_attachments/reference/methods/enums/#pypalmsens.settings.AllowedPotentialRanges)
 
 Thanks to how the methods are validated, a warning will be raised if an incorrect value is passed:
 
