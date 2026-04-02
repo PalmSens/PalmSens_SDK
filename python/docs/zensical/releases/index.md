@@ -3,7 +3,7 @@
 ## PyPalmSens 1.8.0
 
 > :fontawesome-brands-github: <a href="https://github.com/PalmSens/PalmSens_SDK/releases/tag/python-1.8.0">python-1.8.0</a>
-| :fontawesome-brands-python: <a href="https://pypi.org/project/pypalmsens-1.8.0">pypalmsens-1.8.0</a>
+| :fontawesome-brands-python: <a href="https://pypi.org/project/pypalmsens/1.8.0">pypalmsens-1.8.0</a>
 | :fontawesome-solid-calendar: 2026-03-26
 
 This is a relatively small release that adds support for the PalmSens Nexus. This release also updates the PalmSens dotnet libraries to 5.13.011, which brings a bunch of small fixes and improvements.
@@ -37,7 +37,7 @@ For more information, see [the documentation](https://dev.palmsens.com/python/la
 ## PyPalmSens 1.7.1
 
 > :fontawesome-brands-github: <a href="https://github.com/PalmSens/PalmSens_SDK/releases/tag/python-1.7.1">python-1.7.1</a>
-| :fontawesome-brands-python: <a href="https://pypi.org/project/pypalmsens-1.7.1">pypalmsens-1.7.1</a>
+| :fontawesome-brands-python: <a href="https://pypi.org/project/pypalmsens/1.7.1">pypalmsens-1.7.1</a>
 | :fontawesome-solid-calendar: 2026-02-24
 
 This is a small release that adds a way to connect to a serial port directly, see [the docs for more information](https://dev.palmsens.com/python/latest/_attachments/measuring/#connecting-to-a-serial-port).
@@ -57,7 +57,7 @@ ps.measure(ps.CyclicVoltammetry(), instrument=instrument)
 ## PyPalmSens 1.7.0
 
 > :fontawesome-brands-github: <a href="https://github.com/PalmSens/PalmSens_SDK/releases/tag/python-1.7.0">python-1.7.0</a>
-| :fontawesome-brands-python: <a href="https://pypi.org/project/pypalmsens-1.7.0">pypalmsens-1.7.0</a>
+| :fontawesome-brands-python: <a href="https://pypi.org/project/pypalmsens/1.7.0">pypalmsens-1.7.0</a>
 | :fontawesome-solid-calendar: 2026-02-20
 
 ### Current and potential readings
@@ -141,7 +141,7 @@ If you have a multichannel instrument, this release has 2 important changes.
 ## PyPalmSens 1.6.1
 
 > :fontawesome-brands-github: <a href="https://github.com/PalmSens/PalmSens_SDK/releases/tag/python-1.6.1">python-1.6.1</a>
-| :fontawesome-brands-python: <a href="https://pypi.org/project/pypalmsens-1.6.1">pypalmsens-1.6.1</a>
+| :fontawesome-brands-python: <a href="https://pypi.org/project/pypalmsens/1.6.1">pypalmsens-1.6.1</a>
 | :fontawesome-solid-calendar: 2026-01-23
 
 This is a patch release that adds support for setting measurement triggers for Mixed Mode measurements.
@@ -167,7 +167,7 @@ method = ps.mixed_mode.MixedMode(
 ## PyPalmSens 1.6.0
 
 > :fontawesome-brands-github: <a href="https://github.com/PalmSens/PalmSens_SDK/releases/tag/python-1.6.0">python-1.6.0</a>
-| :fontawesome-brands-python: <a href="https://pypi.org/project/pypalmsens-1.6.0">pypalmsens-1.6.0</a>
+| :fontawesome-brands-python: <a href="https://pypi.org/project/pypalmsens/1.6.0">pypalmsens-1.6.0</a>
 | :fontawesome-solid-calendar: 2026-01-09
 
 ### Measurement callbacks
@@ -231,7 +231,7 @@ bipot = ps.settings.BiPot(
 ## PyPalmSens 1.5.0
 
 > :fontawesome-brands-github: <a href="https://github.com/PalmSens/PalmSens_SDK/releases/tag/python-1.5.0">python-1.5.0</a>
-| :fontawesome-brands-python: <a href="https://pypi.org/project/pypalmsens-1.5.0">pypalmsens-1.5.0</a>
+| :fontawesome-brands-python: <a href="https://pypi.org/project/pypalmsens/1.5.0">pypalmsens-1.5.0</a>
 | :fontawesome-solid-calendar: 2025-12-19
 
 ### Validation
@@ -298,7 +298,7 @@ current_range.start
 ## PyPalmSens 1.4.0
 
 > :fontawesome-brands-github: <a href="https://github.com/PalmSens/PalmSens_SDK/releases/tag/python-1.4.0">python-1.4.0</a>
-| :fontawesome-brands-python: <a href="https://pypi.org/project/pypalmsens-1.4.0">pypalmsens-1.4.0</a>
+| :fontawesome-brands-python: <a href="https://pypi.org/project/pypalmsens/1.4.0">pypalmsens-1.4.0</a>
 | :fontawesome-solid-calendar: 2025-12-04
 
 The goal for this release is to remove friction when you are getting started with `PyPalmSens`.
@@ -370,7 +370,7 @@ As a result of the above change, compatibility with linux also improved. All tec
 ## PyPalmSens 1.3.3
 
 > :fontawesome-brands-github: <a href="https://github.com/PalmSens/PalmSens_SDK/releases/tag/python-1.3.3">python-1.3.3</a>
-| :fontawesome-brands-python: <a href="https://pypi.org/project/pypalmsens-1.3.3">pypalmsens-1.3.3</a>
+| :fontawesome-brands-python: <a href="https://pypi.org/project/pypalmsens/1.3.3">pypalmsens-1.3.3</a>
 | :fontawesome-solid-calendar: 2025-11-14
 
 This release updates the PalmSens dotnet libraries to the latest version. This fixes a bug on Windows that caused measurements to hang when 'record_auxiliary_input' was enabled.
@@ -387,7 +387,7 @@ This release also adds [type stubs](https://mypy.readthedocs.io/en/stable/stubs.
 ## PyPalmSens 1.3.2
 
 > :fontawesome-brands-github: <a href="https://github.com/PalmSens/PalmSens_SDK/releases/tag/python-1.3.2">python-1.3.2</a>
-| :fontawesome-brands-python: <a href="https://pypi.org/project/pypalmsens-1.3.2">pypalmsens-1.3.2</a>
+| :fontawesome-brands-python: <a href="https://pypi.org/project/pypalmsens/1.3.2">pypalmsens-1.3.2</a>
 | :fontawesome-solid-calendar: 2025-11-07
 
 This release adds the option to do potential and time scans with EIS.
@@ -441,7 +441,7 @@ method = ps.ElectrochemicalImpedanceSpectroscopy(
 ## PyPalmSens 1.3.1
 
 > :fontawesome-brands-github: <a href="https://github.com/PalmSens/PalmSens_SDK/releases/tag/python-1.3.1">python-1.3.1</a>
-| :fontawesome-brands-python: <a href="https://pypi.org/project/pypalmsens-1.3.1">pypalmsens-1.3.1</a>
+| :fontawesome-brands-python: <a href="https://pypi.org/project/pypalmsens/1.3.1">pypalmsens-1.3.1</a>
 | :fontawesome-solid-calendar: 2025-10-31
 
 This release focuses on improved support for Linux and MacOS. It contains new builds of the underlying PalmSens.Core .NET library for both x86-64 and arm. And the [documentation](https://sdk.palmsens.com/python/latest/installation.html) was updated with better installation instructions (e.g. for running the code on a Raspberry Pi).
@@ -461,7 +461,7 @@ This release focuses on improved support for Linux and MacOS. It contains new bu
 ## PyPalmSens 1.2.2
 
 > :fontawesome-brands-github: <a href="https://github.com/PalmSens/PalmSens_SDK/releases/tag/python-1.2.2">python-1.2.2</a>
-| :fontawesome-brands-python: <a href="https://pypi.org/project/pypalmsens-1.2.2">pypalmsens-1.2.2</a>
+| :fontawesome-brands-python: <a href="https://pypi.org/project/pypalmsens/1.2.2">pypalmsens-1.2.2</a>
 | :fontawesome-solid-calendar: 2025-10-13
 
 This release adds the following methods to PyPalmSens:
@@ -515,7 +515,7 @@ ps.settings.DelayTriggers(delay=0.5, d0=True)
 ## PyPalmSens 1.1.1
 
 > :fontawesome-brands-github: <a href="https://github.com/PalmSens/PalmSens_SDK/releases/tag/python-1.1.1">python-1.1.1</a>
-| :fontawesome-brands-python: <a href="https://pypi.org/project/pypalmsens-1.1.1">pypalmsens-1.1.1</a>
+| :fontawesome-brands-python: <a href="https://pypi.org/project/pypalmsens/1.1.1">pypalmsens-1.1.1</a>
 | :fontawesome-solid-calendar: 2025-10-06
 
 This is a small patch release that adds support for the EMStat4X via the WinUSB protocol.
@@ -528,7 +528,7 @@ This is a small patch release that adds support for the EMStat4X via the WinUSB 
 ## PyPalmSens 1.1.0
 
 > :fontawesome-brands-github: <a href="https://github.com/PalmSens/PalmSens_SDK/releases/tag/python-1.1.0">python-1.1.0</a>
-| :fontawesome-brands-python: <a href="https://pypi.org/project/pypalmsens-1.1.0">pypalmsens-1.1.0</a>
+| :fontawesome-brands-python: <a href="https://pypi.org/project/pypalmsens/1.1.0">pypalmsens-1.1.0</a>
 | :fontawesome-solid-calendar: 2025-09-23
 
 The main change in this release is better support for multichannel experiments, making it simpler to manage a group of instruments. For example:
@@ -556,7 +556,7 @@ See the [documentation](https://palmsens.github.io/PalmSens_SDK/python/latest/me
 ## PyPalmSens 1.0.0
 
 > :fontawesome-brands-github: <a href="https://github.com/PalmSens/PalmSens_SDK/releases/tag/python-1.0.0">python-1.0.0</a>
-| :fontawesome-brands-python: <a href="https://pypi.org/project/pypalmsens-1.0.0">pypalmsens-1.0.0</a>
+| :fontawesome-brands-python: <a href="https://pypi.org/project/pypalmsens/1.0.0">pypalmsens-1.0.0</a>
 | :fontawesome-solid-calendar: 2025-08-28
 
 PyPalmSens is a Python library for automating electrochemistry experiments with your PalmSens instruments. It provides an intuitive Python API, making it straightforward to integrate into your Python workflows.

@@ -49,7 +49,7 @@ for release in releases:
     # {name}
 
     > :fontawesome-brands-github: <a href="{url}">{tagName}</a>
-    - :fontawesome-brands-python: <a href="https://pypi.org/project/pypalmsens-{version}">pypalmsens-{version}</a>
+    - :fontawesome-brands-python: <a href="https://pypi.org/project/pypalmsens/{version}">pypalmsens-{version}</a>
     - :fontawesome-solid-calendar: {time}
 
     {body}
