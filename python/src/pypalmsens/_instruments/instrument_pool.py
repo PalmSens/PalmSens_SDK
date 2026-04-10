@@ -58,8 +58,11 @@ class InstrumentPool:
     def connect(self, attempts: int = 1) -> None:
         """Connect all instrument managers in the pool.
 
+        Parameters
+        ----------
         attempts: int, optional
             Number of attempts to establish connection.
+            Use this if you experience connection issues via USB.
         """
         self._loop.run_until_complete(self._async.connect(attempts=attempts))
 
