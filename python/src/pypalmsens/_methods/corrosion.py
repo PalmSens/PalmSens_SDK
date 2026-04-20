@@ -5,36 +5,46 @@ from typing import Literal
 from . import techniques
 
 
-class CorrosionPotential(techniques.OpenCircuitPotentiometry):
-    """Thin wrapper around OCP."""
+class CorrosionPotential(techniques.BaseOpenCircuitPotentiometry):
+    """Create corrosion potential method parameters.
 
-    id: Literal['cpot'] = 'cpot'  # type: ignore
+    Thin wrapper around OCP."""
+
+    id: Literal['cpot'] = 'cpot'
     """Unique method identifier."""
 
 
-class CyclicPolarization(techniques.CyclicVoltammetry):
-    """Thin wrapper around CV."""
+class CyclicPolarization(techniques.BaseCyclicVoltammetry):
+    """Create cyclic polarization method parameters.
 
-    id: Literal['cp'] = 'cp'  # type: ignore
+    Thin wrapper around CV."""
+
+    id: Literal['cp'] = 'cp'
     """Unique method identifier."""
 
 
-class Galvanostatic(techniques.ChronoPotentiometry):
-    """Thin wrapper around CP."""
+class Galvanostatic(techniques.BaseChronoPotentiometry):
+    """Create galvanostatic method parameters.
 
-    id: Literal['gs'] = 'gs'  # type: ignore
+    Thin wrapper around CP."""
+
+    id: Literal['gs'] = 'gs'
     """Unique method identifier."""
 
 
-class LinearPolarization(techniques.LinearSweepVoltammetry):
-    """Thin wrapper around LSV."""
+class LinearPolarization(techniques.BaseLinearSweepVoltammetry):
+    """Create linear polarization method parameters.
 
-    id: Literal['lp'] = 'lp'  # type: ignore
+    Thin wrapper around LSV."""
+
+    id: Literal['lp'] = 'lp'
     """Unique method identifier."""
 
 
-class Potentiostatic(techniques.ChronoAmperometry):
-    """Thin wrapper around CA."""
+class Potentiostatic(techniques.BaseChronoAmperometry):
+    """Create potentiostatic method parameters.
 
-    id: Literal['ps'] = 'ps'  # type: ignore
+    Thin wrapper around CA."""
+
+    id: Literal['ps'] = 'ps'
     """Unique method identifier."""
