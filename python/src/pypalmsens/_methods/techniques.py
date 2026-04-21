@@ -13,17 +13,21 @@ from typing_extensions import override
 from .._helpers import single_to_double
 from . import mixins
 from .base import BaseTechnique
-from .shared import (
-    AllowedCurrentRanges,
-    AllowedPotentialRanges,
+from .levels import (
     ELevel,
     ILevel,
+)
+from .mask import (
+    get_extra_value_mask,
+    set_extra_value_mask,
+)
+from .types import (
+    AllowedCurrentRanges,
+    AllowedPotentialRanges,
     cr_enum_to_string,
     cr_string_to_enum,
-    get_extra_value_mask,
     pr_enum_to_string,
     pr_string_to_enum,
-    set_extra_value_mask,
 )
 
 

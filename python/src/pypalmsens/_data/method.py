@@ -2,14 +2,11 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Union
+from typing import Any, Union
 
 import PalmSens
 
-from . import techniques
-
-if TYPE_CHECKING:
-    from .techniques import BaseTechnique
+from .._methods.techniques import BaseTechnique
 
 
 @dataclass(frozen=True)
@@ -102,7 +99,7 @@ class Method:
 
     def to_settings(self) -> BaseTechnique:
         """Extract techniques parameters as dataclass."""
-        return techniques.BaseTechnique._from_psmethod(self._psmethod)
+        return BaseTechnique._from_psmethod(self._psmethod)
 
     def to_dict(self) -> dict[str, Any]:
         """Return dictionary with technique parameters."""

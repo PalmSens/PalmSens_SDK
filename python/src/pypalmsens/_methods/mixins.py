@@ -4,7 +4,7 @@ from pydantic import Field, field_validator
 
 from . import settings
 from .base_model import BaseModel
-from .shared import (
+from .types import (
     AllowedCurrentRanges,
     AllowedPotentialRanges,
 )

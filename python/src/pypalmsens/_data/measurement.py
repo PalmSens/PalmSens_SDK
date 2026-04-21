@@ -7,10 +7,10 @@ import System
 from typing_extensions import override
 
 from .._fitting import FitResult
-from .._methods.method import Method
 from .curve import Curve
 from .dataset import DataSet
 from .eisdata import EISData
+from .method import Method
 from .peak import Peak
 
 if TYPE_CHECKING:

@@ -8,8 +8,9 @@ import PalmSens
 from System.IO import StreamReader, StreamWriter
 from System.Text import Encoding
 
+from ._data import Method
 from ._data.measurement import Measurement
-from ._methods import BaseTechnique, Method
+from ._methods import BaseTechnique
 
 
 @contextmanager
