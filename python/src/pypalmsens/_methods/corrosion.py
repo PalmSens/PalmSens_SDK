@@ -51,19 +51,3 @@ class Potentiostatic(techniques.BaseChronoAmperometry, MaterialMixin):
 
     id: Literal['ps'] = 'ps'
     """Unique method identifier."""
-
-
-class ImpedanceSpectroscopy(techniques.ElectrochemicalImpedanceSpectroscopy, MaterialMixin):
-    """Create Impedance Specroscopy method parameters.
-
-    Electrochemical Impedance Spectroscopy (EIS) can be used to study corrosion and the effects
-    of a wide range of coatings. For example, anodized coatings (anodized aluminium), conversion
-    coatings (Chromate conversion coating), or organic coatings (paint). The corrosion rate and
-    the pitting/disbanding of coatings are studied by fitting equivalent circuit models on the EIS
-    measurement.
-
-    The method is equivalent to Electrochemical Impedance Spectroscopy.
-    """
-
-    id: Literal['ps'] = 'ps'
-    """Unique method identifier."""

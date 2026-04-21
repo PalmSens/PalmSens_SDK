@@ -1698,6 +1698,7 @@ class ElectrochemicalImpedanceSpectroscopy(
     mixins.PostMeasurementMixin,
     mixins.MeasurementTriggersMixin,
     mixins.EquilibrationTriggersMixin,
+    mixins.MaterialMixin,
     mixins.MultiplexerMixin,
     mixins.GeneralMixin,
 ):
@@ -1717,6 +1718,9 @@ class ElectrochemicalImpedanceSpectroscopy(
     - frequency scans at specified time intervals (time scan)
     - a single frequency applied at each dc potential in a potential scan (Mott-Schottky)
     - a repeated single frequency at specified time intervals
+
+    EIS can also be used to study corrosion and the effects of coatings.
+    For example, anodized coatings, conversion coatings or organic coatings like paints.
     """
 
     id: Literal['eis'] = 'eis'
