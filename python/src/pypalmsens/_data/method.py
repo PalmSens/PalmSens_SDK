@@ -56,6 +56,11 @@ class Method:
         return self._psmethod.GetMinimumEstimatedMeasurementDuration(instrument_capabilities)
 
     @property
+    def supports_corrosion(self) -> bool:
+        """Return true if corrosion is supported."""
+        return self._psmethod.SupportsCorrosion
+
+    @property
     def technique_number(self) -> int:
         """The technique number used in the firmware."""
         return self._psmethod.Technique
