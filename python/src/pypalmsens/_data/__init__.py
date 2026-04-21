@@ -6,7 +6,7 @@ from .data_value import CurrentReading, PotentialReading
 from .dataset import DataSet
 from .eisdata import EISData
 from .measurement import DeviceInfo, Measurement
-from .method import Material, Method
+from .method import Method
 from .peak import Peak
 
 __all__ = [
@@ -18,7 +18,6 @@ __all__ = [
     'DeviceInfo',
     'EISData',
     'Measurement',
-    'Material',
     'Method',
     'Peak',
     'PotentialArray',

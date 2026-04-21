@@ -6,6 +6,8 @@ from typing import TYPE_CHECKING, final
 import System
 from typing_extensions import override
 
+from pypalmsens._methods import BaseTechnique
+
 from .._fitting import FitResult
 from .curve import Curve
 from .dataset import DataSet
@@ -15,8 +17,6 @@ from .peak import Peak
 
 if TYPE_CHECKING:
     from PalmSens import Measurement as PSMeasurement
-
-    from .._methods.method import Material
 
 
 @dataclass(frozen=True)
@@ -77,11 +77,6 @@ class Measurement:
         return DeviceInfo._from_psmeasurement(self._psmeasurement)
 
     @property
-    def material(self) -> Material:
-        """Return dataclass with material information used for corrosion measurements."""
-        return self.method.material
-
-    @property
     def blank_curve(self) -> Curve | None:
         """Blank curve.
 
@@ -120,11 +115,11 @@ class Measurement:
         return lst
 
     @property
-    def method(self) -> Method:
+    def method(self) -> BaseTechnique:
         """Method related with this Measurement.
 
         The information from the Method is used when saving Curves."""
-        return Method(psmethod=self._psmeasurement.Method)
+        return Method(psmethod=self._psmeasurement.Method).to_settings()
 
     @property
     def channel(self) -> float:
