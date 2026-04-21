@@ -713,3 +713,38 @@ class General(BaseSettings):
         self.use_hardware_sync = psmethod.UseHWSync
         self.notes = psmethod.Notes
         self.power_frequency = psmethod.PowerFreq
+
+
+class Material(BaseSettings):
+    """Stores material settings for corrosion measurements."""
+
+    surface_area: float = 0.0
+    """Surface area of the sample in cm2."""
+
+    weight: float = 0.0
+    """Equivalent mass of one mole of the sample material in g/mol."""
+
+    density: float = 0.0
+    """Density of the sample in g/cm3."""
+
+    b_anodic: float = 0.0
+    """B anodic in V/dec."""
+
+    b_cathodic: float = 0.0
+    """B cathodic in V/dec."""
+
+    @override
+    def _update_psmethod(self, psmethod: PalmSens.Method, /):
+        psmethod.Area = self.surface_area
+        psmethod.Weight = self.weight
+        psmethod.Density = self.density
+        psmethod.Ba = self.b_anodic
+        psmethod.Bc = self.b_cathodic
+
+    @override
+    def _update_params(self, psmethod: PalmSens.Method, /):
+        self.surface_area = psmethod.Area
+        self.weight = psmethod.Weight
+        self.density = psmethod.Density
+        self.b_anodic = psmethod.Ba
+        self.b_cathodic = psmethod.Bc

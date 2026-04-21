@@ -3,9 +3,10 @@ from __future__ import annotations
 from typing import Literal
 
 from . import techniques
+from .mixins import MaterialMixin
 
 
-class CorrosionPotential(techniques.BaseOpenCircuitPotentiometry):
+class CorrosionPotential(techniques.BaseOpenCircuitPotentiometry, MaterialMixin):
     """Create corrosion potential method parameters.
 
     The method is equivalent to Open Circuit Potentiometry."""
@@ -14,7 +15,7 @@ class CorrosionPotential(techniques.BaseOpenCircuitPotentiometry):
     """Unique method identifier."""
 
 
-class CyclicPolarization(techniques.BaseCyclicVoltammetry):
+class CyclicPolarization(techniques.BaseCyclicVoltammetry, MaterialMixin):
     """Create cyclic polarization method parameters.
 
     The method is equivalent to Cyclic Voltammetry."""
@@ -23,7 +24,7 @@ class CyclicPolarization(techniques.BaseCyclicVoltammetry):
     """Unique method identifier."""
 
 
-class Galvanostatic(techniques.BaseChronoPotentiometry):
+class Galvanostatic(techniques.BaseChronoPotentiometry, MaterialMixin):
     """Create galvanostatic method parameters.
 
     The method is equivalent to Chronopotentiometry."""
@@ -32,7 +33,7 @@ class Galvanostatic(techniques.BaseChronoPotentiometry):
     """Unique method identifier."""
 
 
-class LinearPolarization(techniques.BaseLinearSweepVoltammetry):
+class LinearPolarization(techniques.BaseLinearSweepVoltammetry, MaterialMixin):
     """Create linear polarization method parameters.
 
     Linear polarization is typically used to study the corrosion response of metallic coatings.
@@ -43,7 +44,7 @@ class LinearPolarization(techniques.BaseLinearSweepVoltammetry):
     """Unique method identifier."""
 
 
-class Potentiostatic(techniques.BaseChronoAmperometry):
+class Potentiostatic(techniques.BaseChronoAmperometry, MaterialMixin):
     """Create potentiostatic method parameters.
 
     The method is equivalent to Chronoamperometry."""
@@ -52,7 +53,7 @@ class Potentiostatic(techniques.BaseChronoAmperometry):
     """Unique method identifier."""
 
 
-class ImpedanceSpectroscopy(techniques.ElectrochemicalImpedanceSpectroscopy):
+class ImpedanceSpectroscopy(techniques.ElectrochemicalImpedanceSpectroscopy, MaterialMixin):
     """Create Impedance Specroscopy method parameters.
 
     Electrochemical Impedance Spectroscopy (EIS) can be used to study corrosion and the effects

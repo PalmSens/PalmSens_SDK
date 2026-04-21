@@ -1,43 +1,11 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Union
 
 import PalmSens
 
 from .._methods.techniques import BaseTechnique
-
-
-@dataclass(frozen=True)
-class Material:
-    """Dataclass for material information."""
-
-    surface_area: float
-    """Surface area of the sample in cm2."""
-
-    weight: float
-    """Equivalent mass of one mole of the sample material in g/mol."""
-
-    density: float
-    """Density of the sample in g/cm3."""
-
-    b_anodic: float
-    """B anodic in V/dec."""
-
-    b_cathodic: float
-    """B cathodic in V/dec."""
-
-    @classmethod
-    def _from_psmethod(cls, obj: PalmSens.Method) -> Material:
-        """Construct material dataclass from method object."""
-        return cls(
-            surface_area=obj.Area,
-            weight=obj.Weight,
-            density=obj.Density,
-            b_anodic=obj.Ba,
-            b_cathodic=obj.Bc,
-        )
 
 
 class Method:
@@ -71,11 +39,6 @@ class Method:
         if fn:
             return Path(fn)
         return None
-
-    @property
-    def material(self) -> Material:
-        """Return dataclass with material information used for corrosion measurements."""
-        return Material._from_psmethod(self._psmethod)
 
     def get_estimated_duration(self, *, instrument_manager=None):
         """Get the estimated duration for this method.
