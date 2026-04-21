@@ -45,6 +45,14 @@ nav = [
     "reference/methods/square_wave_voltammetry.md",
     "reference/methods/stripping_chrono_potentiometry.md",
   ]},
+  { "Techniques (corrosion)" = [
+      "reference/corrosion/potentiostatic.md",
+      "reference/corrosion/galvanostatic.md",
+      "reference/corrosion/linear_polarization.md",
+      "reference/corrosion/cyclic_polarization.md",
+      "reference/corrosion/corrosion_potential.md",
+      "reference/corrosion/impedance_spectroscopy.md",
+  ]},
   { "Reference" = [
     "reference/index.md",
     "reference/data.md",

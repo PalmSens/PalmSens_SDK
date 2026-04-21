@@ -7,7 +7,7 @@ from ._methods.corrosion import (
     LinearPolarization,
     Potentiostatic,
 )
-from ._methods.techniques import ElectrochemicalImpedanceSpectroscopy
+from ._methods.techniques import ElectrochemicalImpedanceSpectroscopy as ImpedanceSpectroscopy
 
 __all__ = [
     'Potentiostatic',
@@ -15,5 +15,5 @@ __all__ = [
     'CyclicPolarization',
     'LinearPolarization',
     'Galvanostatic',
-    'ElectrochemicalImpedanceSpectroscopy',  # alias EIS for completeness
+    'ImpedanceSpectroscopy',  # alias EIS for completeness
 ]
