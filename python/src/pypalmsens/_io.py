@@ -134,7 +134,7 @@ def save_method_file(path: str | Path, method: Method | BaseTechnique):
     if isinstance(method, BaseTechnique):
         psmethod = method._to_psmethod()
     elif isinstance(method, Method):
-        psmethod = method.psmethod
+        psmethod = method._psmethod
     else:
         raise ValueError(f'Unknown data type: {type(method)}')
 

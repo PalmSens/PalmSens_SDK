@@ -151,7 +151,7 @@ class CV:
         for curve in measurement.curves:
             assert curve.n_points >= 5
 
-        assert measurement.method.psmethod.nScans == 2
+        assert measurement.method._psmethod.nScans == 2
 
         dataset = measurement.dataset
         assert len(dataset) == 7
@@ -190,9 +190,9 @@ class FCV:
         for curve in measurement.curves:
             assert curve.n_points >= 5
 
-        assert measurement.method.psmethod.nScans == 3
-        assert measurement.method.psmethod.nAvgScans == 2
-        assert measurement.method.psmethod.nEqScans == 2
+        assert measurement.method._psmethod.nScans == 3
+        assert measurement.method._psmethod.nAvgScans == 2
+        assert measurement.method._psmethod.nEqScans == 2
 
         dataset = measurement.dataset
 
@@ -328,7 +328,7 @@ class SWV:
         for curve in measurement.curves:
             assert curve.n_points >= 5
 
-        assert measurement.method.psmethod.nScans == 1
+        assert measurement.method._psmethod.nScans == 1
 
         dataset = measurement.dataset
         assert len(dataset) == 5

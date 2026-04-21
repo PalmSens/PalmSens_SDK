@@ -16,6 +16,8 @@ from .peak import Peak
 if TYPE_CHECKING:
     from PalmSens import Measurement as PSMeasurement
 
+    from .._methods.method import Material
+
 
 @dataclass(frozen=True)
 class DeviceInfo:
@@ -38,37 +40,6 @@ class DeviceInfo:
             firmware=obj.DeviceUsedFW,
             serial=obj.DeviceUsedSerial,
             id=int(obj.DeviceUsed),
-        )
-
-
-@dataclass(frozen=True)
-class Material:
-    """Dataclass for material information."""
-
-    surface_area: float
-    """Surface area in cm2."""
-
-    weight: float
-    """Equivalent weight in g/mol."""
-
-    density: float
-    """Density in g/cm3."""
-
-    b_anodic: float
-    """B anodic in V/dec."""
-
-    b_cathodic: float
-    """B cathodic in V/dec."""
-
-    @classmethod
-    def _from_psmeasurement(cls, obj: PSMeasurement) -> Material:
-        """Construct device dataclass from SDK measurement object."""
-        return cls(
-            surface_area=PSMeasurement.Area,
-            weight=PSMeasurement.Weight,
-            density=PSMeasurement.Density,
-            b_anodic=PSMeasurement.Ba,
-            b_cathodic=PSMeasurement.Bc,
         )
 
 
@@ -104,6 +75,11 @@ class Measurement:
     def device(self) -> DeviceInfo:
         """Return dataclass with measurement device information."""
         return DeviceInfo._from_psmeasurement(self._psmeasurement)
+
+    @property
+    def material(self) -> Material:
+        """Return dataclass with material information used for corrosion measurements."""
+        return self.method.material
 
     @property
     def blank_curve(self) -> Curve | None:
