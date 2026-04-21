@@ -41,6 +41,37 @@ class DeviceInfo:
         )
 
 
+@dataclass(frozen=True)
+class Material:
+    """Dataclass for material information."""
+
+    surface_area: float
+    """Surface area in cm2."""
+
+    weight: float
+    """Equivalent weight in g/mol."""
+
+    density: float
+    """Density in g/cm3."""
+
+    b_anodic: float
+    """B anodic in V/dec."""
+
+    b_cathodic: float
+    """B cathodic in V/dec."""
+
+    @classmethod
+    def _from_psmeasurement(cls, obj: PSMeasurement) -> Material:
+        """Construct device dataclass from SDK measurement object."""
+        return cls(
+            surface_area=PSMeasurement.Area,
+            weight=PSMeasurement.Weight,
+            density=PSMeasurement.Density,
+            b_anodic=PSMeasurement.Ba,
+            b_cathodic=PSMeasurement.Bc,
+        )
+
+
 @final
 class Measurement:
     """Python wrapper for .NET Measurement class.
