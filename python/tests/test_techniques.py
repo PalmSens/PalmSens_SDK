@@ -1137,8 +1137,6 @@ class MM:
         assert measurement
         assert isinstance(measurement, ps.data.Measurement)
 
-        breakpoint()
-
         params = measurement.method
         stages = [stage.stage_type for stage in params.stages]
 
