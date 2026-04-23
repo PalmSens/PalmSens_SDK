@@ -46,18 +46,6 @@ The following methods are supported in PyPalmSens:
 - [Mixed Mode][pypalmsens.mixed_mode.MixedMode]
 - [Method Script][pypalmsens.MethodScript]
 
-## Corrosion methods
-
-These techniques are identical to those above, they generate the same signal and adhere to the same specifications.
-The only difference is that these expose additional material metadata.
-
-- [Potentiostatic][pypalmsens.corrosion.Potentiostatic] (constant potential)
-- [Galvanostatic][pypalmsens.corrosion.Galvanostatic] (constant current)
-- [Linear Polarization][pypalmsens.corrosion.LinearPolarization] (potential sweep)
-- [Cyclic Polarization][pypalmsens.corrosion.CyclicPolarization] (bi-directional potential sweep)
-- [Corrosion Potential][pypalmsens.corrosion.CorrosionPotential] (OCP)
-- [Impedance Spectroscopy][pypalmsens.corrosion.ImpedanceSpectroscopy]
-
 ## Setting up a method
 
 This example creates a method for a [square-wave voltammetry][pypalmsens.SquareWaveVoltammetry] measurement versus the open circuit potential:
