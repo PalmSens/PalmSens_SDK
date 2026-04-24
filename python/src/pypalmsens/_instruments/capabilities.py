@@ -4,8 +4,14 @@ from typing import Annotated, Any
 
 import PalmSens
 from pydantic import BaseModel, BeforeValidator
-
-from .._methods.types import AllowedCurrentRanges, AllowedMethods, AllowedPotentialRanges
+import System
+from .._methods.types import (
+    AllowedCurrentRanges,
+    AllowedMethods,
+    AllowedPotentialRanges,
+    cr_enum_to_string,
+    pr_enum_to_string,
+)
 
 
 class AnalogComponent(BaseModel):
@@ -50,6 +56,12 @@ class AnalogComponent(BaseModel):
         return value
 
 
+def ensure_current_ranges(value: Any) -> list[AllowedCurrentRanges]:
+    if isinstance(value, System.Collections.Generic.List[PalmSens.CurrentRange])
+        value = [cr_enum_to_string(cr) for cr in value]
+    return value
+
+
 class Capabilities(BaseModel):
     acv_max_frequency: int
     """The maximum frequency for ACV."""
@@ -81,7 +93,7 @@ class Capabilities(BaseModel):
     dac_potential: Annotated[AnalogComponent, BeforeValidator(AnalogComponent.convert)]
     """Gets an object with values to calculate the potential from the integer value received from the instrument."""
 
-    default_baud_rate: int
+    default_baudrate: int
     """Gets the default baud rate."""
 
     device_type: str
@@ -108,11 +120,11 @@ class Capabilities(BaseModel):
     firmware_special_description: str
     """Special description for the firmware"""
 
-    firmware_version: str
+    firmware_version: float
     """Firmware version of connected Device."""
 
     hardware_revision: int
-    """Gets the hardware revision. 1 = ...."""
+    """Gets the hardware revision."""
 
     max_v_aux: float
     """Maximum potential output of the AUX port."""
@@ -165,20 +177,20 @@ class Capabilities(BaseModel):
     serial_number: str
     """Serial number of the device."""
 
-    supported_applied_current_ranges: list[AllowedCurrentRanges]
+    supported_applied_current_ranges: Annotated[list[AllowedCurrentRanges], BeforeValidator(ensure_current_ranges)]
     """list of current ranges supported for applying current by this particular deviceType."""
 
-    supported_bipot_current_ranges: list[AllowedCurrentRanges]
+    supported_bipot_current_ranges: Annotated[list[AllowedCurrentRanges], BeforeValidator(ensure_current_ranges)]
     """list of current ranges for the BiPot module supported by this particular deviceType."""
 
-    supported_current_ranges: list[AllowedCurrentRanges]
+    supported_current_ranges: Annotated[list[AllowedCurrentRanges], BeforeValidator(ensure_current_ranges)]
     """list of current ranges supported by this particular deviceType."""
 
-    supported_potential_ranges: list[AllowedPotentialRanges]
-    """list of potential ranges supported by this particular deviceType."""
+    # supported_potential_ranges: list[AllowedPotentialRanges]
+    # """list of potential ranges supported by this particular deviceType."""
 
-    supported_techniques: list[AllowedMethods]
-    """List supported techniques."""
+    # supported_techniques: list[AllowedMethods]
+    # """List supported techniques."""
 
     supports_impedance: bool
     """Whether or not the deviceType supports impedance measurements"""
@@ -194,7 +206,7 @@ class Capabilities(BaseModel):
             'device_type': str(cap.DeviceType),
             'model_name': comm.DeviceSerial.TypeToModelName(),
             'model_short_name': comm.DeviceSerial.TypeToString(),
-            'serial_number': comm.get_DeviceSerial(),
+            'serial_number': str(comm.DeviceSerial),
             'connection': cap.ConnDescription,
             'firmware_version': cap.FirmwareVersion,
             'firmware_release_type': cap.FirmwareReleaseType,
@@ -217,6 +229,7 @@ class Capabilities(BaseModel):
             'supported_potential_ranges': [str(item) for item in cap.SupportedPotentialRanges],
         }
 
+        data['acv_max_frequency'] = cap.MaxFrequencyACV
         data['is_galvanostat'] = cap.IsGalvanostat
         data['has_bipot'] = cap.BiPotPresent
         data['supports_ir_drop_compensation'] = cap.SupportsIRDropComp
@@ -234,5 +247,13 @@ class Capabilities(BaseModel):
         data['dac_bipot'] = cap.DACBiPot
         data['dac_current'] = cap.DACCurrent
         data['dac_potential'] = cap.DACPotential
+
+        data['hardware_revision'] = cap.HardwareRevision
+        data['max_eis_amplitude_erms'] = cap.MaxEISAmplitudeERMS
+        data['default_baudrate'] = cap.DefaultBaudRate
+        data['max_v_aux'] = cap.MaxVAux
+        data['max_n_points'] = cap.MaxNPoints
+        data['max_potential_bipot'] = cap.MaxPotentialBipot
+        data['min_potential_bipot'] = cap.MinPotentialBipot
 
         return cls.model_validate(data)
