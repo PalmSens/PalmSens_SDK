@@ -25,6 +25,7 @@ from .._methods import (
 )
 from ..data import Measurement
 from .callback import Callback, CallbackEIS, CallbackStatus, Status
+from .capabilities import Capabilities
 from .instrument import Instrument, discover_async
 from .measurement_manager_async import MeasurementManagerAsync
 from .shared import MethodIncompatibleError, create_future, firmware_warning
@@ -112,6 +113,11 @@ class HasCommProtocol(Protocol):
 
 
 class SupportedMixin:
+    @property
+    def capabilities(self: HasCommProtocol) -> Capabilities:
+        """Return capabilities as dictionary."""
+        return Capabilities.from_comm(self._comm)
+
     def supported_methods(self: HasCommProtocol) -> list[AllowedMethods]:
         """List methods supported by this device.
 
