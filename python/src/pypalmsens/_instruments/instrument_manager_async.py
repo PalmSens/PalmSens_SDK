@@ -25,7 +25,7 @@ from .._methods import (
 )
 from ..data import Measurement
 from .callback import Callback, CallbackEIS, CallbackStatus, Status
-from .capabilities import Capabilities
+from .capabilities import Capabilities, CapabilitiesInterface
 from .instrument import Instrument, discover_async
 from .measurement_manager_async import MeasurementManagerAsync
 from .shared import MethodIncompatibleError, create_future, firmware_warning
@@ -129,7 +129,7 @@ class CapabilitiesMixin:
         self.ensure_connection()
         return Capabilities._from_comm(self._comm)
 
-    def supported_methods(self: HasCapabilities) -> list[AllowedMethods]:
+    def supported_methods(self: HasCommProtocol) -> list[AllowedMethods]:
         """List methods supported by this device.
 
         Returns
@@ -137,9 +137,10 @@ class CapabilitiesMixin:
         methods: list[AllowedMethods]
             List of supported methods.
         """
-        return self.capabilities.supported_methods
+        self.ensure_connection()
+        return CapabilitiesInterface(comm=self._comm).supported_methods
 
-    def supported_current_ranges(self: HasCapabilities) -> list[AllowedCurrentRanges]:
+    def supported_current_ranges(self: HasCommProtocol) -> list[AllowedCurrentRanges]:
         """List current ranges supported by this device.
 
         Returns
@@ -147,9 +148,10 @@ class CapabilitiesMixin:
         current_ranges: list[AllowedCurrentRanges]
             List of supported current ranges.
         """
-        return self.capabilities.supported_current_ranges
+        self.ensure_connection()
+        return CapabilitiesInterface(comm=self._comm).supported_current_ranges
 
-    def supported_applied_current_ranges(self: HasCapabilities) -> list[AllowedCurrentRanges]:
+    def supported_applied_current_ranges(self: HasCommProtocol) -> list[AllowedCurrentRanges]:
         """List applied current ranges supported by this device.
 
         Returns
@@ -157,9 +159,10 @@ class CapabilitiesMixin:
         current_ranges: list[AllowedCurrentRanges]
             List of supported current ranges.
         """
-        return self.capabilities.supported_applied_current_ranges
+        self.ensure_connection()
+        return CapabilitiesInterface(comm=self._comm).supported_applied_current_ranges
 
-    def supported_bipot_current_ranges(self: HasCapabilities) -> list[AllowedCurrentRanges]:
+    def supported_bipot_current_ranges(self: HasCommProtocol) -> list[AllowedCurrentRanges]:
         """List bipot current ranges supported by this device.
 
         Returns
@@ -167,9 +170,10 @@ class CapabilitiesMixin:
         current_ranges: list[AllowedCurrentRanges]
             List of supported current ranges.
         """
-        return self.capabilities.supported_bipot_current_ranges
+        self.ensure_connection()
+        return CapabilitiesInterface(comm=self._comm).supported_bipot_current_ranges
 
-    def supported_potential_ranges(self: HasCapabilities) -> list[AllowedPotentialRanges]:
+    def supported_potential_ranges(self: HasCommProtocol) -> list[AllowedPotentialRanges]:
         """List applied potential ranges supported by this device.
 
         Returns
@@ -177,10 +181,11 @@ class CapabilitiesMixin:
         potential_ranges: list[AllowedPotentialRanges]
             List of supported potential ranges.
         """
-        return self.capabilities.supported_potential_ranges
+        self.ensure_connection()
+        return CapabilitiesInterface(comm=self._comm).supported_potential_ranges
 
     def get_estimated_duration(
-        self: HasCapabilities,
+        self: HasCommProtocol,
         method: PalmSens.Method | BaseTechnique,
     ) -> float:
         """Get the estimated duration for this method.
@@ -195,15 +200,17 @@ class CapabilitiesMixin:
         float
             Estimated duration in seconds.
         """
+        self.ensure_connection()
+
         if not isinstance(method, PalmSens.Method):
             method = method._to_psmethod()
 
-        instrument_capabilities = self.capabilities._pscapabilities
+        capabilities = self._comm.Capabilities
 
-        return method.GetMinimumEstimatedMeasurementDuration(instrument_capabilities)
+        return method.GetMinimumEstimatedMeasurementDuration(capabilities)
 
     def validate_method(
-        self: HasCapabilities,
+        self: HasCommProtocol,
         method: PalmSens.Method | BaseTechnique,
     ):
         """Validate method.
@@ -215,7 +222,9 @@ class CapabilitiesMixin:
         method : Method parameters
             The method to validate.
         """
-        capabilities = self.capabilities._pscapabilities
+        self.ensure_connection()
+
+        capabilities = self._comm.Capabilities
 
         if not isinstance(method, PalmSens.Method):
             method = method._to_psmethod()

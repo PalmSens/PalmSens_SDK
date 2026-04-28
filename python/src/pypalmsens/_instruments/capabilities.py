@@ -73,178 +73,221 @@ class CapabilitiesInterface(BaseModel):
     model_config = {'arbitrary_types_allowed': True}
 
     @computed_field
+    @property
     def acv_max_frequency(self) -> int:
         return int(self.comm.Capabilities.MaxFrequencyACV)
 
     @computed_field
+    @property
     def adc_auxiliary(self) -> AnalogComponent:
         return AnalogComponent._from_pscomponent(self.comm.Capabilities.ADCAuxiliary)
 
     @computed_field
+    @property
     def adc_bipot(self) -> AnalogComponent:
         return AnalogComponent._from_pscomponent(self.comm.Capabilities.ADCBiPot)
 
     @computed_field
+    @property
     def adc_current(self) -> AnalogComponent:
         return AnalogComponent._from_pscomponent(self.comm.Capabilities.ADCCurrent)
 
     @computed_field
+    @property
     def adc_potential(self) -> AnalogComponent:
         return AnalogComponent._from_pscomponent(self.comm.Capabilities.ADCPotential)
 
     @computed_field
+    @property
     def connection(self) -> str:
         return self.comm.Capabilities.ConnDescription
 
     @computed_field
+    @property
     def dac_auxiliary(self) -> AnalogComponent:
         return AnalogComponent._from_pscomponent(self.comm.Capabilities.DACAuxiliary)
 
     @computed_field
+    @property
     def dac_bipot(self) -> AnalogComponent:
         return AnalogComponent._from_pscomponent(self.comm.Capabilities.DACBiPot)
 
     @computed_field
+    @property
     def dac_current(self) -> AnalogComponent:
         return AnalogComponent._from_pscomponent(self.comm.Capabilities.DACCurrent)
 
     @computed_field
+    @property
     def dac_potential(self) -> AnalogComponent:
         return AnalogComponent._from_pscomponent(self.comm.Capabilities.DACPotential)
 
     @computed_field
+    @property
     def default_baudrate(self) -> int:
         return self.comm.Capabilities.DefaultBaudRate
 
     @computed_field
+    @property
     def device_type(self) -> str:
         return str(self.comm.Capabilities.DeviceType)
 
     @computed_field
+    @property
     def max_eis_amplitude_erms(self) -> float:
         return single_to_double(self.comm.Capabilities.MaxEISAmplitudeERMS)
 
     @computed_field
+    @property
     def eis_max_frequency(self) -> float:
         return single_to_double(self.comm.Capabilities.MaxEISFrequency)
 
     @computed_field
+    @property
     def eis_min_frequency(self) -> float:
         return single_to_double(self.comm.Capabilities.MinEISFrequency)
 
     @computed_field
+    @property
     def firmware_build_date(self) -> str:
         return self.comm.Capabilities.FirmwareTimeStamp
 
     @computed_field
+    @property
     def firmware_commit(self) -> str:
         return self.comm.ClientConnection.GetFWCommitHash()
 
     @computed_field
+    @property
     def firmware_release_type(self) -> Literal['Release', 'Beta', 'Debug']:
         return self.comm.Capabilities.FirmwareReleaseType
 
     @computed_field
+    @property
     def firmware_special_description(self) -> str:
         return self.comm.Capabilities.SpecialFirmwareDescription
 
     @computed_field
+    @property
     def firmware_version(self) -> float:
         return single_to_double(self.comm.Capabilities.FirmwareVersion)
 
     @computed_field
+    @property
     def hardware_revision(self) -> int:
         return self.comm.Capabilities.HardwareRevision
 
     @computed_field
+    @property
     def max_v_aux(self) -> float:
         return single_to_double(self.comm.Capabilities.MaxVAux)
 
     @computed_field
+    @property
     def geis_max_frequency(self) -> int:
         return int(self.comm.Capabilities.MaxEISFrequency)
 
     @computed_field
+    @property
     def has_bipot(self) -> bool:
         return self.comm.Capabilities.BiPotPresent
 
     @computed_field
+    @property
     def is_galvanostat(self) -> bool:
         return self.comm.Capabilities.IsGalvanostat
 
     @computed_field
+    @property
     def is_hw_sync_master(self) -> bool:
         return self.comm.Capabilities.IsHardwareSynchronizationMaster
 
     @computed_field
+    @property
     def is_hw_sync_slave(self) -> bool:
         return self.comm.Capabilities.IsSlaveChannel
 
     @computed_field
+    @property
     def max_current(self) -> float:
         return single_to_double(self.comm.Capabilities.MaxCurrent)
 
     @computed_field
+    @property
     def max_n_points(self) -> int:
         return self.comm.Capabilities.MaxNPoints
 
     @computed_field
+    @property
     def max_potential(self) -> float:
         return single_to_double(self.comm.Capabilities.MaxPotential)
 
     @computed_field
+    @property
     def max_potential_bipot(self) -> float:
         return single_to_double(self.comm.Capabilities.MaxPotentialBipot)
 
     @computed_field
+    @property
     def min_current(self) -> float:
         return single_to_double(self.comm.Capabilities.MinCurrent)
 
     @computed_field
+    @property
     def min_potential(self) -> float:
         return single_to_double(self.comm.Capabilities.MinPotential)
 
     @computed_field
+    @property
     def min_potential_step(self) -> float:
         return self.comm.Capabilities.DACPotential.StepSize * 1000.0
 
     @computed_field
+    @property
     def min_potential_bipot(self) -> float:
         return single_to_double(self.comm.Capabilities.MinPotentialBipot)
 
     @computed_field
+    @property
     def model_name(self) -> str:
         return self.comm.DeviceSerial.TypeToModelName()
 
     @computed_field
+    @property
     def model_short_name(self) -> str:
         return self.comm.DeviceSerial.TypeToString()
 
     @computed_field
+    @property
     def serial_number(self) -> str:
         return str(self.comm.DeviceSerial)
 
     @computed_field
+    @property
     def supported_applied_current_ranges(self) -> list[AllowedCurrentRanges]:
         return [
             cr_enum_to_string(item) for item in self.comm.Capabilities.SupportedAppliedRanges
         ]
 
     @computed_field
+    @property
     def supported_bipot_current_ranges(self) -> list[AllowedCurrentRanges]:
         return [cr_enum_to_string(item) for item in self.comm.Capabilities.SupportedBipotRanges]
 
     @computed_field
+    @property
     def supported_current_ranges(self) -> list[AllowedCurrentRanges]:
         return [cr_enum_to_string(item) for item in self.comm.Capabilities.SupportedRanges]
 
     @computed_field
+    @property
     def supported_potential_ranges(self) -> list[AllowedPotentialRanges]:
         return [
             pr_enum_to_string(item) for item in self.comm.Capabilities.SupportedPotentialRanges
         ]
 
     @computed_field
+    @property
     def supported_methods(self) -> list[AllowedMethods]:
         method_ids = []
 
@@ -259,10 +302,12 @@ class CapabilitiesInterface(BaseModel):
         return method_ids
 
     @computed_field
+    @property
     def supports_impedance(self) -> bool:
         return self.comm.Capabilities.SupportsImpedance
 
     @computed_field
+    @property
     def supports_ir_drop_compensation(self) -> bool:
         return self.comm.Capabilities.SupportsIRDropComp
 
