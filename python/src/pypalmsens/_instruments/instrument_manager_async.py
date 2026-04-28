@@ -119,7 +119,13 @@ class HasCapabilities(Protocol):
 class CapabilitiesMixin:
     @property
     def capabilities(self: HasCommProtocol) -> Capabilities:
-        """Return capabilities as dictionary."""
+        """Retrieve device capabilities and device info as a dataclass.
+
+        Returns
+        -------
+        capabilities: Capabilities
+            Device capabilities and device info.
+        """
         self.ensure_connection()
         return Capabilities._from_comm(self._comm)
 
@@ -232,7 +238,7 @@ class InstrumentManagerAsync(CapabilitiesMixin):
 
     def __init__(self, instrument: Instrument):
         self.instrument: Instrument = instrument
-        """Instrument to connect to."""
+        """Instrument being managed by this class."""
 
         self._comm: CommManager
         self._status_callback: CallbackStatus

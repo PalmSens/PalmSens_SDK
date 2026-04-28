@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import Literal
 
 import PalmSens
-from pydantic import BaseModel, computed_field
+from pydantic import BaseModel, ConfigDict, computed_field
 
 from .._helpers import single_to_double
 from .._methods.types import (
@@ -16,6 +16,10 @@ from .._methods.types import (
 
 
 class AnalogComponent(BaseModel):
+    """Dataclass for analog component (DAC / ADC) configuration."""
+
+    model_config = ConfigDict(frozen=True)
+
     bits: int
     """Number of bits this device uses."""
 
@@ -42,6 +46,8 @@ class AnalogComponent(BaseModel):
 
     v_range: float
     """Gets the reference voltage range of the device."""
+
+    model_config['frozen'] = True
 
     @classmethod
     def _from_pscomponent(cls, obj: PalmSens.Devices.AnalogComponent) -> AnalogComponent:
@@ -262,6 +268,10 @@ class CapabilitiesInterface(BaseModel):
 
 
 class Capabilities(BaseModel):
+    """Dataclass for device capabilities and info."""
+
+    model_config = ConfigDict(frozen=True)
+
     acv_max_frequency: int
     """The maximum frequency for ACV in Hz."""
 

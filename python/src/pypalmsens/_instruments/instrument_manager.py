@@ -111,7 +111,7 @@ class InstrumentManager(CapabilitiesMixin):
 
     def __init__(self, instrument: Instrument):
         self.instrument: Instrument = instrument
-        """Instrument to connect to."""
+        """Instrument being managed by this class."""
 
         self._comm: CommManager
 
