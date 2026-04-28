@@ -121,7 +121,7 @@ class CapabilitiesMixin:
     def capabilities(self: HasCommProtocol) -> Capabilities:
         """Return capabilities as dictionary."""
         self.ensure_connection()
-        return Capabilities._init(self._comm)
+        return Capabilities._from_comm(self._comm)
 
     def supported_methods(self: HasCapabilities) -> list[AllowedMethods]:
         """List methods supported by this device.

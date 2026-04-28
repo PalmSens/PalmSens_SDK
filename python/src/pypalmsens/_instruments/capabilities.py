@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import Literal
 
 import PalmSens
-from pydantic import BaseModel, PrivateAttr, computed_field
+from pydantic import BaseModel, computed_field
 
 from .._helpers import single_to_double
 from .._methods.types import (
@@ -44,7 +44,7 @@ class AnalogComponent(BaseModel):
     """Gets the reference voltage range of the device."""
 
     @classmethod
-    def _init(cls, obj: PalmSens.Devices.AnalogComponent) -> AnalogComponent:
+    def _from_pscomponent(cls, obj: PalmSens.Devices.AnalogComponent) -> AnalogComponent:
         """Convert dotnet object."""
         return cls(
             bits=obj.Bits,
@@ -59,242 +59,190 @@ class AnalogComponent(BaseModel):
         )
 
 
-class Capabilities(BaseModel):
-    """Dataclass for device capabilities and device info."""
+class CapabilitiesInterface(BaseModel):
+    """Interface to convert from PalmSens.Devices.Capabilities to dataclass."""
 
-    _comm: PalmSens.Comm.CommManager = PrivateAttr()
+    comm: PalmSens.Comm.CommManager
 
     model_config = {'arbitrary_types_allowed': True}
 
-    @classmethod
-    def _init(cls, comm: PalmSens.Comm.CommManager) -> Capabilities:
-        """Work-around to initialize BaseModel."""
-        model = cls()
-        model._comm = comm
-        return model
-
-    @property
-    def _pscapabilities(self) -> PalmSens.Comm.Capabilities:
-        return self._comm.Capabilities
-
     @computed_field
     def acv_max_frequency(self) -> int:
-        """The maximum frequency for ACV in Hz."""
-        return int(self._pscapabilities.MaxFrequencyACV)
+        return int(self.comm.Capabilities.MaxFrequencyACV)
 
     @computed_field
     def adc_auxiliary(self) -> AnalogComponent:
-        """Gets an object with values to calculate the auxiliary voltage from the integer value received from the instrument."""
-        return AnalogComponent._init(self._pscapabilities.ADCAuxiliary)
+        return AnalogComponent._from_pscomponent(self.comm.Capabilities.ADCAuxiliary)
 
     @computed_field
     def adc_bipot(self) -> AnalogComponent:
-        """Gets an object with values to calculate the bipot current from the integer value received from the instrument."""
-        return AnalogComponent._init(self._pscapabilities.ADCBiPot)
+        return AnalogComponent._from_pscomponent(self.comm.Capabilities.ADCBiPot)
 
     @computed_field
     def adc_current(self) -> AnalogComponent:
-        """Gets an object with values to calculate the current from the integer value received from the instrument."""
-        return AnalogComponent._init(self._pscapabilities.ADCCurrent)
+        return AnalogComponent._from_pscomponent(self.comm.Capabilities.ADCCurrent)
 
     @computed_field
     def adc_potential(self) -> AnalogComponent:
-        """Gets an object with values to calculate the potential from the integer value received from the instrument."""
-        return AnalogComponent._init(self._pscapabilities.ADCPotential)
+        return AnalogComponent._from_pscomponent(self.comm.Capabilities.ADCPotential)
 
     @computed_field
     def connection(self) -> str:
-        """Connection type for this device."""
-        return self._pscapabilities.ConnDescription
+        return self.comm.Capabilities.ConnDescription
 
     @computed_field
     def dac_auxiliary(self) -> AnalogComponent:
-        """Gets an object with values to calculate the instrument integer value for setting the auxiliary output voltage."""
-        return AnalogComponent._init(self._pscapabilities.DACAuxiliary)
+        return AnalogComponent._from_pscomponent(self.comm.Capabilities.DACAuxiliary)
 
     @computed_field
     def dac_bipot(self) -> AnalogComponent:
-        """Gets an object with values to calculate the instrument integer value for setting the bipot potential."""
-        return AnalogComponent._init(self._pscapabilities.DACBiPot)
+        return AnalogComponent._from_pscomponent(self.comm.Capabilities.DACBiPot)
 
     @computed_field
     def dac_current(self) -> AnalogComponent:
-        """Gets an object with values to calculate the instrument integer value for setting the current."""
-        return AnalogComponent._init(self._pscapabilities.DACCurrent)
+        return AnalogComponent._from_pscomponent(self.comm.Capabilities.DACCurrent)
 
     @computed_field
     def dac_potential(self) -> AnalogComponent:
-        """Gets an object with values to calculate the potential from the integer value received from the instrument."""
-        return AnalogComponent._init(self._pscapabilities.DACPotential)
+        return AnalogComponent._from_pscomponent(self.comm.Capabilities.DACPotential)
 
     @computed_field
     def default_baudrate(self) -> int:
-        """Gets the default baud rate."""
-        return self._pscapabilities.DefaultBaudRate
+        return self.comm.Capabilities.DefaultBaudRate
 
     @computed_field
     def device_type(self) -> str:
-        """The device type for this capabilities."""
-        return str(self._pscapabilities.DeviceType)
+        return str(self.comm.Capabilities.DeviceType)
 
     @computed_field
     def max_eis_amplitude_erms(self) -> float:
-        """Gets the maximum E RMS amplitude for EIS."""
-        return single_to_double(self._pscapabilities.MaxEISAmplitudeERMS)
+        return single_to_double(self.comm.Capabilities.MaxEISAmplitudeERMS)
 
     @computed_field
     def eis_max_frequency(self) -> float:
-        """Maximum frequency for EIS measurements in Hz."""
-        return single_to_double(self._pscapabilities.MaxEISFrequency)
+        return single_to_double(self.comm.Capabilities.MaxEISFrequency)
 
     @computed_field
     def eis_min_frequency(self) -> float:
-        """Minimum frequency for EIS measurements in Hz."""
-        return single_to_double(self._pscapabilities.MinEISFrequency)
+        return single_to_double(self.comm.Capabilities.MinEISFrequency)
 
     @computed_field
     def firmware_build_date(self) -> str:
-        """Build date of the firmware."""
-        return self._pscapabilities.FirmwareTimeStamp
+        return self.comm.Capabilities.FirmwareTimeStamp
 
     @computed_field
     def firmware_commit(self) -> str:
-        """Commit associated with the build of the firmware."""
-        return self._comm.ClientConnection.GetFWCommitHash()
+        return self.comm.ClientConnection.GetFWCommitHash()
 
     @computed_field
     def firmware_release_type(self) -> Literal['Release', 'Beta', 'Debug']:
-        """Get a string representation if the build is 'Release', 'Beta' or 'Debug'"""
-        return self._pscapabilities.FirmwareReleaseType
+        return self.comm.Capabilities.FirmwareReleaseType
 
     @computed_field
     def firmware_special_description(self) -> str:
-        """Special description for the firmware"""
-        return self._pscapabilities.SpecialFirmwareDescription
+        return self.comm.Capabilities.SpecialFirmwareDescription
 
     @computed_field
     def firmware_version(self) -> float:
-        """Firmware version of connected device."""
-        return single_to_double(self._pscapabilities.FirmwareVersion)
+        return single_to_double(self.comm.Capabilities.FirmwareVersion)
 
     @computed_field
     def hardware_revision(self) -> int:
-        """Gets the hardware revision."""
-        return self._pscapabilities.HardwareRevision
+        return self.comm.Capabilities.HardwareRevision
 
     @computed_field
     def max_v_aux(self) -> float:
-        """Maximum potential output of the AUX port in V."""
-        return single_to_double(self._pscapabilities.MaxVAux)
+        return single_to_double(self.comm.Capabilities.MaxVAux)
 
     @computed_field
     def geis_max_frequency(self) -> int:
-        """Gets the maximum GEIS frequency in Hz."""
-        return int(self._pscapabilities.MaxEISFrequency)
+        return int(self.comm.Capabilities.MaxEISFrequency)
 
     @computed_field
     def has_bipot(self) -> bool:
-        """True if bipot (WE2) capabilities are present"""
-        return self._pscapabilities.BiPotPresent
+        return self.comm.Capabilities.BiPotPresent
 
     @computed_field
     def is_galvanostat(self) -> bool:
-        """True if the potentiastat can act as a galvanostat."""
-        return self._pscapabilities.IsGalvanostat
+        return self.comm.Capabilities.IsGalvanostat
 
     @computed_field
     def is_hw_sync_master(self) -> bool:
-        """Gets or sets a value indicating whether this instance is designated as the hardware synchronization master in MultiTrace."""
-        return self._pscapabilities.IsHardwareSynchronizationMaster
+        return self.comm.Capabilities.IsHardwareSynchronizationMaster
 
     @computed_field
     def is_hw_sync_slave(self) -> bool:
-        """Gets or sets a value indicating whether this instance is slave channel in a multichannel device."""
-        return self._pscapabilities.IsSlaveChannel
+        return self.comm.Capabilities.IsSlaveChannel
 
     @computed_field
     def max_current(self) -> float:
-        """Maximum current (* current range) that can be read/applied"""
-        return single_to_double(self._pscapabilities.MaxCurrent)
+        return single_to_double(self.comm.Capabilities.MaxCurrent)
 
     @computed_field
     def max_n_points(self) -> int:
-        """Maximum amount of points within a measurement technique for this device."""
-        return self._pscapabilities.MaxNPoints
+        return self.comm.Capabilities.MaxNPoints
 
     @computed_field
     def max_potential(self) -> float:
-        """Maximum potential in V that can be read/applied."""
-        return single_to_double(self._pscapabilities.MaxPotential)
+        return single_to_double(self.comm.Capabilities.MaxPotential)
 
     @computed_field
     def max_potential_bipot(self) -> float:
-        """Maximum potential in V that can be read/applied with the bipot."""
-        return single_to_double(self._pscapabilities.MaxPotentialBipot)
+        return single_to_double(self.comm.Capabilities.MaxPotentialBipot)
 
     @computed_field
     def min_current(self) -> float:
-        """Minimum current (* current range) that can be read/applied."""
-        return single_to_double(self._pscapabilities.MinCurrent)
+        return single_to_double(self.comm.Capabilities.MinCurrent)
 
     @computed_field
     def min_potential(self) -> float:
-        """Minimum potential in V that can be read/applied"""
-        return single_to_double(self._pscapabilities.MinPotential)
+        return single_to_double(self.comm.Capabilities.MinPotential)
 
     @computed_field
     def min_potential_step(self) -> float:
-        """Minimum potential step in mV that can be applied."""
-        return self._pscapabilities.DACPotential.StepSize * 1000.0
+        return self.comm.Capabilities.DACPotential.StepSize * 1000.0
 
     @computed_field
     def min_potential_bipot(self) -> float:
-        """Minimum potential that can be read/applied with the bipot"""
-        return single_to_double(self._pscapabilities.MinPotentialBipot)
+        return single_to_double(self.comm.Capabilities.MinPotentialBipot)
 
     @computed_field
     def model_name(self) -> str:
-        """Name of the device."""
-        return self._comm.DeviceSerial.TypeToModelName()
+        return self.comm.DeviceSerial.TypeToModelName()
 
     @computed_field
     def model_short_name(self) -> str:
-        """Short name of the device."""
-        return self._comm.DeviceSerial.TypeToString()
+        return self.comm.DeviceSerial.TypeToString()
 
     @computed_field
     def serial_number(self) -> str:
-        """Serial number of the device."""
-        return str(self._comm.DeviceSerial)
+        return str(self.comm.DeviceSerial)
 
     @computed_field
     def supported_applied_current_ranges(self) -> list[AllowedCurrentRanges]:
-        """list of current ranges supported for applying current by this particular device."""
-        return [cr_enum_to_string(item) for item in self._pscapabilities.SupportedAppliedRanges]
+        return [
+            cr_enum_to_string(item) for item in self.comm.Capabilities.SupportedAppliedRanges
+        ]
 
     @computed_field
     def supported_bipot_current_ranges(self) -> list[AllowedCurrentRanges]:
-        """list of current ranges for the BiPot module supported by this particular device."""
-        return [cr_enum_to_string(item) for item in self._pscapabilities.SupportedBipotRanges]
+        return [cr_enum_to_string(item) for item in self.comm.Capabilities.SupportedBipotRanges]
 
     @computed_field
     def supported_current_ranges(self) -> list[AllowedCurrentRanges]:
-        """list of current ranges supported by this particular device."""
-        return [cr_enum_to_string(item) for item in self._pscapabilities.SupportedRanges]
+        return [cr_enum_to_string(item) for item in self.comm.Capabilities.SupportedRanges]
 
     @computed_field
     def supported_potential_ranges(self) -> list[AllowedPotentialRanges]:
-        """list of potential ranges supported by this particular device."""
         return [
-            pr_enum_to_string(item) for item in self._pscapabilities.SupportedPotentialRanges
+            pr_enum_to_string(item) for item in self.comm.Capabilities.SupportedPotentialRanges
         ]
 
     @computed_field
     def supported_methods(self) -> list[AllowedMethods]:
-        """List supported methods."""
         method_ids = []
 
-        for number in self._pscapabilities.SupportedMethods:
+        for number in self.comm.Capabilities.SupportedMethods:
             try:
                 id = PalmSens.Method.FromTechniqueNumber(number).MethodID
             except Exception:
@@ -306,10 +254,158 @@ class Capabilities(BaseModel):
 
     @computed_field
     def supports_impedance(self) -> bool:
-        """Whether or not the device supports impedance measurements"""
-        return self._pscapabilities.SupportsImpedance
+        return self.comm.Capabilities.SupportsImpedance
 
     @computed_field
     def supports_ir_drop_compensation(self) -> bool:
-        """Whether the device supports IR Drop compensation"""
-        return self._pscapabilities.SupportsIRDropComp
+        return self.comm.Capabilities.SupportsIRDropComp
+
+
+class Capabilities(BaseModel):
+    acv_max_frequency: int
+    """The maximum frequency for ACV in Hz."""
+
+    adc_auxiliary: AnalogComponent
+    """Gets an object with values to calculate the auxiliary voltage from the integer value received from the instrument."""
+
+    adc_bipot: AnalogComponent
+    """Gets an object with values to calculate the bipot current from the integer value received from the instrument."""
+
+    adc_current: AnalogComponent
+    """Gets an object with values to calculate the current from the integer value received from the instrument."""
+
+    adc_potential: AnalogComponent
+    """Gets an object with values to calculate the potential from the integer value received from the instrument."""
+
+    connection: str
+    """Connection type for this device."""
+
+    dac_auxiliary: AnalogComponent
+    """Gets an object with values to calculate the instrument integer value for setting the auxiliary output voltage."""
+
+    dac_bipot: AnalogComponent
+    """Gets an object with values to calculate the instrument integer value for setting the bipot potential."""
+
+    dac_current: AnalogComponent
+    """Gets an object with values to calculate the instrument integer value for setting the current."""
+
+    dac_potential: AnalogComponent
+    """Gets an object with values to calculate the potential from the integer value received from the instrument."""
+
+    default_baudrate: int
+    """Gets the default baud rate."""
+
+    device_type: str
+    """The device type for this capabilities."""
+
+    max_eis_amplitude_erms: float
+    """Gets the maximum E RMS amplitude for EIS."""
+
+    eis_max_frequency: float
+    """Maximum frequency for EIS measurements in Hz."""
+
+    eis_min_frequency: float
+    """Minimum frequency for EIS measurements in Hz."""
+
+    firmware_build_date: str
+    """Build date of the firmware."""
+
+    firmware_commit: str
+    """Commit associated with the build of the firmware."""
+
+    firmware_release_type: Literal['Release', 'Beta', 'Debug']
+    """Get a string representation if the build is 'Release', 'Beta' or 'Debug'"""
+
+    firmware_special_description: str
+    """Special description for the firmware"""
+
+    firmware_version: float
+    """Firmware version of connected device."""
+
+    hardware_revision: int
+    """Gets the hardware revision."""
+
+    max_v_aux: float
+    """Maximum potential output of the AUX port in V."""
+
+    geis_max_frequency: int
+    """Gets the maximum GEIS frequency in Hz."""
+
+    has_bipot: bool
+    """True if bipot (WE2) capabilities are present"""
+
+    is_galvanostat: bool
+    """True if the potentiastat can act as a galvanostat."""
+
+    is_hw_sync_master: bool
+    """Gets or sets a value indicating whether this instance is designated as the hardware synchronization master in MultiTrace."""
+
+    is_hw_sync_slave: bool
+    """Gets or sets a value indicating whether this instance is slave channel in a multichannel device."""
+
+    max_current: float
+    """Maximum current (* current range) that can be read/applied"""
+
+    max_n_points: int
+    """Maximum amount of points within a measurement technique for this device."""
+
+    max_potential: float
+    """Maximum potential in V that can be read/applied."""
+
+    max_potential_bipot: float
+    """Maximum potential in V that can be read/applied with the bipot."""
+
+    min_current: float
+    """Minimum current (* current range) that can be read/applied."""
+
+    min_potential: float
+    """Minimum potential in V that can be read/applied"""
+
+    min_potential_step: float
+    """Minimum potential step in mV that can be applied."""
+
+    min_potential_bipot: float
+    """Minimum potential that can be read/applied with the bipot"""
+
+    model_name: str
+    """Name of the device."""
+
+    model_short_name: str
+    """Short name of the device."""
+
+    serial_number: str
+    """Serial number of the device."""
+
+    supported_applied_current_ranges: list[AllowedCurrentRanges]
+    """list of current ranges supported for applying current by this particular device."""
+
+    supported_bipot_current_ranges: list[AllowedCurrentRanges]
+    """list of current ranges for the BiPot module supported by this particular device."""
+
+    supported_current_ranges: list[AllowedCurrentRanges]
+    """list of current ranges supported by this particular device."""
+
+    supported_potential_ranges: list[AllowedPotentialRanges]
+    """list of potential ranges supported by this particular device."""
+
+    supported_methods: list[AllowedMethods]
+    """List supported methods."""
+
+    supports_impedance: bool
+    """Whether or not the device supports impedance measurements"""
+
+    supports_ir_drop_compensation: bool
+    """Whether the device supports IR Drop compensation"""
+
+    @classmethod
+    def _from_comm(cls, comm: PalmSens.Comm.CommManager) -> Capabilities:
+        """Initialize model from comm manager."""
+        interface = CapabilitiesInterface(comm=comm)
+        return cls.model_validate(interface.model_dump())
+
+
+if __name__ == '__main__':
+    for k, v in Capabilities.model_computed_fields.items():
+        print(f'{k}: {v.return_type}')
+        print(f'"""{v.description.__name__}"""')
+        print('')
