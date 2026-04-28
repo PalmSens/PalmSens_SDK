@@ -116,7 +116,7 @@ class SupportedMixin:
     @property
     def capabilities(self: HasCommProtocol) -> Capabilities:
         """Return capabilities as dictionary."""
-        return Capabilities.from_comm(self._comm)
+        return Capabilities._init(self._comm)
 
     def supported_methods(self: HasCommProtocol) -> list[AllowedMethods]:
         """List methods supported by this device.
