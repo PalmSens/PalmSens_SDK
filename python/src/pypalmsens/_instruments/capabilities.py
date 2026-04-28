@@ -3,14 +3,12 @@ from __future__ import annotations
 from typing import Annotated, Any
 
 import PalmSens
-from pydantic import BaseModel, BeforeValidator
 import System
+from pydantic import BaseModel, BeforeValidator
+
 from .._methods.types import (
     AllowedCurrentRanges,
-    AllowedMethods,
-    AllowedPotentialRanges,
     cr_enum_to_string,
-    pr_enum_to_string,
 )
 
 
@@ -57,7 +55,7 @@ class AnalogComponent(BaseModel):
 
 
 def ensure_current_ranges(value: Any) -> list[AllowedCurrentRanges]:
-    if isinstance(value, System.Collections.Generic.List[PalmSens.CurrentRange])
+    if isinstance(value, System.Collections.Generic.List[PalmSens.CurrentRange]):
         value = [cr_enum_to_string(cr) for cr in value]
     return value
 
@@ -177,13 +175,19 @@ class Capabilities(BaseModel):
     serial_number: str
     """Serial number of the device."""
 
-    supported_applied_current_ranges: Annotated[list[AllowedCurrentRanges], BeforeValidator(ensure_current_ranges)]
+    supported_applied_current_ranges: Annotated[
+        list[AllowedCurrentRanges], BeforeValidator(ensure_current_ranges)
+    ]
     """list of current ranges supported for applying current by this particular deviceType."""
 
-    supported_bipot_current_ranges: Annotated[list[AllowedCurrentRanges], BeforeValidator(ensure_current_ranges)]
+    supported_bipot_current_ranges: Annotated[
+        list[AllowedCurrentRanges], BeforeValidator(ensure_current_ranges)
+    ]
     """list of current ranges for the BiPot module supported by this particular deviceType."""
 
-    supported_current_ranges: Annotated[list[AllowedCurrentRanges], BeforeValidator(ensure_current_ranges)]
+    supported_current_ranges: Annotated[
+        list[AllowedCurrentRanges], BeforeValidator(ensure_current_ranges)
+    ]
     """list of current ranges supported by this particular deviceType."""
 
     # supported_potential_ranges: list[AllowedPotentialRanges]
