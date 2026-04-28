@@ -153,15 +153,15 @@ class CapabilitiesMixin:
         """
         return self.capabilities.supported_applied_current_ranges
 
-    def supported_bipot_ranges(self: HasCapabilities) -> list[AllowedCurrentRanges]:
-        """List applied current ranges supported by this device.
+    def supported_bipot_current_ranges(self: HasCapabilities) -> list[AllowedCurrentRanges]:
+        """List bipot current ranges supported by this device.
 
         Returns
         -------
         current_ranges: list[AllowedCurrentRanges]
             List of supported current ranges.
         """
-        return self.capabilities.supported_bipot_ranges
+        return self.capabilities.supported_bipot_current_ranges
 
     def supported_potential_ranges(self: HasCapabilities) -> list[AllowedPotentialRanges]:
         """List applied potential ranges supported by this device.
@@ -192,7 +192,7 @@ class CapabilitiesMixin:
         if not isinstance(method, PalmSens.Method):
             method = method._to_psmethod()
 
-        instrument_capabilities = self.capabilities._cap
+        instrument_capabilities = self.capabilities._pscapabilities
 
         return method.GetMinimumEstimatedMeasurementDuration(instrument_capabilities)
 
@@ -209,7 +209,7 @@ class CapabilitiesMixin:
         method : Method parameters
             The method to validate.
         """
-        capabilities = self.capabilities._cap
+        capabilities = self.capabilities._pscapabilities
 
         if not isinstance(method, PalmSens.Method):
             method = method._to_psmethod()

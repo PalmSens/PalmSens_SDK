@@ -308,33 +308,33 @@ class Capabilities(BaseModel):
     @computed_field
     @property
     def supported_applied_current_ranges(self) -> list[AllowedCurrentRanges]:
-        """list of current ranges supported for applying current by this particular deviceType."""
+        """list of current ranges supported for applying current by this particular device."""
         return [cr_enum_to_string(item) for item in self._pscapabilities.SupportedAppliedRanges]
 
     @computed_field
     @property
     def supported_bipot_current_ranges(self) -> list[AllowedCurrentRanges]:
-        """list of current ranges for the BiPot module supported by this particular deviceType."""
+        """list of current ranges for the BiPot module supported by this particular device."""
         return [cr_enum_to_string(item) for item in self._pscapabilities.SupportedBipotRanges]
 
     @computed_field
     @property
     def supported_current_ranges(self) -> list[AllowedCurrentRanges]:
-        """list of current ranges supported by this particular deviceType."""
+        """list of current ranges supported by this particular device."""
         return [cr_enum_to_string(item) for item in self._pscapabilities.SupportedRanges]
 
     @computed_field
     @property
     def supported_potential_ranges(self) -> list[AllowedPotentialRanges]:
-        """list of potential ranges supported by this particular deviceType."""
+        """list of potential ranges supported by this particular device."""
         return [
             pr_enum_to_string(item) for item in self._pscapabilities.SupportedPotentialRanges
         ]
 
     @computed_field
     @property
-    def supported_techniques(self) -> list[AllowedMethods]:
-        """List supported techniques."""
+    def supported_methods(self) -> list[AllowedMethods]:
+        """List supported methods."""
         method_ids = []
 
         for number in self._pscapabilities.SupportedMethods:
@@ -350,7 +350,7 @@ class Capabilities(BaseModel):
     @computed_field
     @property
     def supports_impedance(self) -> bool:
-        """Whether or not the deviceType supports impedance measurements"""
+        """Whether or not the device supports impedance measurements"""
         return self._pscapabilities.SupportsImpedance
 
     @computed_field
