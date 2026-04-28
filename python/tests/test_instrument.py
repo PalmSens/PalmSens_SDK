@@ -233,6 +233,16 @@ async def test_supported_async():
 
 
 @pytest.mark.instrument
+def test_capabilities():
+    instruments = ps.discover()
+    with ps.connect(instruments[0]) as manager:
+        cap = manager.capabilities
+
+    # Must be accessible without connection
+    assert cap.model_dump()
+
+
+@pytest.mark.instrument
 @pytest.mark.asyncio
 async def test_get_estimated_duration():
     instruments = await ps.discover_async()

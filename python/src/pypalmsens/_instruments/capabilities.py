@@ -78,253 +78,211 @@ class Capabilities(BaseModel):
         return self._comm.Capabilities
 
     @computed_field
-    @property
     def acv_max_frequency(self) -> int:
         """The maximum frequency for ACV in Hz."""
         return int(self._pscapabilities.MaxFrequencyACV)
 
     @computed_field
-    @property
     def adc_auxiliary(self) -> AnalogComponent:
         """Gets an object with values to calculate the auxiliary voltage from the integer value received from the instrument."""
         return AnalogComponent._init(self._pscapabilities.ADCAuxiliary)
 
     @computed_field
-    @property
     def adc_bipot(self) -> AnalogComponent:
         """Gets an object with values to calculate the bipot current from the integer value received from the instrument."""
         return AnalogComponent._init(self._pscapabilities.ADCBiPot)
 
     @computed_field
-    @property
     def adc_current(self) -> AnalogComponent:
         """Gets an object with values to calculate the current from the integer value received from the instrument."""
         return AnalogComponent._init(self._pscapabilities.ADCCurrent)
 
     @computed_field
-    @property
     def adc_potential(self) -> AnalogComponent:
         """Gets an object with values to calculate the potential from the integer value received from the instrument."""
         return AnalogComponent._init(self._pscapabilities.ADCPotential)
 
     @computed_field
-    @property
     def connection(self) -> str:
         """Connection type for this device."""
         return self._pscapabilities.ConnDescription
 
     @computed_field
-    @property
     def dac_auxiliary(self) -> AnalogComponent:
         """Gets an object with values to calculate the instrument integer value for setting the auxiliary output voltage."""
         return AnalogComponent._init(self._pscapabilities.DACAuxiliary)
 
     @computed_field
-    @property
     def dac_bipot(self) -> AnalogComponent:
         """Gets an object with values to calculate the instrument integer value for setting the bipot potential."""
         return AnalogComponent._init(self._pscapabilities.DACBiPot)
 
     @computed_field
-    @property
     def dac_current(self) -> AnalogComponent:
         """Gets an object with values to calculate the instrument integer value for setting the current."""
         return AnalogComponent._init(self._pscapabilities.DACCurrent)
 
     @computed_field
-    @property
     def dac_potential(self) -> AnalogComponent:
         """Gets an object with values to calculate the potential from the integer value received from the instrument."""
         return AnalogComponent._init(self._pscapabilities.DACPotential)
 
     @computed_field
-    @property
     def default_baudrate(self) -> int:
         """Gets the default baud rate."""
         return self._pscapabilities.DefaultBaudRate
 
     @computed_field
-    @property
     def device_type(self) -> str:
         """The device type for this capabilities."""
         return str(self._pscapabilities.DeviceType)
 
     @computed_field
-    @property
     def max_eis_amplitude_erms(self) -> float:
         """Gets the maximum E RMS amplitude for EIS."""
         return single_to_double(self._pscapabilities.MaxEISAmplitudeERMS)
 
     @computed_field
-    @property
     def eis_max_frequency(self) -> float:
         """Maximum frequency for EIS measurements in Hz."""
         return single_to_double(self._pscapabilities.MaxEISFrequency)
 
     @computed_field
-    @property
     def eis_min_frequency(self) -> float:
         """Minimum frequency for EIS measurements in Hz."""
         return single_to_double(self._pscapabilities.MinEISFrequency)
 
     @computed_field
-    @property
     def firmware_build_date(self) -> str:
         """Build date of the firmware."""
         return self._pscapabilities.FirmwareTimeStamp
 
     @computed_field
-    @property
     def firmware_commit(self) -> str:
         """Commit associated with the build of the firmware."""
         return self._comm.ClientConnection.GetFWCommitHash()
 
     @computed_field
-    @property
     def firmware_release_type(self) -> Literal['Release', 'Beta', 'Debug']:
         """Get a string representation if the build is 'Release', 'Beta' or 'Debug'"""
         return self._pscapabilities.FirmwareReleaseType
 
     @computed_field
-    @property
     def firmware_special_description(self) -> str:
         """Special description for the firmware"""
         return self._pscapabilities.SpecialFirmwareDescription
 
     @computed_field
-    @property
     def firmware_version(self) -> float:
         """Firmware version of connected device."""
         return single_to_double(self._pscapabilities.FirmwareVersion)
 
     @computed_field
-    @property
     def hardware_revision(self) -> int:
         """Gets the hardware revision."""
         return self._pscapabilities.HardwareRevision
 
     @computed_field
-    @property
     def max_v_aux(self) -> float:
         """Maximum potential output of the AUX port in V."""
         return single_to_double(self._pscapabilities.MaxVAux)
 
     @computed_field
-    @property
     def geis_max_frequency(self) -> int:
         """Gets the maximum GEIS frequency in Hz."""
         return int(self._pscapabilities.MaxEISFrequency)
 
     @computed_field
-    @property
     def has_bipot(self) -> bool:
         """True if bipot (WE2) capabilities are present"""
         return self._pscapabilities.BiPotPresent
 
     @computed_field
-    @property
     def is_galvanostat(self) -> bool:
         """True if the potentiastat can act as a galvanostat."""
         return self._pscapabilities.IsGalvanostat
 
     @computed_field
-    @property
     def is_hw_sync_master(self) -> bool:
         """Gets or sets a value indicating whether this instance is designated as the hardware synchronization master in MultiTrace."""
         return self._pscapabilities.IsHardwareSynchronizationMaster
 
     @computed_field
-    @property
     def is_hw_sync_slave(self) -> bool:
         """Gets or sets a value indicating whether this instance is slave channel in a multichannel device."""
         return self._pscapabilities.IsSlaveChannel
 
     @computed_field
-    @property
     def max_current(self) -> float:
         """Maximum current (* current range) that can be read/applied"""
         return single_to_double(self._pscapabilities.MaxCurrent)
 
     @computed_field
-    @property
     def max_n_points(self) -> int:
         """Maximum amount of points within a measurement technique for this device."""
         return self._pscapabilities.MaxNPoints
 
     @computed_field
-    @property
     def max_potential(self) -> float:
         """Maximum potential in V that can be read/applied."""
         return single_to_double(self._pscapabilities.MaxPotential)
 
     @computed_field
-    @property
     def max_potential_bipot(self) -> float:
         """Maximum potential in V that can be read/applied with the bipot."""
         return single_to_double(self._pscapabilities.MaxPotentialBipot)
 
     @computed_field
-    @property
     def min_current(self) -> float:
         """Minimum current (* current range) that can be read/applied."""
         return single_to_double(self._pscapabilities.MinCurrent)
 
     @computed_field
-    @property
     def min_potential(self) -> float:
         """Minimum potential in V that can be read/applied"""
         return single_to_double(self._pscapabilities.MinPotential)
 
     @computed_field
-    @property
     def min_potential_step(self) -> float:
         """Minimum potential step in mV that can be applied."""
         return self._pscapabilities.DACPotential.StepSize * 1000.0
 
     @computed_field
-    @property
     def min_potential_bipot(self) -> float:
         """Minimum potential that can be read/applied with the bipot"""
         return single_to_double(self._pscapabilities.MinPotentialBipot)
 
     @computed_field
-    @property
     def model_name(self) -> str:
         """Name of the device."""
         return self._comm.DeviceSerial.TypeToModelName()
 
     @computed_field
-    @property
     def model_short_name(self) -> str:
         """Short name of the device."""
         return self._comm.DeviceSerial.TypeToString()
 
     @computed_field
-    @property
     def serial_number(self) -> str:
         """Serial number of the device."""
         return str(self._comm.DeviceSerial)
 
     @computed_field
-    @property
     def supported_applied_current_ranges(self) -> list[AllowedCurrentRanges]:
         """list of current ranges supported for applying current by this particular device."""
         return [cr_enum_to_string(item) for item in self._pscapabilities.SupportedAppliedRanges]
 
     @computed_field
-    @property
     def supported_bipot_current_ranges(self) -> list[AllowedCurrentRanges]:
         """list of current ranges for the BiPot module supported by this particular device."""
         return [cr_enum_to_string(item) for item in self._pscapabilities.SupportedBipotRanges]
 
     @computed_field
-    @property
     def supported_current_ranges(self) -> list[AllowedCurrentRanges]:
         """list of current ranges supported by this particular device."""
         return [cr_enum_to_string(item) for item in self._pscapabilities.SupportedRanges]
 
     @computed_field
-    @property
     def supported_potential_ranges(self) -> list[AllowedPotentialRanges]:
         """list of potential ranges supported by this particular device."""
         return [
@@ -332,7 +290,6 @@ class Capabilities(BaseModel):
         ]
 
     @computed_field
-    @property
     def supported_methods(self) -> list[AllowedMethods]:
         """List supported methods."""
         method_ids = []
@@ -348,13 +305,11 @@ class Capabilities(BaseModel):
         return method_ids
 
     @computed_field
-    @property
     def supports_impedance(self) -> bool:
         """Whether or not the device supports impedance measurements"""
         return self._pscapabilities.SupportsImpedance
 
     @computed_field
-    @property
     def supports_ir_drop_compensation(self) -> bool:
         """Whether the device supports IR Drop compensation"""
         return self._pscapabilities.SupportsIRDropComp
