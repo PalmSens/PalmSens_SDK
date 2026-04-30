@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from string import Formatter
+from typing import Any
 
 from pydantic import BaseModel
 
@@ -9,10 +10,21 @@ from .techniques import MethodScript
 
 class MethodScriptTemplate(BaseModel):
     template: str
+    model: type[BaseModel] | None = None
 
     def substitute(self, **kwargs) -> MethodScript:
         """Substitute variables in template."""
-        if (keywords := set(kwargs)) != (variables := self.variables()):
+        if self.model:
+            variables = self.model(**kwargs).model_dump()
+        else:
+            self.validate_against_template(kwargs)
+            variables = kwargs
+
+        s = self.template.format(**variables)
+        return MethodScript(script=s)
+
+    def validate_against_template(self, mapping: dict[str, Any]):
+        if (keywords := set(mapping)) != (variables := self.template_variables()):
             raise ValueError(
                 (
                     'Keyword arguments do not match template variables.'
@@ -20,10 +32,7 @@ class MethodScriptTemplate(BaseModel):
                 )
             )
 
-        s = self.template.format(**kwargs)
-        return MethodScript(script=s)
-
-    def variables(self) -> set[str]:
+    def template_variables(self) -> set[str]:
         """Get variables defined in template."""
         variables = []
 
