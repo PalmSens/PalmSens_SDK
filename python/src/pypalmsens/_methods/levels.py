@@ -152,7 +152,7 @@ class ILevel(BaseModel):
         return obj
 
     @classmethod
-    def from_psobj(cls, psobj: PalmSens.Techniques.ELevel):
+    def from_psobj(cls, psobj: PalmSens.Techniques.EILevel):
         """Construct ILevel dataclass from PalmSens.Techniques.ELevel object."""
         trigger_lines: list[Literal[0, 1, 2, 3]] = []
 
