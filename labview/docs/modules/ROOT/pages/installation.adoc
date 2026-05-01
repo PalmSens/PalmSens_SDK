@@ -49,7 +49,8 @@ If you are using an older, incompatible version, you may get this error: `LabVIE
 There are 2 options:
 
 1. Use a newer version (2025 or newer)
-2. Open the SDK with a compatible version, and use menu:File[Save for previous version]. See https://knowledge.ni.com/KnowledgeArticleDetails?id=kA03q000000YGiHCAW[this page] for more information.
+2. Open the SDK with a compatible version, and use menu:File[Save for previous version] to save a project compatible with your version.
+See https://knowledge.ni.com/KnowledgeArticleDetails?id=kA03q000000YGiHCAW[this page] for more information.
 
 The "Save for previous version" works for compatibility with older versions down to 2019 (19.0).
 
