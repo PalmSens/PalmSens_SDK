@@ -131,8 +131,8 @@ class ILevel(BaseModel):
 
         return use_limit_potential_min or use_limit_potential_max
 
-    def to_psobj(self) -> PalmSens.Techniques.ELevel:
-        obj = PalmSens.Techniques.ELevel()
+    def to_psobj(self) -> PalmSens.Techniques.EILevel:
+        obj = PalmSens.Techniques.EILevel()
 
         obj.Level = self.level
         obj.Duration = self.duration
