@@ -26,3 +26,46 @@ For example to set up a CV experiment:
 
     Many configuration settings are shared between methods, like the current ranges above
     or _versus OCP_ or _trigger_ settings. These are listed in [Settings](./settings.md).
+
+
+**Voltammetric Techniques**
+
+- [Linear Sweep Voltammetry][pypalmsens.LinearSweepVoltammetry]
+- [Cyclic Voltammetry][pypalmsens.CyclicVoltammetry]
+- [Fast Cyclic Voltammetry][pypalmsens.FastCyclicVoltammetry]
+- [AC Voltammetry][pypalmsens.ACVoltammetry]
+
+**Pulsed Techniques**
+
+- [Differential Pulse Voltammetry][pypalmsens.DifferentialPulseVoltammetry]
+- [Square Wave Voltammetry][pypalmsens.SquareWaveVoltammetry]
+- [Normal Pulse Voltammetry][pypalmsens.NormalPulseVoltammetry]
+
+**Amperometric Techniques**
+
+- [Chronoamperometry][pypalmsens.ChronoAmperometry]
+- [Multistep Amperometry][pypalmsens.MultiStepAmperometry]
+- [Fast Amperometry][pypalmsens.FastAmperometry]
+- [Pulsed Amperometric Detection][pypalmsens.PulsedAmperometricDetection]
+- [Multiple Pulse Amperometry][pypalmsens.MultiplePulseAmperometry]
+
+**Potentiometric Techniques**
+
+- [Open Circuit Potentiometry][pypalmsens.OpenCircuitPotentiometry]
+- [Chronopotentiometry][pypalmsens.ChronoPotentiometry]
+- [Linear Sweep Potentiometry][pypalmsens.LinearSweepPotentiometry]
+- [Multistep Potentiometry][pypalmsens.MultiStepPotentiometry]
+- [Stripping Chronopotentiometry][pypalmsens.StrippingChronoPotentiometry]
+
+**Coulometric techniques**
+
+- [Chronocoulometry][pypalmsens.ChronoCoulometry]
+
+**Other**
+
+- [Impedance Spectroscopy][pypalmsens.ElectrochemicalImpedanceSpectroscopy]
+- [Fast Impedance Spectroscopy][pypalmsens.FastImpedanceSpectroscopy]
+- [Galvanostatic Impedance Spectroscopy][pypalmsens.GalvanostaticImpedanceSpectroscopy]
+- [Fast Galvanostatic Impedance Spectroscopy][pypalmsens.FastGalvanostaticImpedanceSpectroscopy]
+- [Mixed Mode][pypalmsens.MixedMode] | [Stages][pypalmsens.stages]
+- [Method Script][pypalmsens.MethodScript]
