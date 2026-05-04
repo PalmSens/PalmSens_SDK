@@ -9,8 +9,10 @@ from . import (
     corrosion,
     data,
     fitting,
-    mixed_mode,
+    mixed_mode,  # deprecated, use stages
     settings,
+    stages,
+    types,
 )
 from ._instruments.instrument import Instrument, discover, discover_async
 from ._instruments.instrument_manager import (
@@ -26,6 +28,7 @@ from ._instruments.instrument_manager_async import (
 from ._instruments.instrument_pool import InstrumentPool
 from ._instruments.instrument_pool_async import InstrumentPoolAsync
 from ._io import load_method_file, load_session_file, save_method_file, save_session_file
+from ._methods.mixed_mode import MixedMode
 from ._methods.techniques import (
     ACVoltammetry,
     ChronoAmperometry,
@@ -68,6 +71,8 @@ __all__ = [
     'load_session_file',
     'save_method_file',
     'save_session_file',
+    'stages',
+    'types',
     'Instrument',
     'InstrumentManager',
     'InstrumentManagerAsync',
@@ -88,6 +93,7 @@ __all__ = [
     'LinearSweepPotentiometry',
     'LinearSweepVoltammetry',
     'MethodScript',
+    'MixedMode',
     'MultiplePulseAmperometry',
     'MultiStepAmperometry',
     'MultiStepPotentiometry',
