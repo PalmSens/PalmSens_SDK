@@ -26,22 +26,8 @@ from ._methods.settings import (
     Pretreatment,
     VersusOCP,
 )
-from ._types import (
-    AllowedCurrentRanges,
-    AllowedDeviceState,
-    AllowedMethods,
-    AllowedPotentialRanges,
-    AllowedReadingStatus,
-    AllowedTimingStatus,
-)
 
 __all__ = [
-    'AllowedCurrentRanges',
-    'AllowedMethods',
-    'AllowedPotentialRanges',
-    'AllowedTimingStatus',
-    'AllowedReadingStatus',
-    'AllowedDeviceState',
     'BiPot',
     'BiPotCurrentRange',
     'ChargeLimits',
