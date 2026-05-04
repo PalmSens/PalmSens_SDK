@@ -28,44 +28,37 @@ For example to set up a CV experiment:
     or _versus OCP_ or _trigger_ settings. These are listed in [Settings](./settings.md).
 
 
-**Voltammetric Techniques**
+| Method | class | ID |
+|-|-|-|
+| **Voltammetric Techniques**-->
+| Linear Sweep Voltammetry | [pypalmsens.LinearSweepVoltammetry][] | `'lsv'` |
+| Cyclic Voltammetry | [pypalmsens.CyclicVoltammetry][] | `'cv'` |
+| Fast Cyclic Voltammetry | [pypalmsens.FastCyclicVoltammetry][] | `'fcv'` |
+| AC Voltammetry | [pypalmsens.ACVoltammetry][] | `'acv'` |
+| **Pulsed Techniques**-->
+| Differential Pulse Voltammetry | [pypalmsens.DifferentialPulseVoltammetry][] | `'dpv'` |
+| Square Wave Voltammetry | [pypalmsens.SquareWaveVoltammetry][] | `'swv'` |
+| Normal Pulse Voltammetry | [pypalmsens.NormalPulseVoltammetry][] | `'npv'` |
+| **Amperometric Techniques**-->
+| Chronoamperometry | [pypalmsens.ChronoAmperometry][] | `'ca'` |
+| Multistep Amperometry | [pypalmsens.MultiStepAmperometry][] | `'msa'` |
+| Fast Amperometry | [pypalmsens.FastAmperometry][] | `'fam'` |
+| Pulsed Amperometric Detection | [pypalmsens.PulsedAmperometricDetection][] | `'pad'` |
+| Multiple Pulse Amperometry | [pypalmsens.MultiplePulseAmperometry][] | `'mpa'` |
+| **Potentiometric Techniques**-->
+| Open Circuit Potentiometry | [pypalmsens.OpenCircuitPotentiometry][] | `'ocp'` |
+| Chronopotentiometry | [pypalmsens.ChronoPotentiometry][] | `'cp'` |
+| Linear Sweep Potentiometry | [pypalmsens.LinearSweepPotentiometry][] | `'lsp'` |
+| Multistep Potentiometry | [pypalmsens.MultiStepPotentiometry][] | `'msp'` |
+| Stripping Chronopotentiometry | [pypalmsens.StrippingChronoPotentiometry][] | `'scp'` |
+| **Coulometric techniques**-->
+| Chronocoulometry | [pypalmsens.ChronoCoulometry][] | `'cc'` |
+| **Other**-->
+| Impedance Spectroscopy | [pypalmsens.ElectrochemicalImpedanceSpectroscopy][] | `'eis'` |
+| Fast Impedance Spectroscopy | [pypalmsens.FastImpedanceSpectroscopy][] | `'fis'` |
+| Galvanostatic Impedance Spectroscopy | [pypalmsens.GalvanostaticImpedanceSpectroscopy][] | `'gis'` |
+| Fast Galvanostatic Impedance Spectroscopy | [pypalmsens.FastGalvanostaticImpedanceSpectroscopy][] | `'fgis'` |
+| Mixed Mode | [pypalmsens.MixedMode] | `'mm'` |
+| Method Script | [pypalmsens.MethodScript][] | `'ms'` |
 
-- [Linear Sweep Voltammetry][pypalmsens.LinearSweepVoltammetry]
-- [Cyclic Voltammetry][pypalmsens.CyclicVoltammetry]
-- [Fast Cyclic Voltammetry][pypalmsens.FastCyclicVoltammetry]
-- [AC Voltammetry][pypalmsens.ACVoltammetry]
-
-**Pulsed Techniques**
-
-- [Differential Pulse Voltammetry][pypalmsens.DifferentialPulseVoltammetry]
-- [Square Wave Voltammetry][pypalmsens.SquareWaveVoltammetry]
-- [Normal Pulse Voltammetry][pypalmsens.NormalPulseVoltammetry]
-
-**Amperometric Techniques**
-
-- [Chronoamperometry][pypalmsens.ChronoAmperometry]
-- [Multistep Amperometry][pypalmsens.MultiStepAmperometry]
-- [Fast Amperometry][pypalmsens.FastAmperometry]
-- [Pulsed Amperometric Detection][pypalmsens.PulsedAmperometricDetection]
-- [Multiple Pulse Amperometry][pypalmsens.MultiplePulseAmperometry]
-
-**Potentiometric Techniques**
-
-- [Open Circuit Potentiometry][pypalmsens.OpenCircuitPotentiometry]
-- [Chronopotentiometry][pypalmsens.ChronoPotentiometry]
-- [Linear Sweep Potentiometry][pypalmsens.LinearSweepPotentiometry]
-- [Multistep Potentiometry][pypalmsens.MultiStepPotentiometry]
-- [Stripping Chronopotentiometry][pypalmsens.StrippingChronoPotentiometry]
-
-**Coulometric techniques**
-
-- [Chronocoulometry][pypalmsens.ChronoCoulometry]
-
-**Other**
-
-- [Impedance Spectroscopy][pypalmsens.ElectrochemicalImpedanceSpectroscopy]
-- [Fast Impedance Spectroscopy][pypalmsens.FastImpedanceSpectroscopy]
-- [Galvanostatic Impedance Spectroscopy][pypalmsens.GalvanostaticImpedanceSpectroscopy]
-- [Fast Galvanostatic Impedance Spectroscopy][pypalmsens.FastGalvanostaticImpedanceSpectroscopy]
-- [Mixed Mode][pypalmsens.MixedMode] | [Stages][pypalmsens.stages]
-- [Method Script][pypalmsens.MethodScript]
+| [Stages | [pypalmsens.stages][]
