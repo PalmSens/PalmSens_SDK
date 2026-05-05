@@ -4,7 +4,7 @@ import asyncio
 from typing import TYPE_CHECKING, Any, Awaitable, Protocol, Sequence
 
 from .._methods import BaseTechnique
-from .callback import Callback, CallbackEIS
+from .callback import Callback, CallbackEIS, Status
 from .instrument import Instrument
 from .instrument_manager_async import InstrumentManagerAsync
 
@@ -120,6 +120,16 @@ class InstrumentPoolAsync:
         """
         await manager.connect()
         self.managers.append(manager)
+
+    def status(self) -> list[Status]:
+        """Return status for all managers in pool.
+
+        Returns
+        -------
+        list[Status]
+            List of status objects.
+        """
+        return [manager.status() for manager in self]
 
     async def measure(
         self,
