@@ -27,38 +27,29 @@ For example to set up a [CV][pypalmsens.CyclicVoltammetry] experiment:
     Many configuration settings are shared between methods, like the current ranges above
     or _versus OCP_ or _trigger_ settings. These are listed in [Settings](./settings.md).
 
+## Classes
 
-| Method | class | ID |
-|-|-|-|
-| **Voltammetric Techniques**-->
-| Linear Sweep Voltammetry | [pypalmsens.LinearSweepVoltammetry][] | `'lsv'` |
-| Cyclic Voltammetry | [pypalmsens.CyclicVoltammetry][] | `'cv'` |
-| Fast Cyclic Voltammetry | [pypalmsens.FastCyclicVoltammetry][] | `'fcv'` |
-| AC Voltammetry | [pypalmsens.ACVoltammetry][] | `'acv'` |
-| **Pulsed Techniques**-->
-| Differential Pulse Voltammetry | [pypalmsens.DifferentialPulseVoltammetry][] | `'dpv'` |
-| Square Wave Voltammetry | [pypalmsens.SquareWaveVoltammetry][] | `'swv'` |
-| Normal Pulse Voltammetry | [pypalmsens.NormalPulseVoltammetry][] | `'npv'` |
-| **Amperometric Techniques**-->
-| Chronoamperometry | [pypalmsens.ChronoAmperometry][] | `'ca'` |
-| Multistep Amperometry | [pypalmsens.MultiStepAmperometry][] | `'msa'` |
-| Fast Amperometry | [pypalmsens.FastAmperometry][] | `'fam'` |
-| Pulsed Amperometric Detection | [pypalmsens.PulsedAmperometricDetection][] | `'pad'` |
-| Multiple Pulse Amperometry | [pypalmsens.MultiplePulseAmperometry][] | `'mpa'` |
-| **Potentiometric Techniques**-->
-| Open Circuit Potentiometry | [pypalmsens.OpenCircuitPotentiometry][] | `'ocp'` |
-| Chronopotentiometry | [pypalmsens.ChronoPotentiometry][] | `'cp'` |
-| Linear Sweep Potentiometry | [pypalmsens.LinearSweepPotentiometry][] | `'lsp'` |
-| Multistep Potentiometry | [pypalmsens.MultiStepPotentiometry][] | `'msp'` |
-| Stripping Chronopotentiometry | [pypalmsens.StrippingChronoPotentiometry][] | `'scp'` |
-| **Coulometric techniques**-->
-| Chronocoulometry | [pypalmsens.ChronoCoulometry][] | `'cc'` |
-| **Other**-->
-| Impedance Spectroscopy | [pypalmsens.ElectrochemicalImpedanceSpectroscopy][] | `'eis'` |
-| Fast Impedance Spectroscopy | [pypalmsens.FastImpedanceSpectroscopy][] | `'fis'` |
-| Galvanostatic Impedance Spectroscopy | [pypalmsens.GalvanostaticImpedanceSpectroscopy][] | `'gis'` |
-| Fast Galvanostatic Impedance Spectroscopy | [pypalmsens.FastGalvanostaticImpedanceSpectroscopy][] | `'fgis'` |
-| Mixed Mode | [pypalmsens.MixedMode] | `'mm'` |
-| Method Script | [pypalmsens.MethodScript][] | `'ms'` |
-
-| [Stages | [pypalmsens.stages][]
+- [`pypalmsens.CyclicVoltammetry`][pypalmsens.CyclicVoltammetry]
+- [`pypalmsens.SquareWaveVoltammetry`][pypalmsens.SquareWaveVoltammetry]
+- [`pypalmsens.LinearSweepVoltammetry`][pypalmsens.LinearSweepVoltammetry]
+- [`pypalmsens.FastCyclicVoltammetry`][pypalmsens.FastCyclicVoltammetry]
+- [`pypalmsens.ACVoltammetry`][pypalmsens.ACVoltammetry]
+- [`pypalmsens.DifferentialPulseVoltammetry`][pypalmsens.DifferentialPulseVoltammetry]
+- [`pypalmsens.NormalPulseVoltammetry`][pypalmsens.NormalPulseVoltammetry]
+- [`pypalmsens.ChronoAmperometry`][pypalmsens.ChronoAmperometry]
+- [`pypalmsens.MultiStepAmperometry`][pypalmsens.MultiStepAmperometry]
+- [`pypalmsens.FastAmperometry`][pypalmsens.FastAmperometry]
+- [`pypalmsens.PulsedAmperometricDetection`][pypalmsens.PulsedAmperometricDetection]
+- [`pypalmsens.MultiplePulseAmperometry`][pypalmsens.MultiplePulseAmperometry]
+- [`pypalmsens.OpenCircuitPotentiometry`][pypalmsens.OpenCircuitPotentiometry]
+- [`pypalmsens.ChronoPotentiometry`][pypalmsens.ChronoPotentiometry]
+- [`pypalmsens.LinearSweepPotentiometry`][pypalmsens.LinearSweepPotentiometry]
+- [`pypalmsens.MultiStepPotentiometry`][pypalmsens.MultiStepPotentiometry]
+- [`pypalmsens.StrippingChronoPotentiometry`][pypalmsens.StrippingChronoPotentiometry]
+- [`pypalmsens.ChronoCoulometry`][pypalmsens.ChronoCoulometry]
+- [`pypalmsens.ElectrochemicalImpedanceSpectroscopy`][pypalmsens.ElectrochemicalImpedanceSpectroscopy]
+- [`pypalmsens.FastImpedanceSpectroscopy`][pypalmsens.FastImpedanceSpectroscopy]
+- [`pypalmsens.GalvanostaticImpedanceSpectroscopy`][pypalmsens.GalvanostaticImpedanceSpectroscopy]
+- [`pypalmsens.FastGalvanostaticImpedanceSpectroscopy`][pypalmsens.FastGalvanostaticImpedanceSpectroscopy]
+- [`pypalmsens.MixedMode`][pypalmsens.MixedMode] ([`ConstantE`][pypalmsens.stages.ConstantE] | [`ConstantI`][pypalmsens.stages.ConstantI] | [`Impedance`][pypalmsens.stages.Impedance] | [`OpenCircuit`][pypalmsens.stages.OpenCircuit] | [`SweepE`][pypalmsens.stages.SweepE])
+- [`pypalmsens.MethodScript`][pypalmsens.MethodScript]
