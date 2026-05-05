@@ -1,3 +1,5 @@
+"""Define types and string literals."""
+
 from __future__ import annotations
 
 from ._data.types import AllowedArrayTypes

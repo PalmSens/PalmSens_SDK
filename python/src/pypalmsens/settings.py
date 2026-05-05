@@ -1,4 +1,4 @@
-"""This module contains the public api for classes for method configuration."""
+"""Define classes for method configuration."""
 
 from __future__ import annotations
 

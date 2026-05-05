@@ -2,7 +2,7 @@
 
 This section contains a listing of all available techniques in PyPalmSens.
 
-For example to set up a CV experiment:
+For example to set up a [CV][pypalmsens.CyclicVoltammetry] experiment:
 
 ```python
 >>> import pypalmsens as ps
