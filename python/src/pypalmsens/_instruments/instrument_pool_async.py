@@ -43,7 +43,7 @@ class InstrumentPoolAsync:
 
     def __repr__(self):
         ids = [manager.instrument.id for manager in self.managers]
-        return f'{self.__class__.__name__}({ids}, connected={self.is_connected()})'
+        return f'{type(self).__name__}({ids}, connected={self.is_connected()})'
 
     def __len__(self):
         return len(self.managers)
