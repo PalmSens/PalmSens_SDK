@@ -1,5 +1,5 @@
 classdef EquivalentCircuitFit
-    %EquivalentCircuitFit Summary of this class goes here
+    % EquivalentCircuitFit Summary of this class goes here
     %   Fits the equivalent circuit specified with the
     %   CDC descriptor code. Optional settings are fixing
     %   the value of a parameter, setting the min/max bounds
@@ -11,7 +11,7 @@ classdef EquivalentCircuitFit
         Parameters
     end
 
-    properties ( SetAccess = private, Hidden = true )
+    properties (SetAccess = private, Hidden = true)
         Model
         FitOptions
         EISData
@@ -19,8 +19,9 @@ classdef EquivalentCircuitFit
     end
 
     methods
-        function self = EquivalentCircuitFit(measurement,cdc)
-            %EquivalentCircuitFit Construct an instance of this class
+
+        function self = EquivalentCircuitFit(measurement, cdc)
+            % EquivalentCircuitFit Construct an instance of this class
             %   a reference to the .NET measurement selfect and
             %   the circuit design in the CDC format are required
             self.CDC = cdc;
@@ -35,7 +36,7 @@ classdef EquivalentCircuitFit
         end
 
         function SetFitOptions(self, MaxIterations, MinDeltaError, MinParameterStepSize)
-            %SetFitOptions returns a list of the circuit's parameters
+            % SetFitOptions returns a list of the circuit's parameters
             %   Defaults
             %   MaxIterations = 500
             %   MinDeltaError = 1e-9
@@ -46,18 +47,18 @@ classdef EquivalentCircuitFit
         end
 
         function SetFitRange(self, MinHz, MaxHz)
-            %SetFitRange Sets the frequency range to fit the circuit over
+            % SetFitRange Sets the frequency range to fit the circuit over
             data = double(self.EISData.EISDataSet.GetLastOfType(PalmSens.Data.DataArrayType.Frequency).GetValues());
             n = length(data);
-            array = NET.createArray('System.Boolean',n);
-            for i=1:n
-                array(i) = data(i)>= MinHz && data(i) <= MaxHz;
+            array = NET.createArray('System.Boolean', n);
+            for i = 1:n
+                array(i) = data(i) >= MinHz && data(i) <= MaxHz;
             end
             self.FitOptions.SelectedDataPoints = array;
         end
 
         function result = FitCircuit(self)
-            %FitCircuit Fits the equivalent circuit and returns the fit
+            % FitCircuit Fits the equivalent circuit and returns the fit
             %   results
             fitter = PalmSens.Fitting.FitAlgorithm.FromAlgorithm(self.FitOptions);
             fitter.ApplyFitCircuit();
@@ -69,40 +70,42 @@ classdef EquivalentCircuitFit
             result.ExitCode = char(fitter.FitResult.ExitCode.ToString());
             result.FitCurves = self.GetFittedCurves(fitter.FitResult.FinalParameters);
         end
+
     end
 
-    methods ( Access = private )
+    methods (Access = private)
+
         function eisData = GetEISDataFromMeasurement(self, measurement)
             measurement = self.IsValidMeasurement(measurement);
             eisData = self.IsValidEISMeasurement(measurement);
         end
 
-        function validMeasurement = IsValidMeasurement(self,measurement)
+        function validMeasurement = IsValidMeasurement(self, measurement)
             type = whos('measurement');
-            if(strcmp(type.class,'struct'))
-                if(isfield(measurement,'measurement'))
+            if strcmp(type.class, 'struct')
+                if isfield(measurement, 'measurement')
                     validMeasurement = self.IsValidMeasurement(measurement.measurement);
                 else
-                    error("Invalid argument for measurement")
+                    error("Invalid argument for measurement");
                 end
-            elseif (strcmp(type.class,'PalmSens.Measurement') || strcmp(type.class,'PalmSens.Techniques.ImpedimetricMeasurement'))
+            elseif strcmp(type.class, 'PalmSens.Measurement') || strcmp(type.class, 'PalmSens.Techniques.ImpedimetricMeasurement')
                 validMeasurement = measurement;
             else
-                error("Invalid argument for measurement")
+                error("Invalid argument for measurement");
             end
         end
 
-        function eisData = IsValidEISMeasurement(self,measurement)
+        function eisData = IsValidEISMeasurement(self, measurement)
             method = measurement.Method;
             mtype = whos('method');
-            if(strcmp(mtype.class, 'PalmSens.Techniques.ImpedimetricMethod'))
-                if(strcmp(char(method.FreqType.ToString()),'Scan') &&  strcmp(char(method.ScanType.ToString()),'Fixed'))
+            if strcmp(mtype.class, 'PalmSens.Techniques.ImpedimetricMethod')
+                if strcmp(char(method.FreqType.ToString()), 'Scan') &&  strcmp(char(method.ScanType.ToString()), 'Fixed')
                     eisData = measurement.EISdata.Item(0);
                 else
-                    error("Fit only supports EIS scans at a fixed potential")
+                    error("Fit only supports EIS scans at a fixed potential");
                 end
             else
-                error("Fit only EIS measurements supported")
+                error("Fit only EIS measurements supported");
             end
         end
 
@@ -112,7 +115,7 @@ classdef EquivalentCircuitFit
             modelFit.SetCircuit(System.String(self.CDC));
             modelFit.SetInitialParameters(fitParamters);
 
-            %Nyquist curve
+            % Nyquist curve
             nyquist = modelFit.GetNyquist();
             nyquist = nyquist(1);
             ZRe = nyquist.XAxisDataArray;
@@ -122,8 +125,8 @@ classdef EquivalentCircuitFit
             curves(1).yUnit = ['ZIm(' char(ZIm.Unit.ToString()) ')'];
             curves(1).yData = double(ZIm.GetValues());
 
-            %Bode curves
-            %Impedance over Frequency
+            % Bode curves
+            % Impedance over Frequency
             zvsFreq = modelFit.GetCurveZabsOverFrequency(false);
             zvsFreq = zvsFreq(1);
             Frequency = zvsFreq.XAxisDataArray;
@@ -133,7 +136,7 @@ classdef EquivalentCircuitFit
             curves(2).yUnit = ['Z(' char(Zabs.Unit.ToString()) ')'];
             curves(2).yData = double(Zabs.GetValues());
 
-            %-Phase over Frequency
+            % -Phase over Frequency
             phasevsFreq = modelFit.GetCurvePhaseOverFrequency(false);
             phasevsFreq = phasevsFreq(1);
             Phase = phasevsFreq.YAxisDataArray;
@@ -142,5 +145,6 @@ classdef EquivalentCircuitFit
             curves(3).yUnit = ['-Phase(' char(Phase.Unit.ToString()) ')'];
             curves(3).yData = -1 .* double(Phase.GetValues());
         end
+
     end
 end
