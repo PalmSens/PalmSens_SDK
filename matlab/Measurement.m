@@ -60,7 +60,7 @@ classdef Measurement < handle
             %
             % Parameters:
             %   commManager (PalmSens.Comm.CommManager):
-            %        The comm manager manages the connection with the device.
+            %       The comm manager manages the connection with the device.
 
             % Measure
             self.comm = commManager;
@@ -115,6 +115,7 @@ classdef Measurement < handle
         end
 
         function Abort(self)
+            % Abort a running measurement.
             if isempty(self.comm.Comm.ActiveMeasurement) == 1
                 self.inMeasurement = false;
                 return
@@ -294,7 +295,6 @@ classdef Measurement < handle
             % Process previous EIS measurement.
             %
             % Updates the `.measurement` attribute with EIS data and curves.
-
             m = self.previousMeasurement;
 
             measurement = struct('name', {}, 'type', {}, 'date', {}, 'curves', {}, 'measurement', {});

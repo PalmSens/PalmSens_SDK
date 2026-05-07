@@ -3,35 +3,37 @@ classdef MultiChannelMeasurement < handle
     % and storing the data from a measurement.
     %
     % This class requires the connected PalmSens or Emstat device's
-    % commManager to given in its contstructor (i.e. m = Measurement(CommManager))
-    % Setting the properties dispInCommandWindow or dispInPlot to true
+    % commManager to given in its contstructor (i.e. `m = Measurement(CommManager)`)
+    % Setting the properties `dispInCommandWindow` or `dispInPlot` to true
     % respectively displays the results of the measurement in the
     % Command Window or a Plot in the specified figure.
     %
-    % Recording devices idle status
-    % Idle status package can be recorded with the GetIdleData function
-    % (i.e. m.GetIdleData()) Recording of idle status can be stopped with
-    % the StopIdleData function (i.e. m.StopIdleData())
+    % **Recording devices idle status**:
+    % Idle status package can be recorded with the `GetIdleData` function
+    % (i.e. `m.GetIdleData(`)). Recording of idle status can be stopped with
+    % the StopIdleData function (i.e. `m.StopIdleData()`)
     %
-    % Measuring
+    % **Measuring**:
     % Use the New function in combination with a method in your workspace
-    % to start a new measurement (i.e. m.New(method)). The measurement can
-    % be aborted at any time with the Abort function (i.e. m.Abort()). The
+    % to start a new measurement (i.e. `m.New(method)`). The measurement can
+    % be aborted at any time with the Abort function (i.e. `m.Abort()`). The
     % results of the measurement are stored in the measurement properties
     % and can be retreived after the measurement has been completed
-    % (measurement = m.measurement).
+    % (`measurement = m.measurement`).
     %
-    % Measurements
+    % **Measurements**:
     % Measurements are converted to structs to improve their compatability with
     % Matlab. Each measurement is stored in its own struct and contains a
-    % character array with its name (.name), measurement technique (.type) and
-    % date (.date). The measurement itself is stored in one or more curves.
-    % Generally a measurement has one curve struct, however, Cyclic Voltammetry
-    % and Impedance Spectroscopy are exceptions. Cyclic Voltammetry measurements
-    % have one curve per each scan and Impedance Spectroscopy measurements have
-    % three curves (Nyquist plot (Zre vs Zim), Bode plot (freq vs Z) and Bode
-    % plot (freq vs -phase)). Each curve struct contains an array of x and y
-    % data (xData & yData) and their respective units (xUnit & yUnit).
+    % character array with its name (`.name`), measurement technique (`.type`) and
+    % date (`.date`).
+    %
+    % The measurement data is stored in one or more curves.
+    % Generally a measurement has one curve struct, except for
+    % Cyclic Voltammetry and Impedance Spectroscopy. Cyclic Voltammetry measurements
+    % have one curve per scan and Impedance Spectroscopy measurements have
+    % three curves, 1. Nyquist plot (Zre vs Zim), 2. Bode plot (freq vs Z) and
+    % 3. Bode plot (freq vs -phase). Each curve struct contains an array of x and y
+    % data (`.xData` & `.yData`) and their respective units (`.xUnit` & `.yUnit`).
 
     properties
 
@@ -44,7 +46,6 @@ classdef MultiChannelMeasurement < handle
         line  % animated line to plot the data in
         nPoints  % number of points in plot
 
-        % Additional properties (take caution while editting)
         inMeasurement  % Bool indicating whether the device is measuring
         abortMeasurement  % Used by class to indicate when abort function has been used
         x_array  % Array of idle potential readings
@@ -53,17 +54,20 @@ classdef MultiChannelMeasurement < handle
         y_unit  % Unit of the data recorded in the y_array.
         previousMeasurement  % The result of the measurement as a .Net object
         curves  % List of .Net curve objects returned by the PalmSens Matlab SDK
-        listenerIdleData  % Used to listen to the idle status events invoked by the matlab library
-        listenerBeginMeasurement  % Used to listen to the begin measurement event invoked by the matlab library
-        listenerCurveReceived  % Used to listen to the curve received events invoked by the matlab library
-        listenerEndMeasurement  % Used to listen to the end measurement event invoked by the matlab library
-        listenerData  % Used to listen to the new data received events invoked by the matlab library
 
     end
 
     methods
 
         function self = MultiChannelMeasurement(commManager, figure)
+            % Initialize measurement class.
+            %
+            % Parameters:
+            %   commManager (PalmSens.Comm.CommManager):
+            %       The comm manager manages the connection with the device.
+            %   figure (int):
+            %       Figure to display data in
+
             self.comm = commManager;
             self.x_array = zeros(0);
             self.y_array = zeros(0);
@@ -85,6 +89,12 @@ classdef MultiChannelMeasurement < handle
         end
 
         function New(self, method)
+            % Start a new measurement.
+            %
+            % Parameters:
+            %     method (PalmSens.Method):
+            %         Method class with technique parameters.
+
             % Check if the device is still measuring
             if isempty(self.comm.Comm.ActiveMeasurement) == 0
                 self.inMeasurement = true;
@@ -115,6 +125,7 @@ classdef MultiChannelMeasurement < handle
         end
 
         function Abort(self)
+            % Abort a running measurement.
             if isempty(self.comm.Comm.ActiveMeasurement) == 1
                 self.inMeasurement = false;
                 return
@@ -128,7 +139,10 @@ classdef MultiChannelMeasurement < handle
         end
 
         function GetIdleData(self)
-            % Clear previously recorded data
+            % Record idle data.
+            %
+            % This will be stopped once a measurement starts.
+            % Recording idle data will clear any previously recorded data.
             self.x_array = zeros(0);
             self.x_unit = 'Volt';
             self.y_array = zeros(0);
@@ -137,10 +151,12 @@ classdef MultiChannelMeasurement < handle
         end
 
         function StopIdleData(self)
+            % Stop recording idle data.
             self.listenerIdleData.Enabled = false; % Disable listener
         end
 
         function idleListener(self, ~, eventArgs)
+            % Idle listener callback.
             status = eventArgs.GetStatus();
             self.y_array(end + 1) = status.CurrentReading.Value;
             self.x_array(end + 1) = status.PotentialReading.Value;
@@ -153,6 +169,7 @@ classdef MultiChannelMeasurement < handle
         end
 
         function beginListener(self, ~, eventArgs)
+            % Start listener for measurement data.
             self.previousMeasurement = eventArgs;
 
             self.listenerData = addlistener(self.comm, 'NewDataAdded', @self.dataListener);
@@ -181,6 +198,7 @@ classdef MultiChannelMeasurement < handle
         end
 
         function endListener(self, ~, ~)
+            % Stop listener for measurement data.
             delete(self.listenerData);
             self.processMeasurement(); % Process data when measurement is completed
             self.inMeasurement = false;
@@ -190,6 +208,7 @@ classdef MultiChannelMeasurement < handle
         end
 
         function dataListener(self, ~, eventArgs)
+            % Measurement listener callback.
             if self.dispInCommandWindow == true
                 disp(['data packet(s) ' num2str(eventArgs.StartIndex + 1) ' to ' num2str(eventArgs.Count + eventArgs.StartIndex) '  received']);
             end
@@ -203,6 +222,7 @@ classdef MultiChannelMeasurement < handle
         end
 
         function curveListener(self, ~, eventArgs)
+            % Curve listener callback.
             self.curves.Add(eventArgs.GetCurve());
             if self.dispInCommandWindow == true
                 disp('Curve Received');
@@ -210,6 +230,7 @@ classdef MultiChannelMeasurement < handle
         end
 
         function plotDataRealtime(self)
+            % Plot data in real time.
             m = self.previousMeasurement;
             c = m.GetCurveArray();
             %             if(strcmp(char(m.Method.Name),'Cyclic Voltammetry')) %in the case of a CV plot the curve of each scan
@@ -230,6 +251,7 @@ classdef MultiChannelMeasurement < handle
         end
 
         function plotEISDataRealtime(self)
+            % Plot EIS data in real time.
             m = self.previousMeasurement;
 
             % Get impedance data arrays (See processEISMeasurement function for extracting data for bode plots)
@@ -246,7 +268,9 @@ classdef MultiChannelMeasurement < handle
         end
 
         function measurement = processMeasurement(self)
-            m = self.previousMeasurement;
+            % Process previous measurement.
+            %
+            % Updates the `.measurement` attribute with Measurement data. m = self.previousMeasurement;
             c = self.curves;
             % Convert .NET measurement to matlab structs
             if strcmp(char(m.Method.Name), 'Impedance Spectroscopy')  % Impedance Spectroscopy data is handled differently
@@ -269,6 +293,9 @@ classdef MultiChannelMeasurement < handle
         end
 
         function measurement = processEISMeasurement(self)
+            % Process previous EIS measurement.
+            %
+            % Updates the `.measurement` attribute with EIS data and curves.
             m = self.previousMeasurement;
 
             measurement = struct('name', {}, 'type', {}, 'date', {}, 'curves', {}, 'measurement', {});
