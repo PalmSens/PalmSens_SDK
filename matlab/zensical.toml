@@ -91,11 +91,11 @@ line_length = 96
 merge_init_into_class = true
 # Render signatures and attribute values in a separate code block,
 # below the symbol heading.
-separate_signature = true
+separate_signature = false
 # Show type annotations in signatures.
-show_signature_annotations = true
+show_signature_annotations = false
 # Show type parameters in signatures.
-show_signature_type_parameters = true
+show_signature_type_parameters = false
 # Show backlinks to other documentation sections within each symbol.
 backlinks = false  # crashes in linux
 # Show base classes OR inheritance diagram.
