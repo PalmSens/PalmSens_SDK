@@ -3,7 +3,7 @@ function [method] = LoadMethod(methodPath)
     %
     % Parameters:
     %   methodPath (string): The path to the psmethod file this function will load.
-    %       The full path is required, i.e. 'C:\Data\LinearSweep.psmethod'.
+    %       The full path is required, i.e. `'C:\Data\LinearSweep.psmethod'`.
     %
     % Returns:
     %   method: The method object containing its parameters. When the method file

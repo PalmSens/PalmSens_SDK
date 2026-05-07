@@ -4,7 +4,7 @@ function [success] = SaveMethod(method, path, PSSDK)
     % Parameters:
     %   method (PalmSens.Method): A method object
     %   path (string): the full path (including filename) where the method file must be
-    %       saved. A full path is required, i.e. 'C:\Data\LinearSweep.psmethod'.
+    %       saved. A full path is required, i.e. `'C:\Data\LinearSweep.psmethod'`.
     %   PSSDK: Handle to the PalmSens Matlab SDK library.
     %       This can be obtained using the LoadPSSDK funtion.
     %

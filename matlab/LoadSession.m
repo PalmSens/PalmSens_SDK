@@ -16,7 +16,7 @@ function [measurements] = LoadSession(sessionPath)
     %
     % Parameters:
     %   sessionPath (string): The path to the pssession file this function will load.
-    %       The full path is required, i.e. 'C:\Data\LinearSweep.pssession'.
+    %       The full path is required, i.e. `'C:\Data\LinearSweep.pssession'`.
     %
     % Parameters:
     %   measurements: a struct containing one or more measurements.
