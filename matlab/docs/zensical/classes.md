@@ -5,3 +5,7 @@ These wrap some of the [Palmsens .NET internal data structures](https://dev.palm
 :::Measurement
     options:
       members_order: source
+
+:::EquivalentCircuitFit
+    options:
+      members_order: source

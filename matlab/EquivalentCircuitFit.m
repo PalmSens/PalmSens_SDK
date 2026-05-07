@@ -1,11 +1,10 @@
 classdef EquivalentCircuitFit
-    % EquivalentCircuitFit Summary of this class goes here
-    %   Fits the equivalent circuit specified with the
-    %   CDC descriptor code. Optional settings are fixing
-    %   the value of a parameter, setting the min/max bounds
-    %   for a parameter, specifying the frequency range to fit,
-    %   limitting the number of iterations, delta error term or
-    %   delta parameter term
+    % Fits the equivalent circuit specified with the
+    % CDC descriptor code. Optional settings are fixing
+    % the value of a parameter, setting the min/max bounds
+    % for a parameter, specifying the frequency range to fit,
+    % limitting the number of iterations, delta error term or
+    % delta parameter term
 
     properties
         Parameters
@@ -21,9 +20,11 @@ classdef EquivalentCircuitFit
     methods
 
         function self = EquivalentCircuitFit(measurement, cdc)
-            % EquivalentCircuitFit Construct an instance of this class
-            %   a reference to the .NET measurement selfect and
-            %   the circuit design in the CDC format are required
+            % Construct an instance of this class
+            %
+            % Parameters:
+            %     measurement (PalmSens.Measurement): A reference to the .NET measurement object
+            %     cdc (string): The circuit design in the CDC format are required
             self.CDC = cdc;
             self.Model = PalmSens.Fitting.Models.CircuitModel();
             self.EISData = self.GetEISDataFromMeasurement(measurement);
@@ -36,18 +37,33 @@ classdef EquivalentCircuitFit
         end
 
         function SetFitOptions(self, MaxIterations, MinDeltaError, MinParameterStepSize)
-            % SetFitOptions returns a list of the circuit's parameters
-            %   Defaults
-            %   MaxIterations = 500
-            %   MinDeltaError = 1e-9
-            %   MinParameterStepSize = 1e-12
+            % Set fitting options for the minimization algorithm
+            %
+            % Parameters:
+            %   MaxIterations (int):
+            %       Maximum number of iterations.
+            %       Minimization terminates once it reaches this number of steps (default = 500).
+            %   MinDeltaError (float):
+            %       Minimum convergence error.
+            %       Minimization converges if the residual (squared difference)
+            %           falls below this value (default = 1e-9).
+            %   MinParameterStepSize (float):
+            %       Minimum convergence step.
+            %       Minimization converges if the difference in parameter values
+            %           falls below this value (default = 1e-12).
             self.FitOptions.MaxIterations = MaxIterations;
             self.FitOptions.MinimumDeltaErrorTerm = MinDeltaError;
             self.FitOptions.MinimumDeltaParameters = MinParameterStepSize;
         end
 
         function SetFitRange(self, MinHz, MaxHz)
-            % SetFitRange Sets the frequency range to fit the circuit over
+            % Set the frequency range to fit the circuit over.
+            %
+            % Parameters:
+            %   MinHz (float):
+            %       Minimum fitting frequency in Hz.
+            %   MaxHz (float):
+            %       Maximum fitting frequency in Hz."""
             data = double(self.EISData.EISDataSet.GetLastOfType(PalmSens.Data.DataArrayType.Frequency).GetValues());
             n = length(data);
             array = NET.createArray('System.Boolean', n);
@@ -58,8 +74,11 @@ classdef EquivalentCircuitFit
         end
 
         function result = FitCircuit(self)
-            % FitCircuit Fits the equivalent circuit and returns the fit
-            %   results
+            % Fits the equivalent circuit and returns the fit
+            %
+            % Returns:
+            %     result (struct):
+            %         Struct containing results from minimization.
             fitter = PalmSens.Fitting.FitAlgorithm.FromAlgorithm(self.FitOptions);
             fitter.ApplyFitCircuit();
             result = struct();
