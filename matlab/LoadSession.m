@@ -1,26 +1,28 @@
 function [measurements] = LoadSession(sessionPath)
-    % LoadSession, load a session from the specified path
-    %
-    % Input
-    %
-    % sessionPath: the path to the pssession file this function will load.
-    % (The full path is required, i.e. C:\Data\LinearSweep.pssession)
-    %
-    % Output
-    %
-    % measurements: a struct containing one or more measurements.
-    % (when the session file cannot be loaded it will return false)
+    % Load a session from the specified path.
     %
     % Measurements are converted to structs to improve their compatability with
     % Matlab. Each measurement is stored in its own struct and contains a
-    % character array with its name (.name), measurement technique (.type) and
-    % date (.date). The measurement itself is stored in one or more curves.
-    % Generally a measurement has one curve struct, however, Cyclic Voltammetry
-    % and Impedance Spectroscopy are exceptions. Cyclic Voltammetry measurements
-    % have one curve per each scan and Impedance Spectroscopy measurements have
-    % three curves (Nyquist plot (Zre vs Zim), Bode plot (freq vs Z) and Bode
-    % plot (freq vs -phase)). Each curve struct contains an array of x and y
-    % data (xData & yData) and their respective units (xUnit & yUnit).
+    % character array with its name (`.name`), measurement technique (`.type`) and
+    % date (`.date`).
+    %
+    % The measurement data is stored in one or more curves.
+    % Generally a measurement has one curve struct, except for
+    % Cyclic Voltammetry and Impedance Spectroscopy. Cyclic Voltammetry measurements
+    % have one curve per scan and Impedance Spectroscopy measurements have
+    % three curves, 1. Nyquist plot (Zre vs Zim), 2. Bode plot (freq vs Z) and
+    % 3. Bode plot (freq vs -phase). Each curve struct contains an array of x and y
+    % data (`.xData` & `.yData`) and their respective units (`.xUnit` & `.yUnit`).
+    %
+    % Parameters:
+    %   sessionPath (string): The path to the pssession file this function will load.
+    %       The full path is required, i.e. 'C:\Data\LinearSweep.pssession'.
+    %
+    % Parameters:
+    %   measurements: a struct containing one or more measurements.
+    %       When the session file cannot be loaded it will return false.
+    %
+
 
     % Check if the file exists
     if exist(sessionPath, 'file') == 0

@@ -1,19 +1,16 @@
 function [deviceList] = GetConnectedDevices(bluetooth, serial)
-    % GetConnectedDevices returns a list of all the connected comm devices.
+    % Return a list of all the connected comm devices.
     %
-    % Optional Inputs:
+    % Parameters:
+    %   bluetooth (bool): If true, enable scanning for bluetooth.
+    %       Setting bluetooth to false is faster. By default scanning for bluetooth
+    %       is disabled.
     %
-    % bluetooth: a boolean that when set to true enables scanning for bluetooth.
-    % Setting bluetooth to false is faster. (By default scanning for bluetooth
-    % is disabled)
+    %   serial (bool): If true, enable scanning for serial
+    %       devices. By default scanning for serial devices is disabled.
     %
-    % serial: a boolean that when set to true enables scanning for serial
-    % devices. (By default scanning for serial devices is disabled)
-    %
-    % Output:
-    %
-    % deviceList: List objects<PalmSens.Devices.Device> representing the
-    % connected devices
+    % Returns:
+    %   deviceList (List objects<PalmSens.Devices.Device>): list containing the connected devices
 
     % Check input parameters
     if nargin == 1

@@ -1,33 +1,33 @@
 function [method] = NewMethod(technique)
-    % NewMethod instantiates a new method object of the specified technique
+    % Instantiate a new method object of the specified technique.
     %
-    % Input
+    % The techniques are defined by their technique number:
     %
-    % technique: a number specifying the index of one of the following techniques
+    % 1.  Linear Sweep Voltammetry
+    % 2.  Cyclic Voltammetry
+    % 3.  AC Voltammetry
+    % 4.  Differential Pulse Voltammetry
+    % 5.  Square Wave Voltammetry
+    % 6.  Normal Pulse Voltammetry
+    % 7.  Chronoamperometry
+    % 8.  MultiStep Amperometry
+    % 9.  Fast Amperometry
+    % 10. Pulsed Amperometric Detection
+    % 11. Multiple Pulse Amperometry
+    % 12. Open Circuit Potentiometry
+    % 13. Chronopotentiometry
+    % 14. MultiStep Potentiometry
+    % 15. Chronopotentiometric Stripping
+    % 16. Impedance Spectroscopy (PS3, PS4, ESPico, Sensit and ES4 only)
+    % 17. Fast cyclic voltammetry
+    % 18. Galvanostatic Impedance Spectroscopy (PS4 and ES4 only)
     %
-    %     1.  Linear Sweep Voltammetry
-    %     2.  Cyclic Voltammetry
-    %     3.  AC Voltammetry
-    %     4.  Differential Pulse Voltammetry
-    %     5.  Square Wave Voltammetry
-    %     6.  Normal Pulse Voltammetry
-    %     7.  Chronoamperometry
-    %     8.  MultiStep Amperometry
-    %     9.  Fast Amperometry
-    %     10. Pulsed Amperometric Detection
-    %     11. Multiple Pulse Amperometry
-    %     12. Open Circuit Potentiometry
-    %     13. Chronopotentiometry
-    %     14. MultiStep Potentiometry
-    %     15. Chronopotentiometric Stripping
-    %     16. Impedance Spectroscopy (PS3, PS4, ESPico, Sensit and ES4 only)
-    %     17. Fast cyclic voltammetry
-    %     18. Galvanostatic Impedance Spectroscopy (PS4 and ES4 only)
+    % Parameters:
+    %   technique (int): a number specifying the index of one of the following techniques
     %
-    % Output
-    %
-    % method: the respective tecnique's method object containing its parameters.
-    % (if an invalid method is specified this will return false)
+    % Parameters:
+    %   method (PalmSens.Method): The respective technique's method object containing its parameters.
+    %       If an invalid method is specified this will return false.
 
     method = false;
 

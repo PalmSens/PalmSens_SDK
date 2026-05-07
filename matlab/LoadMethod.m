@@ -2,12 +2,12 @@ function [method] = LoadMethod(methodPath)
     % Load a method object from the specified path
     %
     % Parameters:
-    %   methodPath (string): the path to the psmethod file this function will load.
-    %       (The full path is required, i.e. C:\Data\LinearSweep.psmethod)
+    %   methodPath (string): The path to the psmethod file this function will load.
+    %       The full path is required, i.e. 'C:\Data\LinearSweep.psmethod'.
     %
     % Returns:
-    %   method: the method object containing its parameters. (when the method file
-    %       cannot be loaded it will return false)
+    %   method: The method object containing its parameters. When the method file
+    %       cannot be loaded it will return false.
 
     % Check if the file exists
     if exist(methodPath, 'file') == 0

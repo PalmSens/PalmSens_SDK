@@ -1,18 +1,15 @@
 function [success] = SaveMethod(method, path, PSSDK)
     % SaveMethod save a method object to a specified path
     %
-    % Input
+    % Parameters:
+    %   method (PalmSens.Method): A method object
+    %   path (string): the full path (including filename) where the method file must be
+    %       saved. A full path is required, i.e. 'C:\Data\LinearSweep.psmethod'.
+    %   PSSDK: Handle to the PalmSens Matlab SDK library.
+    %       This can be obtained using the LoadPSSDK funtion.
     %
-    % method: a method object
-    % path: the full path (including filename) where the method file must be
-    % saved. (A full path is required, i.e. C:\Data\LinearSweep.psmethod)
-    % PSSDK: the handle to the PalmSens Matlab SDK library.
-    % (This can be obtained using the LoadPSSDK funtion.)
-    %
-    % Output
-    %
-    % success: a boolean that returns true if the method was successfully
-    % saved, otherwise it returns false.
+    % Returns:
+    %   success (bool): True if the method was successfully saved.
 
     % Check whether the object passed into this fucntion is a method object
     if strfind(class(method), 'PalmSens.Techniques') == 0

@@ -1,4 +1,13 @@
 function [busy, comms] = MultiChannelMeasurementLoopHelper(comms)
+    % Wait for multiple instruments to finish their measurements.
+    %
+    % Parameters:
+    %   comms: List of channels
+    %
+    % Returns:
+    %   busy (bool): Return true if any channel is busy
+    %   comms (int): List of channels
+
 
     n = length(comms);
     activeChannels = ones(1, n);
