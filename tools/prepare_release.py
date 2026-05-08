@@ -64,7 +64,7 @@ class SDK:
             os.chdir(prev_cwd)
 
 
-def update_changelog(sdk: SDK) -> Path:
+def update_releases(sdk: SDK) -> Path:
     releases_path = Path(ROOT, 'docs', 'sdk', 'modules', 'ROOT', 'pages', 'releases.adoc')
     assert releases_path.exists()
     lines = releases_path.read_text().splitlines()
@@ -162,7 +162,7 @@ if __name__ == '__main__':
 
     base_branch = 'main'
     # release_branch = prepare_branch(sdk=sdk, base_branch=base_branch)
-    path = update_changelog(sdk=sdk)
+    path = update_releases(sdk=sdk)
     # commit(path, message="Updated release index")
     # update_version(sdk)
     # push_and_create_pr(sdk=sdk, release_branch=release_branch, base_branch=base_branch)
