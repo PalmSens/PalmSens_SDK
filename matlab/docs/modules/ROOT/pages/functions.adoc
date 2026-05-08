@@ -1,4 +1,5 @@
 # Functions
+:page-aliases: reference.adoc
 
 This is a list of the functions and classes that are available in the Matlab SDK.
 
