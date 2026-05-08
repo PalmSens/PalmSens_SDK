@@ -137,10 +137,10 @@ data (`.xData` & `.yData`) and their respective units (`.xUnit` & `.yUnit`).
 *Methods*
 
 - *<<_measurement-measurement>>* – Initialize measurement class.
-- *<<_measurement-stopidledata>>* – Stop recording idle data.
 - *<<_measurement-getidledata>>* – Record idle data.
-- *<<_measurement-new>>* – Start a new measurement.
 - *<<_measurement-abort>>* – Abort a running measurement.
+- *<<_measurement-stopidledata>>* – Stop recording idle data.
+- *<<_measurement-new>>* – Start a new measurement.
 - *<<_measurement-idlelistener>>* – Idle listener callback.
 - *<<_measurement-beginlistener>>* – Start listener for measurement data.
 - *<<_measurement-endlistener>>* – Stop listener for measurement data.
@@ -148,8 +148,8 @@ data (`.xData` & `.yData`) and their respective units (`.xUnit` & `.yUnit`).
 - *<<_measurement-curvelistener>>* – Curve listener callback.
 - *<<_measurement-plotdatarealtime>>* – Plot data in real time.
 - *<<_measurement-ploteisdatarealtime>>* – Plot EIS data in real time.
-- *<<_measurement-processmeasurement>>* – Process previous measurement.
 - *<<_measurement-processeismeasurement>>* – Process previous EIS measurement.
+- *<<_measurement-processmeasurement>>* – Process previous measurement.
 
 [#_measurement-measurement]
 ### `Measurement`
@@ -164,14 +164,6 @@ Initialize measurement class.
 - *`commManager`* (`PalmSens.Comm.CommManager`) –
   The comm manager manages the connection with the device.
 
-[#_measurement-stopidledata]
-### `StopIdleData`
-
-[sidebar]
-`function` *`StopIdleData()`*
-
-Stop recording idle data.
-
 [#_measurement-getidledata]
 ### `GetIdleData`
 
@@ -182,6 +174,22 @@ Record idle data.
 
 This will be stopped once a measurement starts.
 Recording idle data will clear any previously recorded data.
+
+[#_measurement-abort]
+### `Abort`
+
+[sidebar]
+`function` *`Abort()`*
+
+Abort a running measurement.
+
+[#_measurement-stopidledata]
+### `StopIdleData`
+
+[sidebar]
+`function` *`StopIdleData()`*
+
+Stop recording idle data.
 
 [#_measurement-new]
 ### `New`
@@ -195,14 +203,6 @@ Start a new measurement.
 
 - *`method`* (`PalmSens.Method`) –
 Method class with technique parameters.
-
-[#_measurement-abort]
-### `Abort`
-
-[sidebar]
-`function` *`Abort()`*
-
-Abort a running measurement.
 
 [#_measurement-idlelistener]
 ### `idleListener`
@@ -260,16 +260,6 @@ Plot data in real time.
 
 Plot EIS data in real time.
 
-[#_measurement-processmeasurement]
-### `processMeasurement`
-
-[sidebar]
-`function` *`[measurement] = processMeasurement()`*
-
-Process previous measurement.
-
-Updates the `.measurement` attribute with Measurement data.
-
 [#_measurement-processeismeasurement]
 ### `processEISMeasurement`
 
@@ -279,6 +269,16 @@ Updates the `.measurement` attribute with Measurement data.
 Process previous EIS measurement.
 
 Updates the `.measurement` attribute with EIS data and curves.
+
+[#_measurement-processmeasurement]
+### `processMeasurement`
+
+[sidebar]
+`function` *`[measurement] = processMeasurement()`*
+
+Process previous measurement.
+
+Updates the `.measurement` attribute with Measurement data.
 
 [#_multichannelmeasurement]
 ## `MultiChannelMeasurement`
@@ -340,17 +340,17 @@ data (`.xData` & `.yData`) and their respective units (`.xUnit` & `.yUnit`).
 *Methods*
 
 - *<<_multichannelmeasurement-multichannelmeasurement>>* – Initialize measurement class.
-- *<<_multichannelmeasurement-stopidledata>>* – Stop recording idle data.
-- *<<_multichannelmeasurement-abort>>* – Abort a running measurement.
 - *<<_multichannelmeasurement-new>>* – Start a new measurement.
 - *<<_multichannelmeasurement-getidledata>>* – Record idle data.
+- *<<_multichannelmeasurement-abort>>* – Abort a running measurement.
+- *<<_multichannelmeasurement-stopidledata>>* – Stop recording idle data.
 - *<<_multichannelmeasurement-idlelistener>>* – Idle listener callback.
 - *<<_multichannelmeasurement-beginlistener>>* – Start listener for measurement data.
 - *<<_multichannelmeasurement-endlistener>>* – Stop listener for measurement data.
 - *<<_multichannelmeasurement-datalistener>>* – Measurement listener callback.
 - *<<_multichannelmeasurement-curvelistener>>* – Curve listener callback.
-- *<<_multichannelmeasurement-processeismeasurement>>* – Process previous EIS measurement.
 - *<<_multichannelmeasurement-plotdatarealtime>>* – Plot data in real time.
+- *<<_multichannelmeasurement-processeismeasurement>>* – Process previous EIS measurement.
 - *<<_multichannelmeasurement-ploteisdatarealtime>>* – Plot EIS data in real time.
 - *<<_multichannelmeasurement-processmeasurement>>* – Process previous measurement.
 
@@ -368,22 +368,6 @@ Initialize measurement class.
   The comm manager manages the connection with the device.
 - *`figure`* (`int`) –
   Figure to display data in
-
-[#_multichannelmeasurement-stopidledata]
-### `StopIdleData`
-
-[sidebar]
-`function` *`StopIdleData()`*
-
-Stop recording idle data.
-
-[#_multichannelmeasurement-abort]
-### `Abort`
-
-[sidebar]
-`function` *`Abort()`*
-
-Abort a running measurement.
 
 [#_multichannelmeasurement-new]
 ### `New`
@@ -408,6 +392,22 @@ Record idle data.
 
 This will be stopped once a measurement starts.
 Recording idle data will clear any previously recorded data.
+
+[#_multichannelmeasurement-abort]
+### `Abort`
+
+[sidebar]
+`function` *`Abort()`*
+
+Abort a running measurement.
+
+[#_multichannelmeasurement-stopidledata]
+### `StopIdleData`
+
+[sidebar]
+`function` *`StopIdleData()`*
+
+Stop recording idle data.
 
 [#_multichannelmeasurement-idlelistener]
 ### `idleListener`
@@ -449,6 +449,14 @@ Measurement listener callback.
 
 Curve listener callback.
 
+[#_multichannelmeasurement-plotdatarealtime]
+### `plotDataRealtime`
+
+[sidebar]
+`function` *`plotDataRealtime()`*
+
+Plot data in real time.
+
 [#_multichannelmeasurement-processeismeasurement]
 ### `processEISMeasurement`
 
@@ -458,14 +466,6 @@ Curve listener callback.
 Process previous EIS measurement.
 
 Updates the `.measurement` attribute with EIS data and curves.
-
-[#_multichannelmeasurement-plotdatarealtime]
-### `plotDataRealtime`
-
-[sidebar]
-`function` *`plotDataRealtime()`*
-
-Plot data in real time.
 
 [#_multichannelmeasurement-ploteisdatarealtime]
 ### `plotEISDataRealtime`
@@ -499,10 +499,10 @@ This is a version of the `Measurement` class that can be used with a Matlab GUID
 *Methods*
 
 - *<<_measurementgui-measurementgui>>* – Initialize measurement class.
-- *<<_measurementgui-new>>* – Start a new measurement.
+- *<<_measurementgui-getidledata>>* – Record idle data.
 - *<<_measurementgui-stopidledata>>* – Stop recording idle data.
 - *<<_measurementgui-abort>>* – Abort a running measurement.
-- *<<_measurementgui-getidledata>>* – Record idle data.
+- *<<_measurementgui-new>>* – Start a new measurement.
 - *<<_measurementgui-startdatalistener>>* – Start listener for measurement data.
 - *<<_measurementgui-stopdatalistener>>* – Stop listener for measurement data.
 
@@ -529,18 +529,16 @@ Initialize measurement class.
 - *`receiveStatusCallback`* (`Callable`) –
   Callback for status update event.
 
-[#_measurementgui-new]
-### `New`
+[#_measurementgui-getidledata]
+### `GetIdleData`
 
 [sidebar]
-`function` *`New(method)`*
+`function` *`GetIdleData()`*
 
-Start a new measurement.
+Record idle data.
 
-*Input arguments*
-
-- *`method`* (`PalmSens.Method`) –
-Method class with technique parameters.
+This will be stopped once a measurement starts.
+Recording idle data will clear any previously recorded data.
 
 [#_measurementgui-stopidledata]
 ### `StopIdleData`
@@ -558,16 +556,18 @@ Stop recording idle data.
 
 Abort a running measurement.
 
-[#_measurementgui-getidledata]
-### `GetIdleData`
+[#_measurementgui-new]
+### `New`
 
 [sidebar]
-`function` *`GetIdleData()`*
+`function` *`New(method)`*
 
-Record idle data.
+Start a new measurement.
 
-This will be stopped once a measurement starts.
-Recording idle data will clear any previously recorded data.
+*Input arguments*
+
+- *`method`* (`PalmSens.Method`) –
+Method class with technique parameters.
 
 [#_measurementgui-startdatalistener]
 ### `StartDataListener`

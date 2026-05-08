@@ -1,15 +1,28 @@
+# /// script
+# requires-python = ">=3.13"
+# dependencies = [
+#   "maxx>=0.8.0",
+# ]
+# ///
+
 from __future__ import annotations
 
 from pathlib import Path
 
 import maxx
 
+ROOT = Path(__file__).parents[1]
+
+
 filenames = (
-    'EquivalentCircuitFit.m',
-    'Measurement.m',
-    'MultiChannelMeasurement.m',
-    'MeasurementGUI.m',
+    ROOT / 'EquivalentCircuitFit.m',
+    ROOT / 'Measurement.m',
+    ROOT / 'MultiChannelMeasurement.m',
+    ROOT / 'MeasurementGUI.m',
 )
+
+out_file = ROOT / 'docs' / 'modules' / 'ROOT' / 'pages' / '_classes.adoc'
+out = out_file.open('w', encoding='utf-8')
 
 hide_props = {
     'EquivalentCircuitFit': (
@@ -41,8 +54,6 @@ hide_props = {
     ),
 }
 
-
-out = open('docs/modules/ROOT/pages/_classes.adoc', 'w', encoding='utf-8')
 
 for filename in filenames:
     parser = maxx.treesitter.FileParser(Path(filename))
@@ -86,7 +97,6 @@ for filename in filenames:
     if methods:
         print('*Methods*\n', file=out)
         for method in methods:
-            print(method)
             docstring = method.docstring.value.split('\n', maxsplit=1)[0]
             print(
                 f'- *<<_{obj.name.lower()}-{method.name.lower()}>>* – {docstring}',
@@ -95,7 +105,6 @@ for filename in filenames:
         print('', file=out)
 
     for method in methods:
-        print(obj.name, method.name)
         method_doc = method.docstring.parse('google')
 
         arguments_s = ', '.join(arg.name for arg in method.arguments)

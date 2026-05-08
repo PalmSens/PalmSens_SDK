@@ -1,21 +1,33 @@
+# /// script
+# requires-python = ">=3.13"
+# dependencies = [
+#   "maxx>=0.8.0",
+# ]
+# ///
+
 from __future__ import annotations
 
 from pathlib import Path
 
 import maxx
 
+ROOT = Path(__file__).parents[1]
+
+
 filenames = (
-    'GetConnectedDevices.m',
-    'LoadMethod.m',
-    'LoadPSSDK.m',
-    'LoadSession.m',
-    'MultiChannelMeasurementLoopHelper.m',
-    'NewMethod.m',
-    'OpenConnection.m',
-    'SaveMethod.m',
+    ROOT / 'GetConnectedDevices.m',
+    ROOT / 'LoadMethod.m',
+    ROOT / 'LoadPSSDK.m',
+    ROOT / 'LoadSession.m',
+    ROOT / 'MultiChannelMeasurementLoopHelper.m',
+    ROOT / 'NewMethod.m',
+    ROOT / 'OpenConnection.m',
+    ROOT / 'SaveMethod.m',
 )
 
-out = open('docs/modules/ROOT/pages/_functions.adoc', 'w', encoding='utf-8')
+out_file = ROOT / 'docs' / 'modules' / 'ROOT' / 'pages' / '_functions.adoc'
+out = out_file.open('w', encoding='utf-8')
+
 
 for filename in filenames:
     parser = maxx.treesitter.FileParser(Path(filename))
