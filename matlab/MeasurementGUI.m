@@ -1,16 +1,17 @@
 classdef MeasurementGUI < handle
     % The measurement class contains the functions for starting, stopping
-    % and storing the data from a measurement.
-    %   Detailed explanation goes here
+    % and storing the data from a measurements
+    % This is a version of the `Measurement` class that can be used with a Matlab GUIDE user interface.
 
     properties
 
         comm  % Object containing handle for communication with device
         inMeasurement  % Bool indicating whether the device is measuring
 
-        % Additional properties
-        activeMeasurement
-        curve
+    end
+
+    properties (SetAccess = private, Hidden = true)
+
         listenerIdleData
         listenerBeginMeasurement
         listenerCurveReceived
@@ -22,6 +23,21 @@ classdef MeasurementGUI < handle
     methods
 
         function self = MeasurementGUI(hObject, commManager, beginMeasurmentCallback, endMeasurementCallback, receiveCurveCallback, receiveStatusCallback)
+            % Initialize measurement class.
+            %
+            % Parameters:
+            %   hObject (Handle):
+            %       Handle to btnConnect
+            %   commManager (PalmSens.Comm.CommManager):
+            %       The comm manager manages the connection with the device.
+            %   beginMeasurmentCallback (Callable):
+            %       Callback for begin measurement event.
+            %   endMeasurementCallback (Callable):
+            %       Callback for end measurement event.
+            %   receiveCurveCallback (Callable):
+            %       Callback for curve event.
+            %   receiveStatusCallback (Callable):
+            %       Callback for status update event.
             self.comm = commManager;
             self.inMeasurement = false;
 
@@ -34,6 +50,12 @@ classdef MeasurementGUI < handle
         end
 
         function New(self, method)
+            % Start a new measurement.
+            %
+            % Parameters:
+            %     method (PalmSens.Method):
+            %         Method class with technique parameters.
+
             % Check if the device is still measuring
             if isempty(self.comm.Comm.ActiveMeasurement) == 0
                 self.inMeasurement = true;
@@ -59,6 +81,7 @@ classdef MeasurementGUI < handle
         end
 
         function Abort(self)
+            % Abort a running measurement.
             if isempty(self.comm.Comm.ActiveMeasurement) == 1
                 self.inMeasurement = false;
                 return
@@ -69,18 +92,25 @@ classdef MeasurementGUI < handle
         end
 
         function GetIdleData(self)
+            % Record idle data.
+            %
+            % This will be stopped once a measurement starts.
+            % Recording idle data will clear any previously recorded data.
             self.listenerIdleData.Enabled = true; % Enable listener
         end
 
         function StopIdleData(self)
+            % Stop recording idle data.
             self.listenerIdleData.Enabled = false; % Disable listener
         end
 
         function StartDataListener(self, hObject, dataCallback)
+            % Start listener for measurement data.
             self.listenerData = addlistener(self.comm, 'NewDataAdded', @(sender, eventArgs) dataCallback(sender, eventArgs, hObject));
         end
 
         function StopDataListener(self)
+            % Stop listener for measurement data.
             delete(self.listenerData);
         end
 

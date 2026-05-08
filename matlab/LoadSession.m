@@ -23,7 +23,6 @@ function [measurements] = LoadSession(sessionPath)
     %       When the session file cannot be loaded it will return false.
     %
 
-
     % Check if the file exists
     if exist(sessionPath, 'file') == 0
         measurements = false;

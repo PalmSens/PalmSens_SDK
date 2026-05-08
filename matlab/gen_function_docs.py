@@ -15,7 +15,7 @@ filenames = (
     'SaveMethod.m',
 )
 
-out = open('docs/modules/ROOT/pages/_functions.adoc', 'w')
+out = open('docs/modules/ROOT/pages/_functions.adoc', 'w', encoding='utf-8')
 
 for filename in filenames:
     parser = maxx.treesitter.FileParser(Path(filename))
@@ -25,12 +25,12 @@ for filename in filenames:
 
     arguments_s = ', '.join(arg.name for arg in obj.arguments)
     returns_s = ', '.join(arg.name for arg in obj.returns)
-    returns_s = f'[{returns_s}] =' if returns_s else ''
+    returns_s = f'[{returns_s}] = ' if returns_s else ''
 
     print(f'[#_{obj.name.lower()}]', file=out)
     print(f'## `{obj.name}`', file=out)
     print('\n[sidebar]', file=out)
-    print(f'`function` *`{returns_s} {obj.name}({arguments_s})`*\n', file=out)
+    print(f'`function` *`{returns_s}{obj.name}({arguments_s})`*\n', file=out)
 
     for item in doc:
         if item.kind == 'text':

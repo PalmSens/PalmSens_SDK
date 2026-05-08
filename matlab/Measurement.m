@@ -3,7 +3,7 @@ classdef Measurement < handle
     % and storing the data from a measurement.
     %
     % This class requires the connected PalmSens or Emstat device's
-    % commManager to given in its contstructor (i.e. `m = Measurement(CommManager)`)
+    % `commManager` to given in its contstructor (i.e. `m = Measurement(CommManager)`)
     % Setting the properties `dispInCommandWindow` or `dispInPlot` to true
     % respectively displays the results of the measurement in the
     % Command Window or a Plot in Figure 1.
@@ -14,7 +14,7 @@ classdef Measurement < handle
     % the StopIdleData function (i.e. `m.StopIdleData()`)
     %
     % **Measuring**:
-    % Use the New function in combination with a method in your workspace
+    % Use the `New` function in combination with a method in your workspace
     % to start a new measurement (i.e. `m.New(method)`). The measurement can
     % be aborted at any time with the Abort function (i.e. `m.Abort()`). The
     % results of the measurement are stored in the measurement properties
@@ -50,6 +50,16 @@ classdef Measurement < handle
         y_unit  % Unit of the data recorded in the y_array.
         previousMeasurement  % The result of the measurement as a .Net object
         curves  % List of .Net curve objects returned by the PalmSens Matlab SDK
+
+    end
+
+    properties (SetAccess = private, Hidden = true)
+
+        listenerIdleData
+        listenerBeginMeasurement
+        listenerCurveReceived
+        listenerEndMeasurement
+        listenerData
 
     end
 

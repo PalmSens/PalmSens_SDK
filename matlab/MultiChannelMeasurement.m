@@ -57,6 +57,16 @@ classdef MultiChannelMeasurement < handle
 
     end
 
+    properties (SetAccess = private, Hidden = true)
+
+        listenerIdleData
+        listenerBeginMeasurement
+        listenerCurveReceived
+        listenerEndMeasurement
+        listenerData
+
+    end
+
     methods
 
         function self = MultiChannelMeasurement(commManager, figure)

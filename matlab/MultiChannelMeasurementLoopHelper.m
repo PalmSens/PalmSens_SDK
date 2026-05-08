@@ -8,7 +8,6 @@ function [busy, comms] = MultiChannelMeasurementLoopHelper(comms)
     %   busy (bool): Return true if any channel is busy
     %   comms (int): List of channels
 
-
     n = length(comms);
     activeChannels = ones(1, n);
 

@@ -7,7 +7,7 @@ classdef EquivalentCircuitFit
     % delta parameter term
 
     properties
-        Parameters
+        Parameters  % Model parameters
     end
 
     properties (SetAccess = private, Hidden = true)
