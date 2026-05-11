@@ -64,7 +64,13 @@ class SDK:
             os.chdir(prev_cwd)
 
 
-def update_releases(sdk: SDK) -> Path:
+def commit_file(path: str | Path, message: str):
+    path = str(Path)
+    sp.check_call(['git', 'add', f'{path}'])
+    sp.check_call(['git', 'commit', '-m', message])
+
+
+def update_releases(sdk: SDK, commit: bool = False):
     releases_path = Path(ROOT, 'docs', 'sdk', 'modules', 'ROOT', 'pages', 'releases.adoc')
     assert releases_path.exists()
     lines = releases_path.read_text().splitlines()
@@ -81,12 +87,8 @@ def update_releases(sdk: SDK) -> Path:
         releases_path.write_text('\n'.join(lines) + '\n', encoding='UTF-8')
         print(f'Tag added to {releases_path.name}')
 
-    return releases_path
-
-
-def commit(path: str, message: str):
-    sp.check_call(['git', 'add', f'{path}'])
-    sp.check_call(['git', 'commit', '-m', message])
+    if commit:
+        commit_file(releases_path, message='Updated release index')
 
 
 def set_version(sdk: SDK):
@@ -162,7 +164,12 @@ if __name__ == '__main__':
 
     base_branch = 'main'
     # release_branch = prepare_release_branch(sdk=sdk, base_branch=base_branch)
-    path = update_releases(sdk=sdk)
-    # commit(path, message="Updated release index")
+    update_releases(sdk=sdk, commit=True)
+
+    if sdk.name == 'python':
+        import changelog
+
+        changelog.update_python(new_tag=sdk.tag)
+
     # set_version(sdk)
     # push_branch_and_create_pr(sdk=sdk, release_branch=release_branch, base_branch=base_branch)

@@ -6,6 +6,21 @@ from datetime import datetime
 from pathlib import Path
 from textwrap import dedent
 
+ROOT = Path(__file__).parents[1]
+
+
+def get_latest_tag(component: str = 'python'):
+    cmd = 'git tag --list --sort -creatordate'
+    p = sp.run(cmd, capture_output=True)
+    tags = p.stdout.decode().splitlines()
+    for line in tags:
+        if line.startswith(component):
+            latest = line
+            break
+    else:
+        raise ValueError(f'No tag matching {component!r} in tags: {tags}.')
+    return latest
+
 
 def get_changes_since_tag(tag: str):
     cmd = f'git log {tag}..HEAD --reverse --oneline'
@@ -33,20 +48,11 @@ def get_changes_since_tag(tag: str):
     return '\n'.join(out)
 
 
-if __name__ == '__main__':
-    component = 'python'
-
-    args = sys.argv[1:]
-
-    assert len(args) == 2
-
-    previous_version, new_version = args
-    previous_tag = f'{component}-{previous_version}'
-    new_tag = f'{component}-{new_version}'
+def update_python(new_tag: str):
+    previous_tag = get_latest_tag()
+    changelog = get_changes_since_tag(previous_tag)
 
     time = datetime.today()
-
-    changelog = get_changes_since_tag(previous_tag)
 
     TEMPLATE_CHANGELOG = dedent("""\
     # PyPalmSens {new_version}
@@ -65,14 +71,16 @@ if __name__ == '__main__':
 
     To upgrade: `pip install pypalmsens -U`.
 
-    For the full changelog, see: https://dev.palmsens.com/python/latest/_attachments/releases/#pypalmsens-{new_tag.replace('.', '')}
+    For more information, see: https://dev.palmsens.com/python/latest/_attachments/releases/#pypalmsens-{new_tag.replace('.', '')}
 
     ## What's changed
 
     {changelog}
+
+    **Full Changelog**: https://github.com/PalmSens/PalmSens_SDK/compare/{previous_tag}...{new_tag}
     """)
 
-    index_path = Path('index.md')
+    index_path = Path(ROOT / 'python' / 'docs' / 'zensical' / 'releases' / 'index.md')
 
     lines = index_path.read_text().splitlines()
 
@@ -90,3 +98,23 @@ if __name__ == '__main__':
         index_path.write_text('\n'.join(lines) + '\n', encoding='UTF-8')
 
         print(f'Tag added to {index_path.name}')
+
+    gh_releases = TEMPLATE_GH_RELEASES.format(
+        new_version=new_version, new_tag=new_tag, time=time.date(), changelog=changelog
+    )
+
+    with open('changelog-python.md', 'w') as f:
+        f.write(gh_releases)
+
+
+if __name__ == '__main__':
+    component = 'python'
+    args = sys.argv[1:]
+
+    assert len(args) == 2
+
+    previous_version, new_version = args
+    previous_tag = f'{component}-{previous_version}'
+    new_tag = f'{component}-{new_version}'
+
+    update_python(new_tag)
