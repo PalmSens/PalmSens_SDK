@@ -55,7 +55,7 @@ def update_python(new_tag: str) -> str:
     time = datetime.today()
 
     TEMPLATE_CHANGELOG = dedent("""\
-    # PyPalmSens {new_version}
+    ## PyPalmSens {new_version}
 
     > :fontawesome-brands-github: <a href="https://github.com/PalmSens/PalmSens_SDK/releases/tag/{new_tag}">{new_tag}</a>
     - :fontawesome-brands-python: <a href="https://pypi.org/project/pypalmsens/{new_version}">pypalmsens-{new_version}</a>
@@ -71,7 +71,7 @@ def update_python(new_tag: str) -> str:
 
     To upgrade: `pip install pypalmsens -U`.
 
-    For more information, see: https://dev.palmsens.com/python/latest/_attachments/releases/#pypalmsens-{new_tag.replace('.', '')}
+    For more information, see [the documentation](https://dev.palmsens.com/python/latest/_attachments/releases/#pypalmsens-{new_tag.replace('.', '')})
 
     ## What's changed
 
