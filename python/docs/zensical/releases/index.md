@@ -4,8 +4,8 @@
 ## PyPalmSens 1.9.0
 
 > :fontawesome-brands-github: <a href="https://github.com/PalmSens/PalmSens_SDK/releases/tag/python-1.9.0">python-1.9.0</a>
-- :fontawesome-brands-python: <a href="https://pypi.org/project/pypalmsens/1.9.0">pypalmsens-1.9.0</a>
-- :fontawesome-solid-calendar: 2026-05-11
+| :fontawesome-brands-python: <a href="https://pypi.org/project/pypalmsens/1.9.0">pypalmsens-1.9.0</a>
+| :fontawesome-solid-calendar: 2026-05-11
 
 ### Corrosion methods
 

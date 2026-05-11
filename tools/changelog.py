@@ -58,15 +58,15 @@ def update_python(new_tag: str) -> str:
     ## PyPalmSens {new_version}
 
     > :fontawesome-brands-github: <a href="https://github.com/PalmSens/PalmSens_SDK/releases/tag/{new_tag}">{new_tag}</a>
-    - :fontawesome-brands-python: <a href="https://pypi.org/project/pypalmsens/{new_version}">pypalmsens-{new_version}</a>
-    - :fontawesome-solid-calendar: {time}
+    | :fontawesome-brands-python: <a href="https://pypi.org/project/pypalmsens/{new_version}">pypalmsens-{new_version}</a>
+    | :fontawesome-solid-calendar: {time}
 
     ## What's changed
 
     {changelog}
     """)
 
-    TEMPLATE_GH_RELEASES = dedent(f"""\
+    TEMPLATE_GH_RELEASES = dedent("""\
     PyPalmSens {new_tag} is now available on PyPi.
 
     To upgrade: `pip install pypalmsens -U`.
