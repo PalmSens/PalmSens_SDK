@@ -91,7 +91,7 @@ def update_releases(sdk: SDK, commit: bool = False):
         commit_file(releases_path, message='Updated release index')
 
 
-def set_version(sdk: SDK):
+def bump_version_to(sdk: SDK):
     with sdk.chdir():
         sp.check_call(
             [
@@ -163,7 +163,8 @@ if __name__ == '__main__':
     print(f'New version: {sdk.tag=}')
 
     base_branch = 'main'
-    # release_branch = prepare_release_branch(sdk=sdk, base_branch=base_branch)
+
+    release_branch = prepare_release_branch(sdk=sdk, base_branch=base_branch)
     update_releases(sdk=sdk, commit=True)
 
     if sdk.name == 'python':
@@ -171,5 +172,6 @@ if __name__ == '__main__':
 
         changelog.update_python(new_tag=sdk.tag)
 
-    # set_version(sdk)
-    # push_branch_and_create_pr(sdk=sdk, release_branch=release_branch, base_branch=base_branch)
+    bump_version_to(sdk)
+
+    push_branch_and_create_pr(sdk=sdk, release_branch=release_branch, base_branch=base_branch)
