@@ -89,7 +89,7 @@ def commit(path: str, message: str):
     sp.check_call(['git', 'commit', '-m', message])
 
 
-def update_version(sdk: SDK):
+def set_version(sdk: SDK):
     with sdk.chdir():
         sp.check_call(
             [
@@ -102,10 +102,10 @@ def update_version(sdk: SDK):
             ]
         )
 
-    print(f'Bumped {sdk.name} version to {sdk.version}')
+    print(f'Set {sdk.name} version to {sdk.version}')
 
 
-def prepare_branch(sdk: SDK, base_branch: str) -> str:
+def prepare_release_branch(sdk: SDK, base_branch: str) -> str:
     sp.check_call(['git', 'checkout', f'origin/{base_branch}'])
 
     release_branch = f'release-{sdk.tag}'
@@ -120,7 +120,7 @@ def prepare_branch(sdk: SDK, base_branch: str) -> str:
     return release_branch
 
 
-def push_and_create_pr(sdk: SDK, base_branch: str, release_branch: str):
+def push_branch_and_create_pr(sdk: SDK, base_branch: str, release_branch: str):
     sp.run(
         ['git', 'push', 'origin', f'HEAD:{release_branch}', '--force'],
         check=True,
@@ -161,8 +161,8 @@ if __name__ == '__main__':
     print(f'New version: {sdk.tag=}')
 
     base_branch = 'main'
-    # release_branch = prepare_branch(sdk=sdk, base_branch=base_branch)
+    # release_branch = prepare_release_branch(sdk=sdk, base_branch=base_branch)
     path = update_releases(sdk=sdk)
     # commit(path, message="Updated release index")
-    # update_version(sdk)
-    # push_and_create_pr(sdk=sdk, release_branch=release_branch, base_branch=base_branch)
+    # set_version(sdk)
+    # push_branch_and_create_pr(sdk=sdk, release_branch=release_branch, base_branch=base_branch)
