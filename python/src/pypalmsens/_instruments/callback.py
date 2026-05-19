@@ -87,9 +87,11 @@ class CallbackDataEIS:
 
     def new_datapoints(self) -> Generator[dict[str, float]]:
         """Return new data points since last callback."""
+        # print(self.start, self.index)
         for i in range(self.start, self.index + 1):
+            # print(self.start, self.index, i)
             ret = {array.name: array[i] for array in self.data.arrays()}
-            ret['index'] = i
+            ret['nrst'] = (i, self.start, self.index)
             yield ret
 
     @override

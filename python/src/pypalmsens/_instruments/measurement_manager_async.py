@@ -46,7 +46,7 @@ class MeasurementManagerAsync:
         self.callback: Callback | CallbackEIS | None = None
 
         self.is_measuring: bool = False
-        self.last_measurement: PalmSens.Measurement | None = None
+        self.last_measurement: Measurement | None = None
 
         self.loop: asyncio.AbstractEventLoop
 
@@ -55,6 +55,7 @@ class MeasurementManagerAsync:
 
         self.setup_callbacks()
         self.setup_handlers()
+        self.eis_index = 0
 
     def setup_callbacks(self):
         self.callbacks = Callbacks()
@@ -233,12 +234,13 @@ class MeasurementManagerAsync:
 
         if callback:
             self.callbacks.curve_new_data.append(callback)  # TODO: Support callback EIS
+            self.callbacks.eis_curve_new_data.append(callback)  # TODO: Support callback EIS
 
         with self._measurement_context(stream=stream):
             await self.await_measurement(method=method, sync_event=sync_event)
 
         assert self.last_measurement
-        return Measurement(psmeasurement=self.last_measurement)
+        return self.last_measurement
 
     def begin_measurement_callback(
         self, sender: PalmSens.Comm.CommManager, args
@@ -314,15 +316,15 @@ class MeasurementManagerAsync:
 
     def eis_data_data_added_callback(self, eis_data: Plottables.EISData, args):
         """Called when a new EIS data points is obtained. Requires a callback."""
-        assert self.callback
-
         data = CallbackDataEIS(
             data=DataSet(psdataset=eis_data.EISDataSet),
-            start=args.Index,
+            start=self.eis_index,
         )
 
-        for callback in self.callbacks.curve_start:
+        for callback in self.callbacks.eis_curve_new_data:
             _ = self.loop.call_soon_threadsafe(callback, data)  # type: ignore
+
+        # self.eis_index = int(eis_data.NPoints)
 
     def eis_data_finished_callback(
         self,

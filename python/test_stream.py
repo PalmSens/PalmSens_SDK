@@ -13,16 +13,17 @@ def test_measure_stream():
     path = Path('cv.jsonl')
 
     with ps.connect() as manager:
-        measurement = manager.measure(ps.ChronoAmperometry(run_time=5), stream=path)
+        # measurement = manager.measure(ps.ChronoAmperometry(run_time=3), stream=path)
+        measurement = manager.measure(ps.ElectrochemicalImpedanceSpectroscopy(), stream=path)
 
     assert path.exists()
     lines = path.read_text().splitlines()
 
-    metadata = TypeAdapter(Metadata).validate_json(lines[0])
+    metadata = TypeAdapter(Metadata).validate_json(lines[1])
 
     assert metadata.method
 
-    for line in lines[1:]:
+    for line in lines[2:]:
         assert json.loads(line)
 
 
