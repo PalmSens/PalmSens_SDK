@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 import asyncio
+import json
 from contextlib import contextmanager
+from pathlib import Path
 from typing import Any, Generator
 
 import PalmSens
@@ -74,9 +76,8 @@ class MeasurementManagerAsync:
         self.comm.EndMeasurementAsync += self.end_measurement_handler
         self.comm.Disconnected += self.comm_error_handler
 
-        if self.callback is not None:
-            self.comm.BeginReceiveEISData += self.begin_receive_eis_data_handler
-            self.comm.BeginReceiveCurve += self.begin_receive_curve_handler
+        self.comm.BeginReceiveEISData += self.begin_receive_eis_data_handler
+        self.comm.BeginReceiveCurve += self.begin_receive_curve_handler
 
     def teardown(self):
         """Unsubscribe to events indicating the start and end of the measurement."""
@@ -91,10 +92,12 @@ class MeasurementManagerAsync:
         self.is_measuring = False
 
     @contextmanager
-    def _measurement_context(self) -> Generator[None, Any, Any]:
+    def _measurement_context(self, stream: Path | str | None) -> Generator[None, Any, Any]:
         """Context manager to manage the connection to the communication object."""
         try:
             self.setup()
+
+            self.stream = open(stream, 'wb') if stream else None
 
             yield
 
@@ -106,6 +109,9 @@ class MeasurementManagerAsync:
 
         finally:
             self.teardown()
+
+            if self.stream:
+                self.stream.close()
 
     async def await_measurement(
         self,
@@ -134,6 +140,7 @@ class MeasurementManagerAsync:
         method: PalmSens.Method,
         callback: Callback | CallbackEIS | None = None,
         sync_event: asyncio.Event | None = None,
+        stream: Path | str | None = None,
     ) -> Measurement:
         """Measure given method.
 
@@ -156,7 +163,7 @@ class MeasurementManagerAsync:
 
         self.callback = callback
 
-        with self._measurement_context():
+        with self._measurement_context(stream=stream):
             await self.await_measurement(method=method, sync_event=sync_event)
 
         assert self.last_measurement
@@ -169,17 +176,33 @@ class MeasurementManagerAsync:
             self.last_measurement = measurement
             self.begin_measurement_event.set()
 
+            meas = Measurement(psmeasurement=args.NewMeasurement)
+
+            if self.stream:
+                _ = self.stream.write(meas.metadata_json())
+                _ = self.stream.write(b'\n')
+
+                self.stream.flush()
+
         _ = self.loop.call_soon_threadsafe(func, args.NewMeasurement)
         return Task.CompletedTask
 
     def end_measurement_callback(self, sender, args) -> Task.CompletedTask:
         """Called when the measurement ends."""
-        _ = self.loop.call_soon_threadsafe(self.end_measurement_event.set)
+
+        def func():
+            self.end_measurement_event.set()
+
+            if self.stream:
+                _ = self.stream.write(json.dumps('Measurement ended').encode())
+                _ = self.stream.write(b'\n')
+                self.stream.flush()
+
+        _ = self.loop.call_soon_threadsafe(func)
         return Task.CompletedTask
 
     def curve_data_added_callback(self, curve: Plottables.Curve, args):
         """Called when new data is added to the curve."""
-        assert self.callback
 
         data = CallbackData(
             x_array=DataArray(psarray=curve.XAxisDataArray),
@@ -187,18 +210,50 @@ class MeasurementManagerAsync:
             start=args.StartIndex,
         )
 
-        _ = self.loop.call_soon_threadsafe(self.callback, data)  # type: ignore
+        if self.callback:
+            _ = self.loop.call_soon_threadsafe(self.callback, data)  # type: ignore
+
+        if self.stream:
+
+            def func(data):
+                assert self.stream
+                for point in data.new_datapoints():
+                    _ = self.stream.write(json.dumps(point).encode())
+                    _ = self.stream.write(b'\n')
+                self.stream.flush()
+
+            _ = self.loop.call_soon_threadsafe(func, data)  # type: ignore
 
     def curve_finished_callback(self, curve: Plottables.Curve, args):
         """Unsubscribe to curve finished / new data added events."""
         curve.NewDataAdded -= self.curve_data_added_handler
         curve.Finished -= self.curve_finished_handler
 
+        if self.stream:
+
+            def func():
+                assert self.stream
+                _ = self.stream.write(json.dumps('Curve finished').encode())
+                _ = self.stream.write(b'\n')
+                self.stream.flush()
+
+            _ = self.loop.call_soon_threadsafe(func)  # type: ignore
+
     def begin_receive_curve_callback(self, sender, args):
         """Subscribe to curve finished / new data added events."""
         curve = args.GetCurve()
         curve.NewDataAdded += self.curve_data_added_handler
         curve.Finished += self.curve_finished_handler
+
+        if self.stream:
+
+            def func():
+                assert self.stream
+                _ = self.stream.write(json.dumps('Curve started').encode())
+                _ = self.stream.write(b'\n')
+                self.stream.flush()
+
+            _ = self.loop.call_soon_threadsafe(func)  # type: ignore
 
     def eis_data_data_added_callback(self, eis_data: Plottables.EISData, args):
         """Called when a new EIS data points is obtained. Requires a callback."""
@@ -227,6 +282,11 @@ class MeasurementManagerAsync:
         def func():
             self.begin_measurement_event.set()
             self.end_measurement_event.set()
+
+            if self.stream:
+                _ = self.stream.write(json.dumps('Comm error').encode())
+                _ = self.stream.write(b'\n')
+                self.stream.flush()
 
             raise ConnectionError('Measurement failed due to a communication or parsing error')
 
