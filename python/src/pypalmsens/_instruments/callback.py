@@ -52,7 +52,7 @@ class CallbackData:
 
     def new_datapoints(self) -> Generator[dict[str, float]]:
         """Return new data points since last callback."""
-        for i in range(self.start, self.data.n_points):
+        for i in range(self.start, self.index + 1):
             yield {
                 'x': self.x_array[i],
                 'y': self.y_array[i],
@@ -90,7 +90,7 @@ class CallbackDataEIS:
     def new_datapoints(self) -> Generator[dict[str, float]]:
         """Return new data points since last callback."""
         for i in range(self.start, self.index + 1):
-            ret = {array.name: array[i] for array in self.data.arrays() if not array.is_derived}
+            ret = {array.name: array[i] for array in self.data.values() if not array.is_derived}
             ret['index'] = i
             yield ret
 

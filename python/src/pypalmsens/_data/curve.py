@@ -1,10 +1,12 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, final
+from typing import TYPE_CHECKING, Literal, final
 
 import PalmSens.Analysis as PSAnalysis
 import System
 from PalmSens.Plottables import Curve as PSCurve
+from pydantic import TypeAdapter
+from pydantic.dataclasses import dataclass as pydantic_dataclass
 from typing_extensions import override
 
 from .data_array import DataArray
@@ -12,6 +14,22 @@ from .peak import Peak
 
 if TYPE_CHECKING:
     from matplotlib import axes, figure
+
+
+@pydantic_dataclass
+class CurveMetadata:
+    title: str
+    """Measurement title."""
+    x_label: str
+    """X label."""
+    x_unit: str
+    """X unit."""
+    y_label: str
+    """Y label."""
+    y_unit: str
+    """Y unit."""
+    type: Literal['curve'] = 'curve'
+    """Object type."""
 
 
 @final
@@ -227,6 +245,18 @@ class Curve:
     def title(self, title: str):
         """Set the title for the curve."""
         self._pscurve.Title = title
+
+    def metadata_json(self) -> bytes:
+        """Generate curve metadat as json."""
+        return TypeAdapter(CurveMetadata).dump_json(
+            CurveMetadata(
+                title=self.title,
+                x_unit=self.x_unit,
+                x_label=self.x_label,
+                y_unit=self.y_unit,
+                y_label=self.y_label,
+            )
+        )
 
     @property
     def peaks(self) -> list[Peak]:

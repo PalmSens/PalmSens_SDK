@@ -49,7 +49,7 @@ class DeviceInfo:
 
 
 @pydantic_dataclass
-class Metadata:
+class MeasurementMetadata:
     timestamp: datetime
     """Start time of the measurement."""
     device: DeviceInfo
@@ -68,7 +68,7 @@ class Metadata:
     """PyPalmSens version."""
     version_sdk: str = __sdk_version__
     """SDK .NET Core version."""
-    type: Literal['metadata'] = 'metadata'
+    type: Literal['measurement'] = 'measurement'
     """Object type."""
 
 
@@ -106,8 +106,9 @@ class Measurement:
         return DeviceInfo._from_psmeasurement(self._psmeasurement)
 
     def metadata_json(self) -> bytes:
-        return TypeAdapter(Metadata).dump_json(
-            Metadata(
+        """Generate measurement metadata as json."""
+        return TypeAdapter(MeasurementMetadata).dump_json(
+            MeasurementMetadata(
                 device=self.device,
                 timestamp=self.timestamp,
                 title=self.title,
