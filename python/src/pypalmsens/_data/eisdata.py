@@ -1,16 +1,40 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, final
+from typing import TYPE_CHECKING, Literal, final
 
+from pydantic import TypeAdapter
+from pydantic.dataclasses import dataclass as pydantic_dataclass
 from typing_extensions import override
 
 from .._converters import cr_enum_to_string
-from .._types import AllowedCurrentRanges
+from .._types import AllowedCurrentRanges, AllowedFrequencyTypes, AllowedScanTypes
 from .data_array import DataArray
 from .dataset import DataSet
 
 if TYPE_CHECKING:
     from PalmSens.Plottables import EISData as PSEISData
+
+
+@pydantic_dataclass
+class EISDataMetadata:
+    title: str
+    """Measurement title."""
+    units: dict[str, str]
+    """Units for data values."""
+    quantities: dict[str, str]
+    """Quantities for data values."""
+    n_frequencies: int
+    """Number of frequencies (per subscan)."""
+    n_subscans: int
+    """Number of subscans."""
+    frequency_type: AllowedFrequencyTypes
+    """Frequency type."""
+    scan_type: AllowedScanTypes
+    """Scan type."""
+    mux_channel: int
+    """Mux channel."""
+    type: Literal['eis_data'] = 'eis_data'
+    """Object type."""
 
 
 @final
@@ -45,14 +69,16 @@ class EISData:
         return self._pseis.Title
 
     @property
-    def frequency_type(self) -> str:
+    def frequency_type(self) -> AllowedFrequencyTypes:
         """Frequency type."""
-        return str(self._pseis.FreqType)
+        return str(self._pseis.FreqType).lower()
 
     @property
-    def scan_type(self) -> str:
+    def scan_type(self) -> AllowedScanTypes:
         """Scan type."""
-        return str(self._pseis.ScanType)
+        value = str(self._pseis.ScanType)
+        mapping = {'TimeScan': 'time', 'PGScan': 'potential', 'Fixed': 'fixed'}
+        return mapping[value]
 
     @property
     def dataset(self) -> DataSet:
@@ -144,3 +170,26 @@ class EISData:
     def cdc_values(self) -> list[float]:
         """Return values for circuit description code (CDC)."""
         return list(self._pseis.CDCValues)
+
+    def metadata_json(self) -> bytes:
+        """Generate eis data metadata as json."""
+        return TypeAdapter(EISDataMetadata).dump_json(
+            EISDataMetadata(
+                title=self.title,
+                units={
+                    array.name: array.unit
+                    for array in self.dataset.values()
+                    if not array.is_derived
+                },
+                quantities={
+                    array.name: array.quantity
+                    for array in self.dataset.values()
+                    if not array.is_derived
+                },
+                n_frequencies=self.n_frequencies,
+                n_subscans=self.n_subscans,
+                frequency_type=self.frequency_type,
+                scan_type=self.scan_type,
+                mux_channel=self.mux_channel,
+            )
+        )

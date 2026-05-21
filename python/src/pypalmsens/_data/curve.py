@@ -20,14 +20,10 @@ if TYPE_CHECKING:
 class CurveMetadata:
     title: str
     """Measurement title."""
-    x_label: str
-    """X label."""
-    x_unit: str
-    """X unit."""
-    y_label: str
-    """Y label."""
-    y_unit: str
-    """Y unit."""
+    units: dict[str, str]
+    """Units for data values."""
+    labels: dict[str, str]
+    """Labels for data values."""
     type: Literal['curve'] = 'curve'
     """Object type."""
 
@@ -247,14 +243,12 @@ class Curve:
         self._pscurve.Title = title
 
     def metadata_json(self) -> bytes:
-        """Generate curve metadat as json."""
+        """Generate curve metadata as json."""
         return TypeAdapter(CurveMetadata).dump_json(
             CurveMetadata(
                 title=self.title,
-                x_unit=self.x_unit,
-                x_label=self.x_label,
-                y_unit=self.y_unit,
-                y_label=self.y_label,
+                units={'x': self.x_unit, 'y': self.y_unit},
+                labels={'x': self.x_label, 'y': self.y_label},
             )
         )
 

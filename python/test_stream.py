@@ -1,17 +1,29 @@
 from __future__ import annotations
 
-import json
 from pathlib import Path
 
-from pydantic import TypeAdapter, ValidationError
-
 import pypalmsens as ps
-from pypalmsens._data.curve import CurveMetadata
-from pypalmsens._data.measurement import MeasurementMetadata
 
 
 def print_index(data):
     print('index', data.index)
+
+
+eis_method = ps.ElectrochemicalImpedanceSpectroscopy(
+    n_frequencies=100,
+    min_sampling_time=0.01,
+    scan_type='time',
+)
+
+cv_method = ps.ChronoAmperometry(
+    run_time=3,
+)
+
+ca_method = ps.CyclicVoltammetry(
+    n_scans=3,
+    step_potential=0.01,
+    scanrate=5,
+)
 
 
 def test_measure_stream():
@@ -19,9 +31,9 @@ def test_measure_stream():
 
     with ps.connect() as manager:
         measurement = manager.measure(
-            # ps.ElectrochemicalImpedanceSpectroscopy(n_frequencies=100, min_sampling_time=0.01),
-            # ps.ChronoAmperometry(run_time=3),
-            ps.CyclicVoltammetry(n_scans=3, step_potential=0.01, scanrate=5),
+            eis_method,
+            # cv_method,
+            # ca_method,
             stream=path,
             callback=print_index,
         )
