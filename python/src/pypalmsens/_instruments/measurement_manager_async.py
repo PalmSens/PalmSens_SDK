@@ -23,6 +23,8 @@ from .shared import create_future
 
 @dataclass
 class Callbacks:
+    """Dataclass to manage callbacks."""
+
     comm_error: list[Callable[[], None]] = Field(default_factory=list)
     measurement_begin: list[Callable[[Measurement], None]] = Field(default_factory=list)
     measurement_end: list[Callable[[], None]] = Field(default_factory=list)
@@ -55,7 +57,8 @@ class MeasurementManagerAsync:
 
         self.setup_callbacks()
         self.setup_handlers()
-        self.eis_index = 0
+
+        self.eis_last_data_index: int = 0
 
     def setup_callbacks(self):
         self.callbacks = Callbacks()
@@ -316,23 +319,39 @@ class MeasurementManagerAsync:
 
     def eis_data_data_added_callback(self, eis_data: Plottables.EISData, args):
         """Called when a new EIS data points is obtained. Requires a callback."""
+        # This event is sometimes fired twice, once for raw data
+        # and once again for derived data. This leads to duplicate data points
+        # in the callback and/or arrays with different lengths.
+        # - `eis_data.EISDataSet.NPoints` arbitrarily matches either derived
+        #     or non-derived array length -> cannot be used as a reliable pointer
+        # - `args.Index` works and is unique, but always lags behind.
+        #    It either points to derived or non-derived array,
+        #    so there is a chance to miss last data point
+        # Instead use count of non-derived array (e.g. Time)
+        # for a reliable pointer to track the last array index
+        count = eis_data.EISDataSet.GetLastTimeDataArray().Count
+
+        # Skip event if pointer has not moved
+        if count == self.eis_last_data_index:
+            return
+
         data = CallbackDataEIS(
             data=DataSet(psdataset=eis_data.EISDataSet),
-            start=self.eis_index,
+            start=self.eis_last_data_index,
+            index=count - 1,
         )
+
+        self.eis_last_data_index = count
 
         for callback in self.callbacks.eis_curve_new_data:
             _ = self.loop.call_soon_threadsafe(callback, data)  # type: ignore
 
-        # self.eis_index = int(eis_data.NPoints)
-
     def eis_data_finished_callback(
         self,
         eis_data: Plottables.EISData,
-        args,
+        args: PalmSens.FinishedEventArgs,
     ):
         """Unsubscribes to EIS data events."""
-
         eis_data.NewDataAdded -= self.eis_data_data_added_handler
         eis_data.Finished -= self.eis_data_finished_handler
 
@@ -347,6 +366,8 @@ class MeasurementManagerAsync:
         """Subscribes to EIS data events."""
         eis_data.NewDataAdded += self.eis_data_data_added_handler
         eis_data.Finished += self.eis_data_finished_handler
+
+        self.eis_last_data_index = 0
 
         for callback in self.callbacks.eis_curve_start:
             _ = self.loop.call_soon_threadsafe(callback)  # type: ignore
