@@ -1,6 +1,6 @@
 e
 # MethodSCRIPT version: 1.9
-# Last modified: May 2026
+# Generated on {{ timestamp }} by PyPalmSens {{ version }}
 #
 # Initialize variables. All variables must be declared before first use.
 var potential_max

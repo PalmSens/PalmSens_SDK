@@ -1,11 +1,13 @@
 from __future__ import annotations
 
+from datetime import datetime
 from typing import Literal
 
 import PalmSens
 from jinja2 import Environment, PackageLoader, select_autoescape
 from pydantic import BaseModel, Field
 
+from .. import __version__
 from .techniques import MethodScript
 
 env = Environment(
@@ -78,7 +80,7 @@ class BatteryCycling(BaseModel):
 
     def render(self) -> str:
         template = env.get_template('battery_cycling.mscr')
-        return template.render(model=self)
+        return template.render(model=self, timestamp=datetime.today(), version=__version__)
 
     def to_methodscript(self) -> MethodScript:
         script = self.render()
