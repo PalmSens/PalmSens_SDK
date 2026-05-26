@@ -9,7 +9,7 @@ pip install pypalmsens
 ## Requirements (Windows)
 
 * [Python version 3.10 or newer](https://python.org)
-* .NET Framework 4.7.2
+* [.NET Framework 4.7.2](https://dotnet.microsoft.com/en-us/download/dotnet-framework/net472)
 * Drivers included with PSTrace 5, MultiTrace 4, PSTrace Xpress or the [driver installer](https://github.com/PalmSens/PalmSens_SDK/releases/download/drivers-5.12/PalmSens.Drivers.exe).
 
 <!--!!! NOTE "Python 3.15"
