@@ -34,6 +34,7 @@ classifiers = [
     "Topic :: Scientific/Engineering",
 ]
 dependencies = [
+    'jinja2',
     'pydantic',
     'numpy',
     'pythonnet',
