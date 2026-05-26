@@ -224,34 +224,34 @@ class BatteryCycling(BaseModel):
     potential_max: int = 4300
     """Maximum potential to charge to (units: mV)."""
 
-    current_min: float = 5
+    current_min: int = 5
     """Minimum current to stop the CV charge step (units: μA)."""
 
-    potential_min: float = 2500
+    potential_min: int = 2500
     """Minimum potential to discharge to (units: mV)."""
 
-    current_charge: float = 100
+    current_charge: int = 100
     """Constant current to charge with (units: μA)."""
 
-    current_discharge: float = -100
+    current_discharge: int = -100
     """Constant current to discharge with (units: μA)."""
 
     cycles: int = 100
     """Number of charge and discharge cycles."""
 
-    interval: float = 10
+    interval: int = 10
     """Interval time of each measurement point (units: s)."""
 
-    max_time: float = 3
+    max_time: int = 3
     """Maximum duration of each step (if the cut-off is not met) (units: s)."""
 
-    delta_v: float = Field(100, gt=0)
+    delta_v: int = Field(100, gt=0)
     """Minimum potential variation required for plotting data in CC steps (units: μV)."""
 
-    delta_i: float = Field(500, gt=0)
+    delta_i: int = Field(500, gt=0)
     """Minimum current variation reuqired for plotting data in the CV step (units: nA)."""
 
-    delta_t: float = 100
+    delta_t: int = 100
     """Maximum time without plotting data (units: ms)."""
 
     def render(self) -> str:
