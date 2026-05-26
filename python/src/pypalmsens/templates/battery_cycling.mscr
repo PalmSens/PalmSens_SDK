@@ -29,12 +29,11 @@ var meas_delta_i
 var acc_delta_i
 var acc_t
 var bandwidth
-
+# Set up data arrays
 array capacity_charge 10000i
 array capacity_discharge 10000i
-store_var cycle 1i ja # first cycle
-
 # Technique parameters
+store_var cycle 1i ja # first cycle
 store_var potential_max {{ model.potential_max }}m ab
 store_var current_min {{ model.current_min }}u ba
 store_var potential_min {{ model.potential_min }}m ab
@@ -46,13 +45,11 @@ store_var max_time {{ model.max_time }} eb
 store_var delta_v {{ model.delta_v }}u ia
 store_var delta_i {{ model.delta_i }}n ha
 store_var delta_t {{ model.delta_t }}m eb
-
 # General settings
 store_var bandwidth 5850535u dc
 div_var bandwidth interval
 set_pgstat_chan 0
 meas 100m potential ab # Measure the OCP to be used in the first Cell ON.
-
 # Charge/discharge loop
 timer_start
 loop cycle <= cycles
@@ -101,7 +98,6 @@ loop cycle <= cycles
             breakloop
         endif
     endloop
-
     # Constant Voltage (CV) charge step. Many codes are similar to the CC charge step.
     set_pgstat_mode 3
     set_max_bandwidth bandwidth
@@ -144,7 +140,6 @@ loop cycle <= cycles
             breakloop
         endif
     endloop
-
     # Constant current discharge. Codes below are almost the same as for the CC charge step.
     set_pgstat_mode 6
     set_max_bandwidth bandwidth
@@ -189,7 +184,6 @@ loop cycle <= cycles
             breakloop
         endif
     endloop
-
     # Send cycle number and charged and discharged capacity.
     alter_vartype cycle at
     alter_vartype capacity_charge[cycle] as
