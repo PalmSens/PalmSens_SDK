@@ -85,14 +85,31 @@ class experimental_BatteryCycling(BaseModel):
     Adjusts sampling on instrument to account for mains frequency.
     Set to 50 Hz or 60 Hz depending on your region (default: 50)."""
 
+    _name: str = 'Battery Cycling (experimental)'
+
     def render(self) -> str:
+        """Render the template with model parameters.
+
+        Returns
+        -------
+        script : str
+            Complete MethodScript code for this method.
+        """
         template = env.get_template('battery_cycling.mscr')
         return template.render(model=self, timestamp=datetime.today(), version=__version__)
 
     def to_methodscript(self) -> MethodScript:
+        """Convert to MethodSCRIPT class.
+
+        Returns
+        -------
+        method: MethodScript
+            MethodScript class.
+        """
         script = self.render()
         return MethodScript(script=script)
 
     def _to_psmethod(self) -> PalmSens.Method:
+        """Convert parameters to dotnet method."""
         method = self.to_methodscript()
         return method._to_psmethod()
