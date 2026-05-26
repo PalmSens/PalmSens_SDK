@@ -23,10 +23,12 @@ class experimental_BatteryCycling(BaseModel):
     Note: This method is experimental and may be subject to change.
 
     Supported devices:
-        - Nexus
-        - EmStat4 series (EmStat4S, EmStat4X, MultiEmStat4)
+
+    - Nexus
+    - EmStat4 series (EmStat4S, EmStat4X, MultiEmStat4)
 
     This method implements CC-CV-CC Cycling with Delta-I-V and Qpass:
+
     1. With Chronopotentiometry and Chronoamperometry to charge a cell and a Constant
        current followed by Constant Coltage (CC-CV).
     2. With Chronopotentiometry discharge the cell at a constant current (CC).

@@ -52,6 +52,10 @@ nav = [
       "reference/corrosion/corrosion_potential.md",
       "reference/corrosion/impedance_spectroscopy.md",
   ]},
+  { "Techniques (energy)" = [
+      "reference/energy/index.md",
+      "reference/energy/battery_cycling.md",
+  ]},
   { "Technique settings" = "reference/methods/settings.md" },
   { "Reference" = [
     "reference/index.md",
