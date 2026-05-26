@@ -68,7 +68,13 @@ class BatteryCycling(BaseModel):
     """Maximum time without plotting data (units: ms)."""
 
     cell_on_ocp: bool = False
-    """Turns cell ON with the measured OCP (Nexus only)."""
+    """Turns cell on with the measured OCP."""
+
+    power_frequency: Literal[50, 60] = 50
+    """Set the DC mains filter in Hz.
+
+    Adjusts sampling on instrument to account for mains frequency.
+    Set to 50 Hz or 60 Hz depending on your region (default: 50)."""
 
     def render(self) -> str:
         template = env.get_template('battery_cycling.mscr')

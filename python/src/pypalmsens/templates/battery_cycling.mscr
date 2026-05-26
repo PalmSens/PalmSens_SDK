@@ -56,134 +56,142 @@ meas 100m potential ab # Measure the OCP to be used in the first Cell ON.
 # Charge/discharge loop
 timer_start
 loop cycle <= cycles
-	set_pgstat_mode 6
-	set_max_bandwidth bandwidth
-	set_acquisition_frac_autoadjust 50 # TODO: Equivalent to mains filter, change it to 60 if your mains is 60 Hz.
-	set_range_minmax ab potential_min potential_max
-	set_autoranging ab potential_min potential_max
-	set_range db current_charge
-	cell_on
+    set_pgstat_mode 6
+    set_max_bandwidth bandwidth
+    set_acquisition_frac_autoadjust {{ model.power_frequency }}
+    set_range_minmax ab potential_min potential_max
+    set_autoranging ab potential_min potential_max
+    set_range db current_charge
+    {% if model.cell_on_ocp -%}
+    cell_on ocp(potential)
+    {%else -%}
+    cell_on
+    {%endif -%}
     meas_loop_cp potential current current_charge interval max_time
-		copy_var prev_potential meas_delta_v
-		sub_var meas_delta_v potential
-		if meas_delta_v < 0
-			mul_var meas_delta_v -1
-		endif
-		add_var acc_delta_v meas_delta_v
+        copy_var prev_potential meas_delta_v
+        sub_var meas_delta_v potential
+        if meas_delta_v < 0
+            mul_var meas_delta_v -1
+        endif
+        add_var acc_delta_v meas_delta_v
         copy_var current q
         mul_var q interval
         div_var q 3600m
         add_var capacity_charge[cycle] q
-		if acc_delta_v >= delta_v
-			set_script_output 1
-			timer_get time
-			pck_start
-				pck_add time
-				pck_add potential
-				pck_add current
-			pck_end
-			store_var acc_delta_v 0 ia
-			store_var acc_t 0 eb
-			# Update the status bar with measured values (code below):
-			send_string f"Cycle {cycle}/{cycles}    |    E = {potential} V    |    I = {current} A    |    Qchg = {capacity_charge[cycle]} mAh   |    Qdis = {capacity_discharge[cycle]} mAh   |   t = {time} s"
-			set_script_output 0
-		elseif acc_t > delta_t
-			add_var acc_delta_v delta_v
-		else
-			add_var acc_t interval
-		endif
-		copy_var potential prev_potential
+        if acc_delta_v >= delta_v
+            set_script_output 1
+            timer_get time
+            pck_start
+                pck_add time
+                pck_add potential
+                pck_add current
+            pck_end
+            store_var acc_delta_v 0 ia
+            store_var acc_t 0 eb
+            # Update the status bar with measured values (code below):
+            send_string f"Cycle {cycle}/{cycles}    |    E = {potential} V    |    I = {current} A    |    Qchg = {capacity_charge[cycle]} mAh   |    Qdis = {capacity_discharge[cycle]} mAh   |   t = {time} s"
+            set_script_output 0
+        elseif acc_t > delta_t
+            add_var acc_delta_v delta_v
+        else
+            add_var acc_t interval
+        endif
+        copy_var potential prev_potential
         if potential >= potential_max
             breakloop
         endif
     endloop
 
-	# Constant Voltage (CV) charge step. Many codes are similar to the CC charge step.
-	set_pgstat_mode 3
-	set_max_bandwidth bandwidth
-	set_acquisition_frac_autoadjust 50 # TODO: Equivalent to mains filter, change it to 60 if your mains is 60 Hz.
-	set_range da potential_max
-	set_range_minmax ba current_min current_charge
-	set_autoranging ba current_min current_charge
-	set_e potential_max
-	cell_on
+    # Constant Voltage (CV) charge step. Many codes are similar to the CC charge step.
+    set_pgstat_mode 3
+    set_max_bandwidth bandwidth
+    set_acquisition_frac_autoadjust {{ model.power_frequency }}
+    set_range da potential_max
+    set_range_minmax ba current_min current_charge
+    set_autoranging ba current_min current_charge
+    set_e potential_max
+    cell_on
     meas_loop_ca potential current potential_max interval max_time
-		copy_var prev_current meas_delta_i
-		sub_var meas_delta_i current
-		if meas_delta_i < 0
-			mul_var meas_delta_i -1
-		endif
-		add_var acc_delta_i meas_delta_i
+        copy_var prev_current meas_delta_i
+        sub_var meas_delta_i current
+        if meas_delta_i < 0
+            mul_var meas_delta_i -1
+        endif
+        add_var acc_delta_i meas_delta_i
         copy_var current q
         mul_var q interval
         div_var q 3600m
         add_var capacity_charge[cycle] q
-		if acc_delta_i >= delta_i
-			set_script_output 1
-			timer_get time
-			pck_start
-				pck_add time
-				pck_add potential
-				pck_add current
-			pck_end
-			store_var acc_delta_i 0 ha
-			store_var acc_t 0 eb
-			send_string f"Cycle {cycle}/{cycles}    |    E = {potential} V    |    I = {current} A    |    Qchg = {capacity_charge[cycle]} mAh   |    Qdis = {capacity_discharge[cycle]} mAh   |   t = {time} s"
-			set_script_output 0
-		elseif acc_t > delta_t
-			add_var acc_delta_i delta_i
-		else
-			add_var acc_t interval
-		endif
-		copy_var current prev_current
+        if acc_delta_i >= delta_i
+            set_script_output 1
+            timer_get time
+            pck_start
+                pck_add time
+                pck_add potential
+                pck_add current
+            pck_end
+            store_var acc_delta_i 0 ha
+            store_var acc_t 0 eb
+            send_string f"Cycle {cycle}/{cycles}    |    E = {potential} V    |    I = {current} A    |    Qchg = {capacity_charge[cycle]} mAh   |    Qdis = {capacity_discharge[cycle]} mAh   |   t = {time} s"
+            set_script_output 0
+        elseif acc_t > delta_t
+            add_var acc_delta_i delta_i
+        else
+            add_var acc_t interval
+        endif
+        copy_var current prev_current
         if current <= current_min
             breakloop
         endif
     endloop
 
     # Constant current discharge. Codes below are almost the same as for the CC charge step.
-	set_pgstat_mode 6
-	set_max_bandwidth bandwidth
-	set_acquisition_frac_autoadjust 50
-	set_range_minmax ab potential_min potential_max
-	set_autoranging ab potential_min potential_max
-	set_range db current_discharge
-	cell_on # ocp(potential)
+    set_pgstat_mode 6
+    set_max_bandwidth bandwidth
+    set_acquisition_frac_autoadjust {{ model.power_frequency }}
+    set_range_minmax ab potential_min potential_max
+    set_autoranging ab potential_min potential_max
+    set_range db current_discharge
+    {% if model.cell_on_ocp -%}
+    cell_on ocp(potential)
+    {%else -%}
+    cell_on
+    {%endif -%}
     meas_loop_cp potential current current_discharge interval max_time
-		copy_var prev_potential meas_delta_v
-		sub_var meas_delta_v potential
-		if meas_delta_v < 0
-			mul_var meas_delta_v -1
-		endif
-		add_var acc_delta_v meas_delta_v
+        copy_var prev_potential meas_delta_v
+        sub_var meas_delta_v potential
+        if meas_delta_v < 0
+            mul_var meas_delta_v -1
+        endif
+        add_var acc_delta_v meas_delta_v
         copy_var current q
         mul_var q interval
         div_var q -3600m
         add_var capacity_discharge[cycle] q
-		if acc_delta_v >= delta_v
-			set_script_output 1
-			timer_get time
-			pck_start
-				pck_add time
-				pck_add potential
-				pck_add current
-			pck_end
-			store_var acc_delta_v 0 ia
-			store_var acc_t 0 eb
-			send_string f"Cycle {cycle}/{cycles}    |    E = {potential} V    |    I = {current} A    |    Qchg = {capacity_charge[cycle]} mAh   |    Qdis = {capacity_discharge[cycle]} mAh   |   t = {time} s"
+        if acc_delta_v >= delta_v
+            set_script_output 1
+            timer_get time
+            pck_start
+                pck_add time
+                pck_add potential
+                pck_add current
+            pck_end
+            store_var acc_delta_v 0 ia
+            store_var acc_t 0 eb
+            send_string f"Cycle {cycle}/{cycles}    |    E = {potential} V    |    I = {current} A    |    Qchg = {capacity_charge[cycle]} mAh   |    Qdis = {capacity_discharge[cycle]} mAh   |   t = {time} s"
         elseif acc_t > delta_t
-			add_var acc_delta_v delta_v
-		else
-			add_var acc_t interval
-		endif
-		copy_var potential prev_potential
-		if potential <= potential_min
+            add_var acc_delta_v delta_v
+        else
+            add_var acc_t interval
+        endif
+        copy_var potential prev_potential
+        if potential <= potential_min
             breakloop
         endif
-	endloop
+    endloop
 
     # Send cycle number and charged and discharged capacity.
-	alter_vartype cycle at
+    alter_vartype cycle at
     alter_vartype capacity_charge[cycle] as
     alter_vartype capacity_discharge[cycle] as
     pck_start
@@ -195,5 +203,4 @@ loop cycle <= cycles
 endloop
 on_finished:
     cell_off
-
 
