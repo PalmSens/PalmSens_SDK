@@ -104,7 +104,6 @@ link = "https://www.palmsens.com/contact"
 
 [project.validation]
 unresolved_references = false
-invalid_links = true  # https://github.com/zensical/zensical/issues/603
 
 [project.theme]
 name = "material"
