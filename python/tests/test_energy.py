@@ -12,7 +12,7 @@ import pypalmsens as ps
 from pypalmsens._methods.adapters import (
     energy_technique_adapter,
 )
-from pypalmsens.energy import BatteryCycling
+from pypalmsens.energy import experimental_BatteryCycling
 
 logger = logging.getLogger(__name__)
 
@@ -27,7 +27,7 @@ def manager():
 
 def test_float_gives_error():
     with pytest.raises(ValidationError):
-        _ = BatteryCycling(max_time=1.123)
+        _ = experimental_BatteryCycling(max_time=1.123)
 
 
 class BC:
@@ -83,7 +83,7 @@ class BC:
 def test_measure(manager, method):
     params = energy_technique_adapter.validate_python(method.kwargs)
 
-    assert isinstance(params, BatteryCycling)
+    assert isinstance(params, experimental_BatteryCycling)
 
     measurement = manager.measure(params)
     method.validate(measurement)

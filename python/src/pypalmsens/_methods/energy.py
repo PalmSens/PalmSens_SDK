@@ -17,20 +17,25 @@ env = Environment(
 )
 
 
-class BatteryCycling(BaseModel):
+class experimental_BatteryCycling(BaseModel):
     """Battery cycling method parameters.
 
     Note: This method is experimental and may be subject to change.
 
-    With Chronopotentiometry and Chronoamperometry charge a cell and a Constant
-    current followed by Constant Coltage (CC-CV).
-    With Chronopotentiometry discharge the cell at a constant current (CC).
-    Store the amount of charge transferred during each charge and discharge step.
-    Send live I-V verus time. Send the capacity per charge - discharge step.
-    The charge values are absolute and are converted to mAh.
+    Supported devices:
+        - Nexus
+        - EmStat4 series (EmStat4S, EmStat4X, MultiEmStat4)
 
-    Implements:
-        https://www.palmsens.com/knowledgebase-article/advanced-battery-cycling-with-methodscript/
+    This method implements CC-CV-CC Cycling with Delta-I-V and Qpass:
+    1. With Chronopotentiometry and Chronoamperometry to charge a cell and a Constant
+       current followed by Constant Coltage (CC-CV).
+    2. With Chronopotentiometry discharge the cell at a constant current (CC).
+    3. Store the charge transferred during each charge and discharge step.
+    4. Send I-V verus time data, and the capacity per charge-discharge step (Qpass).
+       The charge values are absolute and are converted to mAh.
+
+    The underlying methodscript is described in this application note:
+    https://www.palmsens.com/knowledgebase-article/advanced-battery-cycling-with-methodscript/
     """
 
     id: Literal['bc'] = 'bc'
@@ -70,7 +75,7 @@ class BatteryCycling(BaseModel):
     """Maximum time without plotting data (units: ms)."""
 
     cell_on_ocp: bool = False
-    """Turns cell on with the measured OCP."""
+    """Turns cell on with the measured OCP (Nexus only)."""
 
     power_frequency: Literal[50, 60] = 50
     """Set the DC mains filter in Hz.

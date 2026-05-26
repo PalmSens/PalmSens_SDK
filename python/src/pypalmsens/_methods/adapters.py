@@ -39,7 +39,7 @@ TechniqueType = Annotated[
     Field(discriminator='id'),
 ]
 
-EnergyTechniqueType = energy.BatteryCycling
+EnergyTechniqueType = energy.experimental_BatteryCycling
 
 technique_adapter = TypeAdapter(TechniqueType)
 energy_technique_adapter = TypeAdapter(EnergyTechniqueType)
