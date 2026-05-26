@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import Literal
+
 import PalmSens
 from pydantic import BaseModel, Field
 
@@ -216,7 +218,10 @@ on_finished: # Define what to do when the experiment is finisehd or aborted.
 
 
 class BatteryCycling(BaseModel):
-    potential_max: float = 4300
+    id: Literal['bc'] = 'bc'
+    """Unique method identifier."""
+
+    potential_max: int = 4300
     """Maximum potential to charge to (units: mV)."""
 
     current_min: float = 5
