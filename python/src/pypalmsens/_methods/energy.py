@@ -236,22 +236,22 @@ class BatteryCycling(BaseModel):
     current_discharge: int = -100
     """Constant current to discharge with (units: μA)."""
 
-    cycles: int = 100
+    cycles: int = Field(default=100, gt=0)
     """Number of charge and discharge cycles."""
 
-    interval: int = 10
+    interval: int = Field(default=100, ge=0)
     """Interval time of each measurement point (units: s)."""
 
-    max_time: int = 3
+    max_time: int = Field(default=3, ge=0)
     """Maximum duration of each step (if the cut-off is not met) (units: s)."""
 
-    delta_v: int = Field(100, gt=0)
+    delta_v: int = Field(default=100, gt=0)
     """Minimum potential variation required for plotting data in CC steps (units: μV)."""
 
-    delta_i: int = Field(500, gt=0)
+    delta_i: int = Field(default=500, gt=0)
     """Minimum current variation reuqired for plotting data in the CV step (units: nA)."""
 
-    delta_t: int = 100
+    delta_t: int = Field(default=100, ge=0)
     """Maximum time without plotting data (units: ms)."""
 
     def render(self) -> str:
