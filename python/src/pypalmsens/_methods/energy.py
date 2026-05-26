@@ -8,7 +8,11 @@ from pydantic import BaseModel, Field
 
 from .techniques import MethodScript
 
-env = Environment(loader=PackageLoader('pypalmsens'), autoescape=select_autoescape())
+env = Environment(
+    loader=PackageLoader('pypalmsens'),
+    autoescape=select_autoescape(),
+    keep_trailing_newline=True,
+)
 
 
 class BatteryCycling(BaseModel):
