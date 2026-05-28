@@ -125,6 +125,6 @@ class MethodType(Protocol):
 
 
 class MethodTypeCompatible(Protocol):
-    """Methods with .NET implementation, or that can generate compatible MethodSCRIPT."""
+    """All methods, including MethodType and those that generate compatible MethodSCRIPT."""
 
     def _to_psmethod(self) -> PalmSens.Method: ...
