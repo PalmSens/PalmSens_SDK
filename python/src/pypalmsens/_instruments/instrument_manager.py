@@ -3,6 +3,7 @@ from __future__ import annotations
 import asyncio
 import warnings
 from contextlib import contextmanager
+from pathlib import Path
 from time import sleep
 from typing import Generator
 
@@ -306,6 +307,7 @@ class InstrumentManager(CapabilitiesMixin):
         method: MethodTypeCompatible,
         *,
         callback: Callback | CallbackEIS | None = None,
+        stream: Path | str | None = None,
     ) -> Measurement:
         """Start measurement using given method parameters.
 
@@ -332,7 +334,9 @@ class InstrumentManager(CapabilitiesMixin):
         # correct async event handlers
         measurement_manager = MeasurementManagerAsync(comm=self._comm)
 
-        return asyncio.run(measurement_manager.measure(method, callback=callback))
+        return asyncio.run(
+            measurement_manager.measure(method, callback=callback, stream=stream)
+        )
 
     def wait_digital_trigger(self, wait_for_high: bool):
         """Wait for digital trigger.

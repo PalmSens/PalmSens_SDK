@@ -74,21 +74,23 @@ class CallbackDataEIS:
     start: int
     """Start index for the new data."""
 
-    @property
-    def index(self) -> int:
-        """Index of last point."""
-        return self.data.n_points - 1
+    index: int
+    """Index of last point."""
 
     def last_datapoint(self) -> dict[str, float]:
         """Return last measured data point."""
-        ret = {array.name: array[-1] for array in self.data.arrays()}
+        ret = {
+            array.name: array[self.index]
+            for array in self.data.arrays()
+            if not array.is_derived
+        }
         ret['index'] = self.index
         return ret
 
     def new_datapoints(self) -> Generator[dict[str, float]]:
         """Return new data points since last callback."""
         for i in range(self.start, self.index + 1):
-            ret = {array.name: array[i] for array in self.data.arrays()}
+            ret = {array.name: array[i] for array in self.data.values() if not array.is_derived}
             ret['index'] = i
             yield ret
 
