@@ -24,7 +24,7 @@ from .._types import (
     AllowedCurrentRanges,
     AllowedMethods,
     AllowedPotentialRanges,
-    TechniqueTypeCompatible,
+    MethodTypeCompatible,
 )
 from ..data import Measurement
 from .callback import Callback, CallbackEIS, CallbackStatus, Status
@@ -76,7 +76,7 @@ async def connect_async(
 
 
 async def measure_async(
-    method: TechniqueTypeCompatible,
+    method: MethodTypeCompatible,
     instrument: None | Instrument = None,
     callback: Callback | CallbackEIS | None = None,
 ) -> Measurement:
@@ -190,7 +190,7 @@ class CapabilitiesMixin:
 
     def get_estimated_duration(
         self: HasCommProtocol,
-        method: PalmSens.Method | TechniqueTypeCompatible,
+        method: PalmSens.Method | MethodTypeCompatible,
     ) -> float:
         """Get the estimated duration for this method.
 
@@ -215,7 +215,7 @@ class CapabilitiesMixin:
 
     def validate_method(
         self: HasCommProtocol,
-        method: TechniqueTypeCompatible,
+        method: MethodTypeCompatible,
     ):
         """Validate method.
 
@@ -482,7 +482,7 @@ class InstrumentManagerAsync(CapabilitiesMixin):
 
     async def measure(
         self,
-        method: TechniqueTypeCompatible,
+        method: MethodTypeCompatible,
         *,
         callback: Callback | CallbackEIS | None = None,
         sync_event: asyncio.Event | None = None,

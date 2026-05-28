@@ -5,7 +5,7 @@ from typing import Any, Union
 
 import PalmSens
 
-from pypalmsens.types import TechniqueType
+from pypalmsens.types import MethodType
 
 from .._methods.techniques import BaseTechnique
 
@@ -52,7 +52,7 @@ class Method:
         """The technique number used in the firmware."""
         return self._psmethod.Technique
 
-    def to_settings(self) -> TechniqueType:
+    def to_settings(self) -> MethodType:
         """Extract techniques parameters as dataclass."""
         return BaseTechnique._from_psmethod(self._psmethod)
 

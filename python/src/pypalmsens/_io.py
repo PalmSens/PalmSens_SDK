@@ -10,7 +10,7 @@ from System.Text import Encoding
 
 from ._data import Method
 from ._data.measurement import Measurement
-from ._types import TechniqueType, TechniqueTypeCompatible
+from ._types import MethodType
 
 
 @contextmanager
@@ -87,9 +87,21 @@ def save_session_file(path: str | Path, measurements: list[Measurement]):
         session.Save(stream.BaseStream, str(path))
 
 
-def load_method_file(
-    path: str | Path, as_method: bool = False
-) -> TechniqueTypeCompatible | Method:
+def _load_method_file(path: str | Path) -> Method:
+    path = Path(path)
+
+    with stream_reader(str(path)) as stream:
+        if path.suffix == PalmSens.DataFiles.MethodFile2.FileExtension:
+            psmethod = PalmSens.DataFiles.MethodFile2.FromStream(stream)
+        else:
+            psmethod = PalmSens.DataFiles.MethodFile.FromStream(stream, str(path))
+
+    psmethod.MethodFilename = str(path.absolute())
+
+    return Method(psmethod=psmethod)
+
+
+def load_method_file(path: str | Path) -> MethodType:
     """Load a method file (.psmethod).
 
     Parameters
@@ -104,25 +116,11 @@ def load_method_file(
     method : Parameters
         Return method parameters
     """
-    path = Path(path)
-
-    with stream_reader(str(path)) as stream:
-        if path.suffix == PalmSens.DataFiles.MethodFile2.FileExtension:
-            psmethod = PalmSens.DataFiles.MethodFile2.FromStream(stream)
-        else:
-            psmethod = PalmSens.DataFiles.MethodFile.FromStream(stream, str(path))
-
-    psmethod.MethodFilename = str(path.absolute())
-
-    method = Method(psmethod=psmethod)
-
-    if as_method:
-        return method
-    else:
-        return method.to_settings()
+    method = _load_method_file(path)
+    return method.to_settings()
 
 
-def save_method_file(path: str | Path, method: TechniqueType):
+def save_method_file(path: str | Path, method: MethodType):
     """Load a method file (.psmethod).
 
     Parameters

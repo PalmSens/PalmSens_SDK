@@ -3,7 +3,7 @@ from __future__ import annotations
 import asyncio
 from typing import TYPE_CHECKING, Any, Awaitable, Protocol, Sequence
 
-from .._types import TechniqueType, TechniqueTypeCompatible
+from .._types import MethodType, MethodTypeCompatible
 from .callback import Callback, CallbackEIS, Status
 from .instrument import Instrument
 from .instrument_manager_async import InstrumentManagerAsync
@@ -133,7 +133,7 @@ class InstrumentPoolAsync:
 
     async def measure(
         self,
-        method: TechniqueType,
+        method: MethodType,
         callback: Sequence[Callback | CallbackEIS] | Callback | CallbackEIS | None = None,
         **kwargs,
     ) -> list[Measurement]:
@@ -188,7 +188,7 @@ class InstrumentPoolAsync:
 
     async def _measure_hw_sync(
         self,
-        method: TechniqueTypeCompatible,
+        method: MethodTypeCompatible,
         callbacks: Sequence[Callback | CallbackEIS | None] | None = None,
         **kwargs,
     ) -> list[Measurement]:

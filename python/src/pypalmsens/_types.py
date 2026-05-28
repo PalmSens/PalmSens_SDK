@@ -106,11 +106,12 @@ AllowedScanTypes = Literal['potential', 'time', 'fixed']
 """Possible scan types."""
 
 AllowedFrequencyTypes = Literal['fixed', 'scan']
-"""Possibl frequency types."""
+"""Possible frequency types."""
 
 
-class TechniqueType(Protocol):
-    _use_hardware_sync: bool
+class MethodType(Protocol):
+    @property
+    def _use_hardware_sync(self) -> bool: ...
 
     def to_dict(self) -> dict[str, Any]: ...
     def _serialize(self) -> str: ...
@@ -121,5 +122,5 @@ class TechniqueType(Protocol):
     def _update_psmethod_nested(self, psmethod: PalmSens.Method, /) -> None: ...
 
 
-class TechniqueTypeCompatible(Protocol):
+class MethodTypeCompatible(Protocol):
     def _to_psmethod(self) -> PalmSens.Method: ...

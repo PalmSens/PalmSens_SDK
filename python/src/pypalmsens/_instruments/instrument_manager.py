@@ -20,7 +20,7 @@ from .._converters import (
 from .._types import (
     AllowedCurrentRanges,
     AllowedPotentialRanges,
-    TechniqueTypeCompatible,
+    MethodTypeCompatible,
 )
 from ..data import Measurement
 from .callback import Callback, CallbackEIS, Status
@@ -68,7 +68,7 @@ def connect(
 
 
 def measure(
-    method: TechniqueTypeCompatible,
+    method: MethodTypeCompatible,
     instrument: None | Instrument = None,
     callback: Callback | CallbackEIS | None = None,
 ) -> Measurement:
@@ -303,7 +303,7 @@ class InstrumentManager(CapabilitiesMixin):
 
     def measure(
         self,
-        method: TechniqueTypeCompatible,
+        method: MethodTypeCompatible,
         *,
         callback: Callback | CallbackEIS | None = None,
     ) -> Measurement:

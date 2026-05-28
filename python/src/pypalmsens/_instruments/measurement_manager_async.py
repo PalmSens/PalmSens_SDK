@@ -11,7 +11,7 @@ from System import EventHandler
 from System.Threading.Tasks import Task
 
 from pypalmsens._methods.adapters import EnergyTechniqueType
-from pypalmsens._types import TechniqueTypeCompatible
+from pypalmsens._types import MethodTypeCompatible
 
 from .._data import DataSet
 from ..data import DataArray, Measurement
@@ -134,7 +134,7 @@ class MeasurementManagerAsync:
 
     async def measure(
         self,
-        method: TechniqueTypeCompatible,
+        method: MethodTypeCompatible,
         callback: Callback | CallbackEIS | None = None,
         sync_event: asyncio.Event | None = None,
     ) -> Measurement:
