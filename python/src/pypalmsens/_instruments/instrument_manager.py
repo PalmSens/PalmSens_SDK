@@ -19,12 +19,10 @@ from .._converters import (
     pr_enum_to_string,
     pr_string_to_enum,
 )
-from .._methods import (
-    BaseTechnique,
-)
 from .._types import (
     AllowedCurrentRanges,
     AllowedPotentialRanges,
+    TechniqueTypeCompatible,
 )
 from ..data import Measurement
 from .callback import Callback, CallbackEIS, Status
@@ -72,7 +70,7 @@ def connect(
 
 
 def measure(
-    method: BaseTechnique,
+    method: TechniqueTypeCompatible,
     instrument: None | Instrument = None,
     callback: Callback | CallbackEIS | None = None,
 ) -> Measurement:

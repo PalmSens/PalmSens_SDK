@@ -7,9 +7,10 @@ import PalmSens
 from System.IO import StreamReader, StreamWriter
 from System.Text import Encoding
 
+from pypalmsens._types import TechniqueType, TechniqueTypeCompatible
+
 from ._data import Method
 from ._data.measurement import Measurement
-from ._methods import BaseTechnique
 
 
 @contextmanager
@@ -86,7 +87,9 @@ def save_session_file(path: str | Path, measurements: list[Measurement]):
         session.Save(stream.BaseStream, str(path))
 
 
-def load_method_file(path: str | Path, as_method: bool = False) -> BaseTechnique | Method:
+def load_method_file(
+    path: str | Path, as_method: bool = False
+) -> TechniqueTypeCompatible | Method:
     """Load a method file (.psmethod).
 
     Parameters
@@ -119,7 +122,7 @@ def load_method_file(path: str | Path, as_method: bool = False) -> BaseTechnique
         return method.to_settings()
 
 
-def save_method_file(path: str | Path, method: BaseTechnique):
+def save_method_file(path: str | Path, method: TechniqueType):
     """Load a method file (.psmethod).
 
     Parameters

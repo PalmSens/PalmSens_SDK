@@ -13,19 +13,17 @@ from PalmSens.Comm import CommManager, MuxType
 from System.Threading.Tasks import Task
 from typing_extensions import AsyncIterator, override
 
-from pypalmsens._methods.adapters import EnergyTechniqueType, TechniqueType
-
 from .._converters import (
     cr_enum_to_string,
     cr_string_to_enum,
     pr_enum_to_string,
     pr_string_to_enum,
 )
-from .._methods import BaseTechnique
 from .._types import (
     AllowedCurrentRanges,
     AllowedMethods,
     AllowedPotentialRanges,
+    TechniqueTypeCompatible,
 )
 from ..data import Measurement
 from .callback import Callback, CallbackEIS, CallbackStatus, Status
@@ -77,7 +75,7 @@ async def connect_async(
 
 
 async def measure_async(
-    method: BaseTechnique,
+    method: TechniqueTypeCompatible,
     instrument: None | Instrument = None,
     callback: Callback | CallbackEIS | None = None,
 ) -> Measurement:
@@ -190,7 +188,7 @@ class CapabilitiesMixin:
 
     def get_estimated_duration(
         self: HasCommProtocol,
-        method: PalmSens.Method | BaseTechnique,
+        method: PalmSens.Method | TechniqueTypeCompatible,
     ) -> float:
         """Get the estimated duration for this method.
 
@@ -215,7 +213,7 @@ class CapabilitiesMixin:
 
     def validate_method(
         self: HasCommProtocol,
-        method: TechniqueType | EnergyTechniqueType,
+        method: TechniqueTypeCompatible,
     ):
         """Validate method.
 
@@ -482,7 +480,7 @@ class InstrumentManagerAsync(CapabilitiesMixin):
 
     async def measure(
         self,
-        method: TechniqueType,
+        method: TechniqueTypeCompatible,
         *,
         callback: Callback | CallbackEIS | None = None,
         sync_event: asyncio.Event | None = None,

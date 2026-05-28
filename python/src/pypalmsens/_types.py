@@ -1,6 +1,8 @@
 from __future__ import annotations
 
-from typing import Literal
+from typing import Any, Literal, Protocol
+
+import PalmSens
 
 AllowedTimingStatus = Literal['Unknown', 'OK', 'OverStep']
 """Possible values for measurement timing status."""
@@ -105,3 +107,19 @@ AllowedScanTypes = Literal['potential', 'time', 'fixed']
 
 AllowedFrequencyTypes = Literal['fixed', 'scan']
 """Possibl frequency types."""
+
+
+class TechniqueType(Protocol):
+    _use_hardware_sync: bool
+
+    def to_dict(self) -> dict[str, Any]: ...
+    def _serialize(self) -> str: ...
+    def _update_params(self, psmethod: PalmSens.Method, /) -> None: ...
+    def _update_params_nested(self, psmethod: PalmSens.Method, /) -> None: ...
+    def _to_psmethod(self) -> PalmSens.Method: ...
+    def _update_psmethod(self, psmethod: PalmSens.Method, /) -> None: ...
+    def _update_psmethod_nested(self, psmethod: PalmSens.Method, /) -> None: ...
+
+
+class TechniqueTypeCompatible(Protocol):
+    def _to_psmethod(self) -> PalmSens.Method: ...
