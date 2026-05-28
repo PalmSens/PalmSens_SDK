@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from collections.abc import Generator
 from contextlib import contextmanager
 from pathlib import Path
 
@@ -7,14 +8,13 @@ import PalmSens
 from System.IO import StreamReader, StreamWriter
 from System.Text import Encoding
 
-from pypalmsens._types import TechniqueType, TechniqueTypeCompatible
-
 from ._data import Method
 from ._data.measurement import Measurement
+from ._types import TechniqueType, TechniqueTypeCompatible
 
 
 @contextmanager
-def stream_reader(*args, **kwargs):
+def stream_reader(*args, **kwargs) -> Generator[StreamReader]:
     sr = StreamReader(*args, **kwargs)
     try:
         yield sr
@@ -23,7 +23,7 @@ def stream_reader(*args, **kwargs):
 
 
 @contextmanager
-def stream_writer(*args, **kwargs):
+def stream_writer(*args, **kwargs) -> Generator[StreamWriter]:
     sw = StreamWriter(*args, **kwargs)
     try:
         yield sw

@@ -4,14 +4,12 @@ import asyncio
 import warnings
 from contextlib import contextmanager
 from time import sleep
-from typing import Iterator
+from typing import Generator
 
 import clr
 import PalmSens
 from PalmSens.Comm import CommManager, MuxType
 from typing_extensions import override
-
-from pypalmsens._methods.adapters import EnergyTechniqueType, TechniqueType
 
 from .._converters import (
     cr_enum_to_string,
@@ -136,7 +134,7 @@ class InstrumentManager(CapabilitiesMixin):
         return int(self._comm.State) == CommManager.DeviceState.Measurement
 
     @contextmanager
-    def _lock(self) -> Iterator[CommManager]:
+    def _lock(self) -> Generator[CommManager]:
         self.ensure_connection()
 
         self._comm.ClientConnection.Semaphore.Wait()
@@ -305,7 +303,7 @@ class InstrumentManager(CapabilitiesMixin):
 
     def measure(
         self,
-        method: TechniqueType | EnergyTechniqueType,
+        method: TechniqueTypeCompatible,
         *,
         callback: Callback | CallbackEIS | None = None,
     ) -> Measurement:
@@ -328,7 +326,7 @@ class InstrumentManager(CapabilitiesMixin):
             Finished measurement.
         """
         self.ensure_connection()
-        self.validate_method(method)  # type: ignore
+        self.validate_method(method)
 
         # note that the comm manager must be opened async so it sets the
         # correct async event handlers

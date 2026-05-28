@@ -3,15 +3,16 @@ from __future__ import annotations
 import asyncio
 import sys
 import warnings
+from collections.abc import AsyncGenerator, Coroutine
 from contextlib import asynccontextmanager
-from typing import Any, Callable, Coroutine, Protocol
+from typing import Any, Protocol
 
 import clr
 import PalmSens
 from PalmSens import AsyncEventHandler
 from PalmSens.Comm import CommManager, MuxType
 from System.Threading.Tasks import Task
-from typing_extensions import AsyncIterator, override
+from typing_extensions import override
 
 from .._converters import (
     cr_enum_to_string,
@@ -111,7 +112,8 @@ async def measure_async(
 
 class HasCommProtocol(Protocol):
     _comm: CommManager
-    ensure_connection: Callable[[], None]
+
+    def ensure_connection(self) -> None: ...
 
 
 class HasCapabilities(Protocol):
@@ -270,7 +272,7 @@ class InstrumentManagerAsync(CapabilitiesMixin):
         return int(self._comm.State) == CommManager.DeviceState.Measurement
 
     @asynccontextmanager
-    async def _lock(self) -> AsyncIterator[CommManager]:
+    async def _lock(self) -> AsyncGenerator[CommManager]:
         self.ensure_connection()
 
         await create_future(self._comm.ClientConnection.Semaphore.WaitAsync())
