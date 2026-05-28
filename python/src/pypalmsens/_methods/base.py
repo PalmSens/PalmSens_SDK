@@ -79,8 +79,8 @@ class BaseTechnique(BaseModel, metaclass=ABCMeta):
     def _update_params(self, psmethod: PalmSens.Method, /) -> None: ...
 
     @property
-    def _use_hardware_sync(self):
-        return False
+    @abstractmethod
+    def _use_hardware_sync(self): ...
 
     def _update_params_nested(self, psmethod: PalmSens.Method, /) -> None:
         """Retrieve and convert dotnet method for nested field parameters."""
