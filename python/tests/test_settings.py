@@ -285,9 +285,9 @@ def test_TriggerAtEquilibrationSettings():
 
     assert new_params == params
 
-    assert any(params)
+    assert any(params.to_list())
     params.clear()
-    assert not any(params)
+    assert not any(params.to_list())
 
 
 def test_TriggerAtMeasurementSettings():
@@ -309,9 +309,9 @@ def test_TriggerAtMeasurementSettings():
 
     assert new_params == params
 
-    assert any(params)
+    assert any(params.to_list())
     params.clear()
-    assert not any(params)
+    assert not any(params.to_list())
 
 
 def test_TriggerAtDelaySettings():
@@ -335,9 +335,9 @@ def test_TriggerAtDelaySettings():
 
     assert new_params == params
 
-    assert any(params)
+    assert any(params.to_list())
     params.clear()
-    assert not any(params)
+    assert not any(params.to_list())
 
 
 def test_MultiplexerSettings():
