@@ -78,6 +78,10 @@ class BaseTechnique(BaseModel, metaclass=ABCMeta):
     @abstractmethod
     def _update_params(self, psmethod: PalmSens.Method, /) -> None: ...
 
+    @property
+    def _use_hardware_sync(self):
+        return False
+
     def _update_params_nested(self, psmethod: PalmSens.Method, /) -> None:
         """Retrieve and convert dotnet method for nested field parameters."""
         for field in self.__class__.model_fields:
@@ -90,7 +94,7 @@ class BaseTechnique(BaseModel, metaclass=ABCMeta):
 
     def _to_psmethod(self) -> PalmSens.Method:
         """Convert parameters to dotnet method."""
-        psmethod = PalmSens.Method.FromMethodID(self.id)
+        psmethod = PalmSens.Method.FromMethodID(self.id)  # type:ignore
 
         self._update_psmethod(psmethod)
         self._update_psmethod_nested(psmethod)
