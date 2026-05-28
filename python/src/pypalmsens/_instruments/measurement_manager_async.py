@@ -142,7 +142,7 @@ class MeasurementManagerAsync:
 
         Parameters
         ----------
-        method: TechniqueType
+        method: MethodType
             Method parameters for measurement
         callback: Callback, optional
             Gets called every time new data is added

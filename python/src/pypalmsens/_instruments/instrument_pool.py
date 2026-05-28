@@ -134,7 +134,7 @@ class InstrumentPool:
 
         Parameters
         ----------
-        method : MethodSettings
+        method : MethodType
             Method parameters for measurement.
         callback : list[Callback] | Callback | CallbackEIS | None
             If specified, call these functions/this function on every new set of data points.

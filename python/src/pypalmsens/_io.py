@@ -125,7 +125,7 @@ def save_method_file(path: str | Path, method: MethodType):
     ----------
     path : Path | str
         Path to save the method file
-    method : Method
+    method : MethodType
         Method to save
     """
     data = method._serialize()

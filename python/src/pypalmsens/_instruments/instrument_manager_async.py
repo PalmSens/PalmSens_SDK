@@ -196,7 +196,7 @@ class CapabilitiesMixin:
 
         Parameters
         -----------
-        method : Method parameters
+        method : MethodType
             The method to get the estimated duration for.
 
         Returns
@@ -223,7 +223,7 @@ class CapabilitiesMixin:
 
         Parameters
         -----------
-        method: TechniqueType
+        method: MethodType
             The method to validate.
         """
         self.ensure_connection()
@@ -491,7 +491,7 @@ class InstrumentManagerAsync(CapabilitiesMixin):
 
         Parameters
         ----------
-        method: MethodParameters
+        method: MethodType
             Method parameters for measurement
         callback: Callback, optional
             If specified, call this function on every new set of data points.

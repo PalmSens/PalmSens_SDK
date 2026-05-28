@@ -311,7 +311,7 @@ class InstrumentManager(CapabilitiesMixin):
 
         Parameters
         ----------
-        method: TechniqueType
+        method: MethodType
             Method parameters for measurement
         callback: Callback, optional
             If specified, call this function on every new set of data points.
