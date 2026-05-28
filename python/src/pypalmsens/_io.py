@@ -108,12 +108,10 @@ def load_method_file(path: str | Path) -> MethodType:
     ----------
     path : Path | str
         Path to method file
-    as_method : bool
-        If True, load as method wrapper object
 
     Returns
     -------
-    method : Parameters
+    method : MethodType
         Return method parameters
     """
     method = _load_method_file(path)

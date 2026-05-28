@@ -110,6 +110,8 @@ AllowedFrequencyTypes = Literal['fixed', 'scan']
 
 
 class MethodType(Protocol):
+    """Methods with complete implementation in .NET."""
+
     @property
     def _use_hardware_sync(self) -> bool: ...
 
@@ -123,4 +125,6 @@ class MethodType(Protocol):
 
 
 class MethodTypeCompatible(Protocol):
+    """Methods with .NET implementation, or that can generate compatible MethodSCRIPT."""
+
     def _to_psmethod(self) -> PalmSens.Method: ...
