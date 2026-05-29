@@ -7,12 +7,12 @@
   "targets": {
     ".NETCoreApp,Version=v9.0": {},
     ".NETCoreApp,Version=v9.0/linux-x64": {
-      "PalmSens.Core.Linux/5.13.011": {
+      "PalmSens.Core.Linux/5.13.012": {
         "dependencies": {
-          "PalmSens.Core": "5.13.11",
+          "PalmSens.Core": "5.13.12",
           "System.IO.Ports": "9.0.0",
           "Zeroconf": "3.7.16",
-          "PalmSens.Core.Reference": "5.13.11.0"
+          "PalmSens.Core.Reference": "5.13.12.0"
         },
         "runtime": {
           "PalmSens.Core.Linux.dll": {}
@@ -84,7 +84,7 @@
           }
         }
       },
-      "PalmSens.Core/5.13.11": {
+      "PalmSens.Core/5.13.12": {
         "dependencies": {
           "BouncyCastle.Cryptography": "2.6.2",
           "MathNet.Numerics": "5.0.0",
@@ -96,18 +96,18 @@
           }
         }
       },
-      "PalmSens.Core.Reference/5.13.11.0": {
+      "PalmSens.Core.Reference/5.13.12.0": {
         "runtime": {
           "PalmSens.Core.dll": {
-            "assemblyVersion": "5.13.11.0",
-            "fileVersion": "5.13.11.0"
+            "assemblyVersion": "5.13.12.0",
+            "fileVersion": "5.13.12.0"
           }
         }
       }
     }
   },
   "libraries": {
-    "PalmSens.Core.Linux/5.13.011": {
+    "PalmSens.Core.Linux/5.13.012": {
       "type": "project",
       "serviceable": false,
       "sha512": ""
@@ -168,12 +168,12 @@
       "path": "zeroconf/3.7.16",
       "hashPath": "zeroconf.3.7.16.nupkg.sha512"
     },
-    "PalmSens.Core/5.13.11": {
+    "PalmSens.Core/5.13.12": {
       "type": "project",
       "serviceable": false,
       "sha512": ""
     },
-    "PalmSens.Core.Reference/5.13.11.0": {
+    "PalmSens.Core.Reference/5.13.12.0": {
       "type": "reference",
       "serviceable": false,
       "sha512": ""
