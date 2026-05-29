@@ -36,7 +36,6 @@ from .mask import (
 
 
 class BaseCyclicVoltammetry(
-    BaseTechnique,
     mixins.CurrentRangeMixin,
     mixins.PretreatmentMixin,
     mixins.VersusOCPMixin,
@@ -48,6 +47,7 @@ class BaseCyclicVoltammetry(
     mixins.MeasurementTriggersMixin,
     mixins.DataProcessingMixin,
     mixins.GeneralMixin,
+    BaseTechnique,
 ):
     equilibration_time: float = 0.0
     """Equilibration time in s."""
@@ -143,13 +143,13 @@ class CyclicVoltammetry(BaseCyclicVoltammetry):
 
 
 class FastCyclicVoltammetry(
-    BaseTechnique,
     mixins.PretreatmentMixin,
     mixins.VersusOCPMixin,
     mixins.PostMeasurementMixin,
     mixins.IrDropCompensationMixin,
     mixins.DataProcessingMixin,
     mixins.GeneralMixin,
+    BaseTechnique,
 ):
     """Create fast cyclic voltammetry method parameters.
 
@@ -234,7 +234,6 @@ class FastCyclicVoltammetry(
 
 
 class ACVoltammetry(
-    BaseTechnique,
     mixins.CurrentRangeMixin,
     mixins.PretreatmentMixin,
     mixins.VersusOCPMixin,
@@ -243,6 +242,7 @@ class ACVoltammetry(
     mixins.MeasurementTriggersMixin,
     mixins.DataProcessingMixin,
     mixins.GeneralMixin,
+    BaseTechnique,
 ):
     """Create AC Voltammetry method parameters.
 
@@ -310,7 +310,6 @@ class ACVoltammetry(
 
 
 class BaseLinearSweepVoltammetry(
-    BaseTechnique,
     mixins.CurrentRangeMixin,
     mixins.PretreatmentMixin,
     mixins.VersusOCPMixin,
@@ -323,6 +322,7 @@ class BaseLinearSweepVoltammetry(
     mixins.DataProcessingMixin,
     mixins.MultiplexerMixin,
     mixins.GeneralMixin,
+    BaseTechnique,
 ):
     equilibration_time: float = 0.0
     """Equilibration time in s.
@@ -416,7 +416,6 @@ class LinearSweepVoltammetry(BaseLinearSweepVoltammetry):
 
 
 class SquareWaveVoltammetry(
-    BaseTechnique,
     mixins.CurrentRangeMixin,
     mixins.PretreatmentMixin,
     mixins.VersusOCPMixin,
@@ -428,6 +427,7 @@ class SquareWaveVoltammetry(
     mixins.DataProcessingMixin,
     mixins.MultiplexerMixin,
     mixins.GeneralMixin,
+    BaseTechnique,
 ):
     """Create square wave method parameters.
 
@@ -520,7 +520,6 @@ class SquareWaveVoltammetry(
 
 
 class DifferentialPulseVoltammetry(
-    BaseTechnique,
     mixins.CurrentRangeMixin,
     mixins.PretreatmentMixin,
     mixins.VersusOCPMixin,
@@ -532,6 +531,7 @@ class DifferentialPulseVoltammetry(
     mixins.DataProcessingMixin,
     mixins.MultiplexerMixin,
     mixins.GeneralMixin,
+    BaseTechnique,
 ):
     """Create differential pulse voltammetry method parameters.
 
@@ -628,7 +628,6 @@ class DifferentialPulseVoltammetry(
 
 
 class NormalPulseVoltammetry(
-    BaseTechnique,
     mixins.CurrentRangeMixin,
     mixins.PretreatmentMixin,
     mixins.VersusOCPMixin,
@@ -640,6 +639,7 @@ class NormalPulseVoltammetry(
     mixins.DataProcessingMixin,
     mixins.MultiplexerMixin,
     mixins.GeneralMixin,
+    BaseTechnique,
 ):
     """Create normal pulse voltammetry method parameters.
 
@@ -733,7 +733,6 @@ class NormalPulseVoltammetry(
 
 
 class BaseChronoAmperometry(
-    BaseTechnique,
     mixins.CurrentRangeMixin,
     mixins.PretreatmentMixin,
     mixins.VersusOCPMixin,
@@ -746,6 +745,7 @@ class BaseChronoAmperometry(
     mixins.MeasurementTriggersMixin,
     mixins.DataProcessingMixin,
     mixins.MultiplexerMixin,
+    BaseTechnique,
     mixins.GeneralMixin,
 ):
     equilibration_time: float = 0.0
@@ -822,7 +822,6 @@ class ChronoAmperometry(BaseChronoAmperometry):
 
 
 class FastAmperometry(
-    BaseTechnique,
     mixins.PretreatmentMixin,
     mixins.VersusOCPMixin,
     mixins.BiPotMixin,
@@ -835,6 +834,7 @@ class FastAmperometry(
     mixins.DataProcessingMixin,
     mixins.MultiplexerMixin,
     mixins.GeneralMixin,
+    BaseTechnique,
 ):
     """Create fast amperometry method parameters.
 
@@ -893,7 +893,6 @@ class FastAmperometry(
 
 
 class MultiStepAmperometry(
-    BaseTechnique,
     mixins.CurrentRangeMixin,
     mixins.PretreatmentMixin,
     mixins.BiPotMixin,
@@ -903,6 +902,7 @@ class MultiStepAmperometry(
     mixins.DataProcessingMixin,
     mixins.MultiplexerMixin,
     mixins.GeneralMixin,
+    BaseTechnique,
 ):
     """Create multi-step amperometry method parameters.
 
@@ -993,7 +993,6 @@ class MultiStepAmperometry(
 
 
 class PulsedAmperometricDetection(
-    BaseTechnique,
     mixins.CurrentRangeMixin,
     mixins.PretreatmentMixin,
     mixins.BiPotMixin,
@@ -1004,6 +1003,7 @@ class PulsedAmperometricDetection(
     mixins.DataProcessingMixin,
     mixins.MultiplexerMixin,
     mixins.GeneralMixin,
+    BaseTechnique,
 ):
     """Create pulsed amperometric detection method parameters.
 
@@ -1077,12 +1077,12 @@ class PulsedAmperometricDetection(
 
 
 class MultiplePulseAmperometry(
-    BaseTechnique,
     mixins.CurrentRangeMixin,
     mixins.PretreatmentMixin,
     mixins.PostMeasurementMixin,
     mixins.DataProcessingMixin,
     mixins.GeneralMixin,
+    BaseTechnique,
 ):
     """Create multiple pulse amperometry method parameters.
 
@@ -1149,7 +1149,6 @@ class MultiplePulseAmperometry(
 
 
 class BaseOpenCircuitPotentiometry(
-    BaseTechnique,
     mixins.CurrentRangeMixin,
     mixins.PotentialRangeMixin,
     mixins.PretreatmentMixin,
@@ -1159,6 +1158,7 @@ class BaseOpenCircuitPotentiometry(
     mixins.DataProcessingMixin,
     mixins.MultiplexerMixin,
     mixins.GeneralMixin,
+    BaseTechnique,
 ):
     interval_time: float = 0.1
     """Time between two potential samples in s."""
@@ -1228,7 +1228,6 @@ class OpenCircuitPotentiometry(BaseOpenCircuitPotentiometry):
 
 
 class BaseChronoPotentiometry(
-    BaseTechnique,
     mixins.CurrentRangeMixin,
     mixins.PotentialRangeMixin,
     mixins.PretreatmentMixin,
@@ -1238,6 +1237,7 @@ class BaseChronoPotentiometry(
     mixins.DataProcessingMixin,
     mixins.MultiplexerMixin,
     mixins.GeneralMixin,
+    BaseTechnique,
 ):
     current: float = 0.0
     """The current to apply in the given current range.
@@ -1320,7 +1320,6 @@ class ChronoPotentiometry(BaseChronoPotentiometry):
 
 
 class StrippingChronoPotentiometry(
-    BaseTechnique,
     mixins.CurrentRangeMixin,
     mixins.PretreatmentMixin,
     mixins.PostMeasurementMixin,
@@ -1328,6 +1327,7 @@ class StrippingChronoPotentiometry(
     mixins.MeasurementTriggersMixin,
     mixins.DataProcessingMixin,
     mixins.GeneralMixin,
+    BaseTechnique,
 ):
     """Create stripping potentiometry method parameters.
 
@@ -1411,7 +1411,6 @@ class StrippingChronoPotentiometry(
 
 
 class LinearSweepPotentiometry(
-    BaseTechnique,
     mixins.CurrentRangeMixin,
     mixins.PotentialRangeMixin,
     mixins.PretreatmentMixin,
@@ -1422,6 +1421,7 @@ class LinearSweepPotentiometry(
     mixins.DataProcessingMixin,
     mixins.MultiplexerMixin,
     mixins.GeneralMixin,
+    BaseTechnique,
 ):
     """Create linear sweep potentiometry method parameters."""
 
@@ -1497,7 +1497,6 @@ class LinearSweepPotentiometry(
 
 
 class MultiStepPotentiometry(
-    BaseTechnique,
     mixins.CurrentRangeMixin,
     mixins.PotentialRangeMixin,
     mixins.PretreatmentMixin,
@@ -1506,6 +1505,7 @@ class MultiStepPotentiometry(
     mixins.DataProcessingMixin,
     mixins.MultiplexerMixin,
     mixins.GeneralMixin,
+    BaseTechnique,
 ):
     """Create multi-step potentiometry method parameters.
 
@@ -1588,7 +1588,6 @@ class MultiStepPotentiometry(
 
 
 class ChronoCoulometry(
-    BaseTechnique,
     mixins.CurrentRangeMixin,
     mixins.PretreatmentMixin,
     mixins.PostMeasurementMixin,
@@ -1596,6 +1595,7 @@ class ChronoCoulometry(
     mixins.ChargeLimitsMixin,
     mixins.DataProcessingMixin,
     mixins.GeneralMixin,
+    BaseTechnique,
 ):
     """Create chrono coulometry method parameters.
 
@@ -1694,7 +1694,6 @@ class ChronoCoulometry(
 
 
 class ElectrochemicalImpedanceSpectroscopy(
-    BaseTechnique,
     mixins.CurrentRangeMixin,
     mixins.PotentialRangeMixin,
     mixins.PretreatmentMixin,
@@ -1705,6 +1704,7 @@ class ElectrochemicalImpedanceSpectroscopy(
     mixins.MaterialMixin,
     mixins.MultiplexerMixin,
     mixins.GeneralMixin,
+    BaseTechnique,
 ):
     """Create potentiometry method parameters.
 
@@ -1909,7 +1909,6 @@ class ElectrochemicalImpedanceSpectroscopy(
 
 
 class FastImpedanceSpectroscopy(
-    BaseTechnique,
     mixins.CurrentRangeMixin,
     mixins.PotentialRangeMixin,
     mixins.PretreatmentMixin,
@@ -1918,6 +1917,7 @@ class FastImpedanceSpectroscopy(
     mixins.MeasurementTriggersMixin,
     mixins.EquilibrationTriggersMixin,
     mixins.GeneralMixin,
+    BaseTechnique,
 ):
     """Create fast impedance spectroscopy method parameters."""
 
@@ -1963,7 +1963,6 @@ class FastImpedanceSpectroscopy(
 
 
 class GalvanostaticImpedanceSpectroscopy(
-    BaseTechnique,
     mixins.CurrentRangeMixin,
     mixins.PotentialRangeMixin,
     mixins.PretreatmentMixin,
@@ -1972,6 +1971,7 @@ class GalvanostaticImpedanceSpectroscopy(
     mixins.MeasurementTriggersMixin,
     mixins.MultiplexerMixin,
     mixins.GeneralMixin,
+    BaseTechnique,
 ):
     """Create galvanostatic impedance spectroscopy method parameters.
 
@@ -2036,12 +2036,12 @@ class GalvanostaticImpedanceSpectroscopy(
 
 
 class FastGalvanostaticImpedanceSpectroscopy(
-    BaseTechnique,
     mixins.CurrentRangeMixin,
     mixins.PotentialRangeMixin,
     mixins.PretreatmentMixin,
     mixins.PostMeasurementMixin,
     mixins.GeneralMixin,
+    BaseTechnique,
 ):
     """Create fast galvanostatic impededance spectroscopy method parameters."""
 
@@ -2188,8 +2188,9 @@ endif
         return value
 
     @property
+    @override
     def _use_hardware_sync(self) -> bool:
         """Return true if 'set_channel_sync 1' is set."""
         match = re.findall(r'\n\s*(set_channel_sync\s+1)', self.script)
 
-        return match is not None
+        return any(match)

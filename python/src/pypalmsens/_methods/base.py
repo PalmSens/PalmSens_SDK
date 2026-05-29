@@ -79,8 +79,9 @@ class BaseTechnique(BaseModel, metaclass=ABCMeta):
     def _update_params(self, psmethod: PalmSens.Method, /) -> None: ...
 
     @property
-    @abstractmethod
-    def _use_hardware_sync(self): ...
+    def _use_hardware_sync(self) -> bool:
+        """Fallback method, implemented by derived classes or mixins"""
+        return False
 
     def _update_params_nested(self, psmethod: PalmSens.Method, /) -> None:
         """Retrieve and convert dotnet method for nested field parameters."""

@@ -31,9 +31,9 @@ def test_measure_stream():
 
     with ps.connect() as manager:
         measurement = manager.measure(
-            eis_method,
+            # eis_method,
             # cv_method,
-            # ca_method,
+            ca_method,
             stream=path,
             callback=print_index,
         )
