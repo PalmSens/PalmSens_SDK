@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, Literal, LiteralString, Protocol
+from typing import Any, Literal, Protocol
 
 import PalmSens
 
@@ -109,10 +109,17 @@ AllowedFrequencyTypes = Literal['fixed', 'scan']
 """Possible frequency types."""
 
 
-class MethodType(Protocol):
-    """Methods with complete implementation in .NET."""
+class MethodTypeCompatible(Protocol):
+    """All methods, including MethodType and those that generate compatible MethodSCRIPT."""
 
-    id: LiteralString
+    @property
+    def id(self) -> AllowedMethods: ...
+
+    def _to_psmethod(self) -> PalmSens.Method: ...
+
+
+class MethodType(MethodTypeCompatible, Protocol):
+    """Methods with complete implementation in .NET."""
 
     @property
     def _use_hardware_sync(self) -> bool: ...
@@ -121,14 +128,5 @@ class MethodType(Protocol):
     def _serialize(self) -> str: ...
     def _update_params(self, psmethod: PalmSens.Method, /) -> None: ...
     def _update_params_nested(self, psmethod: PalmSens.Method, /) -> None: ...
-    def _to_psmethod(self) -> PalmSens.Method: ...
     def _update_psmethod(self, psmethod: PalmSens.Method, /) -> None: ...
     def _update_psmethod_nested(self, psmethod: PalmSens.Method, /) -> None: ...
-
-
-class MethodTypeCompatible(Protocol):
-    """All methods, including MethodType and those that generate compatible MethodSCRIPT."""
-
-    id: LiteralString
-
-    def _to_psmethod(self) -> PalmSens.Method: ...
