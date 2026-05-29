@@ -1,8 +1,7 @@
 from __future__ import annotations
 
-from collections.abc import Generator
 from dataclasses import dataclass, field
-from typing import Literal, Protocol
+from typing import Any, Generator, Literal, Protocol
 
 import PalmSens
 from PalmSens.Comm import StatusEventArgs
@@ -12,6 +11,14 @@ from pypalmsens._converters import single_to_double
 
 from .._types import AllowedDeviceState
 from ..data import CurrentReading, DataArray, DataSet, PotentialReading
+
+
+@dataclass(slots=True)
+class XYDataPoint:
+    x: float
+    y: float
+    id: int
+    index: int
 
 
 @dataclass(slots=True)
@@ -27,15 +34,19 @@ class CallbackData:
     start: int
     """Start index for the new data."""
 
+    id: int = 0
+    """Curve identifier."""
+
     @property
     def index(self) -> int:
         """Index of last point."""
         return len(self.x_array) - 1
 
-    def last_datapoint(self) -> dict[str, float]:
+    def last_datapoint(self) -> dict[str, Any]:
         """Return last measured data point."""
         return {
             'index': self.index,
+            'id': self.id,
             'x': self.x_array[-1],
             'y': self.y_array[-1],
         }
@@ -50,12 +61,13 @@ class CallbackData:
         """Return last measured y value."""
         return self.y_array[-1]
 
-    def new_datapoints(self) -> Generator[dict[str, float]]:
+    def new_datapoints(self) -> Generator[dict[str, Any]]:
         """Return new data points since last callback."""
         for i in range(self.start, self.index + 1):
             yield {
                 'x': self.x_array[i],
                 'y': self.y_array[i],
+                'id': self.id,
                 'index': i,
             }
 

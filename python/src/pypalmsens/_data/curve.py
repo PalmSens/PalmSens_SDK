@@ -24,6 +24,8 @@ class CurveMetadata:
     """Units for data values."""
     labels: dict[str, str]
     """Labels for data values."""
+    id: int
+    """Curve identifier."""
     type: Literal['curve'] = 'curve'
     """Object type."""
 
@@ -249,6 +251,7 @@ class Curve:
                 title=self.title,
                 units={'x': self.x_unit, 'y': self.y_unit},
                 labels={'x': self.x_label, 'y': self.y_label},
+                id=self._pscurve.GetHashCode(),
             )
         )
 

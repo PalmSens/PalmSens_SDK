@@ -85,7 +85,7 @@ class JSONWriter:
     @property
     def callbacks(self) -> Callbacks:
         return Callbacks(
-            measurement_begin=[self._write_metadata_to_stream],
+            measurement_begin=[self._write_measurement_metadata_to_stream],
             curve_start=[self._write_curve_metadata_to_stream],
             curve_new_data=[self._write_data_to_stream],
             eis_data_start=[self._write_eis_metadata_to_stream],
@@ -101,7 +101,7 @@ class JSONWriter:
 
         self._stream.flush()
 
-    def _write_metadata_to_stream(self, measurement: Measurement):
+    def _write_measurement_metadata_to_stream(self, measurement: Measurement):
         assert self._stream
         _ = self._stream.write(measurement.metadata_json())
         _ = self._stream.write(b'\n')
@@ -353,6 +353,7 @@ class MeasurementManagerAsync:
             x_array=DataArray(psarray=pscurve.XAxisDataArray),
             y_array=DataArray(psarray=pscurve.YAxisDataArray),
             start=args.StartIndex,
+            id=pscurve.GetHashCode(),
         )
 
         for callback in self.callbacks.curve_new_data:
