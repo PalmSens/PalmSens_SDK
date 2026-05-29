@@ -25,8 +25,6 @@ class EISDataMetadata:
     """Quantities for data values."""
     n_frequencies: int
     """Number of frequencies (per subscan)."""
-    n_subscans: int
-    """Number of subscans."""
     frequency_type: AllowedFrequencyTypes
     """Frequency type."""
     scan_type: AllowedScanTypes
@@ -187,7 +185,6 @@ class EISData:
                     if not array.is_derived
                 },
                 n_frequencies=self.n_frequencies,
-                n_subscans=self.n_subscans,
                 frequency_type=self.frequency_type,
                 scan_type=self.scan_type,
                 mux_channel=self.mux_channel,

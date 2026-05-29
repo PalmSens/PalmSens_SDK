@@ -1,51 +1,34 @@
 from __future__ import annotations
 
+import json
 from collections import defaultdict
 from pathlib import Path
 
-from pydantic import TypeAdapter
+from pydantic import TypeAdapter, ValidationError
 
 import pypalmsens as ps
 from pypalmsens._data.curve import CurveMetadata
+from pypalmsens._data.eisdata import EISDataMetadata
 from pypalmsens._data.measurement import MeasurementMetadata
 from pypalmsens._instruments.callback import XYDataPoint
+from pypalmsens.types import MethodTypeCompatible
 
 
 def print_index(data):
     print('index', data.index)
 
 
-eis_method = ps.ElectrochemicalImpedanceSpectroscopy(
-    n_frequencies=100,
-    min_sampling_time=0.01,
-    scan_type='time',
-)
-
-ca_method = ps.ChronoAmperometry(
-    run_time=3,
-)
-
-cv_method = ps.CyclicVoltammetry(
-    n_scans=3,
-    step_potential=0.01,
-    scanrate=5,
-)
-
-
-def test_measure_stream_cv(tmpdir):
-    # path = Path(tmpdir / 'cv.jsonl')
-    path = Path('cv.jsonl')
-
+def _test_stream(path: Path, method: MethodTypeCompatible):
     with ps.connect() as manager:
         measurement = manager.measure(
-            cv_method,
+            method,
             stream=path,
         )
 
     assert measurement
 
     assert path.exists()
-    lines = path.read_text().splitlines()
+    lines = path.read_text(encoding='utf-8').splitlines()
 
     assert lines
 
@@ -87,39 +70,57 @@ def test_measure_stream_cv(tmpdir):
         assert x_data == list(curve.x_array)
         assert y_data == list(curve.y_array)
 
+    return measurement
 
-def test_measure_stream_ca():
-    path = Path('ca.jsonl')
 
-    with ps.connect() as manager:
-        measurement = manager.measure(
-            ca_method,
-            stream=path,
-            callback=print_index,
-        )
+def test_measure_stream_cv(tmpdir):
+    path = Path('cv.jsonl')
 
-    assert measurement
+    method = ps.CyclicVoltammetry(
+        n_scans=3,
+        step_potential=0.01,
+        scanrate=5,
+    )
 
-    assert path.exists()
-    lines = path.read_text().splitlines()
+    _ = _test_stream(method=method, path=path)
 
-    assert lines
 
-    # for i, line in enumerate(lines):
-    #     try:
-    #         metadata = TypeAdapter(MeasurementMetadata | CurveMetadata).validate_json(line)
-    #         print(metadata)
-    #     except ValidationError:
-    #         row = json.loads(line)
-    #         print(row)
+def test_measure_stream_cp_with_aux():
+    path = Path('cp.jsonl')
+
+    method = ps.ChronoPotentiometry(
+        run_time=3,
+        record_auxiliary_input=True,
+        record_we_current=True,
+    )
+
+    _ = _test_stream(method=method, path=path)
 
 
 def test_measure_stream_eis():
     path = Path('eis.jsonl')
 
+    method = ps.ElectrochemicalImpedanceSpectroscopy(
+        n_frequencies=5,
+        max_frequency=1e5,
+        min_frequency=1e3,
+        scan_type='time',
+        frequency_type='scan',
+        run_time=0.4,
+    )
+
+    # method = ps.ElectrochemicalImpedanceSpectroscopy(
+    #     n_frequencies=5,
+    #     begin_potential=0.5,
+    #     step_potential=0.1,
+    #     end_potential=1.0,
+    #     min_sampling_time=0.01,
+    #     scan_type='potential',
+    # )
+
     with ps.connect() as manager:
         measurement = manager.measure(
-            eis_method,
+            method,
             stream=path,
             callback=print_index,
         )
@@ -127,14 +128,48 @@ def test_measure_stream_eis():
     assert measurement
 
     assert path.exists()
-    lines = path.read_text().splitlines()
+    lines = path.read_text(encoding='utf-8').splitlines()
 
     assert lines
 
-    # for i, line in enumerate(lines):
-    #     try:
-    #         metadata = TypeAdapter(MeasurementMetadata | CurveMetadata).validate_json(line)
-    #         print(metadata)
-    #     except ValidationError:
-    #         row = json.loads(line)
-    #         print(row)
+    eis_data_points = defaultdict(list)
+    eis_data = {}
+    measurement_metadata = None
+
+    for i, line in enumerate(lines):
+        try:
+            parsed = TypeAdapter(MeasurementMetadata | EISDataMetadata).validate_json(line)
+        except ValidationError:
+            parsed = json.loads(line)
+
+        if isinstance(parsed, dict):
+            eis_data_points[parsed['channel']].append(parsed)
+        elif isinstance(parsed, EISDataMetadata):
+            eis_data[parsed.mux_channel] = parsed
+        elif isinstance(parsed, MeasurementMetadata):
+            measurement_metadata = parsed
+            # This is a quirk of EIS measurements
+            # EISDataEvent Event is always after the first EISData.NewDataEvent
+            assert i == 1
+        else:
+            raise ValueError(f'This should not happen: {parsed}')
+
+    assert measurement_metadata
+
+    assert len(eis_data_points) == len(eis_data) == len(measurement.eis_data)
+    assert set(eis_data_points) == set(eis_data)
+
+    # TODO: compare data
+    for eis in measurement.eis_data:
+        metadata = eis_data[hash]
+        assert metadata.title == curve.title
+        assert metadata.units['x'] == curve.x_unit
+        assert metadata.units['y'] == curve.y_unit
+
+        x_data = [point.x for point in eis_data_points[hash]]
+        y_data = [point.y for point in eis_data_points[hash]]
+
+        assert x_data == list(curve.x_array)
+        assert y_data == list(curve.y_array)
+
+    return measurement
