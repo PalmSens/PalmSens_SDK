@@ -175,7 +175,3 @@ def test_measure_stream_eis(tmpdir):
             assert ref_array.quantity == metadata.quantities[i]
 
             assert np.all(ref_array == data[:, i])
-
-
-# def test_combine_callback_stream():
-#     raise AssertionError

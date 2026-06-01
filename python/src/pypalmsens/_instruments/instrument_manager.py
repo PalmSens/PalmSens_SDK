@@ -72,6 +72,7 @@ def measure(
     method: MethodTypeCompatible,
     instrument: None | Instrument = None,
     callback: Callback | CallbackEIS | None = None,
+    stream: str | Path | None = None,
 ) -> Measurement:
     """Run measurement.
 
@@ -89,6 +90,11 @@ def measure(
         time it was called. Each point is an instance of `ps.data.CallbackData`
         for non-impedimetric or `ps.data.CallbackDataEIS`
         for impedimetric measurments.
+    stream: Path | str | None
+        If defined, stream data directly to this file in JSON Lines text format
+        (https://jsonlines.org). This option is useful for long-term measurements.
+        In case of a PC crash or power outage, the most recent measurement data will
+        still be available.
 
     Returns
     -------
@@ -96,7 +102,7 @@ def measure(
         Finished measurement.
     """
     with connect(instrument=instrument) as manager:
-        measurement = manager.measure(method, callback=callback)
+        measurement = manager.measure(method, callback=callback, stream=stream)
 
     assert measurement
 
@@ -321,6 +327,11 @@ class InstrumentManager(CapabilitiesMixin):
             time it was called. Each point is an instance of `ps.data.CallbackData`
             for non-impedimetric or  `ps.data.CallbackDataEIS`
             for impedimetric measurments.
+        stream: Path | str | None
+            If defined, stream data directly to this file in JSON Lines text format
+            (https://jsonlines.org). This option is useful for long-term measurements.
+            In case of a PC crash or power outage, the most recent measurement data will
+            still be available.
 
         Returns
         -------
