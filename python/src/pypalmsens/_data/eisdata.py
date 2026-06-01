@@ -19,9 +19,11 @@ if TYPE_CHECKING:
 class EISDataMetadata:
     title: str
     """Measurement title."""
-    units: dict[str, str]
+    columns: list[str]
+    """Names for data values."""
+    units: list[str]
     """Units for data values."""
-    quantities: dict[str, str]
+    quantities: list[str]
     """Quantities for data values."""
     n_frequencies: int
     """Number of frequencies (per subscan)."""
@@ -171,19 +173,14 @@ class EISData:
 
     def metadata_json(self) -> bytes:
         """Generate eis data metadata as json."""
+        arrays = [array for array in self.dataset.values() if not array.is_derived]
+
         return TypeAdapter(EISDataMetadata).dump_json(
             EISDataMetadata(
                 title=self.title,
-                units={
-                    array.name: array.unit
-                    for array in self.dataset.values()
-                    if not array.is_derived
-                },
-                quantities={
-                    array.name: array.quantity
-                    for array in self.dataset.values()
-                    if not array.is_derived
-                },
+                columns=[array.name for array in arrays],
+                units=[array.unit for array in arrays],
+                quantities=[array.quantity for array in arrays],
                 n_frequencies=self.n_frequencies,
                 frequency_type=self.frequency_type,
                 scan_type=self.scan_type,

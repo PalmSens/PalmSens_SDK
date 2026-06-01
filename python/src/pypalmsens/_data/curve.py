@@ -20,9 +20,11 @@ if TYPE_CHECKING:
 class CurveMetadata:
     title: str
     """Measurement title."""
-    units: dict[str, str]
+    columns: list[str]
+    """Names for data values."""
+    units: list[str]
     """Units for data values."""
-    labels: dict[str, str]
+    labels: list[str]
     """Labels for data values."""
     id: int
     """Curve identifier."""
@@ -249,8 +251,9 @@ class Curve:
         return TypeAdapter(CurveMetadata).dump_json(
             CurveMetadata(
                 title=self.title,
-                units={'x': self.x_unit, 'y': self.y_unit},
-                labels={'x': self.x_label, 'y': self.y_label},
+                columns=['x', 'y'],
+                units=[self.x_unit, self.y_unit],
+                labels=[self.x_label, self.y_label],
                 id=self._pscurve.GetHashCode(),
             )
         )

@@ -110,8 +110,8 @@ class JSONWriter:
 
     def _write_data_to_stream(self, data: CallbackData):
         assert self._stream
-        for point in data.new_datapoints():
-            _ = self._stream.write(json.dumps(point).encode())
+        for row in data._streaming_rows():
+            _ = self._stream.write(json.dumps(row).encode())
             _ = self._stream.write(b'\n')
 
         self._stream.flush()
@@ -124,8 +124,8 @@ class JSONWriter:
 
     def _write_eis_data_to_stream(self, data: CallbackDataEIS):
         assert self._stream
-        for point in data.new_datapoints():
-            _ = self._stream.write(json.dumps(point).encode())
+        for row in data._streaming_rows():
+            _ = self._stream.write(json.dumps(row).encode())
             _ = self._stream.write(b'\n')
         self._stream.flush()
 

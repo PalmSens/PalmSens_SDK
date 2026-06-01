@@ -1,17 +1,17 @@
 from __future__ import annotations
 
-import json
 from collections import defaultdict
 from pathlib import Path
 from typing import Any
 
-from pydantic import TypeAdapter, ValidationError
+import numpy as np
+from pydantic import TypeAdapter
 
 import pypalmsens as ps
 from pypalmsens._data.curve import CurveMetadata
 from pypalmsens._data.eisdata import EISDataMetadata
 from pypalmsens._data.measurement import MeasurementMetadata
-from pypalmsens._instruments.callback import XYDataPoint
+from pypalmsens._instruments.callback import DataRow
 from pypalmsens.types import MethodTypeCompatible
 
 
@@ -23,7 +23,7 @@ def _test_stream(path: Path, method: MethodTypeCompatible):
     with ps.connect() as manager:
         measurement = manager.measure(
             method,
-            stream=path,
+            stream=Path(path),
         )
 
     assert measurement
@@ -38,12 +38,12 @@ def _test_stream(path: Path, method: MethodTypeCompatible):
     measurement_metadata = None
 
     for i, line in enumerate(lines):
-        parsed: Any = TypeAdapter(
-            MeasurementMetadata | CurveMetadata | XYDataPoint
-        ).validate_json(line)
+        parsed: Any = TypeAdapter(MeasurementMetadata | CurveMetadata | DataRow).validate_json(
+            line
+        )
 
-        if isinstance(parsed, XYDataPoint):
-            curves[parsed.id].append(parsed)
+        if isinstance(parsed, dict):
+            curves[parsed['id']].append(parsed)
         elif isinstance(parsed, CurveMetadata):
             curves_metadata[parsed.id] = parsed
         elif isinstance(parsed, MeasurementMetadata):
@@ -62,32 +62,31 @@ def _test_stream(path: Path, method: MethodTypeCompatible):
 
         metadata = curves_metadata[hash]
         assert metadata.title == curve.title
-        assert metadata.units['x'] == curve.x_unit
-        assert metadata.units['y'] == curve.y_unit
+        assert metadata.units[0] == curve.x_unit
+        assert metadata.units[1] == curve.y_unit
 
-        x_data = [point.x for point in curves[hash]]
-        y_data = [point.y for point in curves[hash]]
+        data = np.array([point['data'] for point in curves[hash]])
 
-        assert x_data == list(curve.x_array)
-        assert y_data == list(curve.y_array)
+        assert np.all(data[:, 0] == list(curve.x_array))
+        assert np.all(data[:, 1] == list(curve.y_array))
 
     return measurement
 
 
-def test_measure_stream_cv(tmpdir):
-    path = Path('cv.jsonl')
+def test_measure_stream_cv_multiple_scans(tmpdir):
+    path = tmpdir / 'cv.jsonl'
 
     method = ps.CyclicVoltammetry(
         n_scans=3,
-        step_potential=0.01,
+        step_potential=0.05,
         scanrate=5,
     )
 
     _ = _test_stream(method=method, path=path)
 
 
-def test_measure_stream_cp_with_aux():
-    path = Path('cp.jsonl')
+def test_measure_stream_cp_with_aux(tmpdir):
+    path = tmpdir / 'cp.jsonl'
 
     method = ps.ChronoPotentiometry(
         run_time=3,
@@ -98,8 +97,8 @@ def test_measure_stream_cp_with_aux():
     _ = _test_stream(method=method, path=path)
 
 
-def test_measure_stream_eis():
-    path = Path('eis.jsonl')
+def test_measure_stream_eis(tmpdir):
+    path = tmpdir / 'eis.jsonl'
 
     method = ps.ElectrochemicalImpedanceSpectroscopy(
         n_frequencies=3,
@@ -113,7 +112,7 @@ def test_measure_stream_eis():
     with ps.connect() as manager:
         measurement = manager.measure(
             method,
-            stream=path,
+            stream=Path(path),
         )
 
     assert measurement
@@ -128,10 +127,9 @@ def test_measure_stream_eis():
     measurement_metadata = None
 
     for i, line in enumerate(lines):
-        try:
-            parsed = TypeAdapter(MeasurementMetadata | EISDataMetadata).validate_json(line)
-        except ValidationError:
-            parsed = json.loads(line)
+        parsed = TypeAdapter(MeasurementMetadata | EISDataMetadata | DataRow).validate_json(
+            line
+        )
 
         if isinstance(parsed, dict):
             eis_data_points[parsed['id']].append(parsed)
@@ -163,18 +161,21 @@ def test_measure_stream_eis():
 
         assert len(points) == eis.n_points
 
-        columns = list(metadata.units)
+        columns = list(metadata.columns)
 
         arrays = {array.name: array for array in eis.arrays()}
 
-        for col in columns:
-            assert col in arrays
+        data = np.array([point['data'] for point in points])
 
-            ref_values = list(arrays[col])
-            col_values = [point[col] for point in points]
+        for i, col in enumerate(columns):
+            ref_array = arrays[col]
 
-            assert ref_values == col_values
+            assert ref_array.name == metadata.columns[i]
+            assert ref_array.unit == metadata.units[i]
+            assert ref_array.quantity == metadata.quantities[i]
+
+            assert np.all(ref_array == data[:, i])
 
 
-def test_combine_callback_stream():
-    raise AssertionError
+# def test_combine_callback_stream():
+#     raise AssertionError

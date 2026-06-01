@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Any, Generator, Literal, Protocol
+from typing import Any, Generator, Literal, Protocol, TypedDict
 
 import PalmSens
 from PalmSens.Comm import StatusEventArgs
@@ -13,12 +13,9 @@ from .._types import AllowedDeviceState
 from ..data import CurrentReading, DataArray, DataSet, PotentialReading
 
 
-@dataclass(slots=True)
-class XYDataPoint:
-    x: float
-    y: float
+class DataRow(TypedDict):
     id: int
-    index: int
+    data: list[float]
 
 
 @dataclass(slots=True)
@@ -46,7 +43,6 @@ class CallbackData:
         """Return last measured data point."""
         return {
             'index': self.index,
-            'id': self.id,
             'x': self.x_array[-1],
             'y': self.y_array[-1],
         }
@@ -67,9 +63,13 @@ class CallbackData:
             yield {
                 'x': self.x_array[i],
                 'y': self.y_array[i],
-                'id': self.id,
                 'index': i,
             }
+
+    def _streaming_rows(self) -> Generator[DataRow]:
+        """Return new data points for data stream."""
+        for i in range(self.start, self.index + 1):
+            yield {'id': self.id, 'data': [self.x_array[i], self.y_array[i]]}
 
     @override
     def __str__(self):
@@ -90,7 +90,7 @@ class CallbackDataEIS:
     """Index of last point."""
 
     id: int = 0
-    """EIS Data identifier."""
+    """EIS Data object id."""
 
     def last_datapoint(self) -> dict[str, float]:
         """Return last measured data point."""
@@ -107,8 +107,13 @@ class CallbackDataEIS:
         for i in range(self.start, self.index + 1):
             ret = {array.name: array[i] for array in self.data.values() if not array.is_derived}
             ret['index'] = i
-            ret['id'] = self.id
             yield ret
+
+    def _streaming_rows(self) -> Generator[DataRow]:
+        """Return new data points for data stream."""
+        for i in range(self.start, self.index + 1):
+            data = [array[i] for array in self.data.values() if not array.is_derived]
+            yield {'id': self.id, 'data': data}
 
     @override
     def __str__(self):
