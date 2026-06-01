@@ -1865,23 +1865,24 @@ class ElectrochemicalImpedanceSpectroscopy(
         """Update method with electrochemical impedance spectroscopy settings."""
 
         if self.scan_type == 'potential':
+            # psmethod.BeginPotential is an alias for psmethod.Potential
             psmethod.BeginPotential = self.begin_potential
             psmethod.EndPotential = self.end_potential
             psmethod.StepPotential = self.step_potential
         elif self.scan_type == 'time':
             psmethod.RunTime = self.run_time
             psmethod.IntervalTime = self.interval_time
+            psmethod.Potential = self.dc_potential
+        else:
+            psmethod.Potential = self.dc_potential
 
         psmethod.ScanType = enumScanType(self._SCAN_TYPES.index(self.scan_type))
         psmethod.FreqType = enumFrequencyType(self._FREQ_TYPES.index(self.frequency_type))
         psmethod.EquilibrationTime = self.equilibration_time
-        psmethod.Potential = self.dc_potential
         psmethod.Eac = self.ac_potential
-
         psmethod.FixedFrequency = self.fixed_frequency
         psmethod.MaxFrequency = self.max_frequency
         psmethod.MinFrequency = self.min_frequency
-
         psmethod.nFrequencies = self.n_frequencies
         psmethod.SamplingTime = self.min_sampling_time
         psmethod.MaxEqTime = self.max_equilibration_time

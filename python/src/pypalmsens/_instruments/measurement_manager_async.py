@@ -177,19 +177,16 @@ class MeasurementManagerAsync:
         self.curve_data_added_handler: EventHandler = Plottables.Curve.NewDataAddedEventHandler(
             self.curve_data_added_callback
         )
-
         self.curve_finished_handler: EventHandler = EventHandler(self.curve_finished_callback)
-
-        self.eis_data_finished_handler: EventHandler = EventHandler(
-            self.eis_data_finished_callback
-        )
 
         self.begin_receive_eis_data_handler: EventHandler = Plottables.EISDataEventHandler(
             self.begin_receive_eis_data_callback
         )
-
         self.eis_data_data_added_handler: EventHandler = Plottables.EISData.NewDataEventHandler(
             self.eis_data_data_added_callback
+        )
+        self.eis_data_finished_handler: EventHandler = EventHandler(
+            self.eis_data_finished_callback
         )
 
         self.comm_error_handler: EventHandler = EventHandler(self.comm_error_callback)
@@ -410,6 +407,7 @@ class MeasurementManagerAsync:
             data=DataSet(psdataset=eis_data.EISDataSet),
             start=self.eis_last_data_index,
             index=count - 1,
+            id=eis_data.GetHashCode(),
         )
 
         self.eis_last_data_index = count

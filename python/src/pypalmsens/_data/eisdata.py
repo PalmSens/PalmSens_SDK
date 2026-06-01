@@ -29,8 +29,8 @@ class EISDataMetadata:
     """Frequency type."""
     scan_type: AllowedScanTypes
     """Scan type."""
-    mux_channel: int
-    """Mux channel."""
+    id: int
+    """EIS Data identifier."""
     type: Literal['eis_data'] = 'eis_data'
     """Object type."""
 
@@ -187,6 +187,6 @@ class EISData:
                 n_frequencies=self.n_frequencies,
                 frequency_type=self.frequency_type,
                 scan_type=self.scan_type,
-                mux_channel=self.mux_channel,
+                id=self._pseis.GetHashCode(),
             )
         )

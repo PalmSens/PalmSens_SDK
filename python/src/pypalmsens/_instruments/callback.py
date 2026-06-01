@@ -89,8 +89,8 @@ class CallbackDataEIS:
     index: int
     """Index of last point."""
 
-    channel: int = -1
-    """Channel index for Mux."""
+    id: int = 0
+    """EIS Data identifier."""
 
     def last_datapoint(self) -> dict[str, float]:
         """Return last measured data point."""
@@ -107,7 +107,7 @@ class CallbackDataEIS:
         for i in range(self.start, self.index + 1):
             ret = {array.name: array[i] for array in self.data.values() if not array.is_derived}
             ret['index'] = i
-            ret['channel'] = self.channel
+            ret['id'] = self.id
             yield ret
 
     @override
