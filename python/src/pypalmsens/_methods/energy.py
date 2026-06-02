@@ -4,7 +4,7 @@ from datetime import datetime
 from typing import Literal
 
 import PalmSens
-from jinja2 import Environment, PackageLoader, select_autoescape
+from jinja2 import Environment, PackageLoader, StrictUndefined, select_autoescape
 from pydantic import BaseModel, Field
 
 from .. import __version__
@@ -14,6 +14,7 @@ env = Environment(
     loader=PackageLoader('pypalmsens'),
     autoescape=select_autoescape(),
     keep_trailing_newline=True,
+    undefined=StrictUndefined,
 )
 
 
@@ -29,7 +30,11 @@ class BaseMethodScriptTechnique(BaseModel):
             Complete MethodScript code for this method.
         """
         template = env.get_template(self._template)
-        return template.render(model=self, timestamp=datetime.today(), version=__version__)
+        return template.render(
+            model=self,
+            timestamp=datetime.today(),
+            version=__version__,
+        )
 
     def to_methodscript(self) -> MethodScript:
         """Convert to MethodSCRIPT class.
