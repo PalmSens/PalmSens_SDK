@@ -17,8 +17,37 @@ env = Environment(
 )
 
 
-class experimental_BatteryCycling(BaseModel):
-    """Battery cycling method parameters.
+class BaseMethodScriptTechnique(BaseModel):
+    def render(self) -> str:
+        """Render the template with model parameters.
+
+        Returns
+        -------
+        script : str
+            Complete MethodScript code for this method.
+        """
+        template = env.get_template('battery_cycling.mscr')
+        return template.render(model=self, timestamp=datetime.today(), version=__version__)
+
+    def to_methodscript(self) -> MethodScript:
+        """Convert to MethodSCRIPT class.
+
+        Returns
+        -------
+        method: MethodScript
+            MethodScript class.
+        """
+        script = self.render()
+        return MethodScript(script=script)
+
+    def _to_psmethod(self) -> PalmSens.Method:
+        """Convert parameters to dotnet method."""
+        method = self.to_methodscript()
+        return method._to_psmethod()
+
+
+class BatteryCycling(BaseMethodScriptTechnique):
+    """Battery cycling CC-CV-CC.
 
     Note: This method is experimental and may be subject to change.
 
@@ -27,14 +56,29 @@ class experimental_BatteryCycling(BaseModel):
     - Nexus
     - EmStat4 series (EmStat4S, EmStat4X, MultiEmStat4)
 
-    This method implements CC-CV-CC Cycling with Delta-I-V and Qpass:
+    This method implements CC-CV-CC Cycling with Delta-I-V and Passed Charge.
 
-    1. With Chronopotentiometry and Chronoamperometry to charge a cell and a Constant
-       current followed by Constant Coltage (CC-CV).
-    2. With Chronopotentiometry discharge the cell at a constant current (CC).
-    3. Store the charge transferred during each charge and discharge step.
-    4. Send I-V verus time data, and the capacity per charge-discharge step (Qpass).
-       The charge values are absolute and are converted to mAh.
+    Each cycle consist of:
+
+    1. Charge at a CC (Constant Current) using Chronopotentiometry.
+       When the target voltage is reached (the upper cut-off voltage limit),
+       switch to CV (Constant Voltage) using Chronoamperometry and maintain
+       the applied voltage for a defined period time or until the minimum
+       current is reached (the lower cut-off current limit).
+    2. Discharge at a Constant Current (using Chronopotentiometry) until
+       the lower target voltage is reached (the lower cut-off voltage limit).
+    3. Plot a point at defined time intervals.
+    4. Send I-V versus time data
+    5. Send the capacity per charge / discharge step, also known as passed charge (Qpass).
+       The capacity values are absolute and are converted to mAh.
+
+    Alternatively for point 3, use "deltas" to reduce data transfer and optimize points.
+
+    The time interval will be used for controlling, but some points may be skipped:
+
+    - Delta V: when voltage is being measured, plot a point only when a certain variation is reached.
+    - Delta I: when current is being measured, plot a point only when a certain variation is reached.
+    - Delta t: plot a point at this defined interval anyway, even if the variation is not met.
 
     The underlying methodscript is described in this application note:
     https://www.palmsens.com/knowledgebase-article/advanced-battery-cycling-with-methodscript/
@@ -79,37 +123,101 @@ class experimental_BatteryCycling(BaseModel):
     cell_on_ocp: bool = False
     """Turns cell on with the measured OCP (Nexus only)."""
 
-    power_frequency: Literal[50, 60] = 50
+    mains_frequency: Literal[50, 60] = 50
     """Set the DC mains filter in Hz.
 
     Adjusts sampling on instrument to account for mains frequency.
     Set to 50 Hz or 60 Hz depending on your region (default: 50)."""
 
     _name: str = 'Battery Cycling (experimental)'
+    _template: str = 'battery_cycling.mscr'
 
-    def render(self) -> str:
-        """Render the template with model parameters.
 
-        Returns
-        -------
-        script : str
-            Complete MethodScript code for this method.
-        """
-        template = env.get_template('battery_cycling.mscr')
-        return template.render(model=self, timestamp=datetime.today(), version=__version__)
+class ConstantResistance(BaseMethodScriptTechnique):
+    """Discharge at Constant Resistance load.
 
-    def to_methodscript(self) -> MethodScript:
-        """Convert to MethodSCRIPT class.
+    Note: This method is experimental and may be subject to change.
 
-        Returns
-        -------
-        method: MethodScript
-            MethodScript class.
-        """
-        script = self.render()
-        return MethodScript(script=script)
+    Supported devices:
 
-    def _to_psmethod(self) -> PalmSens.Method:
-        """Convert parameters to dotnet method."""
-        method = self.to_methodscript()
-        return method._to_psmethod()
+    - Nexus
+    - EmStat4 series (EmStat4S, EmStat4X, MultiEmStat4)
+
+    This method implements a single step for discharging a battery or
+    capacitor at a constant resistance load (Volt per Ampère). This
+    simulates the demand of very simple loads, like a filament lamp
+    or a simple DC motor. While the battery is discharging, its voltage
+    drops and the current provided also decreases in proportion to the
+    constant resistance. The applied current is refreshed at the defined
+    time interval. The discharge is finished when the lower target
+    voltage is reached (the lower cut-off voltage limit) or after the
+    defined duration.
+
+    Send live I-V versus time at a defined time interval.
+    The discharge current is converted to positive values."""
+
+    _name: str = 'Constant Resistance (experimental)'
+    _template: str = 'constant_resistance.mscr'
+
+    load: int = -80
+    """Constant resistance load in Ohm (make it negative for discharging)."""
+
+    cutoff: int = 2500
+    """A cut-off potential in mV to finish the discharge step."""
+
+    duration: int = Field(3600, ge=0)
+    """The total duration of the experiment in s (if the cut-off limit currents not met)."""
+
+    interval: int = Field(1, ge=0)
+    """The interval time in s of each data point."""
+
+    mains_frequency: Literal[50, 60] = 50
+    """Set the DC mains filter in Hz.
+
+    Adjusts sampling on instrument to account for mains frequency.
+    Set to 50 Hz or 60 Hz depending on your region (default: 50)."""
+
+
+class ConstantPower(BaseMethodScriptTechnique):
+    """Discharge at Constant Power.
+
+    Note: This method is experimental and may be subject to change.
+
+    Supported devices:
+
+    - Nexus
+    - EmStat4 series (EmStat4S, EmStat4X, MultiEmStat4)
+
+    This method implements a single step for discharging a battery or
+    capacitor at a constant power rate (Volt x Ampère). This simulates
+    the demand of electronic devices when performing a specific task,
+    i.e. a smartphone playing a video. While the battery is discharging,
+    its voltage drops and the demanded current increases in order to
+    maintain the set power. The applied current is refreshed at the defined
+    time interval. The discharge is finished when the lower target
+    voltage is reached (the lower cut-off voltage limit) or after
+    the defined duration.
+
+    Send live I-V versus time at a defined time interval.
+    The discharge current is converted to positive values."""
+
+    _name: str = 'Constant Power (experimental)'
+    _template: str = 'constant_power.mscr'
+
+    power: int = -200
+    """Constant power in Watt (negative for discharging)."""
+
+    cutoff: int = 2500
+    """A cut-off potential in mV to finish the discharge step."""
+
+    duration: int = Field(3600, ge=0)
+    """The total duration of the experiment in s (if the cut-off limit currents not met)."""
+
+    interval: int = Field(1, ge=0)
+    """The interval time in s of each data point."""
+
+    mains_frequency: Literal[50, 60] = 50
+    """Set the DC mains filter in Hz.
+
+    Adjusts sampling on instrument to account for mains frequency.
+    Set to 50 Hz or 60 Hz depending on your region (default: 50)."""
