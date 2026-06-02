@@ -22,7 +22,7 @@ store_var bandwidth 5850535u dc
 div_var bandwidth interval
 set_pgstat_chan 0
 set_pgstat_mode 6
-set_acquisition_frac_autoadjust 50
+set_acquisition_frac_autoadjust {{ model.mains_frequency }}
 set_max_bandwidth bandwidth
 set_range ab 4200m
 set_autoranging ab 42m 4200m

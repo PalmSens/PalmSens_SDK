@@ -12,6 +12,7 @@ import pypalmsens as ps
 from pypalmsens._methods.adapters import (
     energy_technique_adapter,
 )
+from pypalmsens._methods.energy import BaseMethodScriptTechnique
 from pypalmsens.energy import experimental_BatteryCycling
 
 logger = logging.getLogger(__name__)
@@ -115,7 +116,7 @@ class DCR:
 def test_measure(manager, method):
     params = energy_technique_adapter.validate_python(method.kwargs)
 
-    assert isinstance(params, experimental_BatteryCycling)
+    assert isinstance(params, BaseMethodScriptTechnique)
 
     measurement = manager.measure(params)
     method.validate(measurement)
