@@ -5,6 +5,7 @@ from pathlib import Path
 from typing import Any
 
 import numpy as np
+import pytest
 from pydantic import TypeAdapter
 
 import pypalmsens as ps
@@ -13,10 +14,6 @@ from pypalmsens._data.eisdata import EISDataMetadata
 from pypalmsens._data.measurement import MeasurementMetadata
 from pypalmsens._instruments.callback import DataRow
 from pypalmsens.types import MethodTypeCompatible
-
-
-def print_index(data):
-    print('index', data.index)
 
 
 def _test_stream(path: Path, method: MethodTypeCompatible):
@@ -73,6 +70,7 @@ def _test_stream(path: Path, method: MethodTypeCompatible):
     return measurement
 
 
+@pytest.mark.instrument
 def test_measure_stream_cv_multiple_scans(tmpdir):
     path = Path('cv.jsonl')
 
@@ -88,6 +86,7 @@ def test_measure_stream_cv_multiple_scans(tmpdir):
     _ = _test_stream(method=method, path=path)
 
 
+@pytest.mark.instrument
 def test_measure_stream_cp_with_aux(tmpdir):
     path = tmpdir / 'cp.jsonl'
 
@@ -100,6 +99,7 @@ def test_measure_stream_cp_with_aux(tmpdir):
     _ = _test_stream(method=method, path=path)
 
 
+@pytest.mark.instrument
 def test_measure_stream_eis(tmpdir):
     path = tmpdir / 'eis.jsonl'
 
