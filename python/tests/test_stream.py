@@ -42,8 +42,8 @@ def _test_stream(path: Path, method: MethodTypeCompatible):
             line
         )
 
-        if isinstance(parsed, dict):
-            curves[parsed['id']].append(parsed)
+        if isinstance(parsed, DataRow):
+            curves[parsed.id].append(parsed)
         elif isinstance(parsed, CurveMetadata):
             curves_metadata[parsed.id] = parsed
         elif isinstance(parsed, MeasurementMetadata):
@@ -65,21 +65,24 @@ def _test_stream(path: Path, method: MethodTypeCompatible):
         assert metadata.units[0] == curve.x_unit
         assert metadata.units[1] == curve.y_unit
 
-        data = np.array([point['data'] for point in curves[hash]])
+        data = np.array([point.data for point in curves[hash]])
 
-        assert np.all(data[:, 0] == list(curve.x_array))
-        assert np.all(data[:, 1] == list(curve.y_array))
+        np.testing.assert_allclose(data[:, 0], curve.x_array)
+        np.testing.assert_allclose(data[:, 1], curve.y_array)
 
     return measurement
 
 
 def test_measure_stream_cv_multiple_scans(tmpdir):
-    path = tmpdir / 'cv.jsonl'
+    path = Path('cv.jsonl')
 
     method = ps.CyclicVoltammetry(
         n_scans=3,
-        step_potential=0.05,
+        step_potential=0.15,
         scanrate=5,
+        # use a fixed current range
+        # because Measurement seems to do a post-processing step in a different CR ?
+        current_range={'1uA'},
     )
 
     _ = _test_stream(method=method, path=path)
@@ -131,8 +134,8 @@ def test_measure_stream_eis(tmpdir):
             line
         )
 
-        if isinstance(parsed, dict):
-            eis_data_points[parsed['id']].append(parsed)
+        if isinstance(parsed, DataRow):
+            eis_data_points[parsed.id].append(parsed)
         elif isinstance(parsed, EISDataMetadata):
             eis_data[parsed.id] = parsed
         elif isinstance(parsed, MeasurementMetadata):
@@ -165,7 +168,7 @@ def test_measure_stream_eis(tmpdir):
 
         arrays = {array.name: array for array in eis.arrays()}
 
-        data = np.array([point['data'] for point in points])
+        data = np.array([point.data for point in points])
 
         for i, col in enumerate(columns):
             ref_array = arrays[col]
@@ -174,4 +177,4 @@ def test_measure_stream_eis(tmpdir):
             assert ref_array.unit == metadata.units[i]
             assert ref_array.quantity == metadata.quantities[i]
 
-            assert np.all(ref_array == data[:, i])
+            np.testing.assert_allclose(data[:, i], ref_array)

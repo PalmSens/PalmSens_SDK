@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Any, Generator, Literal, Protocol, TypedDict
+from typing import Any, Generator, Literal, Protocol
 
 import PalmSens
 from PalmSens.Comm import StatusEventArgs
@@ -13,9 +13,16 @@ from .._types import AllowedDeviceState
 from ..data import CurrentReading, DataArray, DataSet, PotentialReading
 
 
-class DataRow(TypedDict):
+@dataclass(slots=True)
+class DataRow:
+    """Data entry for a single row."""
+
     id: int
+    """Corresponding Curve or EISData identifier."""
     data: list[float]
+    """Flat list of data.
+
+    The corresponding metadata describe the data columns."""
 
 
 @dataclass(slots=True)
@@ -69,7 +76,7 @@ class CallbackData:
     def _streaming_rows(self) -> Generator[DataRow]:
         """Return new data points for data stream."""
         for i in range(self.start, self.index + 1):
-            yield {'id': self.id, 'data': [self.x_array[i], self.y_array[i]]}
+            yield DataRow(id=self.id, data=[self.x_array[i], self.y_array[i]])
 
     @override
     def __str__(self):
@@ -113,7 +120,7 @@ class CallbackDataEIS:
         """Return new data points for data stream."""
         for i in range(self.start, self.index + 1):
             data = [array[i] for array in self.data.values() if not array.is_derived]
-            yield {'id': self.id, 'data': data}
+            yield DataRow(id=self.id, data=data)
 
     @override
     def __str__(self):

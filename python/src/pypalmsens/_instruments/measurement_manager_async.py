@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import asyncio
-import json
 from contextlib import contextmanager
 from io import BytesIO
 from pathlib import Path
@@ -11,7 +10,7 @@ import PalmSens
 import System
 from PalmSens import AsyncEventHandler, Plottables
 from PalmSens.Comm import CommManager
-from pydantic import ConfigDict, Field, computed_field
+from pydantic import ConfigDict, Field, TypeAdapter, computed_field
 from pydantic.dataclasses import dataclass
 from System import EventHandler
 from System.Threading.Tasks import Task
@@ -21,7 +20,7 @@ from pypalmsens._types import MethodTypeCompatible
 
 from .._data import DataSet
 from ..data import Curve, DataArray, EISData, Measurement
-from .callback import Callback, CallbackData, CallbackDataEIS, CallbackEIS
+from .callback import Callback, CallbackData, CallbackDataEIS, CallbackEIS, DataRow
 from .shared import create_future
 
 
@@ -80,6 +79,7 @@ class JSONWriter:
     filename: Path | str
     """File to write to."""
     _stream: BytesIO | None = None
+    _adapter: TypeAdapter[DataRow] = TypeAdapter(DataRow)
 
     @computed_field
     @property
@@ -111,7 +111,7 @@ class JSONWriter:
     def _write_data_to_stream(self, data: CallbackData):
         assert self._stream
         for row in data._streaming_rows():
-            _ = self._stream.write(json.dumps(row).encode())
+            _ = self._stream.write(self._adapter.dump_json(row))
             _ = self._stream.write(b'\n')
 
         self._stream.flush()
@@ -125,7 +125,7 @@ class JSONWriter:
     def _write_eis_data_to_stream(self, data: CallbackDataEIS):
         assert self._stream
         for row in data._streaming_rows():
-            _ = self._stream.write(json.dumps(row).encode())
+            _ = self._stream.write(self._adapter.dump_json(row))
             _ = self._stream.write(b'\n')
         self._stream.flush()
 
