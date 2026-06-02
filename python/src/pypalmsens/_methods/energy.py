@@ -18,6 +18,8 @@ env = Environment(
 
 
 class BaseMethodScriptTechnique(BaseModel):
+    _template: str = ''
+
     def render(self) -> str:
         """Render the template with model parameters.
 
@@ -26,7 +28,7 @@ class BaseMethodScriptTechnique(BaseModel):
         script : str
             Complete MethodScript code for this method.
         """
-        template = env.get_template('battery_cycling.mscr')
+        template = env.get_template(self._template)
         return template.render(model=self, timestamp=datetime.today(), version=__version__)
 
     def to_methodscript(self) -> MethodScript:
@@ -84,6 +86,9 @@ class BatteryCycling(BaseMethodScriptTechnique):
     https://www.palmsens.com/knowledgebase-article/advanced-battery-cycling-with-methodscript/
     """
 
+    _name: str = 'Battery Cycling'
+    _template: str = 'battery_cycling.mscr'
+
     id: Literal['bc'] = 'bc'
     """Unique method identifier."""
 
@@ -129,9 +134,6 @@ class BatteryCycling(BaseMethodScriptTechnique):
     Adjusts sampling on instrument to account for mains frequency.
     Set to 50 Hz or 60 Hz depending on your region (default: 50)."""
 
-    _name: str = 'Battery Cycling (experimental)'
-    _template: str = 'battery_cycling.mscr'
-
 
 class ConstantResistance(BaseMethodScriptTechnique):
     """Discharge at Constant Resistance load.
@@ -156,8 +158,11 @@ class ConstantResistance(BaseMethodScriptTechnique):
     Send live I-V versus time at a defined time interval.
     The discharge current is converted to positive values."""
 
-    _name: str = 'Constant Resistance (experimental)'
+    _name: str = 'Constant Resistance'
     _template: str = 'constant_resistance.mscr'
+
+    id: Literal['dcr'] = 'dcr'
+    """Unique method identifier."""
 
     load: int = -80
     """Constant resistance load in Ohm (make it negative for discharging)."""
@@ -201,8 +206,11 @@ class ConstantPower(BaseMethodScriptTechnique):
     Send live I-V versus time at a defined time interval.
     The discharge current is converted to positive values."""
 
-    _name: str = 'Constant Power (experimental)'
+    _name: str = 'Constant Power'
     _template: str = 'constant_power.mscr'
+
+    id: Literal['dcp'] = 'dcp'
+    """Unique method identifier."""
 
     power: int = -200
     """Constant power in Watt (negative for discharging)."""

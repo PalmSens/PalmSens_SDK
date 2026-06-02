@@ -75,10 +75,42 @@ class BC:
         assert dataset.array_quantities == {'Current', 'Potential', 'Time'}
 
 
+class DCP:
+    """Note: requires dummy circuit."""
+
+    kwargs = {
+        'id': 'dcp',
+        'duration': 3,
+    }
+
+    @staticmethod
+    def validate(measurement):
+        assert measurement
+        assert isinstance(measurement, ps.data.Measurement)
+
+
+class DCR:
+    """Note: requires dummy circuit."""
+
+    kwargs = {
+        'id': 'dcr',
+        'duration': 3,
+    }
+
+    @staticmethod
+    def validate(measurement):
+        assert measurement
+        assert isinstance(measurement, ps.data.Measurement)
+
+
 @pytest.mark.instrument
 @pytest.mark.parametrize(
     'method',
-    (BC,),
+    (
+        BC,
+        DCP,
+        DCR,
+    ),
 )
 def test_measure(manager, method):
     params = energy_technique_adapter.validate_python(method.kwargs)
@@ -91,7 +123,11 @@ def test_measure(manager, method):
 
 @pytest.mark.parametrize(
     'method',
-    (BC,),
+    (
+        BC,
+        DCP,
+        DCR,
+    ),
 )
 def test_params_round_trip(method):
     params = energy_technique_adapter.validate_python(method.kwargs)

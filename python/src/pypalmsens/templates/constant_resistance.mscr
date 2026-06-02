@@ -13,10 +13,10 @@ var interval
 var app_current
 var bandwidth
 # set technique parameters
-store_var load {{ load }} db # set constant resistance load in Ohms (make it negative for discharging)
-store_var cutoff {{ cutoff }}m ab # set a cut-off potential to finish the discharge step
-store_var duration {{ duration }} eb # set the total duration of the experiment (if the cut-off limit currents not met)
-store_var interval {{ interval }} eb # set the interval time of each data point
+store_var load {{ model.load }} db # set constant resistance load in Ohms (make it negative for discharging)
+store_var cutoff {{ model.cutoff }}m ab # set a cut-off potential to finish the discharge step
+store_var duration {{ model.duration }} eb # set the total duration of the experiment (if the cut-off limit currents not met)
+store_var interval {{ model.interval }} eb # set the interval time of each data point
 # initialize the galvanostat
 store_var bandwidth 5850535u dc
 div_var bandwidth interval
