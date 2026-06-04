@@ -91,6 +91,20 @@ class DCP:
         assert measurement
         assert isinstance(measurement, ps.data.Measurement)
 
+        assert measurement.title == 'Constant Power'
+
+        curves = measurement.curves
+
+        assert len(curves) == 2
+
+        for curve in curves:
+            assert len(curve) == 2
+
+        dataset = measurement.dataset
+
+        assert dataset.array_names == {'AppliedCurrent1_2', 'Potential1_2', 'Time1_2'}
+        assert dataset.array_quantities == {'Time', 'Potential', 'Current'}
+
 
 class DCR:
     """Note: requires dummy circuit."""
@@ -105,6 +119,20 @@ class DCR:
     def validate(measurement):
         assert measurement
         assert isinstance(measurement, ps.data.Measurement)
+
+        assert measurement.title == 'Constant Resistance'
+
+        curves = measurement.curves
+
+        assert len(curves) == 2
+
+        for curve in curves:
+            assert len(curve) == 2
+
+        dataset = measurement.dataset
+
+        assert dataset.array_names == {'AppliedCurrent1_2', 'Potential1_2', 'Time1_2'}
+        assert dataset.array_quantities == {'Time', 'Potential', 'Current'}
 
 
 @pytest.mark.instrument
