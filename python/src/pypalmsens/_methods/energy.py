@@ -58,11 +58,6 @@ class BatteryCycling(BaseMethodScriptTechnique):
 
     Note: This method is experimental and may be subject to change.
 
-    Supported devices:
-
-    - Nexus
-    - EmStat4 series (EmStat4S, EmStat4X, MultiEmStat4)
-
     This method implements CC-CV-CC Cycling with Delta-I-V and Passed Charge.
 
     Each cycle consist of:
@@ -89,6 +84,11 @@ class BatteryCycling(BaseMethodScriptTechnique):
 
     The underlying methodscript is described in this application note:
     https://www.palmsens.com/knowledgebase-article/advanced-battery-cycling-with-methodscript/
+
+    Supported devices:
+
+    - Nexus
+    - EmStat4 series (EmStat4S, EmStat4X, MultiEmStat4)
     """
 
     _name: str = 'Battery Cycling'
@@ -145,23 +145,27 @@ class ConstantResistance(BaseMethodScriptTechnique):
 
     Note: This method is experimental and may be subject to change.
 
+    This method implements a single step for discharging a battery or
+    capacitor at a constant resistance load (Volt per Ampère).
+
+    This simulates the demand of very simple loads, like a filament lamp
+    or a simple DC motor.
+    While the battery is discharging, its voltage drops and the current
+    provided also decreases in proportion to the constant resistance.
+
+    The applied current is refreshed at the defined time interval.
+
+    The discharge is finished when the lower target voltage is reached
+    (the lower cut-off voltage limit) or after the defined duration.
+
+    Send live I-V versus time at a defined time interval.
+    The discharge current is converted to positive values.
+
     Supported devices:
 
     - Nexus
     - EmStat4 series (EmStat4S, EmStat4X, MultiEmStat4)
-
-    This method implements a single step for discharging a battery or
-    capacitor at a constant resistance load (Volt per Ampère). This
-    simulates the demand of very simple loads, like a filament lamp
-    or a simple DC motor. While the battery is discharging, its voltage
-    drops and the current provided also decreases in proportion to the
-    constant resistance. The applied current is refreshed at the defined
-    time interval. The discharge is finished when the lower target
-    voltage is reached (the lower cut-off voltage limit) or after the
-    defined duration.
-
-    Send live I-V versus time at a defined time interval.
-    The discharge current is converted to positive values."""
+    """
 
     _name: str = 'Constant Resistance'
     _template: str = 'constant_resistance.mscr'
@@ -196,23 +200,27 @@ class ConstantPower(BaseMethodScriptTechnique):
 
     Note: This method is experimental and may be subject to change.
 
+    This method implements a single step for discharging a battery or
+    capacitor at a constant power rate (Volt x Ampère).
+
+    This simulates the demand of electronic devices when performing a
+    specific task, i.e. a smartphone playing a video.
+    While the battery is discharging, its voltage drops and the
+    demanded current increases in order to maintain the set power.
+
+    The applied current is refreshed at the defined time interval.
+
+    The discharge is finished when the lower target voltage is reached
+    (the lower cut-off voltage limit) or after the defined duration.
+
+    Send live I-V versus time at a defined time interval.
+    The discharge current is converted to positive values.
+
     Supported devices:
 
     - Nexus
     - EmStat4 series (EmStat4S, EmStat4X, MultiEmStat4)
-
-    This method implements a single step for discharging a battery or
-    capacitor at a constant power rate (Volt x Ampère). This simulates
-    the demand of electronic devices when performing a specific task,
-    i.e. a smartphone playing a video. While the battery is discharging,
-    its voltage drops and the demanded current increases in order to
-    maintain the set power. The applied current is refreshed at the defined
-    time interval. The discharge is finished when the lower target
-    voltage is reached (the lower cut-off voltage limit) or after
-    the defined duration.
-
-    Send live I-V versus time at a defined time interval.
-    The discharge current is converted to positive values."""
+    """
 
     _name: str = 'Constant Power'
     _template: str = 'constant_power.mscr'
