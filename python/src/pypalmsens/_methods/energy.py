@@ -32,7 +32,7 @@ class BaseMethodScriptTechnique(BaseModel):
         template = env.get_template(self._template)
         return template.render(
             model=self,
-            timestamp=datetime.today(),
+            timestamp=datetime.today().replace(microsecond=0),
             version=__version__,
         )
 
