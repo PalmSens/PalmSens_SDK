@@ -18,7 +18,7 @@ In the energy submodule you will find new methods only available in PyPalmSens.
 - [experimental_ConstantPower][pypalmsens.energy.experimental_ConstantPower] (Discharge at constant power)
 - [experimental_ConstantResistance][pypalmsens.energy.experimental_ConstantResistance] (Discharge at constant resistance)
 
-For example to set up a battery cyclings experiment:
+For example to set up a battery cycling experiment:
 
 ```python
 >>> import pypalmsens as ps
