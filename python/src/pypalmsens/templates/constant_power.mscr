@@ -49,7 +49,7 @@ loop time <= duration
 			pck_add current
 		pck_end
 		if potential < cutoff
-			breakloop
+		    abort
 		endif
 		send_string f"E = {potential} V    |    I = {current} A    |    t = {time} s"
 		set_script_output 0
