@@ -38,6 +38,7 @@ class BC:
         'id': 'bc',
         'cycles': 1,
         'max_time': 1,
+        'cell_on_ocp': False,
     }
 
     @staticmethod
@@ -82,6 +83,7 @@ class DCP:
     kwargs = {
         'id': 'dcp',
         'duration': 3,
+        'cell_on_ocp': False,
     }
 
     @staticmethod
@@ -96,6 +98,7 @@ class DCR:
     kwargs = {
         'id': 'dcr',
         'duration': 3,
+        'cell_on_ocp': False,
     }
 
     @staticmethod

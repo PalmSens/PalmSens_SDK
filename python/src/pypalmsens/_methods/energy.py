@@ -181,6 +181,9 @@ class ConstantResistance(BaseMethodScriptTechnique):
     interval: int = Field(1, ge=0)
     """The interval time in s of each data point."""
 
+    cell_on_ocp: bool = False
+    """Turns cell on with the measured OCP (Nexus only)."""
+
     mains_frequency: Literal[50, 60] = 50
     """Set the DC mains filter in Hz.
 
@@ -228,6 +231,9 @@ class ConstantPower(BaseMethodScriptTechnique):
 
     interval: int = Field(1, ge=0)
     """The interval time in s of each data point."""
+
+    cell_on_ocp: bool = False
+    """Turns cell on with the measured OCP (Nexus only)."""
 
     mains_frequency: Literal[50, 60] = 50
     """Set the DC mains filter in Hz.

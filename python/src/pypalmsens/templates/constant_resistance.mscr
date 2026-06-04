@@ -28,7 +28,11 @@ set_range ab 4200m
 set_autoranging ab 42m 4200m
 set_int interval
 meas 100m potential ab
+{% if model.cell_on_ocp -%}
 cell_on ocp(potential)
+{%else -%}
+cell_on
+{%endif -%}
 # start the experiment
 loop time <= duration
     copy_var potential app_current
