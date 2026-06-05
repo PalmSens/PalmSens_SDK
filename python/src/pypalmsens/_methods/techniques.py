@@ -2310,10 +2310,11 @@ endif
     @field_validator('script')
     @classmethod
     def validate_script(cls, value: str) -> str:
-        if not (value.startswith('e\n') or value.startswith('l\n')):
-            raise ValueError('A script must start with `e\\n` or `l\\n`')
-        if not value.endswith('\n\n'):
-            raise ValueError('A script must end with 2 newlines')
+        if value.startswith('e\n'):
+            value = value.replace('e\n', '')
+
+        value = value.rstrip()
+        value += '\n'
 
         return value
 
