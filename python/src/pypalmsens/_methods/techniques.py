@@ -2256,7 +2256,7 @@ endif
     @override
     def _update_psmethod(self, psmethod: PalmSens.Method, /):
         """Update method with MethodScript."""
-        psmethod.MethodScript = self.script
+        psmethod.MethodScript = f'e\n{self.script}\n'
 
     @override
     def _update_params(self, psmethod: PalmSens.Method, /):
@@ -2313,7 +2313,7 @@ endif
     @classmethod
     def validate_script(cls, value: str) -> str:
         if value.startswith('e\n'):
-            value = value.replace('e\n', '')
+            value = value.replace('e\n', '', count=1)
 
         value = value.rstrip()
         value += '\n'
@@ -2326,6 +2326,6 @@ endif
     @override
     def _use_hardware_sync(self) -> bool:
         """Return true if 'set_channel_sync 1' is set."""
-        match = re.findall(r'\n\s*(set_channel_sync\s+1)', self.script)
+        match = re.findall(r'^\s*(set_channel_sync\s+1)', self.script)
 
         return any(match)
