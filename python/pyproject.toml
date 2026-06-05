@@ -122,12 +122,15 @@ quote-style = "single"
 files = ["src/pypalmsens", "tests", "examples"]
 exclude = [
     "typings",
-    "scr/PalmSens-stubs",
-    "src/pypalmsens/methodscript/generated"
+    "src/PalmSens-stubs",
+    "src/pypalmsens/methodscript/_generated"
 ]
 allow_redefinition = true
 ignore_missing_imports = true
-disable_error_code = ["prop-decorator"]
+disable_error_code = [
+    "prop-decorator",
+]
+
 
 [tool.pyright]
 include = ["src/pypalmsens", "tests"]
@@ -135,7 +138,7 @@ ignore = [
     "typings",
     "src/PalmSens-stubs",
     "examples",
-    "src/pypalmsens/methodscript/generated"
+    "python/src/pypalmsens/methodscript/_generated/.*"
 ]
 reportMissingModuleSource = false
 reportAttributeAccessIssue = false

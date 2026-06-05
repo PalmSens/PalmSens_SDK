@@ -1,3 +1,4 @@
+# mypy: ignore_errors
 # Generated from MethodScriptParser.g4 by ANTLR 4.13.1
 # encoding: utf-8
 from antlr4 import *

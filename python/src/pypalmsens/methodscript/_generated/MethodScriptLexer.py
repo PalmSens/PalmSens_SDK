@@ -1,3 +1,4 @@
+# mypy: ignore_errors
 # Generated from MethodScriptLexer.g4 by ANTLR 4.13.1
 from antlr4 import *
 from io import StringIO

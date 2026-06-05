@@ -1,4 +1,4 @@
-"""Submodule for parsing MethodSCRIPT"""
+"""Submodule for parsing MethodSCRIPT."""
 
 from __future__ import annotations
 
