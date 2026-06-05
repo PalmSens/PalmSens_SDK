@@ -64,11 +64,11 @@ FAILING_TESTS = [
         'cell_on\nvar var1\nstore_var var1 \U0001f600 aa\n', id='Emoji unquoted (lexer error)'
     ),
     pytest.param(
-        'e\ncell_on',
+        'e\ncell_on\n',
         id='Starts with e',
     ),
     pytest.param(
-        'cell_on\n\ncell_off',
+        'cell_on\n\ncell_off\n',
         id='Contains newline',
     ),
     pytest.param(
