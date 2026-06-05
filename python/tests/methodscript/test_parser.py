@@ -1,10 +1,9 @@
 from __future__ import annotations
 
-from typing import override
-
 import pytest
 from antlr4 import CommonTokenStream, InputStream
 from antlr4.error.ErrorListener import ErrorListener
+from typing_extensions import override
 
 from pypalmsens.methodscript import (
     MethodScriptLexer,
