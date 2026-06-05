@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-from .generated.MethodScriptLexer import MethodScriptLexer
-from .generated.MethodScriptParser import MethodScriptParser
+from ._generated.MethodScriptLexer import MethodScriptLexer
+from ._generated.MethodScriptParser import MethodScriptParser
 from .validate import validate
 
 __all__ = [

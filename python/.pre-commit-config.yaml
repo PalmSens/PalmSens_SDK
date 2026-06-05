@@ -3,7 +3,7 @@
 ---
 exclude:  |
    (?x)^(
-       python/src/pypalmsens/methodscript/generated/.*
+       python/src/pypalmsens/methodscript/_generated/.*
    )$
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
