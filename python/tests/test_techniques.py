@@ -1155,7 +1155,6 @@ class MS:
     id = 'ms'
     kwargs = {
         'script': (
-            'e\n'  # must start with e
             'var p\n'
             'var c\n'
             'set_pgstat_chan 0\n'
@@ -1167,7 +1166,6 @@ class MS:
             '    pck_add c\n'
             '    pck_end\n'
             'endloop\n'
-            '\n'  # must end with 2 newlines
         )
     }
 

@@ -2241,12 +2241,11 @@ class MethodScript(BaseTechnique):
     id: Literal['ms'] = 'ms'
     """Unique method identifier."""
 
-    script: str = """e
+    script: str = """\
 wait 100m
 if 1 < 2
     send_string "Hello world"
 endif
-
 """
     """Script to run.
 
