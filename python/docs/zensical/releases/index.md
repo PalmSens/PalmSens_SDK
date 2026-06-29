@@ -7,7 +7,7 @@
 | :fontawesome-brands-python: <a href="https://pypi.org/project/pypalmsens/1.10.1">pypalmsens-1.10.1</a>
 | :fontawesome-solid-calendar: 2026-06-29
 
-This release fixes a crash in 1.10 when importing PyPalmSens.
+This release fixes a crash in 1.10.0 when importing PyPalmSens.
 
 ### What's changed
 
