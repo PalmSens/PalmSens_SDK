@@ -24,7 +24,7 @@ SDKs are available for the ecosystems below. See the links for installation inst
 - **Data analysis, prototyping, research**
   - [PyPalmSens](./python) (Python SDK) - [documentation](https://dev.palmsens.com/python/latest/_attachments/index.html)
   - [Matlab_SDK](./matlab) - [documentation](https://dev.palmsens.com/matlab/latest/)
-  - [Labview SDK](./labview) - [documentation](https://dev.palmsens.com/labview/latest/)
+  - [LabVIEW SDK](./labview) - [documentation](https://dev.palmsens.com/labview/latest/)
 
 - **.NET app development**
   - [.NET MAUI SDK](./maui) - [documentation](https://dev.palmsens.com/maui/latest/)
