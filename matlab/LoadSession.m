@@ -2,7 +2,7 @@ function [measurements] = LoadSession(sessionPath)
     % Load a session from the specified path.
     %
     % Measurements are converted to structs to improve their compatability with
-    % Matlab. Each measurement is stored in its own struct and contains a
+    % MATLAB. Each measurement is stored in its own struct and contains a
     % character array with its name (`.name`), measurement technique (`.type`) and
     % date (`.date`).
     %

@@ -23,7 +23,7 @@ SDKs are available for the ecosystems below. See the links for installation inst
 
 - **Data analysis, prototyping, research**
   - [PyPalmSens](./python) (Python SDK) - [documentation](https://dev.palmsens.com/python/latest/_attachments/index.html)
-  - [Matlab_SDK](./matlab) - [documentation](https://dev.palmsens.com/matlab/latest/)
+  - [MATLAB SDK](./matlab) - [documentation](https://dev.palmsens.com/matlab/latest/)
   - [LabVIEW SDK](./labview) - [documentation](https://dev.palmsens.com/labview/latest/)
 
 - **.NET app development**
@@ -35,7 +35,7 @@ SDKs are available for the ecosystems below. See the links for installation inst
 
 For new projects, we recommend using [PyPalmSens](https://dev.palmsens.com/python/latest/_attachments/index.html) for research, data analysis and prototyping, and the [.NET MAUI SDK](https://dev.palmsens.com/maui/latest/) for native, cross-platform application development targeting Windows, Android, and iOS. Both of these SDKs are actively developed and will be first to receive new features, updates, and fixes.
 
-For existing codebases using [Matlab](https://dev.palmsens.com/matlab/latest/), [LabView](https://dev.palmsens.com/labview/latest/), [WinForms](https://dev.palmsens.com/winforms/latest/), or [WPF](https://dev.palmsens.com/wpf/latest/), we maintain the other SDKs. These SDKs will continue to receive occasional bug fixes but are no longer under active development.
+For existing codebases using [MATLAB](https://dev.palmsens.com/matlab/latest/), [LabView](https://dev.palmsens.com/labview/latest/), [WinForms](https://dev.palmsens.com/winforms/latest/), or [WPF](https://dev.palmsens.com/wpf/latest/), we maintain the other SDKs. These SDKs will continue to receive occasional bug fixes but are no longer under active development.
 
 ## Getting help
 

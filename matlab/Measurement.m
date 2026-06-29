@@ -23,7 +23,7 @@ classdef Measurement < handle
     %
     % **Measurements**:
     % Measurements are converted to structs to improve their compatability with
-    % Matlab. Each measurement is stored in its own struct and contains a
+    % MATLAB. Each measurement is stored in its own struct and contains a
     % character array with its name (`.name`), measurement technique (`.type`) and
     % date (`.date`).
     %
@@ -49,7 +49,7 @@ classdef Measurement < handle
         y_array  % Array of idle potential readings
         y_unit  % Unit of the data recorded in the y_array.
         previousMeasurement  % The result of the measurement as a .Net object
-        curves  % List of .Net curve objects returned by the PalmSens Matlab SDK
+        curves  % List of .Net curve objects returned by the PalmSens MATLAB SDK
 
     end
 
