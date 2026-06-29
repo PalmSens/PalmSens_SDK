@@ -38,7 +38,7 @@ classdef Measurement < handle
     properties
 
         comm  % Object containing handle for communication with device
-        measurement  % The result of the measurement converted for use in matlab
+        measurement  % The result of the measurement converted for use in MATLAB
         dispInCommandWindow  % When set to true the latest readings from the device are displayed in the command window.
         dispInPlot  % When set to true the latest readings from the device are displayed in a new Figure.
 
@@ -281,7 +281,7 @@ classdef Measurement < handle
             % Updates the `.measurement` attribute with Measurement data.
             m = self.previousMeasurement;
             c = self.curves;
-            % Convert .NET measurement to matlab structs
+            % Convert .NET measurement to MATLAB structs
             if strcmp(char(m.Method.Name), 'Impedance Spectroscopy') || strcmp(char(m.Method.Name), 'Galvanostatic Impedance Spectroscopy')  % Impedance Spectroscopy data is handled differently
                 self.processEISMeasurement();
             else

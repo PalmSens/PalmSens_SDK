@@ -5,7 +5,7 @@ This page takes you through setting up the SDK for your LabVIEW project.
 
 == Requirements
 
-* https://www.ni.com/en/shop/labview.html[Labview]
+* https://www.ni.com/en/shop/labview.html[LabVIEW]
   - The code was developed with Community Version 2025
   - For compatibility with older versions (down to 2019), use menu:File[Save for previous version].
 * .NET Framework 4.7.2

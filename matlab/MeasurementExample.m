@@ -94,7 +94,7 @@ end
 disp(['Succesfully loaded the [ ' char(method.Name) ' ] method ' methodName '.' newline]);
 %% 3. Performing a measurement using the method
 % Measurements can be performed the Measurement.m class, this class gets the
-% measured data from you and converts it to matlab compatible structs.
+% measured data from you and converts it to MATLAB compatible structs.
 % Optionally it can display additional information on the measurement in the
 % Command Window and show a plot of the data that is updated in realtime.
 

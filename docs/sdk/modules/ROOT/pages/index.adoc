@@ -8,8 +8,8 @@ Software Development Kits (SDKs) are available for the ecosystems below. See the
 |
 .Data analysis, prototyping, research
 * xref:python:ROOT:attachment$index.html[PyPalmSens] (Python SDK)
-* xref:matlab:ROOT:index.adoc[Matlab SDK]
-* xref:labview:ROOT:index.adoc[Labview SDK]
+* xref:matlab:ROOT:index.adoc[MATLAB SDK]
+* xref:labview:ROOT:index.adoc[LabVIEW SDK]
 
 .^| image:ROOT:platforms_python.png[Python logo, xref=python:ROOT:attachment$index.html]
 
