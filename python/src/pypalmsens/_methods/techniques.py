@@ -2312,7 +2312,7 @@ endif
     @classmethod
     def validate_script(cls, value: str) -> str:
         if value.startswith('e\n'):
-            value = value.replace('e\n', '', count=1)
+            value = value.replace('e\n', '', 1)
 
         value = value.rstrip()
         value += '\n'
