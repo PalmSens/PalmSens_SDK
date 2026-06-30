@@ -66,7 +66,6 @@ from ._methods.techniques import (
     SquareWaveVoltammetry,
     StrippingChronoPotentiometry,
 )
-from ._methods.template import MethodScriptTemplate
 
 __all__ = [
     'corrosion',
@@ -107,7 +106,6 @@ __all__ = [
     'LinearSweepPotentiometry',
     'LinearSweepVoltammetry',
     'MethodScript',
-    'MethodScriptTemplate',
     'MixedMode',
     'MultiplePulseAmperometry',
     'MultiStepAmperometry',
