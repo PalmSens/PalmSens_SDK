@@ -8,10 +8,11 @@
 
 from __future__ import annotations
 
+import asyncio
+
 import streamlit as st
 
 import pypalmsens as ps
-from pypalmsens.data import CallbackData
 
 st.set_page_config(
     page_title='Battery Cycling',
@@ -24,7 +25,10 @@ st.set_page_config(
     initial_sidebar_state='expanded',
 )
 
-connect_to_device = st.cache_resource(ps.connect)
+
+@st.cache_resource
+def connect_to_device():
+    return asyncio.run(ps.connect_async())
 
 
 def main():
@@ -138,17 +142,24 @@ def main():
             width='stretch',
         )
 
-    manager: ps.InstrumentManager = connect_to_device()
+    manager: ps.InstrumentManagerAsync = connect_to_device()
     assert manager.is_connected()
 
-    def update(data: CallbackData):
-        status.update(
-            label=f'New data: x={data.last_x:.2f} y={data.last_y:.2f}',
-        )
+    async def async_measure(manager, method):
+        def update_status_message(message: str):
+            status.update(label=message)
+
+        manager.register_receive_message_callback(update_status_message)
+
+        measurement = await manager.measure(method)
+
+        manager.unregister_receive_message_callback()
+        return measurement
 
     with st.status('Starting measurement') as status:
-        status.update(label='Collecting data')
-        manager.measure(method, callback=update)
+        status.write('Collecting data...')
+
+        asyncio.run(async_measure(manager, method))
         status.update(label='Measurement finished!', state='complete')
 
 
