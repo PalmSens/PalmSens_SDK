@@ -123,7 +123,7 @@ files = ["src/pypalmsens", "tests", "examples"]
 exclude = [
     "typings",
     "src/PalmSens-stubs",
-    "src/pypalmsens/methodscript/_generated"
+    "src/pypalmsens/_methodscript/generated"
 ]
 allow_redefinition = true
 ignore_missing_imports = true
@@ -138,7 +138,7 @@ ignore = [
     "typings",
     "src/PalmSens-stubs",
     "examples",
-    "python/src/pypalmsens/methodscript/_generated/.*"
+    "python/src/pypalmsens/_methodscript/generated/.*"
 ]
 reportMissingModuleSource = false
 reportAttributeAccessIssue = false

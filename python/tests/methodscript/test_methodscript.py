@@ -5,7 +5,7 @@ from pathlib import Path
 import pytest
 
 import pypalmsens as ps
-from pypalmsens.methodscript import validate as validate_methodscript
+from pypalmsens._methodscript import validate as validate_methodscript
 
 SAMPLES_DIR = Path(__file__).parent / 'samples'
 SAMPLES = [pytest.param(path, id=path.stem) for path in SAMPLES_DIR.glob('*.mscr')]

@@ -5,8 +5,8 @@ from dataclasses import dataclass
 from antlr4 import CommonTokenStream, InputStream
 from antlr4.error.ErrorListener import ErrorListener
 
-from ._generated.MethodScriptLexer import MethodScriptLexer
-from ._generated.MethodScriptParser import MethodScriptParser
+from .generated.MethodScriptLexer import MethodScriptLexer
+from .generated.MethodScriptParser import MethodScriptParser
 
 
 @dataclass

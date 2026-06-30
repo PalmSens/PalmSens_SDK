@@ -13,12 +13,12 @@ from pypalmsens._methods.adapters import (
     energy_technique_adapter,
 )
 from pypalmsens._methods.energy import BaseMethodScriptTechnique
+from pypalmsens._methodscript import validate as validate_methodscript
 from pypalmsens.energy import (
     experimental_BatteryCycling,
     experimental_ConstantPower,
     experimental_ConstantResistance,
 )
-from pypalmsens.methodscript import validate as validate_methodscript
 
 logger = logging.getLogger(__name__)
 

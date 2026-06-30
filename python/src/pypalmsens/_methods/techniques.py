@@ -10,7 +10,7 @@ from PalmSens.Techniques.Impedance import enumFrequencyType, enumScanType
 from pydantic import Field, field_validator
 from typing_extensions import override
 
-from pypalmsens.methodscript import validate as validate_methodscript
+from pypalmsens._methodscript import validate as validate_methodscript
 
 from .._converters import (
     cr_enum_to_string,
