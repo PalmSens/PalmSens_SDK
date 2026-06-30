@@ -293,16 +293,12 @@ See [pypalmsens.data.Status][] or the provided [Status callback](examples.md#sta
 Likewise, you can register a callback for event messages.
 These are emitted when a measurement starts or for a `send_string` call in MethodSCRIPT.
 
-!!! NOTE "Async"
-
-    The callback requires an actizlve event loop and therefore only works in Async mode.
-
 For example, using print as the callback prints the messages to the terminal:
 
 ```python
 >>> method = ps.MethodScript(script=('wait 100m\nsend_string "Hello world"')
 >>> manager.register_receive_message_callback(print)
->>> await ps.measure_async(method)
+>>> await ps.measure(method)
 Running: MethodSCRIPT Sandbox
 Hello world
 >>> manager.unregister_receive_message_callback()

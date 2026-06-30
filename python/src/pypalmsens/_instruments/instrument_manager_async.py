@@ -478,21 +478,21 @@ class InstrumentManagerAsync(CapabilitiesMixin):
         """Register callback when a message is received.
 
         The callback is triggered, for example, when a method is started,
-        or when 'send_string' is called.
+        or when `send_string` is called in MethodSCRIPT.
 
         callback: Callable[[str], None]
             The function to call when triggered
         """
         self._receive_message_callback = callback
         self._loop = asyncio.get_running_loop()
-        self._comm.ClientConnection.ReceiveMessage += self._message_handler
+        self._comm.ClientConnection.ReceiveMessage += self._receive_message_handler
 
     def unregister_receive_message_callback(self):
         """Unregister callback from message events."""
-        self._comm.ClientConnection.ReceiveMessage -= self._message_handler
+        self._comm.ClientConnection.ReceiveMessage -= self._receive_message_handler
         del self._receive_message_callback
 
-    def _message_handler(self, sender, message: str) -> Task.CompletedTask:
+    def _receive_message_handler(self, sender, message: str) -> Task.CompletedTask:
         """Message handler helper function to schedule the callback."""
         _ = self._loop.call_soon_threadsafe(self._receive_message_callback, message)
         return Task.CompletedTask

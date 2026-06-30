@@ -210,6 +210,26 @@ async def test_idle_status_callback_async():
 
 
 @pytest.mark.instrument
+async def test_message_callback():
+    points = []
+
+    def callback(message: str):
+        points.append(message)
+
+    with ps.connect() as manager:
+        manager.register_receive_message_callback(callback)
+        method = method = ps.MethodScript(script=('wait 100m\nsend_string "Hello world"'))
+
+        _ = manager.measure(method)
+
+        manager.unregister_receive_message_callback()
+
+    assert len(points) == 2
+
+    assert points == ['Running: MethodSCRIPT Sandbox', 'Hello world']
+
+
+@pytest.mark.instrument
 @pytest.mark.asyncio
 async def test_message_callback_async():
     points = []
@@ -220,12 +240,9 @@ async def test_message_callback_async():
     async with await ps.connect_async() as manager:
         manager.register_receive_message_callback(callback)
 
-        await asyncio.sleep(1)
-
-        method = method = ps.MethodScript(script=('wait 100m\nsend_string "Hello world"'))
+        method = ps.MethodScript(script=('wait 100m\nsend_string "Hello world"'))
 
         _ = await manager.measure(method)
-        await asyncio.sleep(1)
 
         manager.unregister_receive_message_callback()
 
