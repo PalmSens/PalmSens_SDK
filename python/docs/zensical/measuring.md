@@ -291,9 +291,16 @@ See [pypalmsens.data.Status][] or the provided [Status callback](examples.md#sta
 ## Receive messages
 
 Likewise, you can register a callback for event messages.
-These are emitted when a measurement starts or for a `send_string` call in MethodSCRIPT.
 
-For example, using print as the callback prints the messages to the terminal:
+These messages are like those in the status bar in PSTrace, and can include messages like:
+
+- "Running: Cyclic Voltammetry"
+- "Measuring cycle _x_ level _y_" for multistep techniques
+- "Limit reached"
+
+These are also emitted for a `send_string` call in MethodSCRIPT.
+
+For example, using [print][] as the callback prints the messages to the terminal:
 
 ```python
 >>> method = ps.MethodScript(script=('wait 100m\nsend_string "Hello world"')
