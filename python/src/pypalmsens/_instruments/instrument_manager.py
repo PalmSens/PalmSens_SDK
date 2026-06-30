@@ -3,22 +3,25 @@ from __future__ import annotations
 import asyncio
 import warnings
 from contextlib import contextmanager
+from pathlib import Path
 from time import sleep
-from typing import Iterator
+from typing import Generator
 
 import clr
 import PalmSens
 from PalmSens.Comm import CommManager, MuxType
 from typing_extensions import override
 
-from .._methods import (
-    AllowedCurrentRanges,
-    AllowedPotentialRanges,
-    BaseTechnique,
+from .._converters import (
     cr_enum_to_string,
     cr_string_to_enum,
     pr_enum_to_string,
     pr_string_to_enum,
+)
+from .._types import (
+    AllowedCurrentRanges,
+    AllowedPotentialRanges,
+    MethodTypeCompatible,
 )
 from ..data import Measurement
 from .callback import Callback, CallbackEIS, Status
@@ -66,9 +69,10 @@ def connect(
 
 
 def measure(
-    method: BaseTechnique,
+    method: MethodTypeCompatible,
     instrument: None | Instrument = None,
     callback: Callback | CallbackEIS | None = None,
+    stream: str | Path | None = None,
 ) -> Measurement:
     """Run measurement.
 
@@ -86,6 +90,11 @@ def measure(
         time it was called. Each point is an instance of `ps.data.CallbackData`
         for non-impedimetric or `ps.data.CallbackDataEIS`
         for impedimetric measurments.
+    stream: Path | str | None
+        If defined, stream data directly to this file in JSON Lines text format
+        (https://jsonlines.org). This option is useful for long-term measurements.
+        In case of a PC crash or power outage, the most recent measurement data will
+        still be available.
 
     Returns
     -------
@@ -93,7 +102,7 @@ def measure(
         Finished measurement.
     """
     with connect(instrument=instrument) as manager:
-        measurement = manager.measure(method, callback=callback)
+        measurement = manager.measure(method, callback=callback, stream=stream)
 
     assert measurement
 
@@ -117,9 +126,7 @@ class InstrumentManager(CapabilitiesMixin):
 
     @override
     def __repr__(self):
-        return (
-            f'{self.__class__.__name__}({self.instrument.id}, connected={self.is_connected()})'
-        )
+        return f'{type(self).__name__}({self.instrument.id}, connected={self.is_connected()})'
 
     def __enter__(self):
         if not self.is_connected():
@@ -134,7 +141,7 @@ class InstrumentManager(CapabilitiesMixin):
         return int(self._comm.State) == CommManager.DeviceState.Measurement
 
     @contextmanager
-    def _lock(self) -> Iterator[CommManager]:
+    def _lock(self) -> Generator[CommManager]:
         self.ensure_connection()
 
         self._comm.ClientConnection.Semaphore.Wait()
@@ -178,6 +185,7 @@ class InstrumentManager(CapabilitiesMixin):
 
     def status(self) -> Status:
         """Get status."""
+        self.ensure_connection()
         return Status(
             self._comm.get_Status(),
             device_state=str(self._comm.get_State()),  # type:ignore
@@ -193,6 +201,17 @@ class InstrumentManager(CapabilitiesMixin):
         """
         with self._lock():
             self._comm.CellOn = cell_on
+
+    def is_cell_on(self) -> bool:
+        """Get cell status.
+
+        Returns
+        -------
+        cell_on : bool
+            Return true if the cell is on
+        """
+        with self._lock():
+            return self._comm.CellOn
 
     def read_current(self) -> float:
         """Read the current in µA.
@@ -291,15 +310,16 @@ class InstrumentManager(CapabilitiesMixin):
 
     def measure(
         self,
-        method: BaseTechnique,
+        method: MethodTypeCompatible,
         *,
         callback: Callback | CallbackEIS | None = None,
+        stream: Path | str | None = None,
     ) -> Measurement:
         """Start measurement using given method parameters.
 
         Parameters
         ----------
-        method: Method parameters
+        method: MethodType
             Method parameters for measurement
         callback: Callback, optional
             If specified, call this function on every new set of data points.
@@ -307,23 +327,27 @@ class InstrumentManager(CapabilitiesMixin):
             time it was called. Each point is an instance of `ps.data.CallbackData`
             for non-impedimetric or  `ps.data.CallbackDataEIS`
             for impedimetric measurments.
+        stream: Path | str | None
+            If defined, stream data directly to this file in JSON Lines text format
+            (https://jsonlines.org). This option is useful for long-term measurements.
+            In case of a PC crash or power outage, the most recent measurement data will
+            still be available.
 
         Returns
         -------
         measurement : Measurement
             Finished measurement.
         """
-        psmethod = method._to_psmethod()
-
         self.ensure_connection()
-
-        self.validate_method(psmethod)  # type: ignore
+        self.validate_method(method)
 
         # note that the comm manager must be opened async so it sets the
         # correct async event handlers
         measurement_manager = MeasurementManagerAsync(comm=self._comm)
 
-        return asyncio.run(measurement_manager.measure(psmethod, callback=callback))
+        return asyncio.run(
+            measurement_manager.measure(method, callback=callback, stream=stream)
+        )
 
     def wait_digital_trigger(self, wait_for_high: bool):
         """Wait for digital trigger.

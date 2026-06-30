@@ -10,7 +10,21 @@ from PalmSens.Techniques.Impedance import enumFrequencyType, enumScanType
 from pydantic import Field, field_validator
 from typing_extensions import override
 
-from .._helpers import single_to_double
+from pypalmsens._methodscript import validate as validate_methodscript
+
+from .._converters import (
+    cr_enum_to_string,
+    cr_string_to_enum,
+    pr_enum_to_string,
+    pr_string_to_enum,
+    single_to_double,
+)
+from .._types import (
+    AllowedCurrentRanges,
+    AllowedFrequencyTypes,
+    AllowedPotentialRanges,
+    AllowedScanTypes,
+)
 from . import mixins
 from .base import BaseTechnique
 from .levels import (
@@ -21,18 +35,9 @@ from .mask import (
     get_extra_value_mask,
     set_extra_value_mask,
 )
-from .types import (
-    AllowedCurrentRanges,
-    AllowedPotentialRanges,
-    cr_enum_to_string,
-    cr_string_to_enum,
-    pr_enum_to_string,
-    pr_string_to_enum,
-)
 
 
 class BaseCyclicVoltammetry(
-    BaseTechnique,
     mixins.CurrentRangeMixin,
     mixins.PretreatmentMixin,
     mixins.VersusOCPMixin,
@@ -44,6 +49,7 @@ class BaseCyclicVoltammetry(
     mixins.MeasurementTriggersMixin,
     mixins.DataProcessingMixin,
     mixins.GeneralMixin,
+    BaseTechnique,
 ):
     equilibration_time: float = 0.0
     """Equilibration time in s."""
@@ -139,13 +145,13 @@ class CyclicVoltammetry(BaseCyclicVoltammetry):
 
 
 class FastCyclicVoltammetry(
-    BaseTechnique,
     mixins.PretreatmentMixin,
     mixins.VersusOCPMixin,
     mixins.PostMeasurementMixin,
     mixins.IrDropCompensationMixin,
     mixins.DataProcessingMixin,
     mixins.GeneralMixin,
+    BaseTechnique,
 ):
     """Create fast cyclic voltammetry method parameters.
 
@@ -230,7 +236,6 @@ class FastCyclicVoltammetry(
 
 
 class ACVoltammetry(
-    BaseTechnique,
     mixins.CurrentRangeMixin,
     mixins.PretreatmentMixin,
     mixins.VersusOCPMixin,
@@ -239,6 +244,7 @@ class ACVoltammetry(
     mixins.MeasurementTriggersMixin,
     mixins.DataProcessingMixin,
     mixins.GeneralMixin,
+    BaseTechnique,
 ):
     """Create AC Voltammetry method parameters.
 
@@ -306,7 +312,6 @@ class ACVoltammetry(
 
 
 class BaseLinearSweepVoltammetry(
-    BaseTechnique,
     mixins.CurrentRangeMixin,
     mixins.PretreatmentMixin,
     mixins.VersusOCPMixin,
@@ -319,6 +324,7 @@ class BaseLinearSweepVoltammetry(
     mixins.DataProcessingMixin,
     mixins.MultiplexerMixin,
     mixins.GeneralMixin,
+    BaseTechnique,
 ):
     equilibration_time: float = 0.0
     """Equilibration time in s.
@@ -412,7 +418,6 @@ class LinearSweepVoltammetry(BaseLinearSweepVoltammetry):
 
 
 class SquareWaveVoltammetry(
-    BaseTechnique,
     mixins.CurrentRangeMixin,
     mixins.PretreatmentMixin,
     mixins.VersusOCPMixin,
@@ -424,6 +429,7 @@ class SquareWaveVoltammetry(
     mixins.DataProcessingMixin,
     mixins.MultiplexerMixin,
     mixins.GeneralMixin,
+    BaseTechnique,
 ):
     """Create square wave method parameters.
 
@@ -516,7 +522,6 @@ class SquareWaveVoltammetry(
 
 
 class DifferentialPulseVoltammetry(
-    BaseTechnique,
     mixins.CurrentRangeMixin,
     mixins.PretreatmentMixin,
     mixins.VersusOCPMixin,
@@ -528,6 +533,7 @@ class DifferentialPulseVoltammetry(
     mixins.DataProcessingMixin,
     mixins.MultiplexerMixin,
     mixins.GeneralMixin,
+    BaseTechnique,
 ):
     """Create differential pulse voltammetry method parameters.
 
@@ -624,7 +630,6 @@ class DifferentialPulseVoltammetry(
 
 
 class NormalPulseVoltammetry(
-    BaseTechnique,
     mixins.CurrentRangeMixin,
     mixins.PretreatmentMixin,
     mixins.VersusOCPMixin,
@@ -636,6 +641,7 @@ class NormalPulseVoltammetry(
     mixins.DataProcessingMixin,
     mixins.MultiplexerMixin,
     mixins.GeneralMixin,
+    BaseTechnique,
 ):
     """Create normal pulse voltammetry method parameters.
 
@@ -729,7 +735,6 @@ class NormalPulseVoltammetry(
 
 
 class BaseChronoAmperometry(
-    BaseTechnique,
     mixins.CurrentRangeMixin,
     mixins.PretreatmentMixin,
     mixins.VersusOCPMixin,
@@ -742,6 +747,7 @@ class BaseChronoAmperometry(
     mixins.MeasurementTriggersMixin,
     mixins.DataProcessingMixin,
     mixins.MultiplexerMixin,
+    BaseTechnique,
     mixins.GeneralMixin,
 ):
     equilibration_time: float = 0.0
@@ -818,7 +824,6 @@ class ChronoAmperometry(BaseChronoAmperometry):
 
 
 class FastAmperometry(
-    BaseTechnique,
     mixins.PretreatmentMixin,
     mixins.VersusOCPMixin,
     mixins.BiPotMixin,
@@ -831,6 +836,7 @@ class FastAmperometry(
     mixins.DataProcessingMixin,
     mixins.MultiplexerMixin,
     mixins.GeneralMixin,
+    BaseTechnique,
 ):
     """Create fast amperometry method parameters.
 
@@ -889,7 +895,6 @@ class FastAmperometry(
 
 
 class MultiStepAmperometry(
-    BaseTechnique,
     mixins.CurrentRangeMixin,
     mixins.PretreatmentMixin,
     mixins.BiPotMixin,
@@ -899,6 +904,7 @@ class MultiStepAmperometry(
     mixins.DataProcessingMixin,
     mixins.MultiplexerMixin,
     mixins.GeneralMixin,
+    BaseTechnique,
 ):
     """Create multi-step amperometry method parameters.
 
@@ -989,7 +995,6 @@ class MultiStepAmperometry(
 
 
 class PulsedAmperometricDetection(
-    BaseTechnique,
     mixins.CurrentRangeMixin,
     mixins.PretreatmentMixin,
     mixins.BiPotMixin,
@@ -1000,6 +1005,7 @@ class PulsedAmperometricDetection(
     mixins.DataProcessingMixin,
     mixins.MultiplexerMixin,
     mixins.GeneralMixin,
+    BaseTechnique,
 ):
     """Create pulsed amperometric detection method parameters.
 
@@ -1073,12 +1079,12 @@ class PulsedAmperometricDetection(
 
 
 class MultiplePulseAmperometry(
-    BaseTechnique,
     mixins.CurrentRangeMixin,
     mixins.PretreatmentMixin,
     mixins.PostMeasurementMixin,
     mixins.DataProcessingMixin,
     mixins.GeneralMixin,
+    BaseTechnique,
 ):
     """Create multiple pulse amperometry method parameters.
 
@@ -1145,7 +1151,6 @@ class MultiplePulseAmperometry(
 
 
 class BaseOpenCircuitPotentiometry(
-    BaseTechnique,
     mixins.CurrentRangeMixin,
     mixins.PotentialRangeMixin,
     mixins.PretreatmentMixin,
@@ -1155,6 +1160,7 @@ class BaseOpenCircuitPotentiometry(
     mixins.DataProcessingMixin,
     mixins.MultiplexerMixin,
     mixins.GeneralMixin,
+    BaseTechnique,
 ):
     interval_time: float = 0.1
     """Time between two potential samples in s."""
@@ -1224,7 +1230,6 @@ class OpenCircuitPotentiometry(BaseOpenCircuitPotentiometry):
 
 
 class BaseChronoPotentiometry(
-    BaseTechnique,
     mixins.CurrentRangeMixin,
     mixins.PotentialRangeMixin,
     mixins.PretreatmentMixin,
@@ -1234,6 +1239,7 @@ class BaseChronoPotentiometry(
     mixins.DataProcessingMixin,
     mixins.MultiplexerMixin,
     mixins.GeneralMixin,
+    BaseTechnique,
 ):
     current: float = 0.0
     """The current to apply in the given current range.
@@ -1316,7 +1322,6 @@ class ChronoPotentiometry(BaseChronoPotentiometry):
 
 
 class StrippingChronoPotentiometry(
-    BaseTechnique,
     mixins.CurrentRangeMixin,
     mixins.PretreatmentMixin,
     mixins.PostMeasurementMixin,
@@ -1324,6 +1329,7 @@ class StrippingChronoPotentiometry(
     mixins.MeasurementTriggersMixin,
     mixins.DataProcessingMixin,
     mixins.GeneralMixin,
+    BaseTechnique,
 ):
     """Create stripping potentiometry method parameters.
 
@@ -1407,7 +1413,6 @@ class StrippingChronoPotentiometry(
 
 
 class LinearSweepPotentiometry(
-    BaseTechnique,
     mixins.CurrentRangeMixin,
     mixins.PotentialRangeMixin,
     mixins.PretreatmentMixin,
@@ -1418,6 +1423,7 @@ class LinearSweepPotentiometry(
     mixins.DataProcessingMixin,
     mixins.MultiplexerMixin,
     mixins.GeneralMixin,
+    BaseTechnique,
 ):
     """Create linear sweep potentiometry method parameters."""
 
@@ -1493,7 +1499,6 @@ class LinearSweepPotentiometry(
 
 
 class MultiStepPotentiometry(
-    BaseTechnique,
     mixins.CurrentRangeMixin,
     mixins.PotentialRangeMixin,
     mixins.PretreatmentMixin,
@@ -1502,6 +1507,7 @@ class MultiStepPotentiometry(
     mixins.DataProcessingMixin,
     mixins.MultiplexerMixin,
     mixins.GeneralMixin,
+    BaseTechnique,
 ):
     """Create multi-step potentiometry method parameters.
 
@@ -1584,7 +1590,6 @@ class MultiStepPotentiometry(
 
 
 class ChronoCoulometry(
-    BaseTechnique,
     mixins.CurrentRangeMixin,
     mixins.PretreatmentMixin,
     mixins.PostMeasurementMixin,
@@ -1592,6 +1597,7 @@ class ChronoCoulometry(
     mixins.ChargeLimitsMixin,
     mixins.DataProcessingMixin,
     mixins.GeneralMixin,
+    BaseTechnique,
 ):
     """Create chrono coulometry method parameters.
 
@@ -1690,7 +1696,6 @@ class ChronoCoulometry(
 
 
 class ElectrochemicalImpedanceSpectroscopy(
-    BaseTechnique,
     mixins.CurrentRangeMixin,
     mixins.PotentialRangeMixin,
     mixins.PretreatmentMixin,
@@ -1701,6 +1706,7 @@ class ElectrochemicalImpedanceSpectroscopy(
     mixins.MaterialMixin,
     mixins.MultiplexerMixin,
     mixins.GeneralMixin,
+    BaseTechnique,
 ):
     """Create potentiometry method parameters.
 
@@ -1726,12 +1732,12 @@ class ElectrochemicalImpedanceSpectroscopy(
     id: Literal['eis'] = 'eis'
     """Unique method identifier."""
 
-    _SCAN_TYPES: tuple[Literal['potential', 'time', 'fixed'], ...] = (
+    _SCAN_TYPES: tuple[AllowedScanTypes, ...] = (
         'potential',
         'time',
         'fixed',
     )
-    _FREQ_TYPES: tuple[Literal['fixed', 'scan'], ...] = ('fixed', 'scan')
+    _FREQ_TYPES: tuple[AllowedFrequencyTypes, ...] = ('fixed', 'scan')
 
     equilibration_time: float = 0.0
     """Equilibration time in s."""
@@ -1749,14 +1755,14 @@ class ElectrochemicalImpedanceSpectroscopy(
     (RMS). In many applications, a value of 0.010 V (RMS) is used.
     """
 
-    frequency_type: Literal['fixed', 'scan'] = 'scan'
+    frequency_type: AllowedFrequencyTypes = 'scan'
     """Whether to measure a single frequency or scan over a range of frequencies.
 
     Possible values: 'scan', 'fixed'.
 
     - Scan: a frequency scan is performed starting at the given `max_frequency`
         to the `min_frequency`.
-    - Fixed: a single frequency given by 'fixed_frequencya is applied for
+    - Fixed: a single frequency given by 'fixed_frequency is applied for
         the given duration or at each potential step or time interval.
     """
 
@@ -1777,7 +1783,7 @@ class ElectrochemicalImpedanceSpectroscopy(
     including both end points.
     """
 
-    scan_type: Literal['potential', 'time', 'fixed'] = 'fixed'
+    scan_type: AllowedScanTypes = 'fixed'
     """Whether a single or multiple frequency scans are performed.
 
     Possible values: 'potential', 'time', 'fixed'.
@@ -1826,7 +1832,7 @@ class ElectrochemicalImpedanceSpectroscopy(
     This sets the increment to be used between `begin_potential` and `end_potential`.
     """
 
-    min_sampling_time: float = 0.5
+    min_sampling_time: float = Field(0.5, gt=0)
     """Minimum sampling time in s.
 
     Each measurement point of the impedance spectrum is performed
@@ -1861,23 +1867,24 @@ class ElectrochemicalImpedanceSpectroscopy(
         """Update method with electrochemical impedance spectroscopy settings."""
 
         if self.scan_type == 'potential':
+            # psmethod.BeginPotential is an alias for psmethod.Potential
             psmethod.BeginPotential = self.begin_potential
             psmethod.EndPotential = self.end_potential
             psmethod.StepPotential = self.step_potential
         elif self.scan_type == 'time':
             psmethod.RunTime = self.run_time
             psmethod.IntervalTime = self.interval_time
+            psmethod.Potential = self.dc_potential
+        else:
+            psmethod.Potential = self.dc_potential
 
         psmethod.ScanType = enumScanType(self._SCAN_TYPES.index(self.scan_type))
         psmethod.FreqType = enumFrequencyType(self._FREQ_TYPES.index(self.frequency_type))
         psmethod.EquilibrationTime = self.equilibration_time
-        psmethod.Potential = self.dc_potential
         psmethod.Eac = self.ac_potential
-
         psmethod.FixedFrequency = self.fixed_frequency
         psmethod.MaxFrequency = self.max_frequency
         psmethod.MinFrequency = self.min_frequency
-
         psmethod.nFrequencies = self.n_frequencies
         psmethod.SamplingTime = self.min_sampling_time
         psmethod.MaxEqTime = self.max_equilibration_time
@@ -1890,6 +1897,8 @@ class ElectrochemicalImpedanceSpectroscopy(
         self.dc_potential = single_to_double(psmethod.Potential)
         self.ac_potential = single_to_double(psmethod.Eac)
         self.n_frequencies = psmethod.nFrequencies
+        self.min_sampling_time = single_to_double(psmethod.SamplingTime)
+        self.max_equilibration_time = single_to_double(psmethod.MaxEqTime)
 
         self.fixed_frequency = single_to_double(psmethod.FixedFrequency)
         self.max_frequency = single_to_double(psmethod.MaxFrequency)
@@ -1905,7 +1914,6 @@ class ElectrochemicalImpedanceSpectroscopy(
 
 
 class FastImpedanceSpectroscopy(
-    BaseTechnique,
     mixins.CurrentRangeMixin,
     mixins.PotentialRangeMixin,
     mixins.PretreatmentMixin,
@@ -1914,6 +1922,7 @@ class FastImpedanceSpectroscopy(
     mixins.MeasurementTriggersMixin,
     mixins.EquilibrationTriggersMixin,
     mixins.GeneralMixin,
+    BaseTechnique,
 ):
     """Create fast impedance spectroscopy method parameters."""
 
@@ -1959,7 +1968,6 @@ class FastImpedanceSpectroscopy(
 
 
 class GalvanostaticImpedanceSpectroscopy(
-    BaseTechnique,
     mixins.CurrentRangeMixin,
     mixins.PotentialRangeMixin,
     mixins.PretreatmentMixin,
@@ -1968,6 +1976,7 @@ class GalvanostaticImpedanceSpectroscopy(
     mixins.MeasurementTriggersMixin,
     mixins.MultiplexerMixin,
     mixins.GeneralMixin,
+    BaseTechnique,
 ):
     """Create galvanostatic impedance spectroscopy method parameters.
 
@@ -1983,8 +1992,18 @@ class GalvanostaticImpedanceSpectroscopy(
     id: Literal['gis'] = 'gis'
     """Unique method identifier."""
 
+    _SCAN_TYPES: tuple[AllowedScanTypes, ...] = (
+        'current',
+        'time',
+        'fixed',
+    )
+    _FREQ_TYPES: tuple[AllowedFrequencyTypes, ...] = ('fixed', 'scan')
+
     applied_current_range: AllowedCurrentRanges = '100uA'
     """Applied current range.
+
+    This is the range in which the specified current values (such as `ac_current`,
+    `begin_current`, or `step_current) will be applied.
 
     See `pypalmsens.settings.AllowedCurrentRanges` for options."""
 
@@ -1992,52 +2011,173 @@ class GalvanostaticImpedanceSpectroscopy(
     """Equilibration time in s."""
 
     ac_current: float = 0.01
-    """AC current in applied current range RMS."""
+    """AC current expressed in the applied current range RMS."""
 
     dc_current: float = 0.0
-    """DC current in applied current range."""
+    """DC current expressed in the applied current range."""
 
-    min_frequency: float = 1_000
-    """Minimum frequency in Hz."""
+    frequency_type: AllowedFrequencyTypes = 'scan'
+    """Whether to measure a single frequency or scan over a range of frequencies.
 
-    max_frequency: float = 50_000
-    """Maximum frequency in Hz."""
+    Possible values: 'scan', 'fixed'.
+
+    - Scan: a frequency scan is performed starting at the given `max_frequency`
+        to the `min_frequency`.
+    - Fixed: a single frequency given by `fixed_frequency` is applied for
+        the given duration or at each potential step or time interval.
+    """
+
+    fixed_frequency: float = 1_000
+    """Fixed frequency in Hz (fixed frequency only)."""
+
+    min_frequency: float = 5.0
+    """Minimum frequency in Hz (frequency scan only)."""
+
+    max_frequency: float = 10_000
+    """Maximum frequency in Hz (frequency scan only)."""
 
     n_frequencies: int = 11
-    """Number of frequencies."""
+    """Number of frequencies (frequency scan only).
+
+    Defines the range of frequencies to apply between the `max_frequency` and
+    `min_frequency`. For example, a value of 11 will measure at 11 frequencies,
+    including both end points.
+    """
+
+    scan_type: AllowedScanTypes = 'fixed'
+    """Whether a single or multiple frequency scans are performed.
+
+    Possible values: 'current', 'time', 'fixed'.
+
+    - Fixed scan: perform a single scan (default).
+    - Time scan: scans are repeated for a specific amount of time at a specific interval.
+    - Current scan: scans are repeated over a range of current values, starting at
+        `begin_current` and ending at `end_current` with step size `step_current`.
+        At each DC current level, a single fixed frequency or frequency scan is applied.
+    """
+
+    run_time: float = 10.0
+    """Minimal run time in seconds in s (time scan only).
+
+    For example, if a frequency scan takes 18 seconds and is measured
+    at an interval of 19 seconds for a `run_time` of 40 seconds, then
+    three iterations will be performed."""
+
+    interval_time: float = 0.1
+    """The interval at which a measurement iteration should be performed in s (time scan only).
+
+    The minimum interval time between each data point (`frequency_type='fixed') or
+    between each frequency scan (`frequency_type='scan').
+    We recommend a time higher than the required time to measure the data point or perform the
+    frequency scan + overhead time. While it's possible to use a shorter time, doing so may
+    lead to incorrect impedance calculations.
+
+    If a measurement iteration takes longer than the interval time the next measurement
+    will not be triggered until after it has been completed.
+    """
+
+    begin_current: float = 0.0
+    """Current at which the scan starts expressed in the applied current range (current scan only)."""
+
+    end_current: float = 0.0
+    """Current at which the scan ends expressed in the applied current range (current scan only)."""
+
+    step_current: float = 0.01
+    """Current step size expressed in the applied current range (current scan only).
+
+    This sets the increment to be used between `begin_current` and `end_current`.
+    """
+
+    min_sampling_time: float = Field(0.5, gt=0)
+    """Minimum sampling time in s.
+
+    Each measurement point of the impedance spectrum is performed
+    during the period specified by `min_sampling_time`.
+
+    This means that the number of measured sine waves is equal to `min_sampling_time * frequency`.
+    If this value is less than 1 sine wave, the sampling is extended to `1 / frequency`.
+
+    So for a measurement at a `frequency`, at least one complete sine wave is measured.
+    Reasonable values for the sampling are in the range of 0.1 to 1 s."""
+
+    max_equilibration_time: float = 5.0
+    """Max equilibration time in s.
+
+    The EIS measurement requires a stationary state.
+    This means that before the actual measurement starts, the sine wave is
+    applied during `max_equilibration_time` only to reach the stationary state.
+
+    The maximum number of equilibration sine waves is however 5.
+
+    The minimum number of equilibration sines is set to 1, but for very
+    low frequencies, this time is limited by `max_equilibration_time`.
+
+    The maximum time to wait for stationary state is determined by the
+    value of this parameter. A reasonable value might be 5 seconds.
+    In this case this parameter is only relevant when the lowest frequency
+    is less than 1/5 s so 0.2 Hz.
+    """
 
     @override
     def _update_psmethod(self, psmethod: PalmSens.Method, /):
         """Update method with galvanic impedance spectroscopy settings."""
 
-        psmethod.ScanType = enumScanType.Fixed
-        psmethod.FreqType = enumFrequencyType.Scan
+        if self.scan_type == 'current':
+            # psmethod.BeginCurrent is an alias for psmethod.Current
+            psmethod.BeginCurrent = self.begin_current
+            psmethod.EndCurrent = self.end_current
+            psmethod.StepCurrent = self.step_current
+        elif self.scan_type == 'time':
+            psmethod.RunTime = self.run_time
+            psmethod.IntervalTime = self.interval_time
+            psmethod.Idc = self.dc_current
+        else:
+            psmethod.Idc = self.dc_current
+
+        psmethod.ScanType = enumScanType(self._SCAN_TYPES.index(self.scan_type))
+        psmethod.FreqType = enumFrequencyType(self._FREQ_TYPES.index(self.frequency_type))
         psmethod.AppliedCurrentRange = cr_string_to_enum(self.applied_current_range)
         psmethod.EquilibrationTime = self.equilibration_time
         psmethod.Iac = self.ac_current
-        psmethod.Idc = self.dc_current
+        psmethod.FixedFrequency = self.fixed_frequency
         psmethod.nFrequencies = self.n_frequencies
         psmethod.MaxFrequency = self.max_frequency
         psmethod.MinFrequency = self.min_frequency
+        psmethod.SamplingTime = self.min_sampling_time
+        psmethod.MaxEqTime = self.max_equilibration_time
 
     @override
     def _update_params(self, psmethod: PalmSens.Method, /):
+        self.scan_type = self._SCAN_TYPES[int(psmethod.ScanType)]
+        self.frequency_type = self._FREQ_TYPES[int(psmethod.FreqType)]
         self.applied_current_range = cr_enum_to_string(psmethod.AppliedCurrentRange)
         self.equilibration_time = single_to_double(psmethod.EquilibrationTime)
         self.ac_current = single_to_double(psmethod.Iac)
         self.dc_current = single_to_double(psmethod.Idc)
         self.n_frequencies = psmethod.nFrequencies
+        self.min_sampling_time = single_to_double(psmethod.SamplingTime)
+        self.max_equilibration_time = single_to_double(psmethod.MaxEqTime)
+
+        self.fixed_frequency = single_to_double(psmethod.FixedFrequency)
         self.max_frequency = single_to_double(psmethod.MaxFrequency)
         self.min_frequency = single_to_double(psmethod.MinFrequency)
 
+        if self.scan_type == 'current':
+            self.begin_current = single_to_double(psmethod.BeginCurrent)
+            self.end_current = single_to_double(psmethod.EndCurrent)
+            self.step_current = single_to_double(psmethod.StepCurrent)
+        elif self.scan_type == 'time':
+            self.run_time = single_to_double(psmethod.RunTime)
+            self.interval_time = single_to_double(psmethod.IntervalTime)
+
 
 class FastGalvanostaticImpedanceSpectroscopy(
-    BaseTechnique,
     mixins.CurrentRangeMixin,
     mixins.PotentialRangeMixin,
     mixins.PretreatmentMixin,
     mixins.PostMeasurementMixin,
     mixins.GeneralMixin,
+    BaseTechnique,
 ):
     """Create fast galvanostatic impededance spectroscopy method parameters."""
 
@@ -2105,12 +2245,11 @@ class MethodScript(BaseTechnique):
     id: Literal['ms'] = 'ms'
     """Unique method identifier."""
 
-    script: str = """e
+    script: str = """\
 wait 100m
 if 1 < 2
     send_string "Hello world"
 endif
-
 """
     """Script to run.
 
@@ -2120,7 +2259,7 @@ endif
     @override
     def _update_psmethod(self, psmethod: PalmSens.Method, /):
         """Update method with MethodScript."""
-        psmethod.MethodScript = self.script
+        psmethod.MethodScript = f'e\n{self.script}\n'
 
     @override
     def _update_params(self, psmethod: PalmSens.Method, /):
@@ -2176,16 +2315,20 @@ endif
     @field_validator('script')
     @classmethod
     def validate_script(cls, value: str) -> str:
-        if not (value.startswith('e\n') or value.startswith('l\n')):
-            raise ValueError('A script must start with `e\\n` or `l\\n`')
-        if not value.endswith('\n\n'):
-            raise ValueError('A script must end with 2 newlines')
+        if value.startswith('e\n'):
+            value = value.replace('e\n', '', 1)
+
+        value = value.rstrip()
+        value += '\n'
+
+        validate_methodscript(value)
 
         return value
 
     @property
+    @override
     def _use_hardware_sync(self) -> bool:
         """Return true if 'set_channel_sync 1' is set."""
-        match = re.findall(r'\n\s*(set_channel_sync\s+1)', self.script)
+        match = re.findall(r'^\s*(set_channel_sync\s+1)', self.script)
 
-        return match is not None
+        return any(match)

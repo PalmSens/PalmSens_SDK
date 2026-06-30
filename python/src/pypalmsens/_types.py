@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Literal
+from typing import Any, Literal, Protocol
 
 import PalmSens
 
@@ -102,29 +102,31 @@ See the device documentation or query the instrument manager
 for supported potential ranges."""
 
 
-def cr_string_to_enum(s: AllowedCurrentRanges) -> PalmSens.CurrentRange:
-    """Convert literal string to CurrentRange."""
-    attr = f'cr{s}'
-    cr = getattr(PalmSens.CurrentRanges, attr)
+AllowedScanTypes = Literal['potential', 'current', 'time', 'fixed']
+"""Possible scan types."""
 
-    return PalmSens.CurrentRange(cr)
-
-
-def cr_enum_to_string(enum: PalmSens.CurrentRange) -> AllowedCurrentRanges:
-    """Convert CurrentRange enum to literal string."""
-    cr = enum.Range
-    return cr.ToString().lstrip('cr')
+AllowedFrequencyTypes = Literal['fixed', 'scan']
+"""Possible frequency types."""
 
 
-def pr_string_to_enum(s: AllowedPotentialRanges) -> PalmSens.PotentialRange:
-    """Convert literal string to PotentialRange."""
-    attr = f'pr{s}'
-    pr = getattr(PalmSens.PotentialRanges, attr)
+class MethodTypeCompatible(Protocol):
+    """All methods, including MethodType and those that generate compatible MethodSCRIPT."""
 
-    return PalmSens.PotentialRange(pr)
+    @property
+    def id(self) -> AllowedMethods: ...
+
+    def _to_psmethod(self) -> PalmSens.Method: ...
 
 
-def pr_enum_to_string(enum: PalmSens.PotentialRange) -> AllowedPotentialRanges:
-    """Convert PotentialRange enum to literal string."""
-    pr = enum.PR
-    return pr.ToString().lstrip('pr')
+class MethodType(MethodTypeCompatible, Protocol):
+    """Methods with complete implementation in .NET."""
+
+    @property
+    def _use_hardware_sync(self) -> bool: ...
+
+    def to_dict(self) -> dict[str, Any]: ...
+    def _serialize(self) -> str: ...
+    def _update_params(self, psmethod: PalmSens.Method, /) -> None: ...
+    def _update_params_nested(self, psmethod: PalmSens.Method, /) -> None: ...
+    def _update_psmethod(self, psmethod: PalmSens.Method, /) -> None: ...
+    def _update_psmethod_nested(self, psmethod: PalmSens.Method, /) -> None: ...

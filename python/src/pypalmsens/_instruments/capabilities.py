@@ -5,13 +5,15 @@ from typing import Literal
 import PalmSens
 from pydantic import BaseModel, ConfigDict, computed_field
 
-from .._helpers import single_to_double
-from .._methods.types import (
+from .._converters import (
+    cr_enum_to_string,
+    pr_enum_to_string,
+    single_to_double,
+)
+from .._types import (
     AllowedCurrentRanges,
     AllowedMethods,
     AllowedPotentialRanges,
-    cr_enum_to_string,
-    pr_enum_to_string,
 )
 
 
@@ -463,5 +465,5 @@ class Capabilities(BaseModel):
 if __name__ == '__main__':
     for k, v in Capabilities.model_computed_fields.items():
         print(f'{k}: {v.return_type}')
-        print(f'"""{v.description.__name__}"""')
+        print(f'"""{v.description}"""')
         print('')

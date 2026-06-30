@@ -6,8 +6,8 @@ from typing import TYPE_CHECKING, Any, overload
 import numpy as np
 from typing_extensions import override
 
-from .._methods import cr_enum_to_string, pr_enum_to_string
-from ..settings import (
+from .._converters import cr_enum_to_string, pr_enum_to_string
+from .._types import (
     AllowedCurrentRanges,
     AllowedPotentialRanges,
     AllowedReadingStatus,
@@ -44,10 +44,7 @@ class DataArray(Sequence[float]):
     @override
     def __repr__(self):
         return (
-            f'{self.__class__.__name__}('
-            f'name={self.name}, '
-            f'unit={self.unit}, '
-            f'n_points={len(self)})'
+            f'{type(self).__name__}(name={self.name}, unit={self.unit}, n_points={len(self)})'
         )
 
     @overload
@@ -130,6 +127,11 @@ class DataArray(Sequence[float]):
     def ocp_value(self) -> float:
         """OCP Value."""
         return self._psarray.OCPValue
+
+    @property
+    def is_derived(self) -> bool:
+        """Return True for derived data arrays."""
+        return self.name in ('Y', 'YRe', 'YIm', 'Cs', 'CsRe', 'CsIm')
 
 
 class CurrentArray(DataArray):

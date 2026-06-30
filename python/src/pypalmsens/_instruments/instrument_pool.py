@@ -1,10 +1,10 @@
 from __future__ import annotations
 
 import asyncio
-from typing import TYPE_CHECKING, Sequence
+from typing import TYPE_CHECKING, Any, Sequence
 
-from .._methods import BaseTechnique
-from .callback import Callback, CallbackEIS
+from .._types import MethodType
+from .callback import Callback, CallbackEIS, Status
 from .instrument import Instrument
 from .instrument_manager_async import InstrumentManagerAsync
 from .instrument_pool_async import InstrumentPoolAsync
@@ -19,8 +19,7 @@ class InstrumentPool:
     Most calls are run asynchronously in the background,
     which means that measurements are running in parallel.
 
-    This is a thin wrapper around the `InstrumentManagerAsync`.
-
+    This is a thin wrapper around the `InstrumentPoolAsync` class.
 
     Parameters
     ----------
@@ -40,7 +39,7 @@ class InstrumentPool:
 
     def __repr__(self):
         ids = [manager.instrument.id for manager in self.managers]
-        return f'{self.__class__.__name__}({ids}, connected={self.is_connected()})'
+        return f'{type(self).__name__}({ids}, connected={self.is_connected()})'
 
     def __len__(self):
         return len(self.managers)
@@ -54,6 +53,12 @@ class InstrumentPool:
 
     def __iter__(self):
         yield from self.managers
+
+    def __contains__(self, obj: Any):
+        return obj in self.managers
+
+    def __getitem__(self, index: int) -> InstrumentManagerAsync:
+        return self.managers[index]
 
     def connect(self, attempts: int = 1) -> None:
         """Connect all instrument managers in the pool.
@@ -98,9 +103,19 @@ class InstrumentPool:
         """
         self._loop.run_until_complete(self._async.add(manager))
 
+    def status(self) -> list[Status]:
+        """Return status for all managers in pool.
+
+        Returns
+        -------
+        list[Status]
+            List of status objects.
+        """
+        return [manager.status() for manager in self]
+
     def measure(
         self,
-        method: BaseTechnique,
+        method: MethodType,
         callback: Sequence[Callback | CallbackEIS] | Callback | CallbackEIS | None = None,
         **kwargs,
     ) -> list[Measurement]:
@@ -119,7 +134,7 @@ class InstrumentPool:
 
         Parameters
         ----------
-        method : MethodSettings
+        method : MethodType
             Method parameters for measurement.
         callback : list[Callback] | Callback | CallbackEIS | None
             If specified, call these functions/this function on every new set of data points.

@@ -3,25 +3,29 @@ from __future__ import annotations
 import asyncio
 import sys
 import warnings
+from collections.abc import AsyncGenerator, Coroutine
 from contextlib import asynccontextmanager
-from typing import Any, Callable, Coroutine, Protocol
+from pathlib import Path
+from typing import Any, Protocol
 
 import clr
 import PalmSens
 from PalmSens import AsyncEventHandler
 from PalmSens.Comm import CommManager, MuxType
 from System.Threading.Tasks import Task
-from typing_extensions import AsyncIterator, override
+from typing_extensions import override
 
-from .._methods import (
-    AllowedCurrentRanges,
-    AllowedMethods,
-    AllowedPotentialRanges,
-    BaseTechnique,
+from .._converters import (
     cr_enum_to_string,
     cr_string_to_enum,
     pr_enum_to_string,
     pr_string_to_enum,
+)
+from .._types import (
+    AllowedCurrentRanges,
+    AllowedMethods,
+    AllowedPotentialRanges,
+    MethodTypeCompatible,
 )
 from ..data import Measurement
 from .callback import Callback, CallbackEIS, CallbackStatus, Status
@@ -73,7 +77,7 @@ async def connect_async(
 
 
 async def measure_async(
-    method: BaseTechnique,
+    method: MethodTypeCompatible,
     instrument: None | Instrument = None,
     callback: Callback | CallbackEIS | None = None,
 ) -> Measurement:
@@ -109,7 +113,8 @@ async def measure_async(
 
 class HasCommProtocol(Protocol):
     _comm: CommManager
-    ensure_connection: Callable[[], None]
+
+    def ensure_connection(self) -> None: ...
 
 
 class HasCapabilities(Protocol):
@@ -186,13 +191,13 @@ class CapabilitiesMixin:
 
     def get_estimated_duration(
         self: HasCommProtocol,
-        method: PalmSens.Method | BaseTechnique,
+        method: PalmSens.Method | MethodTypeCompatible,
     ) -> float:
         """Get the estimated duration for this method.
 
         Parameters
         -----------
-        method : Method parameters
+        method : MethodType
             The method to get the estimated duration for.
 
         Returns
@@ -211,7 +216,7 @@ class CapabilitiesMixin:
 
     def validate_method(
         self: HasCommProtocol,
-        method: PalmSens.Method | BaseTechnique,
+        method: MethodTypeCompatible,
     ):
         """Validate method.
 
@@ -219,17 +224,15 @@ class CapabilitiesMixin:
 
         Parameters
         -----------
-        method : Method parameters
+        method: MethodType
             The method to validate.
         """
         self.ensure_connection()
 
         capabilities = self._comm.Capabilities
 
-        if not isinstance(method, PalmSens.Method):
-            method = method._to_psmethod()
-
-        errors = method.Validate(capabilities)
+        psmethod = method._to_psmethod()
+        errors = psmethod.Validate(capabilities)
 
         if any(error.IsFatal for error in errors):
             message = '\n'.join([error.Message for error in errors])
@@ -255,9 +258,7 @@ class InstrumentManagerAsync(CapabilitiesMixin):
 
     @override
     def __repr__(self):
-        return (
-            f'{self.__class__.__name__}({self.instrument.id}, connected={self.is_connected()})'
-        )
+        return f'{type(self).__name__}({self.instrument.id}, connected={self.is_connected()})'
 
     async def __aenter__(self):
         if not self.is_connected():
@@ -272,7 +273,7 @@ class InstrumentManagerAsync(CapabilitiesMixin):
         return int(self._comm.State) == CommManager.DeviceState.Measurement
 
     @asynccontextmanager
-    async def _lock(self) -> AsyncIterator[CommManager]:
+    async def _lock(self) -> AsyncGenerator[CommManager]:
         self.ensure_connection()
 
         await create_future(self._comm.ClientConnection.Semaphore.WaitAsync())
@@ -312,6 +313,7 @@ class InstrumentManagerAsync(CapabilitiesMixin):
 
     def status(self) -> Status:
         """Get status."""
+        self.ensure_connection()
         return Status(
             self._comm.get_Status(),
             device_state=str(self._comm.get_State()),  # type:ignore
@@ -327,6 +329,19 @@ class InstrumentManagerAsync(CapabilitiesMixin):
         """
         async with self._lock():
             await create_future(self._comm.SetCellOnAsync(cell_on))
+
+    async def is_cell_on(self) -> bool:
+        """Get cell status.
+
+        Returns
+        -------
+        cell_on : bool
+            Return true if the cell is on
+        """
+        async with self._lock():
+            cell_on: bool = await create_future(self._comm.GetCellOnAsync())
+
+        return cell_on
 
     async def read_current(self) -> float:
         """Read the current in µA.
@@ -468,37 +483,40 @@ class InstrumentManagerAsync(CapabilitiesMixin):
 
     async def measure(
         self,
-        method: BaseTechnique,
+        method: MethodTypeCompatible,
         *,
         callback: Callback | CallbackEIS | None = None,
+        stream: Path | str | None = None,
         sync_event: asyncio.Event | None = None,
     ):
         """Start measurement using given method parameters.
 
         Parameters
         ----------
-        method: MethodParameters
-            Method parameters for measurement
+        method: MethodType
+            Method parameters for measurement.
         callback: Callback, optional
             If specified, call this function on every new set of data points.
             New data points are batched, and contain all points since the last
             time it was called. Each point is an instance of `ps.data.CallbackData`
-            for non-impedimetric or `ps.data.CallbackDataEIS`
+            for non-impedimetric or `ps.data.CallbackDataEIS`.
             for impedimetric measurments.
+        stream: Path | str | None
+            If defined, stream data directly to this file in JSON Lines text format
+            (https://jsonlines.org). This option is useful for long-term measurements.
+            In case of a PC crash or power outage, the most recent measurement data will
+            still be available.
         sync_event: asyncio.Event
             Event for hardware synchronization. Do not use directly.
             Instead, initiate hardware sync via `InstrumentPoolAsync.measure()`.
         """
-        psmethod = method._to_psmethod()
-
         self.ensure_connection()
-
-        self.validate_method(psmethod)  # type: ignore
+        self.validate_method(method)  # type: ignore
 
         measurement_manager = MeasurementManagerAsync(comm=self._comm)
 
         return await measurement_manager.measure(
-            psmethod, callback=callback, sync_event=sync_event
+            method, callback=callback, stream=stream, sync_event=sync_event
         )
 
     def _initiate_hardware_sync_follower_channel(

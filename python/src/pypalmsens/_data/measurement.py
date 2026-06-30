@@ -1,14 +1,19 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, final
+from datetime import datetime
+from typing import TYPE_CHECKING, Literal, final
 
 import System
+from pydantic import Field, TypeAdapter
+from pydantic.dataclasses import dataclass as pydantic_dataclass
 from typing_extensions import override
 
-from pypalmsens._methods import BaseTechnique
+from pypalmsens._methods.adapters import EnergyTechniqueType, TechniqueType
 
+from .. import __sdk_version__, __version__
 from .._fitting import FitResult
+from .._types import MethodTypeCompatible
 from .curve import Curve
 from .dataset import DataSet
 from .eisdata import EISData
@@ -43,6 +48,30 @@ class DeviceInfo:
         )
 
 
+@pydantic_dataclass
+class MeasurementMetadata:
+    timestamp: datetime
+    """Start time of the measurement."""
+    device: DeviceInfo
+    """Device information."""
+    title: str
+    """Measurement title."""
+    method: TechniqueType | EnergyTechniqueType
+    """Method parameters."""
+    columns: list[str] = Field(default_factory=list)
+    """Column headers for data."""
+    units: list[str] = Field(default_factory=list)
+    """Column units."""
+    channels: int = 0
+    """Number of channels"""
+    version_pypalmsens: str = __version__
+    """PyPalmSens version."""
+    version_sdk: str = __sdk_version__
+    """SDK .NET Core version."""
+    type: Literal['measurement'] = 'measurement'
+    """Object type."""
+
+
 @final
 class Measurement:
     """Python wrapper for .NET Measurement class.
@@ -58,7 +87,7 @@ class Measurement:
 
     @override
     def __repr__(self):
-        return f'{self.__class__.__name__}(title={self.title}, timestamp={self.timestamp}, device={self.device.type})'
+        return f'{type(self).__name__}(title={self.title}, timestamp={self.timestamp}, device={self.device.type})'
 
     @property
     def title(self) -> str:
@@ -75,6 +104,17 @@ class Measurement:
     def device(self) -> DeviceInfo:
         """Return dataclass with measurement device information."""
         return DeviceInfo._from_psmeasurement(self._psmeasurement)
+
+    def metadata_json(self) -> bytes:
+        """Generate measurement metadata as json."""
+        return TypeAdapter(MeasurementMetadata).dump_json(
+            MeasurementMetadata(
+                device=self.device,
+                timestamp=datetime.fromisoformat(self.timestamp),
+                title=self.title,
+                method=self.method,  # type:ignore
+            )
+        )
 
     @property
     def blank_curve(self) -> Curve | None:
@@ -115,7 +155,7 @@ class Measurement:
         return lst
 
     @property
-    def method(self) -> BaseTechnique:
+    def method(self) -> MethodTypeCompatible:
         """Method related with this Measurement.
 
         The information from the Method is used when saving Curves."""

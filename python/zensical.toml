@@ -52,6 +52,12 @@ nav = [
       "reference/corrosion/corrosion_potential.md",
       "reference/corrosion/impedance_spectroscopy.md",
   ]},
+  { "Techniques (energy)" = [
+      "reference/energy/index.md",
+      "reference/energy/battery_cycling.md",
+      "reference/energy/constant_power.md",
+      "reference/energy/constant_resistance.md",
+  ]},
   { "Technique settings" = "reference/methods/settings.md" },
   { "Reference" = [
     "reference/index.md",
@@ -60,8 +66,8 @@ nav = [
     "reference/instrument.md",
     "reference/instrument_async.md",
     "reference/fitting.md",
-    "reference/methods/enums.md",
     "reference/models.md",
+    "reference/types.md",
   ]},
   { "Changelog" = "releases/index.md" },
   { "Source code ↗" = "https://github.com/palmsens/palmsens_sdk" },
@@ -79,7 +85,6 @@ extra_css = [
 ]
 
 extra_javascript = [
-  "https://polyfill.io/v3/polyfill.min.js?features:es6",
   "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js",
 ]
 
@@ -101,6 +106,9 @@ link = "https://pypi.org/project/pypalmsens/"
 [[project.extra.social]]
 icon = "fontawesome/solid/paper-plane"
 link = "https://www.palmsens.com/contact"
+
+[project.validation]
+unresolved_references = false
 
 [project.theme]
 name = "material"

@@ -7,15 +7,17 @@ import PalmSens
 from pydantic import Field
 from typing_extensions import override
 
-from .._helpers import single_to_double
+from .._converters import (
+    cr_enum_to_string,
+    cr_string_to_enum,
+    single_to_double,
+)
+from .._types import (
+    AllowedCurrentRanges,
+)
 from . import mixins
 from .base import BaseTechnique
 from .base_model import BaseModel
-from .types import (
-    AllowedCurrentRanges,
-    cr_enum_to_string,
-    cr_string_to_enum,
-)
 
 
 class BaseStage(BaseModel, metaclass=ABCMeta):
@@ -57,7 +59,8 @@ class BaseStage(BaseModel, metaclass=ABCMeta):
     def _update_psmethod(self, psmethod: PalmSens.Method, /) -> PalmSens.Method:
         """Add stage to dotnet method, and update paramaters on dotnet stage."""
         stage_type = getattr(
-            PalmSens.Techniques.MixedMode.EnumMixedModeStageType, self.stage_type
+            PalmSens.Techniques.MixedMode.EnumMixedModeStageType,
+            self.stage_type,  # type:ignore
         )
         psstage = psmethod.AddStage(stage_type)
         self._update_psstage(psstage)
@@ -228,7 +231,7 @@ class Impedance(BaseStage):
     frequency: float = 50000.0
     """Fixed frequency in Hz."""
 
-    min_sampling_time: float = 0.5
+    min_sampling_time: float = Field(0.5, gt=0)
     """Minimum sampling time in s.
 
     Each measurement point of the impedance spectrum is performed
@@ -288,12 +291,12 @@ StageType = Annotated[
 
 
 class MixedMode(
-    BaseTechnique,
     mixins.CurrentRangeMixin,
     mixins.PretreatmentMixin,
     mixins.PostMeasurementMixin,
     mixins.DataProcessingMixin,
     mixins.GeneralMixin,
+    BaseTechnique,
 ):
     """Create mixed mode method parameters.
 

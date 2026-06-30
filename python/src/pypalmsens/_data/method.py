@@ -5,6 +5,8 @@ from typing import Any, Union
 
 import PalmSens
 
+from pypalmsens.types import MethodType
+
 from .._methods.techniques import BaseTechnique
 
 
@@ -15,7 +17,7 @@ class Method:
         self._psmethod = psmethod
 
     def __repr__(self) -> str:
-        return f'{self.__class__.__name__}(name={self.name!r}, id={self.id!r})'
+        return f'{type(self).__name__}(name={self.name!r}, id={self.id!r})'
 
     @property
     def id(self) -> str:
@@ -50,10 +52,10 @@ class Method:
         """The technique number used in the firmware."""
         return self._psmethod.Technique
 
-    def to_settings(self) -> BaseTechnique:
+    def to_settings(self) -> MethodType:
         """Extract techniques parameters as dataclass."""
         return BaseTechnique._from_psmethod(self._psmethod)
 
     def to_dict(self) -> dict[str, Any]:
         """Return dictionary with technique parameters."""
-        return self.to_settings().model_dump()
+        return self.to_settings().to_dict()

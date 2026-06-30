@@ -86,7 +86,7 @@ For more information, see [Methods](methods.md).
 
 ## Mixed Mode
 
-This example shows how to set up a [Mixed Mode][pypalmsens.mixed_mode.MixedMode] measurement for a typicial charge / discharge cycle of a common Lithium battery.
+This example shows how to set up a [Mixed Mode][pypalmsens.MixedMode] measurement for a typicial charge / discharge cycle of a common Lithium battery.
 Note that the example has a reduced number of cycles and maximum run time.
 
 ```python title="mixed_mode.py"
@@ -101,11 +101,11 @@ This example shows how to set up and run a [MethodSCRIPT Sandbox measurement](me
 
 For more information, see [pypalmsens.MethodScript][].
 
-```python title="measurement_MethodSCRIPT_sandbox.py"
---8<-- "examples/measurement_MethodSCRIPT_sandbox.py"
+```python title="measurement_MethodSCRIPT.py"
+--8<-- "examples/measurement_MethodSCRIPT.py"
 ```
 
-[:fontawesome-solid-download: measurement_MethodSCRIPT_sandbox.py](https://raw.githubusercontent.com/PalmSens/PalmSens_SDK/refs/heads/main/python/examples/measurement_MethodSCRIPT_sandbox.py){ .md-button .md-button--primary}
+[:fontawesome-solid-download: measurement_MethodSCRIPT.py](https://raw.githubusercontent.com/PalmSens/PalmSens_SDK/refs/heads/main/python/examples/measurement_MethodSCRIPT.py){ .md-button .md-button--primary}
 
 ## Status callback
 

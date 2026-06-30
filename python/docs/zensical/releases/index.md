@@ -1,5 +1,160 @@
 # Changelog
 
+<!-- Latest-->
+## PyPalmSens 1.10.1
+
+> :fontawesome-brands-github: <a href="https://github.com/PalmSens/PalmSens_SDK/releases/tag/python-1.10.1">python-1.10.1</a>
+| :fontawesome-brands-python: <a href="https://pypi.org/project/pypalmsens/1.10.1">pypalmsens-1.10.1</a>
+| :fontawesome-solid-calendar: 2026-06-29
+
+This release fixes a crash in 1.10.0 when importing PyPalmSens.
+
+### What's changed
+
+- Add templates to MANIFEST.in ([#403](https://github.com/PalmSens/PalmSens_SDK/pull/403))
+
+## PyPalmSens 1.10
+
+> :fontawesome-brands-github: <a href="https://github.com/PalmSens/PalmSens_SDK/releases/tag/python-1.10">python-1.10</a>
+| :fontawesome-brands-python: <a href="https://pypi.org/project/pypalmsens/1.10">pypalmsens-1.10</a>
+| :fontawesome-solid-calendar: 2026-06-04
+
+### Support Python 3.14
+
+This release of PyPalmSens supports Python 3.14, thanks to the release of [pythonnet 3.1.0](https://github.com/pythonnet/pythonnet/releases/tag/v3.1.0).
+
+### Add experimental energy submodule
+
+We added 3 new methods for energy and battery research:
+
+- [ps.energy.experimental_BatteryCycling](https://dev.palmsens.com/python/latest/_attachments/reference/energy/battery_cycling/#pypalmsens.energy.experimental_BatteryCycling) (CC-CV-CC)
+- [ps.energy.experimental_ConstantPower](https://dev.palmsens.com/python/latest/_attachments/reference/energy/constant_power/#pypalmsens.energy.experimental_ConstantPower) (Discharge at constant power)
+- [ps.energy.experimental_ConstantResistance](https://dev.palmsens.com/python/latest/_attachments/reference/energy/constant_resistance/#pypalmsens.energy.experimental_ConstantResistance) (Discharge at constant resistance)
+
+These classes are implemented in MethodSCRIPT. This is a new way of adding methods to PyPalmSens that we are experimenting with.
+Therefore these classes are experimental (hence the `experimental_` prefix). This means we're still working on them and trying to understand how to best incorporate them in the code.
+
+That means these classes may change in the future. If you use these methods, we welcome any feedback and suggestions before making them a permanent part of PyPalmSens.
+
+See [the documentation for more information](https://dev.palmsens.com/python/latest/_attachments/reference/energy/).
+
+### Add streaming data
+
+With this release, PyPalmSens can auto-save all data directly to a file. This is helpful for:
+
+- Streaming data to other processes
+- Data recovery
+- Tracking Long-running measurements
+
+To make use of this feature, pass a file name to the measure function:
+
+```python
+import pypalmsens as ps
+
+ps.measure(ps.CyclicVoltammetry(), stream='data.jsonl')
+```
+
+See the [documentation for more information](https://dev.palmsens.com/python/latest/_attachments/measuring/#streaming-data-to-a-file)
+
+This required a big refactor of the callback system. We intend to expand this feature in a [future release](https://github.com/PalmSens/PalmSens_SDK/issues/392).
+
+### Nexus support on Mac and Linux
+
+[PyPalmSens 1.8.0](https://github.com/PalmSens/PalmSens_SDK/releases/tag/python-1.8.0) added support for Nexus over TCP/IP using the `from_ip` method, but for Windows only. This release extends support for Mac and Linux.
+
+### What's changed
+
+- Add support for cell on ([#371](https://github.com/PalmSens/PalmSens_SDK/pull/371))
+- Raise Attribute error for module `__getattr__` ([#377](https://github.com/PalmSens/PalmSens_SDK/pull/377))
+- Add method to serialize method parameters ([#378](https://github.com/PalmSens/PalmSens_SDK/pull/378))
+- Add literal scan/frequency types ([#380](https://github.com/PalmSens/PalmSens_SDK/pull/380))
+- Add support for Python 3.14 ([#381](https://github.com/PalmSens/PalmSens_SDK/pull/381))
+- Add experimental BatteryCycling technique ([#379](https://github.com/PalmSens/PalmSens_SDK/pull/379))
+- Update types and type checking ([#383](https://github.com/PalmSens/PalmSens_SDK/pull/383))
+- Add linux support for connecting over TCP\IP ([#388](https://github.com/PalmSens/PalmSens_SDK/pull/388))
+- Fix double newlines in serialize to `.psmethod` ([#389](https://github.com/PalmSens/PalmSens_SDK/pull/389))
+- Update Python version in test workfrow to 3.14 ([#390](https://github.com/PalmSens/PalmSens_SDK/pull/390))
+- Add streaming data for live measurements ([#386](https://github.com/PalmSens/PalmSens_SDK/pull/386))
+- Add missing fields for the GEIS technique ([#393](https://github.com/PalmSens/PalmSens_SDK/pull/393))
+- Add ConstantPower and ConstantResistance methods ([#394](https://github.com/PalmSens/PalmSens_SDK/pull/394))
+
+## PyPalmSens 1.9.0
+
+> :fontawesome-brands-github: <a href="https://github.com/PalmSens/PalmSens_SDK/releases/tag/python-1.9.0">python-1.9.0</a>
+| :fontawesome-brands-python: <a href="https://pypi.org/project/pypalmsens/1.9.0">pypalmsens-1.9.0</a>
+| :fontawesome-solid-calendar: 2026-05-11
+
+### Corrosion methods
+
+This release adds support for corrosion methods to PyPalmSens. This is mostly a compatibilitey update, so that corrosion data can be read into PyPalmSens. Functionally these methods are exactly the same as the corresponding regular classes. See the [documentation](https://dev.palmsens.com/python/latest/_attachments/reference/corrosion/) for more information.
+
+- `pypalmsens.corrosion.CorrosionPotential`
+- `pypalmsens.corrosion.CyclicPolarization`
+- `pypalmsens.corrosion.Galvanostatic`
+- `pypalmsens.corrosion.LinearPolarization`
+- `pypalmsens.corrosion.Potentiostatic`
+- `pypalmsens.corrosion.ElectrochemicalImpedanceSpectroscopy`
+
+### Capabilities
+
+You can now retrieve instrument capabilities using [`InstrumentManager.capabilities`](https://dev.palmsens.com/python/latest/_attachments/reference/instrument/#pypalmsens.InstrumentManager.capabilities).
+This provides information on device features, firmware versions, supported current and potential ranges, and other information.
+
+```python
+>>> import pypalmsens as ps
+
+>>> with ps.connect() as manager:
+...     capabilities = manager.capabilities
+
+>>> capabilities
+Capabilities(device_type='EmStat4LR', firmware_version=1.5, ...)
+```
+
+### Estimated duration
+
+Get the estimated measurement duration using [`InstrumentManager.get_estimated_duration()`](https://dev.palmsens.com/python/latest/_attachments/reference/instrument/#pypalmsens.InstrumentManager.get_estimated_duration):
+
+```python
+>>> import pypalmsens as ps
+
+>>> method = ps.CyclicVoltammetry()
+
+>>> with ps.connect() as manager:
+...     print(manager.get_estimated_duration(method))
+2.099
+```
+
+### Mixed Mode API changes
+
+This release makes a few changes to the API for Mixed Mode.
+
+- `pypalmsens.mixed_mode.MixedMode` is available from the root level (`pypalmsens.MixedMode`) for consistency with other techniques. Stages are available from `pypalmsens.stages`.
+
+```python
+import pypalmsens as ps
+# old
+ps.mixed_mode.MixedMode(stages=[ps.mixed_mode.ConstantE()])
+# new
+ps.MixedMode(stages=[ps.stages.ConstantE()])
+```
+
+See https://dev.palmsens.com/python/latest/_attachments/reference/methods/mixed_mode/
+
+The old paths now emit `DeprecationWarnings`. They will be removed in a later version.
+
+### What's changed
+
+- Add wrappers for corrosion methods ([#341](https://github.com/PalmSens/PalmSens_SDK/pull/341))
+- Move `get_estimated_duration` to instrument manager ([#342](https://github.com/PalmSens/PalmSens_SDK/pull/342))
+- Add support for capabilities ([#346](https://github.com/PalmSens/PalmSens_SDK/pull/346))
+- Use EILevel for MSP methods ([#351](https://github.com/PalmSens/PalmSens_SDK/pull/351))
+- Min sampling time must be greater than 0 for Impedance ([#354](https://github.com/PalmSens/PalmSens_SDK/pull/354))
+- Add `__getitem__` and `__contains__` magic methods to pool ([#355](https://github.com/PalmSens/PalmSens_SDK/pull/355))
+- Move converters and types to root module ([#356](https://github.com/PalmSens/PalmSens_SDK/pull/356))
+- Update user API (types and mixed mode) ([#357](https://github.com/PalmSens/PalmSens_SDK/pull/357))
+- Update mixed mode method listing in documentation ([#360](https://github.com/PalmSens/PalmSens_SDK/pull/360))
+- Add `status()` method for `IntrumentPool` ([#361](https://github.com/PalmSens/PalmSens_SDK/pull/361))
+
 ## PyPalmSens 1.8.1
 
 > :fontawesome-brands-github: <a href="https://github.com/PalmSens/PalmSens_SDK/releases/tag/python-1.8.1">python-1.8.1</a>
@@ -19,7 +174,7 @@ This is a small bugfix release
 | :fontawesome-brands-python: <a href="https://pypi.org/project/pypalmsens/1.8.0">pypalmsens-1.8.0</a>
 | :fontawesome-solid-calendar: 2026-03-26
 
-This is a relatively small release that adds support for the PalmSens Nexus. This release also updates the PalmSens dotnet libraries to 5.13.011, which brings a bunch of small fixes and improvements.
+This is a relatively small release that adds support for the PalmSens Nexus on Windows. This release also updates the PalmSens dotnet libraries to 5.13.011, which brings a bunch of small fixes and improvements.
 
 ### Nexus support
 
@@ -285,9 +440,10 @@ You can pass the current range directly as a dictionary of strings:
 cv = ps.CyclicVoltammetry(current_range={'min': '1uA', 'max': '10mA'})
 ```
 
-A list of allowed values is available via
-- [`ps.settings.AllowedCurrentRanges`](https://dev.palmsens.com/python/latest/_attachments/reference/methods/enums/#pypalmsens.settings.AllowedCurrentRanges)
-- [`ps.settings.AllowedPotentialRanges`](https://dev.palmsens.com/python/latest/_attachments/reference/methods/enums/#pypalmsens.settings.AllowedPotentialRanges)
+A list of allowed values is available via:
+
+- `ps.settings.AllowedCurrentRanges`
+- `ps.settings.AllowedPotentialRanges`
 
 Thanks to how the methods are validated, a warning will be raised if an incorrect value is passed:
 
@@ -457,7 +613,7 @@ method = ps.ElectrochemicalImpedanceSpectroscopy(
 | :fontawesome-brands-python: <a href="https://pypi.org/project/pypalmsens/1.3.1">pypalmsens-1.3.1</a>
 | :fontawesome-solid-calendar: 2025-10-31
 
-This release focuses on improved support for Linux and MacOS. It contains new builds of the underlying PalmSens.Core .NET library for both x86-64 and arm. And the [documentation](https://dev.palmsens.com/python/latest/_attachments/installation.html) was updated with better installation instructions (e.g. for running the code on a Raspberry Pi).
+This release focuses on improved support for Linux and MacOS. It contains new builds of the underlying PalmSens.Core .NET library for both x86-64 and arm. And the [documentation](../installation/) was updated with better installation instructions (e.g. for running the code on a Raspberry Pi).
 
 ### What's Changed
 
@@ -467,6 +623,7 @@ This release focuses on improved support for Linux and MacOS. It contains new bu
 * Fix default value for charge limits causing ChronoAmperometry to only collect 1 data point by [@stefsmeets](https://github.com/stefsmeets) in [#144](https://github.com/PalmSens/PalmSens_SDK/pull/144)
 
 ### Documentation
+
 * Expand documentation for HW sync example by [@stefsmeets](https://github.com/stefsmeets) in [#137](https://github.com/PalmSens/PalmSens_SDK/pull/137)
 * Update installation instructions for linux distros by [@stefsmeets](https://github.com/stefsmeets) in [#138](https://github.com/PalmSens/PalmSens_SDK/pull/138)
 

@@ -4,22 +4,24 @@ from typing import Literal
 
 import PalmSens
 from pydantic import Field
-from typing_extensions import Generator, override
+from typing_extensions import override
 
-from .._helpers import single_to_double
+from .._converters import (
+    cr_enum_to_string,
+    cr_string_to_enum,
+    pr_enum_to_string,
+    pr_string_to_enum,
+    single_to_double,
+)
+from .._types import (
+    AllowedCurrentRanges,
+    AllowedPotentialRanges,
+)
 from .base import BaseSettings
 from .base_model import BaseModel
 from .levels import (
     convert_bools_to_int,
     convert_int_to_bools,
-)
-from .types import (
-    AllowedCurrentRanges,
-    AllowedPotentialRanges,
-    cr_enum_to_string,
-    cr_string_to_enum,
-    pr_enum_to_string,
-    pr_string_to_enum,
 )
 
 
@@ -423,14 +425,15 @@ class EquilibrationTriggers(BaseSettings):
     d3: bool = False
     """If True, enable trigger at d3 high."""
 
-    def __iter__(self) -> Generator[bool]:
-        yield from (self.d0, self.d1, self.d2, self.d3)
+    def to_list(self) -> list[bool]:
+        """Return trigger values as list."""
+        return [self.d0, self.d1, self.d2, self.d3]
 
     @override
     def _update_psmethod(self, psmethod: PalmSens.Method, /):
         if any(self):
             psmethod.UseTriggerOnEquil = True
-            psmethod.TriggerValueOnEquil = convert_bools_to_int(list(self))
+            psmethod.TriggerValueOnEquil = convert_bools_to_int(self.to_list())
         else:
             psmethod.UseTriggerOnEquil = False
 
@@ -476,14 +479,15 @@ class MeasurementTriggers(BaseSettings):
     d3: bool = False
     """If True, enable trigger at d3 high."""
 
-    def __iter__(self) -> Generator[bool]:
-        yield from (self.d0, self.d1, self.d2, self.d3)
+    def to_list(self) -> list[bool]:
+        """Return trigger values as list."""
+        return [self.d0, self.d1, self.d2, self.d3]
 
     @override
     def _update_psmethod(self, psmethod: PalmSens.Method, /):
         if any(self):
             psmethod.UseTriggerOnStart = True
-            psmethod.TriggerValueOnStart = convert_bools_to_int(list(self))
+            psmethod.TriggerValueOnStart = convert_bools_to_int(self.to_list())
         else:
             psmethod.UseTriggerOnStart = False
 
@@ -535,8 +539,9 @@ class DelayTriggers(BaseSettings):
     d3: bool = False
     """If True, enable trigger at d3 high."""
 
-    def __iter__(self) -> Generator[bool]:
-        yield from (self.d0, self.d1, self.d2, self.d3)
+    def to_list(self) -> list[bool]:
+        """Return trigger values as list."""
+        return [self.d0, self.d1, self.d2, self.d3]
 
     @override
     def _update_psmethod(self, psmethod: PalmSens.Method, /):
@@ -544,7 +549,7 @@ class DelayTriggers(BaseSettings):
 
         if any(self):
             psmethod.UseTriggerOnDelay = True
-            psmethod.TriggerValueOnDelay = convert_bools_to_int(list(self))
+            psmethod.TriggerValueOnDelay = convert_bools_to_int(self.to_list())
         else:
             psmethod.UseTriggerOnDelay = False
 
