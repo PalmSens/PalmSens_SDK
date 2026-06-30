@@ -13,6 +13,7 @@ import asyncio
 import streamlit as st
 
 import pypalmsens as ps
+from pypalmsens.data import CallbackData
 
 st.set_page_config(
     page_title='Battery Cycling',
@@ -145,13 +146,27 @@ def main():
     manager: ps.InstrumentManagerAsync = connect_to_device()
     assert manager.is_connected()
 
+    charts = {}
+
+    def on_data(data: CallbackData):
+        if data.id not in charts:
+            chart = st.empty()
+            charts[data.id] = chart
+        else:
+            chart = charts[data.id]
+
+        x = f'{data.x_array.quantity} / {data.x_array.unit}'
+        y = f'{data.y_array.quantity} / {data.y_array.unit}'
+
+        chart.line_chart({x: data.x_array, y: data.y_array}, x=x, y=y)
+
     async def async_measure(manager, method):
         def update_status_message(message: str):
             status.update(label=message)
 
         manager.register_receive_message_callback(update_status_message)
 
-        measurement = await manager.measure(method)
+        measurement = await manager.measure(method, callback=on_data)
 
         manager.unregister_receive_message_callback()
         return measurement
@@ -159,8 +174,11 @@ def main():
     with st.status('Starting measurement') as status:
         status.write('Collecting data...')
 
-        asyncio.run(async_measure(manager, method))
+        measurement = asyncio.run(async_measure(manager, method))
         status.update(label='Measurement finished!', state='complete')
+
+    st.subheader('Curves')
+    st.write(measurement.curves)
 
 
 if __name__ == '__main__':
