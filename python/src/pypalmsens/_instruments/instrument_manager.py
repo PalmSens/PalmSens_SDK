@@ -315,6 +315,8 @@ class InstrumentManager(CapabilitiesMixin):
         The callback is triggered, for example, when a method is started,
         or when `send_string` is called in MethodSCRIPT.
 
+        Parameters
+        ----------
         callback: Callable[[str], None]
             The function to call when triggered
         """

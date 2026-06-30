@@ -304,6 +304,8 @@ Hello world
 >>> manager.unregister_receive_message_callback()
 ```
 
+See [InstrumentManager][pypalmsens.InstrumentManager.register_receive_message_callback] and [InstrumentManagerAsync][pypalmsens.InstrumentManagerAsync.register_receive_message_callback] for more information.
+
 ## Manually controlling the device
 
 Depending on your device’s capabilities it can be used to set a potential/current and to switch current ranges.
