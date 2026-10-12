@@ -40,22 +40,38 @@ class InstrumentReadsMixin:
     _serial: str
     _session: Session
 
-    async def signalr_url(self) -> str:
+    @property
+    def info(self) -> dict[str, Any]:
+        """The instrument info from the most recent [get_info][] call.
+
+        May be stale or empty.
+        """
+        return self._session.instrument_info[self._serial]
+
+    async def get_info(self) -> dict[str, Any]:
+        """Get info for instrument.
+
+        Refreshes the [info][] dict for all attached instruments.
+        """
+        info = await self._session.get_instrument_info()
+        return info[self._serial]
+
+    async def get_signalr_url(self) -> str:
         response = await self._session._http.get(f'/Instrument/{self._serial}/GetSignalRUrl')
         data = response.json()
         return data['result']
 
-    async def configuration(self) -> dict[str, Any]:
+    async def get_configuration(self) -> dict[str, Any]:
         response = await self._session._http.get(f'/Instrument/{self._serial}/Configuration')
         data = response.json()
         return data['result']
 
-    async def capabilities(self) -> dict[str, Any]:
+    async def get_capabilities(self) -> dict[str, Any]:
         response = await self._session._http.get(f'/Instrument/{self._serial}/Capabilities')
         data = response.json()
         return data['result']
 
-    async def active_measurement(self) -> MeasurementRef:
+    async def get_active_measurement(self) -> MeasurementRef:
         """Return the active measurement, if any."""
         response = await self._session._http.get(
             f'/Instrument/{self._serial}/CurrentMeasurement'
@@ -63,7 +79,7 @@ class InstrumentReadsMixin:
         data = response.json()
         return data['result']
 
-    async def state(self) -> dict[str, Any]:
+    async def get_state(self) -> dict[str, Any]:
         response = await self._session._http.get(f'/Instrument/{self._serial}/State')
         data = response.json()
         return data['result']
@@ -98,7 +114,8 @@ class Instrument(InstrumentReadsMixin):
 
     async def claim(self) -> InstrumentClaim:
         """Claim this instrument."""
-        return await self._session.claim(self)
+        await self._session._http.post(f'/Instrument/{self._serial}/Claim')
+        return InstrumentClaim(self._serial, self._session)
 
 
 class InstrumentClaim(InstrumentReadsMixin):
@@ -134,7 +151,7 @@ class InstrumentClaim(InstrumentReadsMixin):
 
     async def release(self) -> None:
         """Release the instrument claim."""
-        await self._session.release(self)
+        await self._session._http.post(f'/Instrument/{self._serial}/Unclaim')
 
     async def set_cell_mode(
         self, mode: Literal['unknown', 'potentiostatic', 'galvanostatic']

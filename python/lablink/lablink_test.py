@@ -23,9 +23,9 @@ def r(f):
 async def main():
     method = ps.CyclicVoltammetry()
 
-    # local = lablink.Instance('http://127.0.0.1/')
-    local = lablink.Instance('http://192.168.178.79:5000')
-    info = await local.fetch_metadata()
+    # local = lablink.Instance('http://192.168.178.79:5000')
+    local = lablink.Instance('http://127.0.0.1/')
+    info = await local.get_info()
     print(info)
     session = await local.login('test', 'test')
     print(session)
@@ -36,13 +36,11 @@ async def main():
     [instrument] = session.instruments
 
     ret = r(session.list_measurements())
-    data = r(ret[0].fetch())
+    data = r(ret[0].get_data())
 
-    async with await session.claim(instrument) as claim:
-        job = await session.start(claim, method=method)
-
+    async with await instrument.claim() as claim:
+        job = await claim.start_measurement(method=method)
         print(job)
-
         measurement = await job
 
     breakpoint()

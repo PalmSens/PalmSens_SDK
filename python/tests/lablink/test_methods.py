@@ -71,7 +71,7 @@ async def test_start_many(session: lablink.Session):
     instruments = session.instruments
     method = ps.ChronoAmperometry(run_time=0.1, interval_time=0.01)
 
-    async with await session.claim_many(instruments) as claims:
+    async with await session.claim(instruments) as claims:
         jobs = await session.start_many(claims, method=method)
         measurements = await asyncio.gather(*jobs)
 

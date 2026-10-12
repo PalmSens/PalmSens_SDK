@@ -59,6 +59,12 @@ develop = [
     "sybil",
 ]
 
+lablink = [
+    "signalrcore",
+    "xarray",
+    "zeroconf",
+]
+
 publishing = [
     "twine",
     "wheel",

@@ -17,7 +17,7 @@ from PalmSens.Sdk.Lablink.Example.Lablink.Mappers import MethodMappers
 
 from ..types import MethodTypeCompatible
 from ._client import HttpClient
-from ._instrument import Instrument, InstrumentClaim, Releasable
+from ._instrument import Instrument, InstrumentClaim
 from ._measurement import MeasurementJob, MeasurementRef
 from .models import LablinkInfo
 from .models._wire import (
@@ -88,20 +88,30 @@ class Session:
         token: str,
         port: int = 5000,
     ):
-        self._http = HttpClient(f'{host}:{port}/api/v1', token=token)
-        self._instruments = []
-        self._info = None
+        self._init(HttpClient(f'{host}:{port}/api/v1', token=token))
 
     @classmethod
     def _from_http(cls, http: HttpClient) -> Self:
-        obj = object.__new__(cls)
-        obj._http = http
-        obj._instruments = []
-        obj._info = None
+        obj = cls.__new__(cls)
+        obj._init(http)
         return obj
+
+    def _init(self, http: HttpClient) -> None:
+        self._http = http
+        self._info = None
+        self._instruments = []
+        self._instrument_info = {}
 
     def __repr__(self) -> str:
         return f'{type(self).__name__}(host={self._http._client.base_url.host!r}, port={self._http._client.base_url.port})'
+
+    @property
+    def instrument_info(self) -> dict[str, dict[str, Any]]:
+        """The instrument info from the most recent [get_instrument_info][] call.
+
+        May be stale or empty.
+        """
+        return self._instrument_info
 
     @property
     def instruments(self) -> list[Instrument]:
@@ -111,6 +121,22 @@ class Session:
         """
         return self._instruments
 
+    async def get_instrument_info(self):
+        """Get info dictionary for currently attached instruments.
+
+        Refreshes the [instrument_info][] dictionary.
+
+        Returns
+        -------
+        dict of InstrumentInfo
+            A dictionary of metadata for attached instruments.
+        """
+
+        data = await self._http.get('/Instruments')
+        self._instrument_info = {info['Serial']['Serial']: info for info in data.json()}
+
+        return self._instrument_info
+
     async def list_instruments(self) -> list[Instrument]:
         """List currently attached instruments.
 
@@ -118,48 +144,21 @@ class Session:
 
         Returns
         -------
-        list of InstrumentRef
+        list of Instrument
             A list of currently attached instruments.
         """
         data = await self._http.get('/Instruments')
         instruments = []
+        instrument_info = await self.get_instrument_info()
 
-        for info in data.json():
-            instrument = Instrument(serial=info['Serial']['Serial'], session=self)
-            instrument._info = info
+        for serial in instrument_info:
+            instrument = Instrument(serial=serial, session=self)
             instruments.append(instrument)
 
         self._instruments = instruments
         return instruments
 
-    async def _claim(self, instruments: Sequence[Instrument]) -> list[InstrumentClaim]:
-        props = {instrument.serial_number: EmptyProperty() for instrument in instruments}
-        payload = SimpleInstrumentsCommand(
-            InstrumentProperties=props, AllInstrumentsMustSucceed=True
-        )
-
-        await self._http.post('/Instruments/Claim', json=payload.model_dump())
-
-        return [InstrumentClaim(instrument.serial_number, self) for instrument in instruments]
-
-    async def claim(self, instrument: Instrument) -> InstrumentClaim:
-        """Claim an instrument.
-
-        Parameters
-        ----------
-        instrument : InstrumentRef
-            The instrument to claim.
-
-        Returns
-        -------
-        InstrumentClaim
-            A claim on the instrument. Use it as an async context
-            manager. It is released when the context exits.
-        """
-        [claim] = await self._claim([instrument])
-        return claim
-
-    async def claim_many(self, instruments: Sequence[Instrument]) -> InstrumentClaimBatch:
+    async def claim(self, instruments: Sequence[Instrument]) -> InstrumentClaimBatch:
         """Claim multiple instruments.
 
         Parameters
@@ -172,28 +171,17 @@ class Session:
         ClaimBatch
             A batch containing the instrument claims.
         """
-        claims = await self._claim(instruments)
-        return InstrumentClaimBatch(claims)
-
-    async def _release(self, instruments: Sequence[Releasable]) -> None:
         props = {instrument.serial_number: EmptyProperty() for instrument in instruments}
         payload = SimpleInstrumentsCommand(
             InstrumentProperties=props, AllInstrumentsMustSucceed=True
         )
 
-        await self._http.post('/Instruments/UnClaim', json=payload.model_dump())
+        await self._http.post('/Instruments/Claim', json=payload.model_dump())
 
-    async def release(self, instrument: Releasable) -> None:
-        """Release an instrument.
+        claims = [InstrumentClaim(instrument.serial_number, self) for instrument in instruments]
+        return InstrumentClaimBatch(claims)
 
-        Parameters
-        ----------
-        instrument : InstrumentRef
-            The instrument to release.
-        """
-        await self._release([instrument])
-
-    async def release_many(self, instruments: Sequence[Instrument]) -> None:
+    async def release(self, instruments: Sequence[Instrument]) -> None:
         """Release multiple instruments.
 
         Parameters
@@ -201,7 +189,12 @@ class Session:
         instruments : Sequence of InstrumentRef
             The instruments to release.
         """
-        await self._release(instruments)
+        props = {instrument.serial_number: EmptyProperty() for instrument in instruments}
+        payload = SimpleInstrumentsCommand(
+            InstrumentProperties=props, AllInstrumentsMustSucceed=True
+        )
+
+        await self._http.post('/Instruments/UnClaim', json=payload.model_dump())
 
     async def list_measurements(self) -> list[MeasurementRef]:
         """List all measurements.
@@ -215,7 +208,7 @@ class Session:
         refs = [MeasurementListResult.model_validate(item) for item in data.json()]
         return [MeasurementRef._wrap(ref, self) for ref in refs]
 
-    async def fetch_measurement(self, measurement: MeasurementRef) -> xr.Dataset | xr.DataTree:
+    async def get_measurement(self, measurement: MeasurementRef) -> xr.Dataset | xr.DataTree:
         """Fetch a specific measurement.
 
         Parameters
@@ -306,27 +299,7 @@ class Session:
 
         return data
 
-    async def start(
-        self, instrument: InstrumentClaim, *, method: MethodTypeCompatible
-    ) -> MeasurementJob:
-        """Start a measurement on an instrument.
-
-        Parameters
-        ----------
-        instrument : InstrumentClaim
-            The claimed instrument to measure.
-        method : MethodTypeCompatible
-            The measurement method to use.
-
-        Returns
-        -------
-        MeasurementJob
-            A job representing the ongoing measurement.
-        """
-        [measurement] = await self.start_many([instrument], method=method)
-        return measurement
-
-    async def start_many(
+    async def start_measurement(
         self, instruments: Sequence[InstrumentClaim], *, method: MethodTypeCompatible
     ) -> list[MeasurementJob]:
         """Start measurements on multiple instruments.
@@ -362,11 +335,11 @@ class Session:
     def info(self) -> LablinkInfo | None:
         """Last fetched metadata, or `None` if not yet fetched.
 
-        See [fetch_metadata][] to (re)populate this.
+        See [get_info][] to (re)populate this.
         """
         return self._info
 
-    async def fetch_metadata(self) -> LablinkInfo:
+    async def get_info(self) -> LablinkInfo:
         """Fetch metadata for this instance.
 
         Updates the name, version, and serial number with the latest values.

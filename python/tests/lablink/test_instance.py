@@ -18,7 +18,7 @@ async def test_metadata():
     assert not local.name
     assert not local.version
     assert not local.serial_number
-    await local.fetch_metadata()
+    _ = await local.get_info()
     assert local.name
     assert local.version
     assert local.serial_number

@@ -51,12 +51,14 @@ class Instance:
     def info(self) -> LablinkInfo | None:
         """Last fetched metadata, or `None` if not yet fetched.
 
-        See [fetch_metadata][] to (re)populate this.
+        May be stale or empty.
+
+        See [get_info][] to (re)populate this.
         """
         return self._info
 
-    async def fetch_metadata(self) -> LablinkInfo:
-        """Fetch metadata for this instance.
+    async def get_info(self) -> LablinkInfo:
+        """Get info for this instance.
 
         Updates the name, version, and serial number with the latest values.
         """

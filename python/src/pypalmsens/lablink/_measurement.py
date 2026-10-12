@@ -37,7 +37,7 @@ class MeasurementRef:
 
     @classmethod
     def _wrap(cls, metadata: MeasurementListResult, session: Session) -> Self:
-        obj = object.__new__(cls)
+        obj = cls.__new__(cls)
         obj._guid = str(metadata.Id)
         obj._metadata = metadata
         obj._session = session
@@ -48,12 +48,12 @@ class MeasurementRef:
         """The unique identifier of the measurement."""
         return self._guid
 
-    async def fetch_metadata(self) -> MeasurementListResult:
+    async def get_info(self) -> MeasurementListResult:
         await self._session.fetch_measurement_metadata()
 
-    async def fetch(self) -> xr.Dataset | xr.DataTree:
-        """Fetch data for this measurement."""
-        return await self._session.fetch_measurement(self)
+    async def get_data(self) -> xr.Dataset | xr.DataTree:
+        """Get data for this measurement."""
+        return await self._session.get_measurement(self)
 
 
 class MeasurementJob:
