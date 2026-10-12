@@ -99,9 +99,9 @@ class Session:
 
     def _init(self, http: HttpClient) -> None:
         self._http = http
-        self._info = None
-        self._instruments = []
-        self._instrument_info = {}
+        self._info: LablinkInfo | None = None
+        self._instruments: list[Instrument] = []
+        self._instrument_info: dict[str, dict[str, Any]] = {}
 
     def __repr__(self) -> str:
         return f'{type(self).__name__}(host={self._http._client.base_url.host!r}, port={self._http._client.base_url.port})'
@@ -165,7 +165,6 @@ class Session:
         list of Instrument
             A list of currently attached instruments.
         """
-        data = await self._http.get('/Instruments')
         instruments = []
         instrument_info = await self.get_instrument_info()
 
@@ -227,7 +226,7 @@ class Session:
         """
         data = await self._http.get('/Measurements')
         refs = [MeasurementListResult.model_validate(item) for item in data.json()]
-        return [MeasurementRef._wrap(ref, self) for ref in refs]
+        return [MeasurementRef(str(ref.Id), session=self) for ref in refs]
 
     async def get_measurement(self, measurement: MeasurementRef) -> xr.Dataset | xr.DataTree:
         """Fetch a specific measurement.
@@ -263,8 +262,10 @@ class Session:
             assert dataset.DataArrays
 
             for array in dataset.DataArrays:
+                assert array.DataValueType
                 array_type = array.DataValueType.name
-                array_id = array.DataArrayId
+                # TODO, what is array ID used for?
+                # array_id = array.DataArrayId
                 values_id = array.DataValuesId
 
                 response = await self._http.get(f'DataSets/{dataset_id}/{values_id}')
@@ -273,7 +274,8 @@ class Session:
                 if array_type == 'CurrentRange':
                     pairs = np.frombuffer(raw, dtype=np.int32).reshape(-1, 2)
                     data = pairs[:, 0]
-                    other = pairs[:, 0]  # ?? factor? exponent?
+                    # TODO: what is other? factor? exponent? How to store.
+                    # other = pairs[:, 0]
 
                 elif array_type in (
                     'AppliedPotential',
@@ -350,48 +352,49 @@ class Session:
 
         response = await self._http.post('/Instruments/StartMeasurement', json=payload)
 
-        return [MeasurementJob.from_response(r) for r in response.json()]
+        jobs = []
+        claims = {claim.serial_number: claim for claim in instruments}
 
-    async def skip_pre_measurement_stage(self, instruments: Sequence[InstrumentClaim]) -> None:
+        for data in response.json():
+            guid = data['result']
+            serial = data['serial']
+            claim = claims[serial]
+            jobs.append(MeasurementJob(guid=guid, claim=claim))
+
+        return jobs
+
+    async def skip_pre_measurement_stage(self, jobs: Sequence[MeasurementJob]) -> None:
         """Skips the pre-measurement stage."""
         payload = {
             'AllInstrumentsMustSucceed': True,
-            'InstrumentProperties': {
-                instrument.serial_number: {} for instrument in instruments
-            },
+            'InstrumentProperties': {job.serial_number: {} for job in jobs},
         }
 
         await self._http.post('/Instrument/SkipPreMeasurementStage', json=payload)
 
-    async def pause_measurement(self, instruments: Sequence[InstrumentClaim]) -> None:
+    async def pause_measurement(self, jobs: Sequence[MeasurementJob]) -> None:
         """Pauses the running measurement."""
         payload = {
             'AllInstrumentsMustSucceed': True,
-            'InstrumentProperties': {
-                instrument.serial_number: {} for instrument in instruments
-            },
+            'InstrumentProperties': {job.serial_number: {} for job in jobs},
         }
 
         await self._http.post('/Instrument/PauseMeasurement', json=payload)
 
-    async def resume_measurement(self, instruments: Sequence[InstrumentClaim]) -> None:
+    async def resume_measurement(self, jobs: Sequence[MeasurementJob]) -> None:
         """Resumes a paused measurement."""
         payload = {
             'AllInstrumentsMustSucceed': True,
-            'InstrumentProperties': {
-                instrument.serial_number: {} for instrument in instruments
-            },
+            'InstrumentProperties': {job.serial_number: {} for job in jobs},
         }
 
         await self._http.post('/Instrument/ResumeMeasurement', json=payload)
 
-    async def abort_measurement(self, instruments: Sequence[InstrumentClaim]) -> None:
+    async def abort_measurement(self, jobs: Sequence[MeasurementJob]) -> None:
         """Aborts the running measurement."""
         payload = {
             'AllInstrumentsMustSucceed': True,
-            'InstrumentProperties': {
-                instrument.serial_number: {} for instrument in instruments
-            },
+            'InstrumentProperties': {job.serial_number: {} for job in jobs},
         }
 
         await self._http.post('/Instrument/AbortMeasurement', json=payload)
@@ -411,4 +414,4 @@ class Session:
             },
         }
         payload = SendScriptCommand.model_validate(data).model_dump()
-        await self._session._http.post('/Instrument//SendScript', json=payload)
+        await self._http.post('/Instrument//SendScript', json=payload)

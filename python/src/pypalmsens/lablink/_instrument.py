@@ -15,7 +15,6 @@ from PalmSens.Sdk.Lablink.Example.Lablink.Mappers import MethodMappers
 from .._converters import cr_string_to_sig_exp, pr_string_to_sig_exp
 from .._types import AllowedCurrentRanges, AllowedPotentialRanges, MethodTypeCompatible
 from ._measurement import MeasurementJob, MeasurementRef
-from .models import InstrumentInfo
 from .models._wire import (
     CellMode,
     CellState,
@@ -104,8 +103,6 @@ class Instrument(InstrumentReadsMixin):
 
     def __hash__(self) -> int:
         return hash(self._serial)
-
-    def metadata(self) -> InstrumentInfo: ...
 
     @property
     def serial_number(self) -> str:
@@ -196,7 +193,7 @@ class InstrumentClaim(InstrumentReadsMixin):
 
         data = response.json()
 
-        return MeasurementJob(guid=data['result'], serial=data['serial'])
+        return MeasurementJob(guid=data['result'], claim=self)
 
     async def skip_pre_measurement_stage(self) -> None:
         """Skips the pre-measurement stage."""
