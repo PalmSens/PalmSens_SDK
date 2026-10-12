@@ -113,8 +113,12 @@ class Instrument(InstrumentReadsMixin):
         return self._serial
 
     async def claim(self) -> InstrumentClaim:
-        """Claim this instrument."""
-        await self._session._http.post(f'/Instrument/{self._serial}/Claim')
+        """Claim this instrument.
+
+        The claim is held until you release it, or until the enclosing
+        `async with` block exits.
+        """
+        await self._session._http.post(f'/Instrument/{self._serial}/ManualClaim')
         return InstrumentClaim(self._serial, self._session)
 
 

@@ -24,6 +24,7 @@ from .models._wire import (
     EmptyProperty,
     MeasurementListResult,
     MeasurementResult,
+    SendScriptCommand,
     SimpleInstrumentsCommand,
 )
 
@@ -106,6 +107,23 @@ class Session:
         return f'{type(self).__name__}(host={self._http._client.base_url.host!r}, port={self._http._client.base_url.port})'
 
     @property
+    def info(self) -> LablinkInfo | None:
+        """Last fetched metadata, or `None` if not yet fetched.
+
+        See [get_info][] to (re)populate this.
+        """
+        return self._info
+
+    async def get_info(self) -> LablinkInfo:
+        """Fetch metadata for this instance.
+
+        Updates the name, version, and serial number with the latest values.
+        """
+        data = await self._http.get('/Home/GetInfo')
+        self._info = LablinkInfo.from_wire(data.json())
+        return self._info
+
+    @property
     def instrument_info(self) -> dict[str, dict[str, Any]]:
         """The instrument info from the most recent [get_instrument_info][] call.
 
@@ -161,6 +179,9 @@ class Session:
     async def claim(self, instruments: Sequence[Instrument]) -> InstrumentClaimBatch:
         """Claim multiple instruments.
 
+        The claim is held until you release it, or until the enclosing
+        `async with` block exits.
+
         Parameters
         ----------
         instruments : Sequence of InstrumentRef
@@ -176,7 +197,7 @@ class Session:
             InstrumentProperties=props, AllInstrumentsMustSucceed=True
         )
 
-        await self._http.post('/Instruments/Claim', json=payload.model_dump())
+        await self._http.post('/Instruments/ManualClaim', json=payload.model_dump())
 
         claims = [InstrumentClaim(instrument.serial_number, self) for instrument in instruments]
         return InstrumentClaimBatch(claims)
@@ -331,19 +352,63 @@ class Session:
 
         return [MeasurementJob.from_response(r) for r in response.json()]
 
-    @property
-    def info(self) -> LablinkInfo | None:
-        """Last fetched metadata, or `None` if not yet fetched.
+    async def skip_pre_measurement_stage(self, instruments: Sequence[InstrumentClaim]) -> None:
+        """Skips the pre-measurement stage."""
+        payload = {
+            'AllInstrumentsMustSucceed': True,
+            'InstrumentProperties': {
+                instrument.serial_number: {} for instrument in instruments
+            },
+        }
 
-        See [get_info][] to (re)populate this.
+        await self._http.post('/Instrument/SkipPreMeasurementStage', json=payload)
+
+    async def pause_measurement(self, instruments: Sequence[InstrumentClaim]) -> None:
+        """Pauses the running measurement."""
+        payload = {
+            'AllInstrumentsMustSucceed': True,
+            'InstrumentProperties': {
+                instrument.serial_number: {} for instrument in instruments
+            },
+        }
+
+        await self._http.post('/Instrument/PauseMeasurement', json=payload)
+
+    async def resume_measurement(self, instruments: Sequence[InstrumentClaim]) -> None:
+        """Resumes a paused measurement."""
+        payload = {
+            'AllInstrumentsMustSucceed': True,
+            'InstrumentProperties': {
+                instrument.serial_number: {} for instrument in instruments
+            },
+        }
+
+        await self._http.post('/Instrument/ResumeMeasurement', json=payload)
+
+    async def abort_measurement(self, instruments: Sequence[InstrumentClaim]) -> None:
+        """Aborts the running measurement."""
+        payload = {
+            'AllInstrumentsMustSucceed': True,
+            'InstrumentProperties': {
+                instrument.serial_number: {} for instrument in instruments
+            },
+        }
+
+        await self._http.post('/Instrument/AbortMeasurement', json=payload)
+
+    async def send_script(self, instruments: Sequence[InstrumentClaim], *script: str) -> None:
+        """Sends a script to the instrument.
+
+        Parameters
+        ----------
+        script : str
+            The script text to execute.
         """
-        return self._info
-
-    async def get_info(self) -> LablinkInfo:
-        """Fetch metadata for this instance.
-
-        Updates the name, version, and serial number with the latest values.
-        """
-        data = await self._http.get('/Home/GetInfo')
-        self._info = LablinkInfo.from_wire(data.json())
-        return self._info
+        data = {
+            'AllInstrumentsMustSucceed': True,
+            'InstrumentProperties': {
+                instrument.serial_number: script for instrument in instruments
+            },
+        }
+        payload = SendScriptCommand.model_validate(data).model_dump()
+        await self._session._http.post('/Instrument//SendScript', json=payload)
