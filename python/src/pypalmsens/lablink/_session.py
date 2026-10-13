@@ -235,12 +235,12 @@ class Session:
         refs = [MeasurementListResult.model_validate(item) for item in data.json()]
         return [MeasurementRef(str(ref.Id), session=self) for ref in refs]
 
-    async def get_measurement(self, measurement: MeasurementRef) -> xr.Dataset | xr.DataTree:
+    async def get_measurement(self, measurement: MeasurementRef | str) -> xr.Dataset | xr.DataTree:
         """Fetch a specific measurement.
 
         Parameters
         ----------
-        measurement : MeasurementRef
+        measurement : MeasurementRef | str
             The reference to the measurement to fetch.
 
         Returns
@@ -250,7 +250,12 @@ class Session:
         """
         import numpy as np
 
-        response = await self._http.get(f'/Measurements/{measurement.guid}')
+        if isinstance(measurement, MeasurementRef):
+            guid = measurement.guid
+        else:
+            guid = measurement
+
+        response = await self._http.get(f'/Measurements/{guid}')
         parsed = MeasurementResult.model_validate(response.json())
 
         # metadata = _to_measurement_metadata(parsed)
@@ -436,3 +441,11 @@ class Session:
             guid = user
 
         await self._http.delete(f'/Users/{guid}')
+
+    async def delete_measurements(self, measurements: list[MeasurementRef | str]) -> None:
+        """Delete measurements in batch."""
+        payload = [
+            item.guid if isinstance(item, MeasurementRef) else item for item in measurements
+        ]
+
+        await self._http.delete('/Measurements/BatchDelete', json=payload)

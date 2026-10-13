@@ -67,6 +67,21 @@ class MeasurementRef:
             )
         return await self._session.get_measurement(self)
 
+    async def delete(self) -> None:
+        """
+        Delete this measurement from the server.
+
+        Raises
+        ------
+        If this reference is detached from a session.
+        """
+        if self._session is None:
+            raise RuntimeError(
+                f'This {type(self).__name__} is detached. Reattach it via '
+                '`ref = session.get_measurement(ref)` before fetching data.'
+            )
+        return await self._session._http.delete(f'/Measurements/{self.guid}/Delete')
+
 
 class MeasurementJob:
     """
