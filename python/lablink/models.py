@@ -256,7 +256,7 @@ class MyPalmSensEnvironment(Enum):
     Production = 'Production'
 
 
-class SendScriptCommand(BaseModel):
+class SendWorkflowCommand(BaseModel):
     model_config = ConfigDict(
         extra='forbid',
     )

@@ -24,7 +24,7 @@ from .models._wire import (
     EmptyProperty,
     MeasurementListResult,
     MeasurementResult,
-    SendScriptCommand,
+    SendWorkflowCommand,
     SimpleInstrumentsCommand,
 )
 
@@ -419,5 +419,5 @@ class Session:
                 instrument.serial_number: script for instrument in instruments
             },
         }
-        payload = SendScriptCommand.model_validate(data).model_dump()
+        payload = SendWorkflowCommand.model_validate(data).model_dump()
         await self._http.post('/Instrument//SendScript', json=payload)
