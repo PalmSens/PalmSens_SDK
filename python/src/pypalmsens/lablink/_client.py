@@ -3,21 +3,10 @@ from importlib.resources import files
 from typing import Any
 
 import httpx2
-from PalmSens.Core.Domain import Resources as PSResources
+
+from ._errors import LablinkApiError, build_error
 
 LABLINK_ROOT_CERT = files('pypalmsens.lablink.certs') / 'lablink-root-ca.pem'
-
-
-class LablinkError(ConnectionError): ...
-
-
-class LablinkAuthError(LablinkError): ...
-
-
-class LablinkConnectionError(LablinkError): ...
-
-
-class LablinkApiError(LablinkError): ...
 
 
 class HttpClient:
@@ -82,20 +71,14 @@ class HttpClient:
         data = response.json()
 
         if 'exceptionMessage' in data:
-            exc = data['exceptionMessage']
-            key = exc['resourceKey']
-            *_, resource = exc['resourceDictionaryName'].rsplit('.')
-            message = getattr(getattr(PSResources, resource), key)
-            if parameters := exc.get('parameters'):
-                message += f'({parameters})'
-            raise LablinkApiError(message)
+            raise build_error(data)
         elif isinstance(data, dict) and all(
             isinstance(messages, list) for messages in data.values()
         ):
             message = '\n'.join(
                 f'{field}: {msg}' for field, messages in data.items() for msg in messages
             )
-            raise LablinkApiError(message)
+            raise LablinkApiError(message, response=response)
 
         else:
-            raise LablinkApiError(response.reason_phrase)
+            raise LablinkApiError(response.reason_phrase, response=response)

@@ -14,7 +14,7 @@ from typing import TYPE_CHECKING, ClassVar
 
 import xarray as xr
 
-from ._client import LablinkApiError
+from ._errors import NoActiveMeasurementError
 
 if TYPE_CHECKING:
     from ._instrument import InstrumentClaim
@@ -164,7 +164,7 @@ class MeasurementJob:
 
             try:
                 active = await self._claim.get_active_measurement()
-            except LablinkApiError:
+            except NoActiveMeasurementError:
                 break
 
             if not active or active.guid != self.guid:
