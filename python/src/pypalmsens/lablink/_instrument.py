@@ -76,7 +76,8 @@ class InstrumentReadsMixin:
             f'/Instrument/{self._serial}/CurrentMeasurement'
         )
         data = response.json()
-        return data['result']
+        guid = data['result']['id']
+        return MeasurementRef(guid=guid, session=self._session)
 
     async def get_state(self) -> dict[str, Any]:
         response = await self._session._http.get(f'/Instrument/{self._serial}/State')

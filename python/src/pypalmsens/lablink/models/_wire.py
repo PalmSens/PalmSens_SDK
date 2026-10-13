@@ -303,9 +303,6 @@ class SoftwareResult(BaseModel):
 
 
 class TagResult(BaseModel):
-    model_config = ConfigDict(
-        extra='forbid',
-    )
     Id: UUID | None = None
 
 

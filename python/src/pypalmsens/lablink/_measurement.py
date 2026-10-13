@@ -8,9 +8,13 @@ data of a finished measurement.
 
 from __future__ import annotations
 
+import asyncio
+import random
 from typing import TYPE_CHECKING, ClassVar
 
 import xarray as xr
+
+from ._client import LablinkApiError
 
 if TYPE_CHECKING:
     from ._instrument import InstrumentClaim
@@ -88,41 +92,89 @@ class MeasurementJob:
     A job representing an ongoing measurement.
     """
 
-    def __init__(self, guid: str, *, claim: InstrumentClaim):
+    def __init__(self, guid: str, *, claim: InstrumentClaim) -> None:
         self._guid: str = guid
         self._claim: InstrumentClaim = claim
+        self._is_finished: bool = False
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f'{type(self).__name__}(guid={self.guid!r}, serial={self.serial_number!r})'
 
     @property
-    def guid(self):
+    def guid(self) -> str:
         """The unique identifier of the measurement being performed."""
         return self._guid
 
     @property
-    def claim(self):
+    def claim(self) -> InstrumentClaim:
         """The instrument claim associated with the measurement job."""
-        return self._guid
+        return self._claim
 
     @property
-    def serial_number(self):
+    def serial_number(self) -> str:
         """Serial number of the instrument carrying out the measurement."""
         return self._claim._serial
 
     @property
     def is_finished(self) -> bool:
         """True if the measurement is finished."""
-        raise NotImplementedError
+        return self._is_finished
 
-    async def result(self) -> MeasurementRef:
-        """Wait for the measurement to finish and return measurement reference.
+    async def result(
+        self,
+        *,
+        initial: float = 1.0,
+        cap: float = 30.0,
+        factor: float = 1.1,
+        jitter: float = 0.15,
+        timeout: float | None = None,
+    ) -> MeasurementRef:
+        """Wait for the measurement to finish and return the measurement reference.
 
-        Returns
-        -------
-        MeasurementRef
-            Reference to the measurement data.
+        Polls `claim.get_active_measurement()` with exponential backoff, so short
+        jobs are caught quickly while long ones stay cheap.
+
+        Parameters
+        ----------
+        initial : float, optional
+            Delay before the first retry, in seconds. Defaults to 1.1.
+        cap : float, optional
+            Maximum delay between polls, in seconds. Defaults to 30.0.
+        factor : float, optional
+            Multiplier applied to the delay after each poll. Defaults to 2.0.
+        jitter : float, optional
+            Fractional randomness added to each delay, e.g. 0.15 for +/-15%.
+            Defaults to 0.15.
+        timeout : float or None, optional
+            Total seconds to wait before giving up; None waits indefinitely.
+            Defaults to None.
+
+        Raises
+        ------
+        TimeoutError
+            If `timeout` is set and the measurement does not finish in time.
         """
+        loop = asyncio.get_running_loop()
+        deadline = loop.time() + timeout if timeout else None
+        delay = initial
+
+        while True:
+            await asyncio.sleep(delay * (1 + random.uniform(-jitter, jitter)))
+            delay = min(delay * factor, cap)
+
+            try:
+                active = await self._claim.get_active_measurement()
+            except LablinkApiError:
+                break
+
+            if not active or active.guid != self.guid:
+                break
+
+            if deadline and loop.time() >= deadline:
+                raise TimeoutError(f'measurement {self.guid} did not finish in {timeout}s')
+
+        self._is_finished = True
+
         return MeasurementRef(self.guid, session=self._claim._session)
 
     def __await__(self):

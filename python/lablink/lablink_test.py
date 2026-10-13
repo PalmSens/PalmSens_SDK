@@ -21,7 +21,7 @@ def r(f):
 
 
 async def main():
-    method = ps.ChronoAmperometry(run_time=10)
+    method = ps.ChronoAmperometry(run_time=5)
 
     # local = lablink.Instance('http://192.168.178.79:5000')
     local = lablink.Instance('http://127.0.0.1/')
@@ -41,21 +41,6 @@ async def main():
     async with await instrument.claim() as claim:
         job = await claim.start_measurement(method=method)
         print(job)
-
-        await asyncio.sleep(3)
-
-        await job.pause()
-        print('pause')
-
-        await asyncio.sleep(3)
-
-        print('resume')
-        await job.resume()
-
-        await asyncio.sleep(3)
-
-        print('abort')
-        await job.abort()
 
         measurement = await job
 

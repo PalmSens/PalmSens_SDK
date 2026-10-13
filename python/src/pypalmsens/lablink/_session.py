@@ -235,7 +235,9 @@ class Session:
         refs = [MeasurementListResult.model_validate(item) for item in data.json()]
         return [MeasurementRef(str(ref.Id), session=self) for ref in refs]
 
-    async def get_measurement(self, measurement: MeasurementRef | str) -> xr.Dataset | xr.DataTree:
+    async def get_measurement(
+        self, measurement: MeasurementRef | str
+    ) -> xr.Dataset | xr.DataTree:
         """Fetch a specific measurement.
 
         Parameters
