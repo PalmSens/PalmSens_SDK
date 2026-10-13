@@ -62,6 +62,9 @@ class HttpClient:
     async def post(self, path: str, **kwargs) -> Any:
         return await self.request('POST', path, **kwargs)
 
+    async def delete(self, path: str, **kwargs) -> Any:
+        return await self.request('DELETE', path, **kwargs)
+
     @property
     def authenticated(self) -> bool:
         return self._token is not None

@@ -80,3 +80,16 @@ class InstrumentInfo(BaseModel):
 
 class MeasurementInfo(BaseModel):
     """Measurement metadata."""
+
+
+class UserInfo(BaseModel):
+    """User info."""
+
+    name: str
+    guid: str
+
+    @classmethod
+    def from_wire(cls, data: dict[str, Any]) -> UserInfo:
+        guid = data['Id']
+        name = data['UserName']
+        return cls(name=name, guid=guid)

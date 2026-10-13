@@ -20,6 +20,7 @@ from ._client import HttpClient
 from ._instrument import Instrument, InstrumentClaim
 from ._measurement import MeasurementJob, MeasurementRef
 from .models import LablinkInfo
+from .models._public import UserInfo
 from .models._wire import (
     EmptyProperty,
     MeasurementListResult,
@@ -421,3 +422,17 @@ class Session:
         }
         payload = SendWorkflowCommand.model_validate(data).model_dump()
         await self._http.post('/Instrument//SendScript', json=payload)
+
+    async def list_users(self) -> list[UserInfo]:
+        """Get list of users."""
+        data = await self._http.get('/Users')
+        return [UserInfo.from_wire(item) for item in data.json()]
+
+    async def delete_user(self, user: UserInfo | str) -> None:
+        """Delete user."""
+        if isinstance(user, UserInfo):
+            guid = user.guid
+        else:
+            guid = user
+
+        await self._http.delete(f'/Users/{guid}')
