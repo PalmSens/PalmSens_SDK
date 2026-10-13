@@ -48,17 +48,16 @@ class MeasurementRef:
         """
         Get recorded data for this measurement.
 
-        Resolves this reference against the session it is bound to and
-        returns the measurement's dataset. The returned object is a
-        snapshot of the data as stored on the lablink. It is not live-updated
-        if the measurement is still running.
-
         Returns
         -------
         xarray.Dataset or xarray.DataTree
             The measurement data. A `Dataset` is returned for a single
             measurement, and a `DataTree` when the measurement contains
             repeated/stacked runs.
+
+        Raises
+        ------
+        If this reference is detached from a session.
         """
 
         if self._session is None:

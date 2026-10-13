@@ -175,7 +175,9 @@ class Session:
         self._instruments = instruments
         return instruments
 
-    async def claim(self, instruments: Sequence[Instrument]) -> InstrumentClaimBatch:
+    async def claim(
+        self, instruments: Sequence[Instrument], *, auto_release: bool = False
+    ) -> InstrumentClaimBatch:
         """Claim multiple instruments.
 
         The claim is held until you release it, or until the enclosing
@@ -190,13 +192,17 @@ class Session:
         -------
         ClaimBatch
             A batch containing the instrument claims.
+        auto_release: bool, optional
+            If True, the server releases the claims after measurement ends.
         """
+        method = 'Claim' if auto_release else 'ManualClaim'
+
         props = {instrument.serial_number: EmptyProperty() for instrument in instruments}
         payload = SimpleInstrumentsCommand(
             InstrumentProperties=props, AllInstrumentsMustSucceed=True
         )
 
-        await self._http.post('/Instruments/ManualClaim', json=payload.model_dump())
+        await self._http.post(f'/Instruments/{method}', json=payload.model_dump())
 
         claims = [InstrumentClaim(instrument.serial_number, self) for instrument in instruments]
         return InstrumentClaimBatch(claims)

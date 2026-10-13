@@ -109,13 +109,19 @@ class Instrument(InstrumentReadsMixin):
         """The serial number of the instrument."""
         return self._serial
 
-    async def claim(self) -> InstrumentClaim:
+    async def claim(self, *, auto_release: bool = False) -> InstrumentClaim:
         """Claim this instrument.
 
         The claim is held until you release it, or until the enclosing
         `async with` block exits.
+
+        Parameters
+        ----------
+        auto_release: bool, optional
+            If True, the server releases the claim after measurement ends.
         """
-        await self._session._http.post(f'/Instrument/{self._serial}/ManualClaim')
+        method = 'Claim' if auto_release else 'ManualClaim'
+        await self._session._http.post(f'/Instrument/{self._serial}/{method}')
         return InstrumentClaim(self._serial, self._session)
 
 
