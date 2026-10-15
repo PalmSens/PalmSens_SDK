@@ -23,8 +23,8 @@ def r(f):
 async def main():
     method = ps.ChronoAmperometry(run_time=5)
 
-    # local = lablink.Instance('http://192.168.178.79:5000')
-    local = lablink.Instance('http://127.0.0.1/')
+    # local = lablink.Instance('http://127.0.0.1/')
+    local = lablink.Instance('http://192.168.178.79:5000')
     info = await local.get_info()
     print(info)
     session = await local.login('test', 'test')
