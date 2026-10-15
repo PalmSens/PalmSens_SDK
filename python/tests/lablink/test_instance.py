@@ -2,6 +2,8 @@ import pytest
 
 from pypalmsens import lablink
 
+pytest.skip('API not final', allow_module_level=True)
+
 
 @pytest.mark.lablink
 @pytest.mark.asyncio

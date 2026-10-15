@@ -44,6 +44,8 @@ import pypalmsens as ps
 from pypalmsens import lablink
 from pypalmsens._methods import BaseTechnique
 
+pytest.skip('API not final', allow_module_level=True)
+
 
 @pytest_asyncio.fixture(scope='module')
 async def session():

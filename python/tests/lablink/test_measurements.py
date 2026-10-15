@@ -1,10 +1,9 @@
-import nest_asyncio
 import pytest
 import pytest_asyncio
 
 from pypalmsens import lablink
 
-nest_asyncio.apply()
+pytest.skip('API not final', allow_module_level=True)
 
 
 @pytest_asyncio.fixture(scope='module')

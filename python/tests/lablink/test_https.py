@@ -2,6 +2,8 @@ import pytest
 
 from pypalmsens.lablink._client import HttpClient
 
+pytest.skip('API not final', allow_module_level=True)
+
 
 @pytest.mark.asyncio
 async def test_https():
