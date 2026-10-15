@@ -50,22 +50,32 @@ class InstrumentReadsMixin:
     async def get_info(self) -> dict[str, Any]:
         """Get info for instrument.
 
-        Refreshes the [info][] dict for all attached instruments.
+        Returns a dictionary of the most recent instrument info.
+        The data may be stale or empty if no measurement has been run.
         """
         info = await self._session.get_instrument_info()
         return info[self._serial]
 
     async def get_signalr_url(self) -> str:
+        """Return the signal rate URL for this instrument."""
         response = await self._session._http.get(f'/Instrument/{self._serial}/GetSignalRUrl')
         data = response.json()
         return data['result']
 
     async def get_configuration(self) -> dict[str, Any]:
+        """Fetch the current configuration for this instrument.
+
+        Returns a dictionary of configured settings.
+        """
         response = await self._session._http.get(f'/Instrument/{self._serial}/Configuration')
         data = response.json()
         return data['result']
 
     async def get_capabilities(self) -> dict[str, Any]:
+        """Fetch the capabilities of this instrument.
+
+        Returns a dictionary of supported features.
+        """
         response = await self._session._http.get(f'/Instrument/{self._serial}/Capabilities')
         data = response.json()
         return data['result']
@@ -80,6 +90,10 @@ class InstrumentReadsMixin:
         return MeasurementRef(guid=guid, session=self._session)
 
     async def get_state(self) -> dict[str, Any]:
+        """Fetch the current state of this instrument.
+
+        Returns a dictionary describing the device state.
+        """
         response = await self._session._http.get(f'/Instrument/{self._serial}/State')
         data = response.json()
         return data['result']
@@ -186,7 +200,13 @@ class InstrumentClaim(InstrumentReadsMixin):
         await self._session._http.post(f'/Instrument/{self._serial}/SetCellState', json=payload)
 
     async def start_measurement(self, method: MethodTypeCompatible) -> MeasurementJob:
-        """Starts a measurement."""
+        """Start a measurement.
+
+        Parameters
+        ----------
+        method : MethodTypeCompatible
+            The measurement technique and parameters to run.
+        """
         dto = MethodMappers.ToDto(method._to_psmethod())
 
         payload = {
@@ -203,28 +223,38 @@ class InstrumentClaim(InstrumentReadsMixin):
         return MeasurementJob(guid=data['result'], claim=self)
 
     async def skip_pre_measurement_stage(self) -> None:
-        """Skips the pre-measurement stage."""
+        """Skip the initial pre-measurement setup step.
+
+        Useful when you want to begin measuring without running
+        through all calibration steps.
+        """
         await self._session._http.post(f'/Instrument/{self._serial}/SkipPreMeasurementStage')
 
     async def pause_measurement(self) -> None:
-        """Pauses the running measurement."""
+        """Pause a running measurement.
+
+        The instrument holds its current state and resumes later.
+        """
         await self._session._http.post(f'/Instrument/{self._serial}/PauseMeasurement')
 
     async def resume_measurement(self) -> None:
-        """Resumes a paused measurement."""
+        """Resume a previously paused measurement."""
         await self._session._http.post(f'/Instrument/{self._serial}/ResumeMeasurement')
 
     async def abort_measurement(self) -> None:
-        """Aborts the running measurement."""
+        """Stop and release a running measurement.
+
+        The instrument resets to the pre-measurement state after aborting.
+        """
         await self._session._http.post(f'/Instrument/{self._serial}/AbortMeasurement')
 
     async def set_custom_name(self, name: str) -> None:
-        """Sets a custom display name for the instrument.
+        """Set a custom display name for the instrument.
 
         Parameters
         ----------
         name : str
-            The custom name to assign.
+            The name to show on the device screen.
         """
         await self._session._http.post(f'/Instrument/{self._serial}/SetCustomName', json=name)
 
@@ -236,12 +266,18 @@ class InstrumentClaim(InstrumentReadsMixin):
         hardware_sync_allowed: bool | None = None,
         multichannel_role: Literal['Undefined', 'Standalone', 'Master', 'Slave'] | None = None,
     ) -> None:
-        """Applies a configuration payload to the instrument.
+        """Apply configuration settings to this instrument.
 
         Parameters
         ----------
-        config : dict
-            Configuration key-value pairs.
+        mains_frequency : str or None, optional
+            Mains frequency in Hz (e.g. '50' or '60'). Use 'Undefined' for auto.
+        signal_train : str or None, optional
+            Speed of the analog input train (e.g. 'LowSpeed', 'HighSpeed').
+        hardware_sync_allowed : bool or None, optional
+            Whether to use hardware synchronization.
+        multichannel_role : str or None, optional
+            Role for multi-channel mode ('Standalone', 'Master', 'Slave').
         """
         config = ConfigureInstrumentsProperties.model_validate(
             {
@@ -260,24 +296,23 @@ class InstrumentClaim(InstrumentReadsMixin):
             f'/Instrument/{self._serial}/ConfigureInstrument', json=payload
         )
 
-    async def send_script(self, script: str) -> None:
-        """Sends a script to the instrument.
+    async def start_workflow(self, workfrow: str) -> None:
+        """Start a workflow on the instrument.
 
         Parameters
         ----------
-        script : str
-            The script text to execute.
+        workflow : str
+            Name of the workfrow to execute on the instrument.
         """
-        await self._session._http.post(f'/Instrument/{self._serial}/SendScript', json=script)
+        await self._session._http.post(f'/Instrument/{self._serial}/SendScript', json=workfrow)
 
     async def set_current_range(self, current_range: AllowedCurrentRanges) -> None:
-        """Sets the current range.
+        """Set the current measurement range.
 
         Parameters
         ----------
-        current_range: AllowedCurrentRanges
-            Set the current range as a string.
-            See [pypalmsens.types.AllowedCurrentRanges][] for options.
+        current_range : AllowedCurrentRanges
+            The desired range as a string (e.g. '1 mA'). See [pypalmsens.types.AllowedCurrentRanges][] for options.
         """
         # TODO: investigate intention behind MeasuringRange
         sig, exp = cr_string_to_sig_exp(current_range)
@@ -289,13 +324,12 @@ class InstrumentClaim(InstrumentReadsMixin):
         )
 
     async def set_potential_range(self, potential_range: AllowedPotentialRanges) -> None:
-        """Sets the potential range.
+        """Set the potential measurement range.
 
         Parameters
         ----------
-        potential_range: AllowedPotentialRanges
-            Set the potential range as a string.
-            See [pypalmsens.types.AllowedPotentialRanges][] for options.
+        potential_range : AllowedPotentialRanges
+            The desired range as a string (e.g. '100 mV'). See [pypalmsens.types.AllowedPotentialRanges][] for options.
         """
         # TODO: investigate intention behind MeasuringRange
         sig, exp = pr_string_to_sig_exp(potential_range)
@@ -306,12 +340,12 @@ class InstrumentClaim(InstrumentReadsMixin):
         )
 
     async def set_current(self, current: float) -> None:
-        """Sets the current value.
+        """Set the cell current (galvanostatic mode).
 
         Parameters
         ----------
         current : float
-            The current to apply.
+            Current value in µA.
         """
         await self._session._http.post(
             f'/Instrument/{self._serial}/SetCurrent',
@@ -319,37 +353,36 @@ class InstrumentClaim(InstrumentReadsMixin):
         )
 
     async def set_potential(self, potential: float) -> None:
-        """Sets the potential value.
+        """Set the working electrode (WE) potential relative to the reference
+        electrode (RE).
 
         Parameters
         ----------
         potential : float
-            The potential to apply.
+            WE potential in volts.
         """
         await self._session._http.post(
             f'/Instrument/{self._serial}/SetPotential',
             json=potential,
         )
 
-    async def set_bipot_state(self, state: bool) -> None:
-        """Sets the bipot state.
+    async def set_bipot_enabled(self, state: bool) -> None:
+        """Enable or disable the bipotentiostat (the second working electrode).
 
         Parameters
         ----------
         state : bool
-            The desired bipot state.
-            True = on, False = off.
+            True = bipotentiostat on (WE2 active), False = off.
         """
         await self._session._http.post(f'/Instrument/{self._serial}/SetBiPotState', json=state)
 
     async def set_bipot_current_range(self, current_range: AllowedCurrentRanges) -> None:
-        """Sets the bipot current range.
+        """Set the current range of the second working electrode (WE2).
 
         Parameters
         ----------
-        current_range: AllowedCurrentRanges
-            Set the current range as a string.
-            See [pypalmsens.types.AllowedPotentialRanges][] for options.
+        current_range : AllowedCurrentRanges
+            Desired WE2 current range as a string (e.g. '1 mA').
         """
         # TODO: investigate intention behind MeasuringRange
         sig, exp = cr_string_to_sig_exp(current_range)
@@ -362,24 +395,30 @@ class InstrumentClaim(InstrumentReadsMixin):
         )
 
     async def set_bipot_mode(self, mode: Literal['constant', 'offset']) -> None:
-        """Sets the bipot mode.
+        """Set how the second working electrode (WE2) is coupled to WE1.
+
+        - `constant`: WE2 is held at a fixed potential vs. the RE while
+          WE1 is stepped or swept independently.
+        - `offset`: WE2 tracks WE1, maintained at a fixed potential
+          difference from WE1 as WE1 changes.
 
         Parameters
         ----------
         mode : str
-            The desired bipot mode.
+            Coupling mode: 'constant' or 'offset'.
         """
         payload = CellMode[mode.capitalize()].value
 
         await self._session._http.post(f'/Instrument/{self._serial}/SetBiPotMode', json=payload)
 
     async def set_bipot_potential(self, potential: float) -> None:
-        """Sets the bipot potential.
+        """Set the potential of the second working electrode (WE2).
 
         Parameters
         ----------
         potential : float
-            The potential to apply in bipot mode.
+            WE2 setpoint in volts. Absolute vs. RE in constant mode, or the
+            WE1-relative offset in offset mode.
         """
         config = Volt(Value=potential)
         payload = config.model_dump()
