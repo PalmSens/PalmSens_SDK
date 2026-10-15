@@ -12,8 +12,13 @@ finally:
     IS_SUPPORTED = _supported
 
 if IS_SUPPORTED:
-    # from ._data import Dataset
     from ._discover import discover
+    from ._errors import (
+        LablinkApiError,
+        LablinkClientError,
+        LablinkServerError,
+        NoActiveMeasurementError,
+    )
     from ._instance import Instance
     from ._instrument import Instrument, InstrumentClaim
     from ._measurement import MeasurementJob, MeasurementRef
@@ -24,8 +29,12 @@ if IS_SUPPORTED:
         'Instrument',
         'InstrumentClaim',
         'InstrumentClaimBatch',
+        'LablinkApiError',
+        'LablinkClientError',
+        'LablinkServerError',
         'MeasurementJob',
         'MeasurementRef',
+        'NoActiveMeasurementError',
         'Session',
         'discover',
     ]

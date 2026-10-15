@@ -72,9 +72,18 @@ nav = [
       "reference/energy/constant_resistance.md",
     ]},
   ]},
-  { "lablink" = [{ "lablink" = [
+  { "Lablink" = [{ "Lablink" = [
       "lablink/index.md",
       "lablink/concept.md",
+    ]},
+    { "Reference" = [
+      "lablink/reference/index.md",
+      "lablink/reference/instance.md",
+      "lablink/reference/instrument.md",
+      "lablink/reference/measurement.md",
+      "lablink/reference/session.md",
+      "lablink/reference/exceptions.md",
+      "lablink/reference/models.md",
     ]},
   ]},
   { "Reference" = [{ "Reference" = [
@@ -226,6 +235,7 @@ inventories = [
     "https://docs.python.org/3/objects.inv",
     "https://numpy.org/doc/stable/objects.inv",
     "https://matplotlib.org/stable/objects.inv",
+    "https://docs.xarray.dev/en/stable/objects.inv",
 ]
 paths = ["src"]
 

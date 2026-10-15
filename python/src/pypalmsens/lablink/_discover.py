@@ -66,7 +66,7 @@ async def _resolve_service_info(
 
 
 async def discover(
-    ip_version: IPVersion,
+    ip_version: IPVersion = IPVersion.All,
     timeout: float = 10,
 ) -> list[dict[str, Any]]:
     """

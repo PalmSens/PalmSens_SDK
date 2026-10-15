@@ -80,8 +80,8 @@ class Session:
     """
     A session managing a connection to a Lablink instance.
 
-    Use [claim][] or [claim_many][] to claim instruments, and
-    [start][] or [start_many][] to run measurements on them.
+    Use [Session.claim][] to claim instruments, and
+    [Session.start_measurement][] to run measurements on them.
 
     Parameters
     ----------

@@ -296,7 +296,7 @@ class InstrumentClaim(InstrumentReadsMixin):
             f'/Instrument/{self._serial}/ConfigureInstrument', json=payload
         )
 
-    async def start_workflow(self, workfrow: str) -> None:
+    async def start_workflow(self, workflow: str) -> None:
         """Start a workflow on the instrument.
 
         Parameters
@@ -304,7 +304,7 @@ class InstrumentClaim(InstrumentReadsMixin):
         workflow : str
             Name of the workfrow to execute on the instrument.
         """
-        await self._session._http.post(f'/Instrument/{self._serial}/SendScript', json=workfrow)
+        await self._session._http.post(f'/Instrument/{self._serial}/SendScript', json=workflow)
 
     async def set_current_range(self, current_range: AllowedCurrentRanges) -> None:
         """Set the current measurement range.
