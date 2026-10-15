@@ -3,7 +3,6 @@
 [MeasurementRef][] references a stored measurement, [MeasurementJob][]
 represents an ongoing measurement, and [Measurement][] holds the complete
 data of a finished measurement.
-
 """
 
 from __future__ import annotations
@@ -24,9 +23,11 @@ if TYPE_CHECKING:
 class MeasurementRef:
     """
     A reference to a measurement.
+
+    Holds the GUID of a stored measurement and an optional session link.
     """
 
-    __slots__: ClassVar[tuple[str, ...]] = ('_guid', '_metadata', '_session')
+    __slots__: ClassVar[tuple[str, ...]] = ('_guid', '_session')
 
     def __init__(self, guid: str, *, session: Session | None = None):
         self._guid: str = guid
@@ -37,10 +38,26 @@ class MeasurementRef:
 
     @property
     def guid(self) -> str:
-        """The unique identifier of the measurement."""
+        """
+        The unique identifier of the measurement.
+
+        Returns
+        -------
+        str
+            Measurement GUID.
+        """
         return self._guid
 
     async def get_info(self) -> None:
+        """
+        Get metadata for this measurement (not yet implemented).
+
+        Raises
+        ------
+        RuntimeError
+            If no session is attached. Reattach via
+            `session.get_measurement(ref)` before calling.
+        """
         if self._session is None:
             raise RuntimeError(
                 f'This {type(self).__name__} is detached. Reattach it via '
@@ -50,20 +67,20 @@ class MeasurementRef:
 
     async def get_data(self) -> xr.Dataset | xr.DataTree:
         """
-        Get recorded data for this measurement.
+        Retrieve recorded data for this measurement.
 
         Returns
         -------
         xarray.Dataset or xarray.DataTree
-            The measurement data. A `Dataset` is returned for a single
-            measurement, and a `DataTree` when the measurement contains
+            Measurement data. A `Dataset` is returned for a single
+            measurement, a `DataTree` when the measurement contains
             repeated/stacked runs.
 
         Raises
         ------
-        If this reference is detached from a session.
+        RuntimeError
+            If this reference is detached from a session.
         """
-
         if self._session is None:
             raise RuntimeError(
                 f'This {type(self).__name__} is detached. Reattach it via '
@@ -77,7 +94,8 @@ class MeasurementRef:
 
         Raises
         ------
-        If this reference is detached from a session.
+        RuntimeError
+            If this reference is detached from a session.
         """
         if self._session is None:
             raise RuntimeError(
@@ -90,6 +108,8 @@ class MeasurementRef:
 class MeasurementJob:
     """
     A job representing an ongoing measurement.
+
+    Holds the GUID of a measurement in progress and its instrument claim.
     """
 
     def __init__(self, guid: str, *, claim: InstrumentClaim) -> None:
@@ -102,7 +122,14 @@ class MeasurementJob:
 
     @property
     def guid(self) -> str:
-        """The unique identifier of the measurement being performed."""
+        """
+        The unique identifier of the measurement being performed.
+
+        Returns
+        -------
+        str
+            Measurement GUID.
+        """
         return self._guid
 
     @property
@@ -117,7 +144,7 @@ class MeasurementJob:
 
     @property
     def is_finished(self) -> bool:
-        """True if the measurement is finished."""
+        """True if the measurement has finished."""
         return self._is_finished
 
     async def result(
@@ -125,29 +152,35 @@ class MeasurementJob:
         *,
         initial: float = 1.0,
         cap: float = 30.0,
-        factor: float = 1.1,
+        factor: float = 2.0,
         jitter: float = 0.15,
         timeout: float | None = None,
     ) -> MeasurementRef:
-        """Wait for the measurement to finish and return the measurement reference.
+        """
+        Wait for the measurement to finish and return a reference.
 
-        Polls `claim.get_active_measurement()` with exponential backoff, so short
-        jobs are caught quickly while long ones stay cheap.
+        Polls `claim.get_active_measurement()` with exponential backoff so
+        short jobs are caught quickly while long ones stay cheap.
 
         Parameters
         ----------
         initial : float, optional
-            Delay before the first retry, in seconds. Defaults to 1.1.
+            Delay before the first retry, in seconds. Defaults to 1.0.
         cap : float, optional
             Maximum delay between polls, in seconds. Defaults to 30.0.
         factor : float, optional
             Multiplier applied to the delay after each poll. Defaults to 2.0.
         jitter : float, optional
-            Fractional randomness added to each delay, e.g. 0.15 for +/-15%.
+            Fractional randomness added to each delay (e.g., 0.15 for +/-15%).
             Defaults to 0.15.
         timeout : float or None, optional
             Total seconds to wait before giving up; None waits indefinitely.
             Defaults to None.
+
+        Returns
+        -------
+        MeasurementRef
+            A reference to the finished measurement.
 
         Raises
         ------
@@ -181,13 +214,13 @@ class MeasurementJob:
         return self.result().__await__()
 
     async def abort(self) -> None:
-        """Abort measurement."""
+        """Abort the measurement."""
         return await self._claim.abort_measurement()
 
     async def pause(self) -> None:
-        """Pause measurement."""
+        """Pause the measurement."""
         return await self._claim.pause_measurement()
 
     async def resume(self) -> None:
-        """Resume measurement."""
+        """Resume the measurement."""
         return await self._claim.resume_measurement()
