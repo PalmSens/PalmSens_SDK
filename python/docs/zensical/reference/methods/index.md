@@ -25,7 +25,7 @@ method = ps.CyclicVoltammetry(
 !!! note "Shared settings"
 
     Many configuration settings are shared between methods, like the current ranges above
-    or _versus OCP_ or _trigger_ settings. These are listed in [Settings](./settings.md).
+    or _versus OCP_ or _trigger_ settings. These are listed in [Settings](settings.md).
 
 ## Classes
 
