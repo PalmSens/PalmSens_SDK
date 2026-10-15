@@ -369,6 +369,45 @@ def test_TriggerAtDelaySettings():
     assert not any(params.to_list())
 
 
+def test_TriggerAtEquilibrationSettings_all_false():
+    obj = Techniques.CyclicVoltammetry()
+    params = ps.settings.EquilibrationTriggers(
+        d0=False,
+        d1=False,
+        d2=False,
+        d3=False,
+    )
+    params._export(obj)
+    assert obj.UseTriggerOnEquil is False
+    assert obj.TriggerValueOnEquil == 0
+
+
+def test_TriggerAtMeasurementSettings_all_false():
+    obj = Techniques.CyclicVoltammetry()
+    params = ps.settings.MeasurementTriggers(
+        d0=False,
+        d1=False,
+        d2=False,
+        d3=False,
+    )
+    params._export(obj)
+    assert obj.UseTriggerOnStart is False
+    assert obj.TriggerValueOnStart == 0
+
+
+def test_TriggerAtDelaySettings_all_false():
+    obj = Techniques.PulsedAmpDetection()
+    params = ps.settings.DelayTriggers(
+        d0=False,
+        d1=False,
+        d2=False,
+        d3=False,
+    )
+    params._export(obj)
+    assert obj.UseTriggerOnDelay is False
+    assert obj.TriggerValueOnDelay == 0
+
+
 def test_MultiplexerSettings():
     obj = Techniques.CyclicVoltammetry()
 

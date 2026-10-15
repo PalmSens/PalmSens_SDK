@@ -55,6 +55,35 @@ def get_changes_since_tag(tag: str):
     return '\n'.join(out)
 
 
+def insert_nav(new_version: str):
+    index_path = Path(ROOT / 'python' / 'zensical.toml')
+
+    lines = index_path.read_text().splitlines()
+
+    for index, line in enumerate(lines):
+        if '# Latest' in line:
+            break
+    else:
+        raise ValueError('Cannot find insertion point in zensical.toml')
+
+    indentation = ' ' * line.index('#')
+
+    if new_version in lines[index + 1]:
+        print('Tag already exists, skipping')
+    else:
+        if new_version in lines[index + 1]:
+            print('Tag already exists, skipping')
+        else:
+            ref = new_version.replace('.', '')
+            new_string = (
+                f'{indentation}{{ f"PyPalmSens {new_version}" = f"releases#pypalmsens-{ref}" }}'
+            )
+            print(new_string)
+
+            lines.insert(index + 1, new_string)
+            index_path.write_text('\n'.join(lines) + '\n', encoding='UTF-8')
+
+
 def update_python(new_tag: str, new_version: str, previous_tag: str | None = None) -> str:
     if previous_tag is None:
         previous_tag = get_latest_tag()
@@ -141,3 +170,4 @@ if __name__ == '__main__':
     new_tag = f'{component}-{new_version}'
 
     update_python(new_tag, new_version, previous_tag)
+    insert_nav(new_version)

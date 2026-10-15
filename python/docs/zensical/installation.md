@@ -76,8 +76,16 @@ And update the linker cache:
 sudo ldconfig -v
 ```
 
-#### 2. Configure udev rules
+!!! Note "Fedora note"
 
+    The FTDI documentation recommends to install to `/usr/local/lib`, which is [not listed in /etc/ld.so.conf](https://bugzilla.redhat.com/show_bug.cgi?id=144967). If you run Fedora, it is recommended to create a `/etc/ld.so.conf.d/local.conf` specifying this directory before running `ldconfig`:
+
+    ```bash
+    echo /usr/local/lib | sudo tee /etc/ld.so.conf.d/local.conf
+    ```
+
+
+#### 2. Configure udev rules
 
 Second, set up [udev rules](https://wiki.archlinux.org/title/Udev).
 `udev` manages permissions of the device to be accessible to non-root users and groups.
@@ -156,7 +164,7 @@ See the [VSCode documentation](https://code.visualstudio.com/docs/python/environ
 
 ## Compatible devices and firmware {#compatibility}
 
-The PalmSens SDK is based on PalmSens core version 5.12.
+The PalmSens SDK is based on PalmSens core version 5.13.
 
 The table below lists the minimum supported firmwares versions and required drivers.
 
