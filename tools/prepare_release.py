@@ -186,6 +186,7 @@ if __name__ == '__main__':
         import changelog
 
         gh_body = changelog.update_python(new_tag=sdk.tag, new_version=sdk.version)
+        changelog.insert_nav(sdk.version)
     else:
         gh_body = '-'
 

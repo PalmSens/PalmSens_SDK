@@ -442,7 +442,7 @@ This release fixes a crash in 1.10.0 when importing PyPalmSens.
 - Add templates to MANIFEST.in ([#403](https://github.com/palmsens/palmsens-sdk/pull/403))
 
 
-## PyPalmSens 1.10
+## PyPalmSens 1.10.0
 
 > :fontawesome-brands-github: <a href="https://github.com/palmsens/palmsens-sdk/releases/tag/python-1.10">python-1.10</a>
 | :fontawesome-brands-python: <a href="https://pypi.org/project/pypalmsens/1.10">pypalmsens-1.10</a>
