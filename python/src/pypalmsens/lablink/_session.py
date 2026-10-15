@@ -82,6 +82,15 @@ class Session:
 
     Use [claim][] or [claim_many][] to claim instruments, and
     [start][] or [start_many][] to run measurements on them.
+
+    Parameters
+    ----------
+    host : str
+        Base URL of the Lablink instance (e.g. 'lablink.example.com').
+    token : str
+        Token used to authenticate API calls.
+    port : int, optional
+        Port for the API server; defaults to 5000.
     """
 
     def __init__(
@@ -140,15 +149,15 @@ class Session:
         """
         return self._instruments
 
-    async def get_instrument_info(self):
+    async def get_instrument_info(self) -> dict[str, dict[str, Any]]:
         """Get info dictionary for currently attached instruments.
 
-        Refreshes the [instrument_info][] dictionary.
+        Refreshes the [instrument_info][] dictionary and caches it in-place.
 
         Returns
         -------
-        dict of InstrumentInfo
-            A dictionary of metadata for attached instruments.
+        dict[str, dict[str, Any]]
+            A mapping from serial number to instrument info for each attached instrument.
         """
 
         data = await self._http.get('/Instruments')
@@ -186,15 +195,15 @@ class Session:
 
         Parameters
         ----------
-        instruments : Sequence of InstrumentRef
+        instruments : Sequence[Instrument]
             The instruments to claim.
+        auto_release: bool, optional
+            If True, the server releases the claims after measurement ends.
 
         Returns
         -------
         ClaimBatch
             A batch containing the instrument claims.
-        auto_release: bool, optional
-            If True, the server releases the claims after measurement ends.
         """
         method = 'Claim' if auto_release else 'ManualClaim'
 
@@ -208,13 +217,13 @@ class Session:
         claims = [InstrumentClaim(instrument.serial_number, self) for instrument in instruments]
         return InstrumentClaimBatch(claims)
 
-    async def release(self, instruments: Sequence[Instrument]) -> None:
-        """Release multiple instruments.
+    async def release(self, instruments: Sequence[InstrumentClaim]) -> None:
+        """Release the given instruments back to Lablink.
 
         Parameters
         ----------
-        instruments : Sequence of InstrumentRef
-            The instruments to release.
+        instruments : Sequence[InstrumentClaim]
+            Claimed instruments to release.
         """
         props = {instrument.serial_number: EmptyProperty() for instrument in instruments}
         payload = SimpleInstrumentsCommand(
@@ -238,17 +247,17 @@ class Session:
     async def get_measurement(
         self, measurement: MeasurementRef | str
     ) -> xr.Dataset | xr.DataTree:
-        """Fetch a specific measurement.
+        """Fetch a specific measurement by its reference ID.
 
         Parameters
         ----------
         measurement : MeasurementRef | str
-            The reference to the measurement to fetch.
+            The measurement to fetch. Can be a MeasurementRef or its string ID.
 
         Returns
         -------
-        Measurement
-            The fetched measurement data.
+        xr.Dataset | xr.DataTree
+            The parsed measurement data as an xarray object.
         """
         import numpy as np
 
@@ -339,19 +348,19 @@ class Session:
     async def start_measurement(
         self, instruments: Sequence[InstrumentClaim], *, method: MethodTypeCompatible
     ) -> list[MeasurementJob]:
-        """Start measurements on multiple instruments.
+        """Start a measurement on each of the claimed instruments.
 
         Parameters
         ----------
-        instruments : Sequence of InstrumentClaim
-            The claimed instruments to measure.
+        instruments : Sequence[InstrumentClaim]
+            Instruments (claimed) to start measuremeents on.
         method : MethodTypeCompatible
-            The measurement method to use.
+            The measurement method to apply.
 
         Returns
         -------
-        list of MeasurementJob
-            A list of jobs representing the ongoing measurements.
+        list[MeasurementJob]
+            One job per instrument, each with an associated MeasurementJob.
         """
         dto = MethodMappers.ToDto(method._to_psmethod())
 
@@ -378,7 +387,13 @@ class Session:
         return jobs
 
     async def skip_pre_measurement_stage(self, jobs: Sequence[MeasurementJob]) -> None:
-        """Skips the pre-measurement stage."""
+        """Skip the pre-measurement stage on the given measurement jobs.
+
+        Parameters
+        ----------
+        jobs : Sequence[MeasurementJob]
+            The running measurements to skip the pre-stage of.
+        """
         payload = {
             'AllInstrumentsMustSucceed': True,
             'InstrumentProperties': {job.serial_number: {} for job in jobs},
@@ -387,7 +402,13 @@ class Session:
         await self._http.post('/Instrument/SkipPreMeasurementStage', json=payload)
 
     async def pause_measurement(self, jobs: Sequence[MeasurementJob]) -> None:
-        """Pauses the running measurement."""
+        """Pause running measurements on the given jobs.
+
+        Parameters
+        ----------
+        jobs : Sequence[MeasurementJob]
+            The measurement jobs to pause.
+        """
         payload = {
             'AllInstrumentsMustSucceed': True,
             'InstrumentProperties': {job.serial_number: {} for job in jobs},
@@ -396,7 +417,13 @@ class Session:
         await self._http.post('/Instrument/PauseMeasurement', json=payload)
 
     async def resume_measurement(self, jobs: Sequence[MeasurementJob]) -> None:
-        """Resumes a paused measurement."""
+        """Resume a measurement that was previously paused.
+
+        Parameters
+        ----------
+        jobs : Sequence[MeasurementJob]
+            The measurement jobs to resume.
+        """
         payload = {
             'AllInstrumentsMustSucceed': True,
             'InstrumentProperties': {job.serial_number: {} for job in jobs},
@@ -405,7 +432,13 @@ class Session:
         await self._http.post('/Instrument/ResumeMeasurement', json=payload)
 
     async def abort_measurement(self, jobs: Sequence[MeasurementJob]) -> None:
-        """Aborts the running measurement."""
+        """Abort a running measurement and cancel job.
+
+        Parameters
+        ----------
+        jobs : Sequence[MeasurementJob]
+            The measurement to abort.
+        """
         payload = {
             'AllInstrumentsMustSucceed': True,
             'InstrumentProperties': {job.serial_number: {} for job in jobs},
@@ -413,22 +446,26 @@ class Session:
 
         await self._http.post('/Instrument/AbortMeasurement', json=payload)
 
-    async def send_script(self, instruments: Sequence[InstrumentClaim], *script: str) -> None:
-        """Sends a script to the instrument.
+    async def start_workflow(
+        self, instruments: Sequence[InstrumentClaim], *, workflow: str
+    ) -> None:
+        """Start a workflow on the given instruments.
 
         Parameters
         ----------
-        script : str
-            The script text to execute.
+        instruments : Sequence[InstrumentClaim]
+            The claimed instruments that will run the workflow.
+        workflow : str
+            Name of the workflow to start.
         """
         data = {
             'AllInstrumentsMustSucceed': True,
             'InstrumentProperties': {
-                instrument.serial_number: script for instrument in instruments
+                instrument.serial_number: workflow for instrument in instruments
             },
         }
         payload = SendWorkflowCommand.model_validate(data).model_dump()
-        await self._http.post('/Instrument//SendScript', json=payload)
+        await self._http.post('/Instrument/SendScript', json=payload)
 
     async def list_users(self) -> list[UserInfo]:
         """Get list of users."""

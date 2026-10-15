@@ -1,6 +1,6 @@
 """Submodule for instrument references and claims.
 
-[InstrumentRef][] holds an instrument's metadata and status. Use
+[Instrument][] holds an instrument's metadata and status. Use
 [InstrumentClaim][] as an async context manager for a claimed
 instrument. The claim is released when the context exits.
 
