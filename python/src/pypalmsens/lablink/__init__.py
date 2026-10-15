@@ -21,7 +21,7 @@ if IS_SUPPORTED:
     )
     from ._instance import Instance
     from ._instrument import Instrument, InstrumentClaim
-    from ._measurement import MeasurementJob, MeasurementRef
+    from ._measurement import Measurement, MeasurementJob
     from ._session import InstrumentClaimBatch, Session
 
     __all__ = [
@@ -32,8 +32,8 @@ if IS_SUPPORTED:
         'LablinkApiError',
         'LablinkClientError',
         'LablinkServerError',
+        'Measurement',
         'MeasurementJob',
-        'MeasurementRef',
         'NoActiveMeasurementError',
         'Session',
         'discover',

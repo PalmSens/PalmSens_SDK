@@ -20,7 +20,7 @@ if TYPE_CHECKING:
     from ._session import Session
 
 
-class MeasurementRef:
+class Measurement:
     """
     A reference to a measurement.
 
@@ -155,7 +155,7 @@ class MeasurementJob:
         factor: float = 2.0,
         jitter: float = 0.15,
         timeout: float | None = None,
-    ) -> MeasurementRef:
+    ) -> Measurement:
         """
         Wait for the measurement to finish and return a reference.
 
@@ -208,7 +208,7 @@ class MeasurementJob:
 
         self._is_finished = True
 
-        return MeasurementRef(self.guid, session=self._claim._session)
+        return Measurement(self.guid, session=self._claim._session)
 
     def __await__(self):
         return self.result().__await__()

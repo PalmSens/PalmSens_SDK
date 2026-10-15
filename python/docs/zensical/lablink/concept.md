@@ -1,4 +1,4 @@
-# Lablink Core Concepts
+# Concept
 
 The Lablink API is built around a small, consistent vocabulary. Once you know the pattern, every part of the API follows it.
 
@@ -8,14 +8,14 @@ Every object the API gives you falls into one of three categories:
 
 1. **References**: lightweight pointers to things that live on the Lablink server. A reference carries no measurement data — just an identifier (a GUID, serial, or address) and a link back to the [Session][pypalmsens.lablink.Session] it came from. They are cheap to create, cheap to hold, and cheap to print. But they are live, not snapshots: a reference only works while its session is alive. The durable thing to store is the identifier, not the object.
 2. **Handles**: live objects with capabilities and a lifecycle. They do things: a [Session][pypalmsens.lablink.Session] holds an authenticated connection, an [InstrumentClaim][pypalmsens.lablink.InstrumentClaim] holds an exclusive claim on an instrument, a [MeasurementJob][pypalmsens.lablink.MeasurementJob] tracks a running measurement.
-3. **Data**: the payload itself. The actual data is returned as an [xarray.Dataset][] or [xarray.DataTree][], obtained by fetching a [MeasurementRef][pypalmsens.lablink.MeasurementRef].
+3. **Data**: the payload itself. The actual data is returned as an [xarray.Dataset][] or [xarray.DataTree][], obtained by fetching a [Measurement][pypalmsens.lablink.Measurement].
 
 ```python
-refs = await session.list_measurements()   # list[MeasurementRef] — cheap rows
+refs = await session.list_measurements()   # list[Measurement] — cheap rows
 data = await refs[0].get_data()            # xr.Dataset — the actual data
 ```
 
-Rule of thumb: if it's a [Session][pypalmsens.lablink.Session], [InstrumentClaim][pypalmsens.lablink.InstrumentClaim] (or claim batch), or [MeasurementJob][pypalmsens.lablink.MeasurementJob], it's a live handle with a lifecycle you must release or await. If it's a pointer — [Instance][pypalmsens.lablink.Instance], [Instrument][pypalmsens.lablink.Instrument], or [MeasurementRef][pypalmsens.lablink.MeasurementRef] — you can hold onto it for as long as its session lives; what survives past that is the identifier. The payload itself is a bare xarray object, no Lablink wrapper.
+Rule of thumb: if it's a [Session][pypalmsens.lablink.Session], [InstrumentClaim][pypalmsens.lablink.InstrumentClaim] (or claim batch), or [MeasurementJob][pypalmsens.lablink.MeasurementJob], it's a live handle with a lifecycle you must release or await. If it's a pointer — [Instance][pypalmsens.lablink.Instance], [Instrument][pypalmsens.lablink.Instrument], or [Measurement][pypalmsens.lablink.Measurement] — you can hold onto it for as long as its session lives; what survives past that is the identifier. The payload itself is a bare xarray object, no Lablink wrapper.
 
 ## The type vocabulary
 
@@ -26,8 +26,8 @@ Rule of thumb: if it's a [Session][pypalmsens.lablink.Session], [InstrumentClaim
 | [Instrument][pypalmsens.lablink.Instrument] | Reference | A pointer to an instrument (serial number) | `await session.list_instruments()` |
 | [InstrumentClaim][pypalmsens.lablink.InstrumentClaim] | Handle | An exclusive lease on an instrument. While you hold it, no one else can use that instrument. | `await instrument.claim()` |
 | [InstrumentClaimBatch][pypalmsens.lablink.InstrumentClaimBatch] | Handle | A group of claims that release together. | `await session.claim(instruments)` |
-| [MeasurementJob][pypalmsens.lablink.MeasurementJob] | Handle | A handle to a running measurement. Awaitable: `await job` blocks until it finishes and returns a [MeasurementRef][pypalmsens.lablink.MeasurementRef]. | `await claim.start_measurement(method)` |
-| [MeasurementRef][pypalmsens.lablink.MeasurementRef] | Reference | A pointer to a stored measurement (its GUID) | `await job` or `await session.list_measurements()` |
+| [MeasurementJob][pypalmsens.lablink.MeasurementJob] | Handle | A handle to a running measurement. Awaitable: `await job` blocks until it finishes and returns a [Measurement][pypalmsens.lablink.Measurement]. | `await claim.start_measurement(method)` |
+| [Measurement][pypalmsens.lablink.Measurement] | Reference | A pointer to a stored measurement (its GUID) | `await job` or `await session.list_measurements()` |
 | `xr.Dataset` / `xr.DataTree` | Data | The actual measurement data | `await ref.get_data()` |
 
 A single measurement comes back as a `Dataset`; one with repeated or stacked runs comes back as a `DataTree`. The measurement data API is still work in progress.
@@ -42,7 +42,7 @@ flowchart TD
     S -- list_instruments --> IN[Instrument]
     IN -- claim --> C[InstrumentClaim]
     C -- start_measurement --> J[MeasurementJob]
-    J -- await --> MR[MeasurementRef]
+    J -- await --> MR[Measurement]
     S -- list_measurements --> MR
     MR -- get_data --> M["xr.Dataset / DataTree"]
 ```
@@ -56,7 +56,7 @@ ref = await job                               # blocks only now, until it finish
 data = await ref.get_data()                  # the payload
 ```
 
-Even if you never await the job, the measurement still runs and the server keeps its own record. The GUID that the job carries is durable — store it, and you can find the measurement again later through `session.list_measurements()` or `session.get_measurement(guid)`, then fetch with [MeasurementRef.get_data][pypalmsens.lablink.MeasurementRef.get_data]. `await job` is a convenience that lands on the same [MeasurementRef][pypalmsens.lablink.MeasurementRef].
+Even if you never await the job, the measurement still runs and the server keeps its own record. The GUID that the job carries is durable — store it, and you can find the measurement again later through `session.list_measurements()` or `session.get_measurement(guid)`, then fetch with [Measurement.get_data][pypalmsens.lablink.Measurement.get_data]. `await job` is a convenience that lands on the same [Measurement][pypalmsens.lablink.Measurement].
 
 ## Claims: borrowing instruments
 

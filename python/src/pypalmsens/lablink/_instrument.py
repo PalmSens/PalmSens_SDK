@@ -14,7 +14,7 @@ from PalmSens.Sdk.Lablink.Example.Lablink.Mappers import MethodMappers
 
 from .._converters import cr_string_to_sig_exp, pr_string_to_sig_exp
 from .._types import AllowedCurrentRanges, AllowedPotentialRanges, MethodTypeCompatible
-from ._measurement import MeasurementJob, MeasurementRef
+from ._measurement import Measurement, MeasurementJob
 from .models._wire import (
     CellMode,
     CellState,
@@ -80,14 +80,14 @@ class InstrumentReadsMixin:
         data = response.json()
         return data['result']
 
-    async def get_active_measurement(self) -> MeasurementRef:
+    async def get_active_measurement(self) -> Measurement:
         """Return the active measurement, if any."""
         response = await self._session._http.get(
             f'/Instrument/{self._serial}/CurrentMeasurement'
         )
         data = response.json()
         guid = data['result']['id']
-        return MeasurementRef(guid=guid, session=self._session)
+        return Measurement(guid=guid, session=self._session)
 
     async def get_state(self) -> dict[str, Any]:
         """Fetch the current state of this instrument.

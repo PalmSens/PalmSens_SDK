@@ -1,4 +1,4 @@
 # Measurement
 
-::: pypalmsens.lablink.MeasurementRef
+::: pypalmsens.lablink.Measurement
 ::: pypalmsens.lablink.MeasurementJob

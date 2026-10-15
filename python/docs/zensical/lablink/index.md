@@ -52,7 +52,7 @@ The session is your entry point for everything that follows: listing instruments
 If this is enabled on the server, you can register as a new user via the API:
 
 ```python
-local.register_new_user('Bob', 'badpassword')
+await local.register_new_user('Bob', 'badpassword')
 ```
 
 ## Instruments
@@ -119,7 +119,7 @@ To measure on several instruments at once, use [start_measurement][pypalmsens.la
 
 ## Previous measurements
 
-A session can also look up measurements that were recorded before. Use [list_measurements][pypalmsens.lablink.Session.list_measurements] to get a list of [MeasurementRef][pypalmsens.lablink.MeasurementRef] objects:
+A session can also look up measurements that were recorded before. Use [list_measurements][pypalmsens.lablink.Session.list_measurements] to get a list of [Measurement][pypalmsens.lablink.Measurement] objects:
 
 ```python
 measurements = await session.list_measurements()
@@ -128,7 +128,7 @@ measurement, *_ = measurements
 
 ## Measurement data
 
-A reference only carries the measurement's metadata: name, timestamp, method ID, and number of points. Fetch the full data with [get_data][pypalmsens.lablink.MeasurementRef.get_data]:
+A reference only carries the measurement's metadata: name, timestamp, method ID, and number of points. Fetch the full data with [get_data][pypalmsens.lablink.Measurement.get_data]:
 
 ```python
 data = await ref.get_data()

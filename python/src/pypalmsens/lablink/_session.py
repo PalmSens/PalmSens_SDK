@@ -18,7 +18,7 @@ from PalmSens.Sdk.Lablink.Example.Lablink.Mappers import MethodMappers
 from ..types import MethodTypeCompatible
 from ._client import HttpClient
 from ._instrument import Instrument, InstrumentClaim
-from ._measurement import MeasurementJob, MeasurementRef
+from ._measurement import Measurement, MeasurementJob
 from .models import LablinkInfo
 from .models._public import UserInfo
 from .models._wire import (
@@ -232,7 +232,7 @@ class Session:
 
         await self._http.post('/Instruments/UnClaim', json=payload.model_dump())
 
-    async def list_measurements(self) -> list[MeasurementRef]:
+    async def list_measurements(self) -> list[Measurement]:
         """List all measurements.
 
         Returns
@@ -242,11 +242,9 @@ class Session:
         """
         data = await self._http.get('/Measurements')
         refs = [MeasurementListResult.model_validate(item) for item in data.json()]
-        return [MeasurementRef(str(ref.Id), session=self) for ref in refs]
+        return [Measurement(str(ref.Id), session=self) for ref in refs]
 
-    async def get_measurement(
-        self, measurement: MeasurementRef | str
-    ) -> xr.Dataset | xr.DataTree:
+    async def get_measurement(self, measurement: Measurement | str) -> xr.Dataset | xr.DataTree:
         """Fetch a specific measurement by its reference ID.
 
         Parameters
@@ -261,7 +259,7 @@ class Session:
         """
         import numpy as np
 
-        if isinstance(measurement, MeasurementRef):
+        if isinstance(measurement, Measurement):
             guid = measurement.guid
         else:
             guid = measurement
@@ -481,10 +479,10 @@ class Session:
 
         await self._http.delete(f'/Users/{guid}')
 
-    async def delete_measurements(self, measurements: list[MeasurementRef | str]) -> None:
+    async def delete_measurements(self, measurements: list[Measurement | str]) -> None:
         """Delete measurements in batch."""
         payload = [
-            item.guid if isinstance(item, MeasurementRef) else item for item in measurements
+            item.guid if isinstance(item, Measurement) else item for item in measurements
         ]
 
         await self._http.delete('/Measurements/BatchDelete', json=payload)
