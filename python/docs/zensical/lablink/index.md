@@ -134,7 +134,7 @@ A reference only carries the measurement's metadata: name, timestamp, method ID,
 data = await ref.get_data()
 ```
 
-The data are returned as an [xarray.DataSet][]. or [xarray.DataTree][].
+The data are returned as an [xarray.Dataset][]. or [xarray.DataTree][].
 
 The measurement data API is still work in progress.
 
