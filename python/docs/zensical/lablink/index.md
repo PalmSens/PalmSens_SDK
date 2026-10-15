@@ -1,5 +1,9 @@
 # Lablink
 
+!!! warning "Work in progress"
+
+    The lablink API not final. Although the examples here should mostly hold up, method names and signatures may change in future versions. Keep an eye on the [changelog](../releases).
+
 The [pypalmsens.lablink][] module lets you connect to a Lablink server and control the instruments attached to it.
 You can use it to list instruments, claim them, start measurements, and retrieve previously recorded data.
 
@@ -32,7 +36,7 @@ A newly created instance only knows its address. Call [get_info][pypalmsens.labl
 
 ```python
 await local.get_info()
-LablinkInfo(name='My Lablink', version='2.1.0', special_version='Standard', os_version='Fedora Linux 43 (WSL)', model='WSL', serial_number='SERIAL_NUMBER', is_measuring=False)
+# LablinkInfo(name='My Lablink', version='2.1.0', special_version='Standard', os_version='Fedora Linux 43 (WSL)', model='WSL', serial_number='SERIAL_NUMBER', is_measuring=False)
 ```
 print(local.name, local.version, local.serial_number)
 ```
@@ -106,13 +110,12 @@ The call returns a [MeasurementJob][pypalmsens.lablink.MeasurementJob] for the o
 measurement = await job
 ```
 
-You can also check progress with [is_finished][pypalmsens.lablink.MeasurementJob.is_finished] or stop the measurement early with [abort][pypalmsens.lablink.MeasurementJob.abort]:
+You can [pause][pypalmsens.lablink.MeasurementJob.pause], [resume][pypalmsens.lablink.MeasurementJob.resume], and stop the measurement early with [abort][pypalmsens.lablink.MeasurementJob.abort]
 
 ```python
-if job.is_finished:
-    print('done')
-else:
-    job.abort()
+await job.pause()
+await job.resume()
+await job.abort()
 ```
 
 To measure on several instruments at once, use [start_measurement][pypalmsens.lablink.Session.start_measurement] with multiple claims. It returns one [MeasurementJob][pypalmsens.lablink.MeasurementJob] per instrument.
@@ -156,7 +159,7 @@ async def main():
     instrument, _* = session.instruments
 
     async with await instrument.claim() as claim:
-        job = await session.start(claim, method=method)
+        job = await claim.start_measurement(method=method)
         measurement = await job
 
     print(measurement)
