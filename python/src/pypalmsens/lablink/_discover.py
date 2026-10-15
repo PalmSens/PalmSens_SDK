@@ -24,9 +24,33 @@ from zeroconf.asyncio import AsyncServiceBrowser, AsyncServiceInfo, AsyncZerocon
 logger = logging.getLogger(__name__)
 
 
-async def show_service_info(
-    zeroconf: Zeroconf, service_type: str, name: str, discovered: list[dict[str, Any]]
+async def _resolve_service_info(
+    zeroconf: Zeroconf,
+    service_type: str,
+    name: str,
+    discovered: list[dict[str, Any]],
 ) -> None:
+    """
+    Resolve a newly found LabLink device and append its info to the results.
+
+    Parameters
+    ----------
+    zeroconf : Zeroconf
+        The zeroconf instance used for async service requests.
+    service_type : str
+        mDNS service type being browsed (e.g. '_lablink._tcp.local.').
+    name : str
+        Name of the discovered service.
+    discovered : list[dict]
+        List to append device info dictionaries into.
+
+    Notes
+    -----
+    Appends a dictionary with keys:
+      - server: hostname (e.g. 'lablink-01.local.')
+      - addresses: parsed scoped IPs
+      - Other TXT record fields verbatim.
+    """
     info = AsyncServiceInfo(service_type, name)
     if await info.async_request(zeroconf, 1200):
         props: dict[str, Any] = {
@@ -41,49 +65,45 @@ async def show_service_info(
         discovered.append(props)
 
 
-async def discover(ip_version: IPVersion, timeout: float = 10) -> list[dict[str, Any]]:
-    """Browse the local network for LabLink devices for a fixed duration.
+async def discover(
+    ip_version: IPVersion,
+    timeout: float = 10,
+) -> list[dict[str, Any]]:
+    """
+    Browse the local network for LabLink devices for a fixed duration.
 
     Uses zeroconf to browse for the `_lablink._tcp.local.` service type.
+    Each discovered device is resolved into a dictionary of properties
+    (hostname, addresses, TXT record fields) and appended to the results list.
 
     Parameters
     ----------
-    ip_version : IPVersion, optional
-        IP protocol version to use for browsing and resolution.
-        Default is `zeroconf.IPVersion.All`.
-    timeout : float, optional
-        Number of seconds to browse before returning. Default: 10.
-    on_found : callable, optional
-        Callback invoked with each discovered device dictionary as soon
-        as it is resolved, enabling streaming consumption. It is called
-        synchronously on the event loop, so it should not block.
-        If omitted, results are only available in the return value.
+    ip_version : IPVersion
+        IP protocol version for browsing/name resolution.
+        Defaults to `zeroconf.IPVersion.All`.
+    timeout : float
+        How many seconds to browse before stopping. Default is 10.
 
     Returns
     -------
-    list of dict
-        One dictionary per discovered LabLink device, each containing:
+    list[dict]
+        One dictionary per discovered LabLink device. Each dict contains:
 
-        `server`
-            Fully qualified host name of the device
-            (e.g. "lablink-01.local.").
-        `addresses`
-            Parsed scoped IP addresses of the device (list(str]).
-        `<txt keys>`
-            All other keys are taken verbatim from the device's
-            mDNS TXT record (e.g. `name`, `serial`, `version`),
+        * server: fully qualified host name (e.g. "lablink-01.local.")
+        * addresses: parsed scoped IP address strings
+        * other TXT record fields as-is, e.g. name, serial, version
 
-        The list may be empty if no devices are found within the
-        timeout.
+        The list is empty if no devices are discovered within the timeout.
 
     Examples
     --------
     >>> import asyncio
     >>> devices = asyncio.run(discover(timeout=10))
-    >>> len(devices)
-    2
-    >>> devices[0]["name"], devices[0]["addresses"][0]
-    ('lablink-01', '192.168.1.42')
+    >>> device, _* = devices
+    >>> devices["name"]
+    'lablink-01'
+    >>> devices["addresses"]
+    ['192.168.1.42', ...]
     """
     discovered: list[dict[str, Any]] = []
     tasks: set[asyncio.Task] = set()
@@ -94,7 +114,7 @@ async def discover(ip_version: IPVersion, timeout: float = 10) -> list[dict[str,
         logger.info('%s: %s', state_change.name, name)
         if state_change is ServiceStateChange.Added:
             task = asyncio.create_task(
-                show_service_info(zeroconf, service_type, name, discovered)
+                _resolve_service_info(zeroconf, service_type, name, discovered)
             )
             tasks.add(task)
             task.add_done_callback(tasks.discard)
